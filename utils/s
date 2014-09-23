@@ -1,0 +1,5 @@
+#!/bin/bash
+# Quick shortcut for starting SSH and showing ip addresses in a Kali chroot
+echo "Starting the SSH service"
+service ssh start 
+ifconfig |grep "inet addr"

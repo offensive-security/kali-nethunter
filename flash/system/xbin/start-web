@@ -1,0 +1,3 @@
+/system/xbin/reload_fcgi.sh &
+/system/xbin/reload_lighttpd.sh & 
+

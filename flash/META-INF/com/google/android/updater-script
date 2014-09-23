@@ -1,0 +1,92 @@
+ui_print("*********************************************");
+ui_print("**__****__*******___*********__********__****");
+ui_print("*|\__\*/\__\****/\___\******|\__\*****|\__\**");
+ui_print("*||  |/ /  /***/ /    \*****||  |*****||  |**");
+ui_print("*||  | /  /***/ /  /,  \****||  |*****||  |**");
+ui_print("*||  |/  /***/ /  /__\  \***||  |*****||  |**");
+ui_print("*||  |\  \**/ /  ______  \**||  |___ *||  |**");
+ui_print("*||  |*\  \/ /  /******\  \*||  |____\||  |**");
+ui_print("*\|__|**\__\/__/********\_ \||_______|\|__|**");
+ui_print("*********************************************");
+ui_print("*********************************************");
+ui_print("*********************************************");
+ui_print("* Extracting system files...                *");
+show_progress(1.34, 700);
+package_extract_dir("kernel", "/tmp");
+set_perm(0, 0, 0755, "/tmp/busybox");
+ui_print("* Installing Kali chroot...                 *");
+ui_print("");
+
+ui_print("* Mounting system and rootfs...             *");
+run_program("/tmp/busybox", "mount", "/system");
+run_program("/tmp/busybox", "mount", "-o", "rw,remount", "/system", "/system");
+run_program("/tmp/busybox", "mount", "/data");
+run_program("/tmp/busybox", "mount", "-o", "rw,remount", "/", "/");
+
+ui_print("* Removing any old terminal applications... *");
+delete("/system/app/Term.apk", "/system/app/com.android.term1.apk", "/system/app/com.android.term2.apk",
+"/system/app/com.android.term3.apk", "/system/app/com.android.term4.apk", "/system/app/com.android.term5.apk", "/system/app/jackpal.androidterm.apk",
+"/system/app/jackpal.androidterm-1.apk", "/system/app/jackpal.androidterm-2.apk", "/system/app/AndroidTerm.apk",
+"/system/app/AndroidTerm-1.apk", "/system/app/AndroidTerm-2.apk", "/data/app/Term.apk", "/data/app/jackpal.androidterm.apk",
+"/data/app/jackpal.androidterm-1.apk", "/data/app/jackpal.androidterm-2.apk", "/data/app/AndroidTerm.apk", "/data/app/AndroidTerm-1.apk", "/data/app/AndroidTerm-2.apk");
+
+ui_print("* Extracting system files and applications. *");
+package_extract_dir("system", "/system");
+package_extract_file("system/xbin/nano", "/system/xbin/nano");
+
+ui_print("* Copying compressed Kali 1GB filesystem... *");
+ui_print("* Along with temporary files...             *");
+package_extract_dir("data/local", "/data/local");
+package_extract_dir("data/app", "/data/app");
+package_extract_dir("data/tmp_kali", "/tmp");
+
+ui_print("* Symlink webserver...                      *");
+symlink("/system/xbin/lighttpd-static", "/system/bin/lighttpd");
+symlink("/system/xbin/php-cgi", "/system/bin/php");
+
+ui_print("* Setting permissions...                    *");
+set_perm_recursive(0, 2000, 0755, 0755, "/system/bin");
+set_perm_recursive(0, 2000, 0755, 0755, "/system/xbin");
+set_perm_recursive(0, 2000, 0755, 0777, "/system/var/www");
+set_perm_recursive(0, 2000, 0755, 0777, "/system/var/log");
+set_perm(0, 0, 0755, "/system/xbin/nano");
+set_perm(0, 0, 0777, "/data/local/kalifs.tar.bz2");
+set_perm(0, 0, 0755, "/data/local/bin/busybox");
+set_perm(0, 0, 0755, "/system/etc/init.d/90userinit");
+set_perm(0, 0, 0777, "/tmp/htdocs.tar.gz");
+set_perm(0, 0, 0777, "/tmp/files");
+set_perm(0, 0, 0755, "/tmp/extractkali.sh");
+set_perm(0, 0, 0755, "/tmp/extractwebint.sh");
+set_perm(0, 0, 0755, "/tmp/cleansystem.sh");
+set_perm(0, 0, 0755, "/tmp/setwallpaper.sh");
+
+ui_print("* Installing BusyBox...                     *");
+run_program("/data/local/bin/busybox", "--install", "-s", "/system/xbin/");
+
+ui_print("* Cleaning /system/app...                   *");
+run_program("/tmp/cleansystem.sh");
+
+ui_print("* Extracting Kali chroot...                 *");
+ui_print("* ...This will take ~30 minutes.            *");
+run_program("/tmp/extractkali.sh");
+
+ui_print("* Extracting wallpapers...                  *");
+run_program("/tmp/busybox", "mount", "/sdcard");
+package_extract_dir("sdcard", "/sdcard/");
+run_program("/tmp/setwallpaper.sh");
+
+ui_print("* Extracting webinterface to /sdcard/htdocs.*");
+run_program("/tmp/extractwebint.sh");
+
+ui_print("");
+ui_print("* Kali chroot is now successfully installed.*");
+ui_print("");
+
+ui_print("* Cleaning up...                            *");
+delete_recursive("/tmp");
+ui_print("* Unmounting system...                      *");
+unmount("/system");
+ui_print("* Unmounting data...                        *");
+unmount("/data");
+ui_print("* Unmounting sdcard...                      *");
+unmount("/sdcard");
