@@ -1,0 +1,20 @@
+#!/bin/bash
+# Repacks a ramdisk for use inside a boot.img
+# Optionally taking an output to repack the ramdisk into.
+# Found online, modified by CNexus - XDA Developers.
+
+if [ -z $1 ]
+then
+echo "Usage: repack_ramdisk <ramdiskDirectory> [outputFile]"
+exit 0
+fi
+
+cd $1
+find . | cpio -o -H newc | gzip > ../new-ramdisk.cpio.gz
+
+if [ -z $2 ]
+then
+exit 0
+else
+mv ../new-ramdisk.cpio.gz ../$2
+fi

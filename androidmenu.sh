@@ -20,6 +20,8 @@
 # git clone https://github.com/binkybear/flo.git -b Cyanogenmod cyanflodeb
 # git clone https://github.com/binkybear/furnace_kernel_lge_hammerhead.git -b android-4.4
 # git clone https://github.com/binkybear/furnace_kernel_caf_hammerhead.git -b cm-11.0
+# git clone https://github.com/binkybear/mako_kitkat.git -b kitkat-aosp mako_kitkat
+# git clone https://github.com/binkybear/mako_kitkat.git -b kitkat-cm mako_kitkat_cm
 # git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7
 ######## Local Repo ##########
 # to update :  for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
@@ -37,11 +39,22 @@ source devices/nexus10-manta
 source devices/nexus7-grouper-tilapia
 source devices/nexus7-flo-deb
 source devices/nexus5-hammerhead
+source devices/nexus4-mako
 
-######### Build script start  #######
+######### Set paths and permissions  #######
 
 basepwd=`pwd`
+rootfs=`pwd`/rootfs 
 basedir=`pwd`/android-$VERSION
+build_dir=`pwd`/PLACE_ROM_HERE
+wwork=`pwd`/PLACE_ROM_HERE/working_rom_folder
+wram=`pwd`/PLACE_ROM_HERE/working_ramdisk_folder
+bt=`pwd`/utils/boottools
+architecture="armhf"
+
+chmod +x utils/boottools/* 
+
+######### Build script start  #######
 
 f_check_version(){
 	# Allow user input of version number/folder creation to make set up easier
@@ -88,7 +101,12 @@ echo ""
 echo -e "\e[31m	----------------------------  NEXUS 5 --------------HAMMERHEAD---------\e[0m"
 echo "	[4] Build for Nexus 5 with wireless USB support (Android 4.4+)"
 echo ""
+echo -e "\e[31m ----------------------------  NEXUS 4 --------------HAMMERHEAD---------\e[0m"
+echo "  [5] Build for Nexus 4 with wireless USB support (Android 4.4+)"
 echo ""
+if [ -f "${basedir}/flashkernel/kernel/kernel" ] && [ -d "${basedir}/flash" ]; then
+echo "  [77] Inject finished rootfs/kernel into ROM"
+fi
 echo "	[88] Rootfs only - For any rooted and unlocked device but without kernel support"
 echo "	[99] Unmount and Clean Work Folders (file dir removal currently disabled)"
 echo "	[q] Exit"
@@ -104,6 +122,7 @@ case $menuchoice in
 2) clear; f_grouper ;;
 3) clear; f_deb ;;
 4) clear; f_hammerhead ;;
+77) clear; f_rom_build ;;
 88) clear; f_rootfs ; f_flashzip; f_zip_save ;;
 99) f_cleanup ;;
 q) clear; exit 1 ;;
@@ -125,7 +144,7 @@ read -p "Choice: " manta_menuchoice
 
 case $manta_menuchoice in
 
-1) clear; f_rootfs ; f_flashzip ; f_nexus10_kernel ; f_zip_save ; f_zip_kernel_save ;;
+1) clear; f_rootfs ; f_flashzip ; f_nexus10_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
 2) clear; f_nexus10_kernel ; f_zip_kernel_save ;;
 0) clear; f_interface ;;
 *) echo "Incorrect choice..." ;
@@ -147,7 +166,7 @@ read -p "Choice: " grouper_menuchoice
 
 case $grouper_menuchoice in
 
-1) clear; f_rootfs ; f_flashzip ; f_nexus7_grouper_kernel ; f_zip_save ; f_zip_kernel_save ;;
+1) clear; f_rootfs ; f_flashzip ; f_nexus7_grouper_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
 2) clear; f_nexus7_grouper_kernel ; f_zip_kernel_save ;;
 0) clear; f_interface ;;
 *) echo "Incorrect choice... " ;
@@ -171,8 +190,8 @@ read -p "Choice: " deb_menuchoice
 
 case $deb_menuchoice in
 
-1) clear; f_rootfs ; f_flashzip ; f_deb_stock_kernel ; f_zip_save ; f_zip_kernel_save ;;
-2) clear; f_rootfs ; f_flashzip ; f_deb_cm_kernel ; f_zip_save ; f_zip_kernel_save ;;
+1) clear; f_rootfs ; f_flashzip ; f_deb_stock_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+2) clear; f_rootfs ; f_flashzip ; f_deb_cm_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
 3) clear; f_deb_stock_kernel ; f_zip_kernel_save ;;
 4) clear; f_deb_cm_kernel ; f_zip_kernel_save ;;
 0) clear; f_interface ;;
@@ -196,10 +215,35 @@ read -p "Choice: " deb_menuchoice
 
 case $deb_menuchoice in
 
-1) clear; f_rootfs ; f_flashzip ; f_hammerhead_stock_kernel ; f_zip_save ; f_zip_kernel_save ;;
-2) clear; f_rootfs ; f_flashzip ; f_hammerhead_cm_kernel ; f_zip_save ; f_zip_kernel_save ;;
+1) clear; f_rootfs ; f_flashzip ; f_hammerhead_stock_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+2) clear; f_rootfs ; f_flashzip ; f_hammerhead_cm_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
 3) clear; f_hammerhead_stock_kernel ; f_zip_kernel_save ;;
 4) clear; f_hammerhead_cm_kernel ; f_zip_kernel_save ;;
+0) clear; f_interface ;;
+*) echo "Incorrect choice... " ;
+esac
+}
+
+f_mako(){
+echo -e "\e[31m -------------------------      NEXUS 4    -----------------------\e[0m"
+echo ""
+echo "  [1] Build All - Kali rootfs and Kernel (AOSP/STOCK) (Android 4.4+)"
+echo "  [2] Build All - Kali rootfs and Kernel (CAF/CYANOGENMOD) (Android 4.4+)"
+echo "  [3] Build Kernel (AOSP/STOCK) Only"
+echo "  [4] Build Kernel (CAF/Cyanogenmod) Only"
+echo "  [0] Exit to Main Menu"
+echo ""
+echo ""
+# wait for character input
+
+read -p "Choice: " deb_menuchoice
+
+case $deb_menuchoice in
+
+1) clear; f_rootfs ; f_flashzip ; f_mako_stock_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+2) clear; f_rootfs ; f_flashzip ; f_mako_cm_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+3) clear; f_mako_stock_kernel ; f_zip_kernel_save ;;
+4) clear; f_mako_cm_kernel ; f_zip_kernel_save ;;
 0) clear; f_interface ;;
 *) echo "Incorrect choice... " ;
 esac
@@ -224,7 +268,32 @@ fi
 
 f_rootfs(){
 
+# Conduct check to see if previous rootfs was built
+
+if [ -d "${rootfs}/kali-armhf" ]; then
+  clear
+  echo "Detected prebuilt rootfs."
+  echo ""
+  read -p "Would you like to create a new rootfs? (y/n): " -e -i "n" createrootfs
+    if [ "$createrootfs" == "y" ]; then
+      echo "Removing previous rootfs"
+      rm -rf ${rootfs}/kali-armhf
+      f_rootfs_build
+    fi
+else
+  echo "Previous rootfs build not found. Starting build."
+  sleep 5
+  f_rootfs_build
+fi
+}
+
+f_rootfs_build(){
+
 f_check_crosscompile
+
+# Set working folder to rootfs
+
+cd ${rootfs}
 
 # Package installations for various sections.
 
@@ -515,7 +584,7 @@ f_zip_save(){
 apt-get install -y zip
 clear
 # Compress filesystem and add to our flashable zip
-cd ${basedir}
+cd ${rootfs}
 
 # Achtung, ugly hack to clean up chrooted /dev before packaging.
 #######################################
@@ -561,14 +630,138 @@ f_cleanup(){
 # Comment this out to keep things around if you want to see what may have gone
 # wrong.
 echo "Unmounting any previous mounted folders"
-umount ${basedir}/kali-$architecture/proc/sys/fs/binfmt_misc
-umount ${basedir}/kali-$architecture/dev/pts
-umount ${basedir}/kali-$architecture/dev/
-umount ${basedir}/kali-$architecture/proc
 sleep 3
 clear
 #echo "Removing temporary build files"
 #rm -rf ${basedir}/patches ${basedir}/kernel ${basedir}/flash ${basedir}/kali-$architecture ${basedir}/flashkernel
+}
+
+##############################################################
+# Attempt to build rom from an existing zip file in ROM folder
+##############################################################
+f_rom_build(){
+clear
+
+cd ${basepwd}
+
+echo "If you plan to add to ROM please place zip file in:"
+echo "${basepwd}/PLACE_ROM_HERE"
+echo ""
+read -p "Would you like to attach Kali build to ROM? (y/n): " buildrom
+if [ "$buildrom" == "n" ]; then
+  echo "All done!"
+  sleep 3
+  f_interface
+fi
+
+prompt="Please select a file: "
+options=( $(find ${build_dir} -maxdepth 1 -iname '*.zip' | xargs -0) )
+
+PS3="$prompt "
+select zipfile in "${options[@]}" "Quit" ; do 
+    if (( REPLY == 1 + ${#options[@]} )) ; then
+        exit
+    elif (( REPLY > 0 && REPLY <= ${#options[@]} )) ; then
+        echo  "$zipfile chosen"
+        break
+    else
+        echo "Invalid option. Try another one."
+    fi
+done
+
+# Remove previous work folders, create necessary folders and unzip rom
+
+cd $build_dir
+rm -rf ${wwork} ${wram}
+mkdir -p ${wwork} ${wram}
+unzip -q $zipfile -d ${wwork}
+cp ${wwork}/boot.img ${wram}
+cd ${wram}
+
+# Extract Kernel and config file
+
+$bt/umkbootimg boot.img
+abootimg -x boot.img bootimg.cfg
+
+# Replace bootsize in bootimg.cfg - our kernel will be larger
+sed -i '/bootsize/d' ${wram}/bootimg.cfg
+
+if [ -f "${wram}/initramfs.cpio.gz" ]; then
+    echo "Found ramdisk: initramfs.cpio.gz"
+    $bt/unpack_ramdisk initramfs.cpio.gz ramdisk
+    rm ${wram}/initramfs.cpio.gz
+else
+  echo "Ramdisk not found!"
+  sleep 5
+  f_interface
+fi  
+
+if  ! grep -qr init.d ${wram}/ramdisk/*; then
+   echo "" >> ${wram}/ramdisk/init.rc
+   echo "service userinit /data/local/bin/busybox run-parts /system/etc/init.d" >> ${wram}/ramdisk/init.rc
+   echo "    oneshot" >> ${wram}/ramdisk/init.rc
+   echo "    class late_start" >> ${wram}/ramdisk/init.rc
+   echo "    user root" >> ${wram}/ramdisk/init.rc
+   echo "    group root" >> ${wram}/ramdisk/init.rc
+fi
+
+if  ! grep -qr TERMINFO ${wram}/ramdisk/*; then
+  echo "    export TERMINFO /system/etc/terminfo"  >> ${wram}/ramdisk/init.environ.rc
+  echo "    export TERM linux"  >> ${wram}/ramdisk/init.environ.rc
+fi
+
+# Repack ramdisk
+
+cd ${wram}
+$bt/repack_ramdisk ramdisk initramfs.cpio.gz
+rm -r ${wram}/ramdisk
+
+# Copy kernel from working folder and replace one that came with ROM
+
+rm ${wram}/boot.img ${wram}/zImage
+cp ${basedir}/flashkernel/kernel/kernel ${wram}/zImage
+
+# Rebuild kernel with new ramdisk and zImage
+
+echo "Creating boot.img"
+#$bt/mkbootimg --kernel zImage --ramdisk initramfs.cpio.gz --cmdline "$(cat bootimg.cfg | grep "cmdline" | cut -c 10-)" -o boot.img
+abootimg --create boot.img -f bootimg.cfg -k zImage -r initramfs.cpio.gz
+echo "New boot.img created:"
+abootimg -i boot.img
+sleep 5
+
+# Copy new kernel boot.img back to ROM
+
+echo "Overwriting new boot.img with ROM's boot.img"
+cp -rf ${wram}/boot.img ${wwork}/boot.img
+
+# Back to ROM folder to finish up. Copy files normally that go into flashable zip to ROM.
+
+echo "Copying Kali flash files to ROM folder"
+
+cp -rf ${basedir}/flash/system ${wwork}/
+cp -rf ${basedir}/flash/sdcard ${wwork}/
+cp -rf ${basedir}/flash/data ${wwork}/
+cp -rf ${basedir}/flash/kernel ${wwork}/
+
+# Add default updater-script to end of ROM edify script.
+
+echo "Modifying updater-script from ROM"
+cat ${basepwd}/flash/META-INF/com/google/android/updater-script >> ${wwork}/META-INF/com/google/android/updater-script
+
+# Zip then transfer back to basedir
+
+cd ${wwork}
+echo "Zipping up rom and transfering to ${basedir}/KaliROM-$VERSION.zip "
+zip -r6 -q KaliROM-$VERSION.zip *
+mv KaliROM-$VERSION.zip ${basedir}
+
+echo "Cleaning up work folders"
+rm -rf ${wwork} ${wram}
+echo "All done!"
+sleep 5
+
+f_interface
 }
 
 ##############################################################
@@ -645,7 +838,7 @@ if [ -d "${basedir}/flash/" ]; then
   fi
   cp ${basedir}/flashkernel/system/lib/modules/* ${basedir}/flash/system/lib/modules
   # Kali rootfs (chroot) looks for modules in a different folder then Android (/system/lib) when using modprobe
-  rsync -HPavm --include='*.ko' -f 'hide,! */' ${basedir}/kernel/modules/lib/modules ${basedir}/kali-armhf/lib/
+  rsync -HPavm --include='*.ko' -f 'hide,! */' ${rootfs}/kernel/modules/lib/modules ${basedir}/kali-armhf/lib/
 fi
 
 # Copy kernel to flashable package, prefer zImage-dtb
