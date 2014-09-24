@@ -122,6 +122,7 @@ case $menuchoice in
 2) clear; f_grouper ;;
 3) clear; f_deb ;;
 4) clear; f_hammerhead ;;
+5) clear; f_mako ;;
 77) clear; f_rom_build ;;
 88) clear; f_rootfs ; f_flashzip; f_zip_save ;;
 99) f_cleanup ;;
