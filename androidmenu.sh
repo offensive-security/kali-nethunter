@@ -430,9 +430,9 @@ chmod +x kali-$architecture/third-stage
 LANG=C chroot kali-$architecture /third-stage
 
 # Modify kismet configuration to work with gpsd and socat
-sed -i 's/\# logprefix=\/some\/path\/to\/logs/logprefix=\/captures\/kismet/g' kali-$architecture/etc/kismet/kismet.conf
-sed -i 's/# ncsource=wlan0/ncsource=wlan1/g' kali-$architecture/etc/kismet/kismet.conf
-sed -i 's/gpshost=localhost:2947/gpshost=127.0.0.1:2947/g' kali-$architecture/etc/kismet/kismet.conf
+sed -i 's/\# logprefix=\/some\/path\/to\/logs/logprefix=\/captures\/kismet/g' ${rootfs}/kali-$architecture/etc/kismet/kismet.conf
+sed -i 's/# ncsource=wlan0/ncsource=wlan1/g' ${rootfs}/kali-$architecture/etc/kismet/kismet.conf
+sed -i 's/gpshost=localhost:2947/gpshost=127.0.0.1:2947/g' ${rootfs}/kali-$architecture/etc/kismet/kismet.conf
 
 
 # Copy over our kali specific mana config files
@@ -468,13 +468,13 @@ LANG=C chroot kali-$architecture pip install cherrypy
 cd ${rootfs}/kali-$architecture/opt/
 wget http://downloads.sourceforge.net/project/spiderfoot/spiderfoot-2.1.5-src.tar.gz -O spiderfoot.tar.gz
 tar xvf spiderfoot.tar.gz && rm spiderfoot.tar.gz && mv spiderfoot-2.1.5 spiderfoot
-cd {rootfs}
+cd ${rootfs}
 
 # Modify Wifite log saving folder
-sed -i 's/hs/\/captures/g' kali-$architecture/etc/kismet/kismet.conf
+sed -i 's/hs/\/captures/g' ${rootfs}/kali-$architecture/etc/kismet/kismet.conf
 
 # Kali Menu (bash script) to quickly launch common Android Programs
-cp -rf ${basepwd}/menu/kalimenu kali-$architecture/usr/bin/kalimenu
+cp -rf ${basepwd}/menu/kalimenu ${rootfs}/kali-$architecture/usr/bin/kalimenu
 # cp -rf ${basepwd}/menu/firstrun kali-$architecture/usr/bin/firstrun
 sleep 5
 
