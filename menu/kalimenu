@@ -197,19 +197,19 @@ esac
 f_tcpdump(){
 	f_pick_interface
 	echo "ctrl-c to quit and return to sniffing menu"
-	tcpdump -i $pickinterface -w /captures/tcpdump/tcpdump-$now.cap;
+	tcpdump -i $pickinterface -w /captures/tcpdump/tcpdump-$NOW.cap;
 	f_sniffing
 }
 f_tshark(){
 	f_pick_interface
 	echo "ctrl-c to quit and return to sniffing menu"
-	tshark -i $pickinterface -w /captures/tshark/tshark-$now.cap;
+	tshark -i $pickinterface -w /captures/tshark/tshark-$NOW.cap;
 	f_sniffing
 }
 f_urlsnarf(){
 	f_pick_interface
 	echo "ctrl-c to quit and return to sniffing menu"
-	urlsnarf -i $pickinterface > /captures/urlsnarf/urlsnarf-$now.log
+	urlsnarf -i $pickinterface > /captures/urlsnarf/urlsnarf-$NOW.log
 	f_sniffing
 }
 f_dsniff(){
