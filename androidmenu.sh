@@ -280,6 +280,8 @@ if [ -d "${rootfs}/kali-armhf" ]; then
       echo "Removing previous rootfs"
       rm -rf ${rootfs}/kali-armhf
       f_rootfs_build
+    else
+      echo "Continue with current build"
     fi
 else
   echo "Previous rootfs build not found. Starting build."
@@ -433,20 +435,20 @@ sed -i 's/gpshost=localhost:2947/gpshost=127.0.0.1:2947/g' kali-$architecture/et
 
 
 # Copy over our kali specific mana config files
-cp -rf ${basepwd}/utils/manna/start-mana* ${basedir}/kali-$architecture/usr/bin/
-cp -rf ${basepwd}/utils/manna/stop-mana ${basedir}/kali-$architecture/usr/bin/
-cp -rf ${basepwd}/utils/manna/*.sh ${basedir}/kali-$architecture/usr/share/mana-toolkit/run-mana/
-dos2unix ${basedir}/kali-$architecture/usr/share/mana-toolkit/run-mana/*
-dos2unix ${basedir}/kali-$architecture/etc/mana-toolkit/*
-chmod 755 ${basedir}/kali-$architecture/usr/share/mana-toolkit/run-mana/*
-chmod 755 ${basedir}/kali-$architecture/usr/bin/*.sh
+cp -rf ${basepwd}/utils/manna/start-mana* ${rootfs}/kali-$architecture/usr/bin/
+cp -rf ${basepwd}/utils/manna/stop-mana ${rootfs}/kali-$architecture/usr/bin/
+cp -rf ${basepwd}/utils/manna/*.sh ${rootfs}/kali-$architecture/usr/share/mana-toolkit/run-mana/
+dos2unix ${rootfs}/kali-$architecture/usr/share/mana-toolkit/run-mana/*
+dos2unix ${rootfs}/kali-$architecture/etc/mana-toolkit/*
+chmod 755 ${rootfs}/kali-$architecture/usr/share/mana-toolkit/run-mana/*
+chmod 755 ${rootfs}/kali-$architecture/usr/bin/*.sh
 
 # Install HoneyProxy (MITM SSL Proxy Analyzer)
 LANG=C chroot kali-$architecture pip install Autobahn==0.6.5
-wget http://honeyproxy.org/download/honeyproxy-latest.zip -O ${basedir}/kali-$architecture/opt/honeyproxy.zip
-unzip ${basedir}/kali-$architecture/opt/honeyproxy.zip -d ${basedir}/kali-$architecture/opt/honeyproxy/
-rm -f ${basedir}/kali-$architecture/opt/honeyproxy.zip
-cat << EOF > ${basedir}/kali-$architecture/opt/honeyproxy/default.conf
+wget http://honeyproxy.org/download/honeyproxy-latest.zip -O ${rootfs}/kali-$architecture/opt/honeyproxy.zip
+unzip ${rootfs}/kali-$architecture/opt/honeyproxy.zip -d ${rootfs}/kali-$architecture/opt/honeyproxy/
+rm -f ${rootfs}/kali-$architecture/opt/honeyproxy.zip
+cat << EOF > ${rootfs}/kali-$architecture/opt/honeyproxy/default.conf
 # Honeyproxy Configuration File
 -w /captures/honeyproxy/http_conversations_outfile
 --dump-dir /captures/honeyproxy/
@@ -456,16 +458,16 @@ EOF
 
 # Install Dictionary for wifite
 
-mkdir -p ${basedir}/kali-$architecture/opt/dic
-tar xvf ${basepwd}/utils/dic/89.tar.gz -C ${basedir}/kali-$architecture/opt/dic
+mkdir -p ${rootfs}/kali-$architecture/opt/dic
+tar xvf ${basepwd}/utils/dic/89.tar.gz -C ${rootfs}/kali-$architecture/opt/dic
 
 # Install Spiderfoot
 # Cherrypy is newer in pip then in repo so we need to use that instead.  All other depend are fine.
 LANG=C chroot kali-$architecture pip install cherrypy
-cd ${basedir}/kali-$architecture/opt/
+cd ${rootfs}/kali-$architecture/opt/
 wget http://downloads.sourceforge.net/project/spiderfoot/spiderfoot-2.1.5-src.tar.gz -O spiderfoot.tar.gz
 tar xvf spiderfoot.tar.gz && rm spiderfoot.tar.gz && mv spiderfoot-2.1.5 spiderfoot
-cd ${basedir}
+cd {rootfs}
 
 # Modify Wifite log saving folder
 sed -i 's/hs/\/captures/g' kali-$architecture/etc/kismet/kismet.conf
@@ -522,10 +524,10 @@ EOF
 chmod +x kali-$architecture/cleanup
 LANG=C chroot kali-$architecture /cleanup
 
-umount kali-$architecture/proc/sys/fs/binfmt_misc
-umount kali-$architecture/dev/pts
-umount kali-$architecture/dev/
-umount kali-$architecture/proc
+umount ${rootfs}/kali-$architecture/proc/sys/fs/binfmt_misc
+umount ${rootfs}/kali-$architecture/dev/pts
+umount ${rootfs}/kali-$architecture/dev/
+umount ${rootfs}/kali-$architecture/proc
 
 sleep 5
 }
@@ -575,7 +577,9 @@ wget -P ${basedir}/flash/data/app/ http://max.kellermann.name/download/blue-nmea
 # Suggested: Hackers Keyboard for easier typing in the terminal
 wget -P ${basedir}/flash/data/app/ https://hackerskeyboard.googlecode.com/files/hackerskeyboard-v1037.apk
 # Suggested: Android VNC Viewer
-wget -P ${basedir}/flash/data/app/ https://android-vnc-viewer.googlecode.com/files/androidVNC_build20110327.apk
+wget -P ${basedir}/flash/data/app/ https://android-vnc-viewer.googlecode.com/files/androidVNC_build20110327.
+# Suggested: DriveDroid for CDROM emulation
+wget -P ${basedir}/flash/data/app/ http://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.9.17.apk
 }
 
 #####################################################
