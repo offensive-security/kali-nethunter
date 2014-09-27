@@ -36,7 +36,7 @@ def findinlist(byte):
 	elif byte=="\x3a": print '''echo -ne "\\x20\\x00\\x00\\x33\\x00\\x00\\x00\\x00" > /dev/hidg0'''
 	elif byte=="\x3b": print '''echo -ne "\\x00\\x00\\x00\\x33\\x00\\x00\\x00\\x00" > /dev/hidg0'''
 	elif byte=="\x3c": print '''echo -ne "\\x20\\x00\\x00\\x36\\x00\\x00\\x00\\x00" > /dev/hidg0'''
-	elif byte=="\x3d": print '''echo -ne "\\x20\\x00\\x00\\x2e\\x00\\x00\\x00\\x00" > /dev/hidg0'''
+	elif byte=="\x3d": print '''echo -ne "\\x00\\x00\\x00\\x2e\\x00\\x00\\x00\\x00" > /dev/hidg0'''
 	elif byte=="\x3e": print '''echo -ne "\\x20\\x00\\x00\\x37\\x00\\x00\\x00\\x00" > /dev/hidg0'''
 	elif byte=="\x3f": print '''echo -ne "\\x20\\x00\\x00\\x38\\x00\\x00\\x00\\x00" > /dev/hidg0'''
 	elif byte=="\x40": print '''echo -ne "\\x20\\x00\\x00\\x1f\\x00\\x00\\x00\\x00" > /dev/hidg0'''
