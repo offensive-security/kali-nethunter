@@ -581,6 +581,8 @@ wget -P ${basedir}/flash/data/app/ https://hackerskeyboard.googlecode.com/files/
 wget -P ${basedir}/flash/data/app/ https://android-vnc-viewer.googlecode.com/files/androidVNC_build20110327.
 # Suggested: DriveDroid for CDROM emulation
 wget -P ${basedir}/flash/data/app/ http://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.9.17.apk
+# Keyboard HID app
+wget -P ${basedir}/flash/data/app/ https://github.com/pelya/android-keyboard-gadget/raw/master/USB-Keyboard.apk
 }
 
 #####################################################
