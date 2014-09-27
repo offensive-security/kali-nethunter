@@ -4,7 +4,7 @@ Kali Linux NetHunter is a Android penetration testing platform for Nexus devices
 We've incorporated some amazing features into the NetHunter OS which are both powerful and unique. From pre-programmed HID Keyboard (Teensy) attacks, to BadUSB Man In The Middle attacks, to one-click MANA Evil Access Point setups. And yes, NetHunter natively supports wireless 802.11 frame injection with a variety of supported USB NICs. NetHunter is still in its infancy and we are looking forward to seeing this project and community grow.
 
 ## Installation Instructions
-Installation instructions and image download can be found at [nethunter.com](http://nethunter.com).
+Installation instructions and image downloads can be found at [nethunter.com](http://nethunter.com).
 
 ## Building from sources
 You can also rebuild the NetHunter images from scratch, which allows for easier image modification. For best results use a 64 bit Kali Linux development environment with over 10Gb free disk space and enter the following commands:
@@ -14,8 +14,8 @@ mkdir ~/arm-stuff
 cd ~/arm-stuff
 git clone https://github.com/offensive-security/gcc-arm-linux-gnueabihf-4.7
 export PATH=${PATH}:/root/arm-stuff/gcc-arm-linux-gnueabihf-4.7/bin
-git clone https://github.com/binkybear/kali-scripts
-cd ~/arm-stuff/kali-scripts
+git clone https://github.com/offensive-security/kali-nethunter
+cd ~/arm-stuff/kali-nethunter
 ./build-deps.sh
 ./androidmenu.sh
 ```
