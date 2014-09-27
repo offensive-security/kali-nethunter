@@ -105,7 +105,7 @@ echo -e "\e[31m	----------------------------  NEXUS 4 --------------HAMMERHEAD--
 echo "	[5] Build for Nexus 4 with wireless USB support (Android 4.4+)"
 echo ""
 if [ -f "${basedir}/flashkernel/kernel/kernel" ] && [ -d "${basedir}/flash" ]; then
-echo "  [77] Inject finished rootfs/kernel into ROM"
+echo "	[77] Inject finished rootfs/kernel into ROM"
 fi
 echo "	[88] Rootfs only - For any rooted and unlocked device but without kernel support"
 echo "	[99] Unmount and Clean Work Folders (file dir removal currently disabled)"
