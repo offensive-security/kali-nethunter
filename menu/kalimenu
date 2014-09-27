@@ -240,7 +240,7 @@ esac
 }
 
 f_spiderfoot(){
-python /opt/spiderfoot/sf.py
+cd /opt/spiderfoot/ && python /opt/spiderfoot/sf.py
 }
 
 ########################## VULNERABILITY MENU ###########################
