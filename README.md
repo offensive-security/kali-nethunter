@@ -24,7 +24,7 @@ cd ~/arm-stuff/kali-nethunter
 You can save time by downloading the repos you plan on working with first so that they don't have to be downloaded each time your run a build.  Here are all the current local repos:
 
 ```
-cd ~/arm-stuff/kali-scripts
+cd ~/arm-stuff/kali-nethunter
 git clone https://github.com/binkybear/kernel_samsung_manta.git -b thunderkat
 git clone https://github.com/binkybear/kangaroo.git -b kangaroo
 git clone https://github.com/binkybear/kernel_msm.git -b android-msm-flo-3.4-kitkat-mr2 flodeb
