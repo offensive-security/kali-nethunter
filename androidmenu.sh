@@ -101,7 +101,7 @@ echo ""
 echo -e "\e[31m	----------------------------  NEXUS 5 --------------HAMMERHEAD---------\e[0m"
 echo "	[4] Build for Nexus 5 with wireless USB support (Android 4.4+)"
 echo ""
-echo -e "\e[31m	----------------------------  NEXUS 4 --------------HAMMERHEAD---------\e[0m"
+echo -e "\e[31m	----------------------------  NEXUS 4 -----------------MAKO------------\e[0m"
 echo "	[5] Build for Nexus 4 with wireless USB support (Android 4.4+)"
 echo ""
 if [ -f "${basedir}/flashkernel/kernel/kernel" ] && [ -d "${basedir}/flash" ]; then
