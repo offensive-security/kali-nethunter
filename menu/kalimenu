@@ -215,7 +215,7 @@ f_urlsnarf(){
 f_dsniff(){
 	f_pick_interface
 	echo "ctrl-c to quit and return to sniffing menu"
-	dsniff -i $pickinterface  -w /captures/dsniff/urlsnarf-$now.cap;
+	dsniff -i $pickinterface  -w /captures/dsniff/urlsnarf-$NOW.cap;
 	f_sniffing
 }
 ########################## INFO GATHER MENU ##############################
