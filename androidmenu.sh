@@ -85,7 +85,7 @@ f_check_version(){
 
 f_interface(){
 clear
-echo -e "		         \e[1mKALI LINUX BUILDER FOR ANDROID DEVICES\e[0m"
+echo -e "		         \e[1mKALI NETHUNTER BUILDER FOR ANDROID DEVICES\e[0m"
 echo ""
 echo "	   WORK PATH: ${basedir}"
 echo ""
@@ -107,7 +107,7 @@ echo ""
 if [ -f "${basedir}/flashkernel/kernel/kernel" ] && [ -d "${basedir}/flash" ]; then
 echo "	[77] Inject finished rootfs/kernel into ROM"
 fi
-echo "	[88] Rootfs only - For any rooted and unlocked device but without kernel support"
+echo "	[88] Build a rootfs only - Basic kali chroot for any Android Device"
 echo "	[99] Unmount and Clean Work Folders (file dir removal currently disabled)"
 echo ""
 echo "	[q] Exit"
