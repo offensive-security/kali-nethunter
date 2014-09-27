@@ -1,7 +1,13 @@
 # Kali on Android Installer
 ============
+Kali Linux NetHunter is a Android penetration testing platform for Nexus devices built on top of Kali Linux, which includes some special and unique features. Of course, you have all the usual Kali tools in NetHunter as well as the ability to get a full VNC session from your phone to a graphical Kali chroot, however the strength of NetHunter does not end there. 
+We've incorporated some amazing features into the NetHunter OS which are both powerful and unique. From pre-programmed HID Keyboard (Teensy) attacks, to BadUSB Man In The Middle attacks, to one-click MANA Evil Access Point setups. And yes, NetHunter natively supports wireless 802.11 frame injection with a variety of supported USB NICs. NetHunter is still in its infancy and we are looking forward to seeing this project and community grow.
 
-## Installation Instructions:
+## Installation Instructions
+Installation instructions and image download can be found at nethunter.com.
+
+## Building from sources
+You can also rebuild the NetHunter images from scratch, which allows for easier image modification. For best results use a 64 bit Kali Linux development environment with over 10Gb free disk space and enter the following commands:
 
 ```
 mkdir ~/arm-stuff
@@ -19,7 +25,6 @@ You can save time by downloading the repos you plan on working with first so tha
 
 ```
 cd ~/arm-stuff/kali-scripts
-git clone https://github.com/sensepost/mana.git
 git clone https://github.com/binkybear/kernel_samsung_manta.git -b thunderkat
 git clone https://github.com/binkybear/kangaroo.git -b kangaroo
 git clone https://github.com/binkybear/kernel_msm.git -b android-msm-flo-3.4-kitkat-mr2 flodeb
@@ -33,4 +38,10 @@ If you plan on only building for one device then you only need the kernel you pl
 
 ```
 LOCALGIT=1
+```
+
+If you do not need to recompile the kernel and want to save some build time, change the FROZENKERNEL variable to 1.
+
+```
+FROZENKERNEL=1
 ```
