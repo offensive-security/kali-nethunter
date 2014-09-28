@@ -607,7 +607,7 @@ wget -P ${basedir}/flash/data/app/ http://max.kellermann.name/download/blue-nmea
 # Suggested: Hackers Keyboard for easier typing in the terminal
 wget -P ${basedir}/flash/data/app/ https://hackerskeyboard.googlecode.com/files/hackerskeyboard-v1037.apk
 # Suggested: Android VNC Viewer
-wget -P ${basedir}/flash/data/app/ https://android-vnc-viewer.googlecode.com/files/androidVNC_build20110327.
+wget -P ${basedir}/flash/data/app/ https://android-vnc-viewer.googlecode.com/files/androidVNC_build20110327.apk
 # Suggested: DriveDroid for CDROM emulation
 wget -P ${basedir}/flash/data/app/ http://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.9.17.apk
 # Keyboard HID app
