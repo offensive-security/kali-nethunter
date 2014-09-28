@@ -395,7 +395,7 @@ fi
 # Copy over helper files to chroot /usr/bin
 
 # Install Local files
-cp -rf ${basepwd}/utils/s kali-$architecture/usr/bin/
+cp -rf ${basepwd}/utils/{s,start-*} kali-$architecture/usr/bin/
 cp -rf ${basepwd}/utils/hid/* kali-$architecture/usr/bin/
 cp -rf ${basepwd}/utils/msf/*.sh kali-$architecture/usr/bin/
 
