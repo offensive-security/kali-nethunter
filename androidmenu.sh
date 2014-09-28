@@ -22,6 +22,8 @@
 # git clone https://github.com/binkybear/furnace_kernel_caf_hammerhead.git -b cm-11.0
 # git clone https://github.com/binkybear/mako_kitkat.git -b kitkat-aosp mako_kitkat
 # git clone https://github.com/binkybear/mako_kitkat.git -b kitkat-cm mako_kitkat_cm
+# git clone https://github.com/binkybear/KTSGS5.git -b aosp4.4 galaxy_s5
+# git clone https://github.com/binkybear/KTSGS5.git -b tw4.4 galaxy_s5_tw
 # git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7
 ######## Local Repo ##########
 # to update :  for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
@@ -40,6 +42,7 @@ source devices/nexus7-grouper-tilapia
 source devices/nexus7-flo-deb
 source devices/nexus5-hammerhead
 source devices/nexus4-mako
+source devices/galaxys5-G900
 
 ######### Set paths and permissions  #######
 
@@ -124,6 +127,7 @@ case $menuchoice in
 3) clear; f_deb ;;
 4) clear; f_hammerhead ;;
 5) clear; f_mako ;;
+6) clear; f_galaxyS5 ;;
 77) clear; f_rom_build ;;
 88) clear; f_rootfs ; f_flashzip; f_zip_save ;;
 99) f_cleanup ;;
@@ -246,6 +250,31 @@ case $deb_menuchoice in
 2) clear; f_rootfs ; f_flashzip ; f_mako_cm_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
 3) clear; f_mako_stock_kernel ; f_zip_kernel_save ;;
 4) clear; f_mako_cm_kernel ; f_zip_kernel_save ;;
+0) clear; f_interface ;;
+*) echo "Incorrect choice... " ;
+esac
+}
+
+f_galaxyS5(){
+echo -e "\e[31m --------------     SAMSUNG GALAXY S5 ----G900(F/I/M/T/DEV/W8)      ---------\e[0m"
+echo ""
+echo "  [1] Build All - Kali rootfs and Kernel (AOSP/STOCK) (Android 4.4+)"
+echo "  [2] Build All - Kali rootfs and Kernel (TOUCHWIZ) (Android 4.4+)"
+echo "  [3] Build Kernel (AOSP/STOCK) Only"
+echo "  [4] Build Kernel (TOUCHWIZ) Only"
+echo "  [0] Exit to Main Menu"
+echo ""
+echo ""
+# wait for character input
+
+read -p "Choice: " deb_menuchoice
+
+case $deb_menuchoice in
+
+1) clear; f_rootfs ; f_flashzip ; f_s5_stock_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+2) clear; f_rootfs ; f_flashzip ; f_s5_tw_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+3) clear; f_s5_kernel ; f_zip_kernel_save ;;
+4) clear; f_s5_tw_kernel ; f_zip_kernel_save ;;
 0) clear; f_interface ;;
 *) echo "Incorrect choice... " ;
 esac
@@ -574,7 +603,7 @@ cp -rf ${basepwd}/utils/files ${basedir}/flash/data/tmp_kali/
 # Required: Terminal application is required
 wget -P ${basedir}/flash/data/app/ http://jackpal.github.com/Android-Terminal-Emulator/downloads/Term.apk
 # Suggested: BlueNMEA to enable GPS logging in Kismet
-wget -P ${basedir}/flash/data/app/ http://max.kellermann.name/download/blue-nmea/BlueNMEA-2.1.apk
+wget -P ${basedir}/flash/data/app/ http://max.kellermann.name/download/blue-nmea/BlueNMEA-2.1.3.apk
 # Suggested: Hackers Keyboard for easier typing in the terminal
 wget -P ${basedir}/flash/data/app/ https://hackerskeyboard.googlecode.com/files/hackerskeyboard-v1037.apk
 # Suggested: Android VNC Viewer
@@ -640,6 +669,10 @@ f_cleanup(){
 echo "Unmounting any previous mounted folders"
 sleep 3
 clear
+#umount ${rootfs}/kali-$architecture/proc/sys/fs/binfmt_misc
+#umount ${rootfs}/kali-$architecture/dev/pts
+#umount ${rootfs}/kali-$architecture/dev/
+#umount ${rootfs}/kali-$architecture/proc
 #echo "Removing temporary build files"
 #rm -rf ${basedir}/patches ${basedir}/kernel ${basedir}/flash ${basedir}/kali-$architecture ${basedir}/flashkernel
 }

@@ -251,24 +251,7 @@ if [ ! -d "/var/lib/openvas/" ]; then
 	read -p "Would you like to install OpenVas (1GB+ space needed)? (y/n): " installopenvas
 		if [ "$installopenvas" == "y" ]; then
 			apt-get update && apt-get install -y openvas
-			openvas-mkcert -q
-			openvas-nvt-sync
-			openvas-mkcert-client -n om -i
-			service openvas-manager stop
-			service openvas-scanner stop
-			openvassd
-			openvasmd --migrate
-			openvasmd --rebuild
-			openvas-scapdata-sync
-			openvas-certdata-sync
-			openvasad -c adduser -n admin -r Admin
-			killall openvassd
-			sleep 15
-			service openvas-scanner start
-			service openvas-manager start
-			service openvas-administrator restart
-			service greenbone-security-assistant restart
-			openvas-check-setup
+			openvas-setup && openvas-scapdata-sync && openvas-check-setup && openvas-stop
 		fi
 fi
 clear
@@ -276,15 +259,17 @@ echo "				VULNERABILITY MENU"
 echo ""
 echo ""
 echo "[1] Start Openvas (https://127.0.0.1:9392)"
-echo "[2] Update OpenVas Feeds"
+echo "[2] Stop Openvas"
+echo "[3] Update OpenVas Feeds"
 echo ""
 echo "[0] Exit to main menu"
 echo ""
 read -p "Choice: " vulnchoice
 
 case $vulnchoice in
-1) clear; service greenbone-security-assistant start; service openvas-scanner start; service openvas-administrator start; service openvas-manager start; f_vulnerability ;;
-2) clear; openvas-nvt-sync; openvas-scapdata-sync; openvas-certdata-sync; f_vulnerability ;;
+1) clear; openvas-start; f_vulnerability ;;
+2) clear; openvas-stop; f_vulnerability ;;
+3) clear; openvas-feedupdate; f_vulnerability ;;
 0) f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
