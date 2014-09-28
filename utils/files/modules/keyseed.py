@@ -136,6 +136,25 @@ def wincmd():
 	print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
 	print '''sleep 3'''
 
+def win7cmd_elevated():
+	print '''sleep 1'''
+	print '''echo -ne "\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
+	print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
+	print '''sleep 1'''
+	print '''echo -ne "\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x00" > /dev/hidg0'''
+	print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
+	print '''sleep 1'''
+	print '''echo -ne "\\x00\\x00\\x00\\x10\\x00\\x00\\x00\\x00" > /dev/hidg0'''
+	print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
+	print '''sleep 1'''
+	print '''echo -ne "\\x00\\x00\\x00\\x07\\x00\\x00\\x00\\x00" > /dev/hidg0'''
+	print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
+	print '''sleep 1'''
+	print '''echo --left-ctrl --left-shift --return | hid-keyboard /dev/hidg0 keyboard'''
+	print '''sleep 1'''
+	print '''echo --left-alt y | hid-keyboard /dev/hidg0 keyboard'''	
+	print '''sleep 3'''
+
 def win8cmd_elevated():
 	print '''sleep 1'''
 	print '''echo -ne "\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
