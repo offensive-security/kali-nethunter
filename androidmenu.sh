@@ -25,6 +25,7 @@
 # git clone https://github.com/binkybear/KTSGS5.git -b aosp4.4 galaxy_s5
 # git clone https://github.com/binkybear/KTSGS5.git -b tw4.4 galaxy_s5_tw
 # git clone https://github.com/binkybear/android_kernel_samsung_jf.git -b cm-11.0 galaxy_s4
+# git clone https://github.com/binkybear/android_kernel_samsung_exynos5410.git -b cm-11.0 galaxy_s4_i9500
 # git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7
 ######## Local Repo ##########
 # to update :  for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
@@ -292,8 +293,10 @@ esac
 f_galaxyS4_I9500(){
 echo -e "\e[31m --------------     SAMSUNG GALAXY S4 ----------GT-I9500    ---------\e[0m"
 echo ""
-echo "  [1] Build All - Kali rootfs and Kernel (CM) (Android 4.4+)"
-echo "  [2] Build Kernel (CM) Only"
+echo "  [1] Build All - Kali rootfs and Kernel (CM + Qualacom Devices) (Android 4.4+)"
+echo "  [2] Build All - Kali rootfs and Kernel (CM + I9500) (Android 4.4+)"
+echo "  [3] Build Kernel (CM + Qualacom) Only"
+echo "  [4] Build Kernel (CM + I9500) Only"
 echo "  [0] Exit to Main Menu"
 echo ""
 echo ""
@@ -303,8 +306,10 @@ read -p "Choice: " deb_menuchoice
 
 case $deb_menuchoice in
 
-1) clear; f_rootfs ; f_flashzip ; f_s4_i9500_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-2) clear; f_s4_i9500_kernel ; f_zip_kernel_save ;;
+1) clear; f_rootfs ; f_flashzip ; f_s4_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+2) clear; f_rootfs ; f_flashzip ; f_s4_i9500_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+3) clear; f_s4_kernel ; f_zip_kernel_save ;;
+4) clear; f_s4_i9500_kernel ; f_zip_kernel_save ;;
 0) clear; f_interface ;;
 *) echo "Incorrect choice... " ;
 esac
