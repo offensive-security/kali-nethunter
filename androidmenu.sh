@@ -914,7 +914,7 @@ if [ -d "${basedir}/flash/" ]; then
   fi
   cp ${basedir}/flashkernel/system/lib/modules/* ${basedir}/flash/system/lib/modules
   # Kali rootfs (chroot) looks for modules in a different folder then Android (/system/lib) when using modprobe
-  rsync -HPavm --include='*.ko' -f 'hide,! */' ${basedir}/kernel/modules/lib/modules ${basedir}/kali-armhf/lib/
+  rsync -HPavm --include='*.ko' -f 'hide,! */' ${basedir}/kernel/modules/lib/modules ${rootfs}/kali-armhf/lib/
 fi
 
 # Copy kernel to flashable package, prefer zImage-dtb
