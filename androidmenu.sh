@@ -24,7 +24,7 @@
 # git clone https://github.com/binkybear/mako_kitkat.git -b kitkat-cm mako_kitkat_cm
 # git clone https://github.com/binkybear/KTSGS5.git -b aosp4.4 galaxy_s5
 # git clone https://github.com/binkybear/KTSGS5.git -b tw4.4 galaxy_s5_tw
-# git clone https://github.com/CyanogenMod/android_kernel_samsung_jf.git -b cm-11.0 galaxy_s4
+# git clone https://github.com/binkybear/android_kernel_samsung_jf.git -b cm-11.0 galaxy_s4
 # git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7
 ######## Local Repo ##########
 # to update :  for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
@@ -45,6 +45,7 @@ source devices/nexus5-hammerhead
 source devices/nexus4-mako
 source devices/galaxys5-G900
 source devices/galaxys4
+
 ######### Set paths and permissions  #######
 
 basepwd=`pwd`

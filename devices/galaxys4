@@ -28,7 +28,7 @@ if [ $LOCALGIT == 1 ]; then
   echo "Copying kernel to rootfs"
   cp -rf ${basepwd}/galaxy_s4 ${basedir}/kernel
 else
-	git clone https://github.com/CyanogenMod/android_kernel_samsung_jf.git -b cm-11.0 ${basedir}/kernel
+	git clone https://github.com/binkybear/android_kernel_samsung_jf.git -b cm-11.0 ${basedir}/kernel
 fi
 
 cd ${basedir}/kernel
