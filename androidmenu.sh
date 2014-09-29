@@ -303,7 +303,7 @@ read -p "Choice: " deb_menuchoice
 
 case $deb_menuchoice in
 
-1) clear; f_rootfs ; f_flashzip ; f_s4_i9500_kernel ; f_zip_save ; f_zip_kernel_save ;;
+1) clear; f_rootfs ; f_flashzip ; f_s4_i9500_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
 2) clear; f_s4_i9500_kernel ; f_zip_kernel_save ;;
 0) clear; f_interface ;;
 *) echo "Incorrect choice... " ;
