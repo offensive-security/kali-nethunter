@@ -113,8 +113,8 @@ echo ""
 echo -e "\e[31m	------------------------ SAMSUNG GALAXY S5 ----G900(F/I/M/T/DEV/W8)----\e[0m"
 echo "	[6] Build for Samsung Glaxy S5 G900 with wireless USB support (Android 4.4+)"
 echo ""
-echo -e "\e[31m	------------------------ SAMSUNG GALAXY S4 ----I9500----\e[0m"
-echo "	[7] Build for Samsung Glaxy S4 I9500 with wireless USB support (Android 4.4+)"
+echo -e "\e[31m	------------------------ SAMSUNG GALAXY S4 --------\e[0m"
+echo "	[7] Build for Samsung Glaxy S4 with wireless USB support (Android 4.4+)"
 echo ""
 if [ -f "${basedir}/flashkernel/kernel/kernel" ] && [ -d "${basedir}/flash" ]; then
 echo "	[77] Inject finished rootfs/kernel into ROM"
@@ -293,7 +293,7 @@ esac
 f_galaxyS4_I9500(){
 echo -e "\e[31m --------------     SAMSUNG GALAXY S4 ----------GT-I9500    ---------\e[0m"
 echo ""
-echo "  [1] Build All - Kali rootfs and Kernel (CM + Qualacom Devices) (Android 4.4+)"
+echo "  [1] Build All - Kali rootfs and Kernel (CM + All Qualacom Devices) (Android 4.4+)"
 echo "  [2] Build All - Kali rootfs and Kernel (CM + I9500) (Android 4.4+)"
 echo "  [3] Build Kernel (CM + Qualacom) Only"
 echo "  [4] Build Kernel (CM + I9500) Only"
@@ -730,20 +730,25 @@ if [ "$buildrom" == "n" ]; then
   f_interface
 fi
 
+f_rom_build_menu(){
 prompt="Please select a file: "
 options=( $(find ${build_dir} -maxdepth 1 -iname '*.zip' | xargs -0) )
 
 PS3="$prompt "
 select zipfile in "${options[@]}" "Quit" ; do 
     if (( REPLY == 1 + ${#options[@]} )) ; then
-        exit
+        f_interface
     elif (( REPLY > 0 && REPLY <= ${#options[@]} )) ; then
         echo  "$zipfile chosen"
         break
     else
         echo "Invalid option. Try another one."
+        f_rom_build_menu
     fi
 done
+}
+
+f_rom_build_menu
 
 # Remove previous work folders, create necessary folders and unzip rom
 
