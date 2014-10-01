@@ -252,7 +252,7 @@ if [ ! -d "/var/lib/openvas/" ]; then
 	read -p "Would you like to install OpenVas (1GB+ space needed)? (y/n): " installopenvas
 		if [ "$installopenvas" == "y" ]; then
 			apt-get update && apt-get install -y openvas
-			openvas-setup && openvas-scapdata-sync && openvas-certdata-sync && openvas-check-setup && && openvas-stop
+			openvas-setup && openvas-scapdata-sync && openvas-certdata-sync && openvas-check-setup && openvas-stop
 		fi
 fi
 clear
