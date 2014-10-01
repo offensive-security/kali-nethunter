@@ -1,6 +1,7 @@
 #!/sbin/sh
 #
 # extract web interface
+# set permissions to sdcard
 #
 busybox=/tmp/busybox
 
@@ -9,6 +10,7 @@ $busybox chmod -R 0777 /sdcard/htdocs
 
 $busybox cp -rf /tmp/files /sdcard/ 
 $busybox chmod -R 0777 /sdcard/files
+$busybox chmod -R 0777 /sdcard/kali-nh
 
 rm -rf /data/local/kali-armhf/etc/dnsmasq.conf
 cd /data/local/kali-armhf/etc/
