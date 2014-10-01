@@ -148,7 +148,7 @@ giskismet --database "/captures/kismet_db/wireless.dbl" -q "select * from wirele
 echo "Created kismet-$NOW.kml file for Google Earth"
 if [ -d "/sdcard/kali-nh/captures/" ]; then
 	echo "Detected kali-nh capture folder, moving capture files"
-	/sdcard/kali-nh/captures/
+	cd /sdcard/kali-nh/captures/
 	zip -rj "kismet-captures-$NOW.zip" /captures/kismet/
 	echo "Successfully copied to /sdcard/kali-nh/captures/kismet-captures-$NOW.zip"
 	sleep 3
@@ -235,6 +235,7 @@ read -p "Choice: " infochoice
 case $infochoice in
 1) clear; trap 'f_information_gathering' 2; f_spiderfoot;;
 2) clear; recon-ng; f_information_gathering;;
+0) clear; f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
 }
@@ -293,6 +294,7 @@ case $webchoice in
 1) clear; echo "Msfconsole may take up to 5 minutes to load, please wait..."; service postgresql start; service metasploit start; msfconsole; f_exploitation ;;
 2) clear; service beef-xss start; echo "Open browser to local ip on port 3000 (beef/beef)"; sleep 8; f_exploitation ;;
 3) clear; setoolkit ; f_exploitation ;;
+0) clear; f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
 }
