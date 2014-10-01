@@ -375,8 +375,9 @@ extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools p
 mana="python-twisted python-dnspython libnl1 libnl-dev libssl-dev sslsplit python-pcapy tinyproxy isc-dhcp-server rfkill mana-toolkit"
 spiderfoot="python-lxml python-m2crypto python-netaddr python-mako"
 sdr="sox librtlsdr"
+mitmf="python-requests python-configobj python-pefile msgpack-python python-nfqueue python-imaging"
 
-export packages="${arm} ${base} ${desktop} ${tools} ${wireless} ${services} ${extras} ${mana} ${spiderfoot} ${sdr}"
+export packages="${arm} ${base} ${desktop} ${tools} ${wireless} ${services} ${extras} ${mana} ${spiderfoot} ${sdr} ${mitmf}"
 export architecture="armhf"
 
 # create the rootfs - not much to modify here, except maybe the hostname.
@@ -521,8 +522,15 @@ cat << EOF > ${rootfs}/kali-$architecture/opt/honeyproxy/default.conf
 #-p port
 EOF
 
-# Install Dictionary for wifite
+# Install MITMf
+LANG=C chroot ${rootfs}/kali-$architecture pip install capstone
+cd ${rootfs}/kali-$architecture/opt/
+git clone https://github.com/byt3bl33d3r/MITMf.git
+LANG=C chroot ${rootfs}/kali-$architecture chmod 755 /opt/MITMf/install-bdfactory.sh /opt/MITMf/update.sh /opt/MITMf/mitmf.py
+LANG=C chroot ${rootfs}/kali-$architecture /opt/MITMf/install-bdfactory.sh
+LANG=C chroot ${rootfs}/kali-$architecture /opt/MITMf/update.sh
 
+# Install Dictionary for wifite
 mkdir -p ${rootfs}/kali-$architecture/opt/dic
 tar xvf ${basepwd}/utils/dic/89.tar.gz -C ${rootfs}/kali-$architecture/opt/dic
 
