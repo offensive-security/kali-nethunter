@@ -562,15 +562,15 @@ echo "[1] Generate VPN Server Keys *will remove previous old keys"
 echo "[2] Generate Client Keys"
 echo "[3] Export Client Keys to sdcard"
 echo ""
-echo "[0] Exit to Settings Menu"
-echo -n "Enter your menu choice [1-6]: "
+echo "[0] Exit to Main Menu"
+echo -n "Enter your menu choice [1-3]: "
 read -p "Choice: " vpnkeychoice
 
 case $vpnkeychoice in
 1) f_server_key ;;
 2) f_domain_clientkey ;;
 3) f_exportkeys ;;
-0) f_settings ;;
+0) f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
 }
