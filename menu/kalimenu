@@ -292,7 +292,7 @@ read -p "Choice: " webchoice
 
 case $webchoice in
 1) clear; echo "Msfconsole may take up to 5 minutes to load, please wait..."; service postgresql start; service metasploit start; msfconsole; f_exploitation ;;
-2) clear; service beef-xss start; echo "Open browser to local ip on port 3000 (beef/beef)"; sleep 8; f_exploitation ;;
+2) clear; service beef-xss start; echo "Open browser to http://127.0.0.1:3000/ui/panel (beef/beef)"; sleep 8; f_exploitation ;;
 3) clear; setoolkit ; f_exploitation ;;
 0) clear; f_interface ;;
 *) echo "Incorrect choice..." ;
