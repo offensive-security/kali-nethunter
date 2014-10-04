@@ -828,8 +828,8 @@ echo ""
 read -p "Selection: " dicselect
 
 case $dicselect in
-	1) ~/scripts/hid-dic.sh 1; f_hid;;
-	2) ~/scripts/hid-dic.sh 2; f_hid;;
+	1) /usr/bin/hid-dic 1; f_hid;;
+	2) /usr/bin/hid-dic.sh 2; f_hid;;
 	q) clear; f_hid;;
 	*) clear; f_hid_dic;;
 esac

@@ -559,11 +559,10 @@ mv ./google-nexus-tools/bin/linux-arm-fastboot ${rootfs}/kali-$architecture/usr/
 rm -rf ./google-nexus-tools 
 
 #Install HID attack script and dictionaries
-git clone https://github.com/photonicgeek/HID-Cracker.git
-mv ./HID-Cracker/pinlist.txt ${rootfs}/kali-$architecture/root/dictionaries/pinlist.txt
-mv ./HID-Cracker/wordlist.txt ${rootfs}/kali-$architecture/root/dictionaries/wordlist.txt
-mv ./HID-Cracker/hid-dic-attack.sh ${rootfs}/kali-$architecture/root/scripts/hid-dic.sh
-rm -rf ./HID-Cracker
+mv ${basepwd}/utils/dic/pinlist.txt ${rootfs}/kali-$architecture/opt/dic/pinlist.txt
+mv ${basepwd}/utils/dic/commonlist.txt ${rootfs}/kali-$architecture/opt/dic/commonlist.txt
+mv ${basepwd}/utils/hid/hid-dic.sh ${rootfs}/kali-$architecture/usr/bin/hid-dic
+chmod 755 ${rootfs}/kali-$architecture/usr/bin/hid-dic
 
 # Set permissions to executable on newly added scripts
 #LANG=C chroot kali-$architecture chmod 755 /usr/bin/kalimenu /usr/bin/firstrun 
