@@ -1,4 +1,2 @@
 chroot /data/local/kali-armhf /bin/bash -c "chmod 777 /dev/null"
 chroot /data/local/kali-armhf /bin/bash -c "/etc/init.d/beef-xss stop"
-sleep 35
-am start -a android.intent.action.VIEW -d http:127.0.0.1:3000/ui/panel
