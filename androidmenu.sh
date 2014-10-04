@@ -552,6 +552,12 @@ cp -rf ${basepwd}/menu/kalimenu ${rootfs}/kali-$architecture/usr/bin/kalimenu
 # cp -rf ${basepwd}/menu/firstrun kali-$architecture/usr/bin/firstrun
 sleep 5
 
+#Installs ADB and fastboot compiled for ARM
+git clone git://git.kali.org/packages/google-nexus-tools
+mv ./google-nexus-tools/bin/linux-arm-adb ${rootfs}/kali-$architecture/usr/bin/adb
+mv ./google-nexus-tools/bin/linux-arm-fastboot ${rootfs}/kali-$architecture/usr/bin/fastboot
+rm -rf ./google-nexus-tools
+
 # Set permissions to executable on newly added scripts
 #LANG=C chroot kali-$architecture chmod 755 /usr/bin/kalimenu /usr/bin/firstrun 
 LANG=C chroot kali-$architecture chmod 755 /usr/bin/kalimenu 
