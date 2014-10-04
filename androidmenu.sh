@@ -62,6 +62,8 @@ chmod +x utils/boottools/*
 
 ######### Build script start  #######
 
+printf '\033[8;33;100t' 
+
 f_check_version(){
 	# Allow user input of version number/folder creation to make set up easier
   echo "Checking for git updates in local folder..."
@@ -95,25 +97,25 @@ echo -e "		         \e[1mKALI NETHUNTER BUILDER FOR ANDROID DEVICES\e[0m"
 echo ""
 echo "	   WORK PATH: ${basedir}"
 echo ""
-echo -e "\e[31m	----------------------------   NEXUS 10    -----------MANTA -----------\e[0m"
+echo -e "\e[31m	---- NEXUS 10 (2012) - MANTA --------------------------------------------------------\e[0m"
 echo "	[1] Build for Nexus 10 Kernel with wireless USB support (Android 4.4+)"
 echo ""
-echo -e "\e[31m	----------------------------  NEXUS 7 (2012) ----GROUPER/NAKASI--------\e[0m"
+echo -e "\e[31m	---- NEXUS 7  (2012) - GROUPER/NAKASI -----------------------------------------------\e[0m"
 echo "	[2] Build for Nexus 7 (2012) with wireless USB support (Android 4.4+)"
 echo ""
-echo -e "\e[31m	----------------------------  NEXUS 7 (2013) --------DEB/FLO-----------\e[0m"
+echo -e "\e[31m	---- NEXUS 7  (2013) - DEB/FLO ------------------------------------------------------\e[0m"
 echo "	[3] Build for Nexus 7 (2013) with wireless USB support (Android 4.4+)"
 echo ""
-echo -e "\e[31m	----------------------------  NEXUS 5 --------------HAMMERHEAD---------\e[0m"
+echo -e "\e[31m	---- NEXUS 5  (2013) - HAMMERHEAD ---------------------------------------------------\e[0m"
 echo "	[4] Build for Nexus 5 with wireless USB support (Android 4.4+)"
 echo ""
-echo -e "\e[31m	----------------------------  NEXUS 4 -----------------MAKO------------\e[0m"
+echo -e "\e[31m	---- NEXUS 4  (2012) - MAKO ---------------------------------------------------------\e[0m"
 echo "	[5] Build for Nexus 4 with wireless USB support (Android 4.4+)"
 echo ""
-echo -e "\e[31m	------------------------ SAMSUNG GALAXY S5 ----G900(F/I/M/T/DEV/W8)----\e[0m"
+echo -e "\e[31m	---- SAMSUNG GALAXY S5 - G900(F/I/M/T/DEV/W8) ---------------------------------------\e[0m"
 echo "	[6] Build for Samsung Glaxy S5 G900 with wireless USB support (Android 4.4+)"
 echo ""
-echo -e "\e[31m	------------------------ SAMSUNG GALAXY S4 --------\e[0m"
+echo -e "\e[31m	---- SAMSUNG GALAXY S4 - I9500 ------------------------------------------------------\e[0m"
 echo "	[7] Build for Samsung Glaxy S4 with wireless USB support (Android 4.4+)"
 echo ""
 if [ -f "${basedir}/flashkernel/kernel/kernel" ] && [ -d "${basedir}/flash" ]; then
