@@ -808,32 +808,32 @@ echo "				HID ATTACKS MENU"
 echo ""
 echo "[1] Dictionary based brute force attack"
 echo ""
-echo "[Q] Exit to main menu"
+echo "[0] Exit to main menu"
 echo ""
 read -p "Choice:" hidchoice
 
 case $hidchoice in
 1) clear; f_hid_dic ;;
-q) f_interface ;;
+0) f_interface ;;
 *) f_hid ;;
 esac
 }
 
 f_hid_dic(){
 clear
-cd ~/dictionaries
-echo "Pick a Dictionary: " dicselect
+cd /opt/dic
+echo "Pick a Dictionary: " dictselect
 echo "[1] Common Passwords"
 echo "[2] 4 digit PIN Numbers"
 echo ""
-echo "[Q] Back to HID Menu"
+echo "[0] Back to HID Menu"
 echo ""
-read -p "Selection: " dicselect
+read -p "Selection: " dictselect
 
-case $dicselect in
-	1) /usr/bin/hid-dic 1; f_hid;;
-	2) /usr/bin/hid-dic.sh 2; f_hid;;
-	q) clear; f_hid;;
+case $dictselect in
+	1) hid-dic 1; f_hid;;
+	2) hid-dic 2; f_hid;;
+	0) clear; f_hid;;
 	*) clear; f_hid_dic;;
 esac
 }

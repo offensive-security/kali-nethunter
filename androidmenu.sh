@@ -554,18 +554,21 @@ sleep 5
 
 #Installs ADB and fastboot compiled for ARM
 git clone git://git.kali.org/packages/google-nexus-tools
-mv ./google-nexus-tools/bin/linux-arm-adb ${rootfs}/kali-$architecture/usr/bin/adb
-mv ./google-nexus-tools/bin/linux-arm-fastboot ${rootfs}/kali-$architecture/usr/bin/fastboot
+cp ./google-nexus-tools/bin/linux-arm-adb ${rootfs}/kali-$architecture/usr/bin/adb
+cp ./google-nexus-tools/bin/linux-arm-fastboot ${rootfs}/kali-$architecture/usr/bin/fastboot
 rm -rf ./google-nexus-tools 
+LANG=C chroot kali-$architecture chmod 755 /usr/bin/fastboot
+LANG=C chroot kali-$architecture chmod 755 /usr/bin/adb
 
 #Install HID attack script and dictionaries
-mv ${basepwd}/utils/dic/pinlist.txt ${rootfs}/kali-$architecture/opt/dic/pinlist.txt
-mv ${basepwd}/utils/dic/commonlist.txt ${rootfs}/kali-$architecture/opt/dic/commonlist.txt
-mv ${basepwd}/utils/hid/hid-dic.sh ${rootfs}/kali-$architecture/usr/bin/hid-dic
-chmod 755 ${rootfs}/kali-$architecture/usr/bin/hid-dic
+cp ${basepwd}/flash/system/xbin/hid-keyboard ${rootfs}/kali-$architecture/usr/bin/hid-keyboard
+cp ${basepwd}/utils/dic/pinlist.txt ${rootfs}/kali-$architecture/opt/dic/pinlist.txt
+cp ${basepwd}/utils/dic/wordlist.txt ${rootfs}/kali-$architecture/opt/dic/wordlist.txt
+cp ${basepwd}/utils/hid/hid-dic.sh ${rootfs}/kali-$architecture/usr/bin/hid-dic
+LANG=C chroot kali-$architecture chmod 755 /usr/bin/hid-keyboard
+LANG=C chroot kali-$architecture chmod 755 /usr/bin/hid-dic
 
 # Set permissions to executable on newly added scripts
-#LANG=C chroot kali-$architecture chmod 755 /usr/bin/kalimenu /usr/bin/firstrun 
 LANG=C chroot kali-$architecture chmod 755 /usr/bin/kalimenu 
 
 # Sets the default for hostapd.conf but not really needed as evilap will create it's own now
