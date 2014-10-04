@@ -1,0 +1,5 @@
+if [[ -n $(ps |grep ruby|grep 104) ]]; then
+	echo "1"
+else
+	echo "0"
+fi
