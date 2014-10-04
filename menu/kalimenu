@@ -122,11 +122,14 @@ if [ "$CONT" == "y" ]; then
 	killall gpsd
 	f_giskismet;
 	wipe -f -P 5 /tmp/gps
+	clear
+	f_wireless_attacks;
 else
   echo "Running Kismet WITHOUT GPS support..."
   sleep 2
   kismet -g;
   clear
+  f_wireless_attacks;
 fi
 }
 
