@@ -13,10 +13,10 @@ echo "[1]	Wireless Attacks	[6] Exploit Tools"
 echo "[2]	Sniffing/Spoofing	[7] OpenVPN Setup"
 echo "[3]	Reverse Shells		[8] VNC Setup"
 echo "[4]	Info Gathering		[9] Log/Capture Menu"
-echo "[5]	Vulnerability Scan	"
+echo "[5]	Vulnerability Scan	[10] HID Attacks"
 echo ""
-echo "[10]	Settings"
-echo "[11]	Services"
+echo "[11]	Settings"
+echo "[12]	Services"
 echo ""
 echo "[q]	Exit To Command Line"
 echo ""
@@ -36,8 +36,9 @@ case $menuchoice in
 7) clear; f_vpnmenu ;;
 8) clear; f_vncmenu ;;
 9) clear; f_capture ;;
-10) clear; f_settings ;;
-11) clear; f_services ;;
+10) clear; f_hid;;
+11) clear; f_settings ;;
+12) clear; f_services ;;
 q) clear; exit 1 ;;
 *) echo "Incorrect choice..." ;
 esac
@@ -798,6 +799,43 @@ read -p "Are you sure you want to wipe all files in /captures? (y/n) : " wipecap
 	else
 		f_capture
 	fi
+}
+
+############################# HID MENU #################################
+f_hid(){
+clear
+echo "				HID ATTACKS MENU"
+echo ""
+echo "[1] Dictionary based brute force attack"
+echo ""
+echo "[Q] Exit to main menu"
+echo ""
+read -p "Choice:" hidchoice
+
+case $hidchoice in
+1) clear; f_hid_dic ;;
+q) f_interface ;;
+*) f_hid ;;
+esac
+}
+
+f_hid_dic(){
+clear
+cd ~/dictionaries
+echo "Pick a Dictionary: " dicselect
+echo "[1] Common Passwords"
+echo "[2] 4 digit PIN Numbers"
+echo ""
+echo "[Q] Back to HID Menu"
+echo ""
+read -p "Selection: " dicselect
+
+case $dicselect in
+	1) /usr/bin/hid-dic 1; f_hid;;
+	2) /usr/bin/hid-dic.sh 2; f_hid;;
+	q) clear; f_hid;;
+	*) clear; f_hid_dic;;
+esac
 }
 
 ########################## SETTINGS MENU ###############################
