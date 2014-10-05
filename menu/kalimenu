@@ -865,6 +865,7 @@ f_nodejs(){
 cd /tmp
 echo "Downloading install script"
 wget https://raw.github.com/creationix/nvm/master/install.sh && chmod +x install.sh
+./install.sh
 source ~/.nvm/nvm.sh
 echo "Starting NodeJS install.  This will take a while..."
 sleep 5
