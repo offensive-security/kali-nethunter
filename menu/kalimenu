@@ -922,6 +922,7 @@ echo "[2]	wlan1 (External wireless USB)"
 echo "[3]	rmnet0 (3G)"
 echo "[4]	eth0 (Ethernet)"
 echo "[5]	rndis0 (USB > Ethernet)"
+echo "[6]	usb0 (USB > Ethernet)" # N7 2013 creates usb0 when tethering/badusb
 echo ""
 read -p "Choice: " sniffinterface
 
@@ -931,6 +932,7 @@ case $sniffinterface in
 3) clear; pickinterface=rmnet0 ;;
 4) clear; pickinterface=eth0 ;;
 5) clear; pickinterface=rndis0 ;;
+6) clear; pickinterface=usb0 ;;
 *) echo "Incorrect choice..." ;;
 esac
 }
