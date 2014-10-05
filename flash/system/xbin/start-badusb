@@ -1,13 +1,5 @@
 #!/system/bin/sh
 
-if [ `getprop ro.product.board` == "deb" ] || [ `getprop ro.product.board` == "flo" ];then 
-        echo "Using usb0 Interface"
-        INTERFACE=usb0
-else
-        echo "Using rndis0 Interface"
-        INTERFACE=rndis0
-fi
-
 TMPDIR=/data/local/tmp
 mkdir -p $TMPDIR
 UPSTREAM_NS=8.8.8.8
@@ -47,6 +39,15 @@ echo 1 > /sys/devices/virtual/android_usb/android0/enable
 # Check whether it has applied the changes
 cat /sys/devices/virtual/android_usb/android0/functions
 cat /sys/devices/virtual/android_usb/android0/enable
+
+# Check whether usb0 is created, if not assume we are looking for rndis0
+if netcfg | grep -q usb0; then
+    INTERFACE=usb0
+    echo "Using usb0 interface"
+else
+    INTERFACE=rndis0
+    echo "Using rndis0 interface"
+fi
 
 # Wait until the interface actually exists
 while ! busybox ifconfig $INTERFACE up;ifconfig $INTERFACE > /dev/null 2>&1;do
