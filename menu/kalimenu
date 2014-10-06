@@ -863,15 +863,17 @@ esac
 
 f_nodejs(){
 cd /tmp
-echo "Downloading install script"
-wget https://raw.github.com/creationix/nvm/master/install.sh && chmod +x install.sh
-./install.sh
+echo "Downloading Node Version Manager"
+git clone https://github.com/creationix/nvm.git ~/.nvm && cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`
 source ~/.nvm/nvm.sh
+chmod +x ~/.nvm/nvm.sh ~/.nvm/nvm-exec
+# We use bash_profile because .bashrc does not load nvm.sh on opened session
+echo 'export NVM_DIR="/root/.nvm"' >> ~/.bash_profile
+echo '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"'  >> ~/.bash_profile
 echo "Starting NodeJS install.  This will take a while..."
 sleep 5
-nvm install 0.11.11
-rm -rf ~/.nvm
-rm -rf /tmp/install.sh
+nvm install 0.10.32 --without-snapshot
+echo "nvm use v0.10.32 > /dev/null" >> ~/.bash_profile
 f_settings
 }
 
