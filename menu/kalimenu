@@ -256,7 +256,10 @@ if [ ! -d "/var/lib/openvas/" ]; then
 	read -p "Would you like to install OpenVas (1GB+ space needed)? (y/n): " installopenvas
 		if [ "$installopenvas" == "y" ]; then
 			apt-get update && apt-get install -y openvas
-			openvas-setup && openvas-scapdata-sync && openvas-certdata-sync && openvas-check-setup && openvas-stop
+			openvas-setup && openvas-scapdata-sync && openvas-certdata-sync && openvas-check-setup && openvas-stop 
+			openvasmd --create-user=admin --role=Admin
+			read -p "Enter OpenVas admin user password: " openvas_pass
+			openvasmd --user=admin --new-password="$openvas_pass"
 		fi
 fi
 clear
@@ -874,6 +877,8 @@ echo "Starting NodeJS install.  This will take a while..."
 sleep 5
 nvm install 0.10.32 --without-snapshot
 echo "nvm use v0.10.32 > /dev/null" >> ~/.bash_profile
+npm config set user 0
+npm config set unsafe-perm true
 f_settings
 }
 
