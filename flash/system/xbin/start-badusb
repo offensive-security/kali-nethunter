@@ -59,7 +59,7 @@ done
 busybox ifconfig $INTERFACE inet 10.0.0.1 netmask 255.255.255.0 up
 iptables -I FORWARD -i $INTERFACE -j ACCEPT
 iptables -t nat -A POSTROUTING -j MASQUERADE
-iptables -D natctrl_FORWARD 1 #suggested by harmon25 to delete rule which prevented NAT forwarding
+#iptables -D natctrl_FORWARD 1 #suggested by harmon25 to delete rule which prevented NAT forwarding
 
 echo 1 > /proc/sys/net/ipv4/ip_forward
 
