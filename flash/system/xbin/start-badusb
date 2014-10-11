@@ -10,6 +10,7 @@ if ! busybox ls > /dev/null;then
         echo "Busbox not found. Copying from /data/local/bin/busybox to /system/xbin"
         mount -o rw,remount /system
         cp /data/local/bin/busybox /system/xbin/busybox
+        chmod 755 /system/xbin/busybox
     else
     echo No busybox found
     exit 1

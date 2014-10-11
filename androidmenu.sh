@@ -528,9 +528,9 @@ EOF
 LANG=C chroot ${rootfs}/kali-$architecture pip install capstone
 cd ${rootfs}/kali-$architecture/opt/
 git clone https://github.com/byt3bl33d3r/MITMf.git
-LANG=C chroot ${rootfs}/kali-$architecture chmod 755 /opt/MITMf/install-bdfactory.sh /opt/MITMf/update.sh /opt/MITMf/mitmf.py
-LANG=C chroot ${rootfs}/kali-$architecture cd /opt/MITMf/; sh install-bdfactory.sh
-LANG=C chroot ${rootfs}/kali-$architecture cd /opt/MITMf/; sh update.sh
+LANG=C chroot ${rootfs}/kali-$architecture "chmod 755 /opt/MITMf/install-bdfactory.sh /opt/MITMf/update.sh /opt/MITMf/mitmf.py"
+LANG=C chroot ${rootfs}/kali-$architecture "/opt/MITMf/bdfactory/update.sh"
+LANG=C chroot ${rootfs}/kali-$architecture "/opt/MITMf/install-bdfactory.sh"
 
 # Install Dictionary for wifite
 mkdir -p ${rootfs}/kali-$architecture/opt/dic
