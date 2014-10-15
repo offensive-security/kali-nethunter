@@ -14,18 +14,27 @@
 # When testing multiple images, it is often faster to first checkout git repos and use them locally.
 # To do this, you can :
 # cd ~/kali-scripts
+#
+# - Nexus 10
 # git clone https://github.com/binkybear/kernel_samsung_manta.git -b thunderkat
+# - Nexus 7 (2012)
 # git clone https://github.com/binkybear/kangaroo.git -b kangaroo
+# - Nexus 7 (2013)
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-flo-3.4-kitkat-mr2 flodeb
 # git clone https://github.com/binkybear/flo.git -b Cyanogenmod cyanflodeb
+# - Nexus 5
 # git clone https://github.com/binkybear/furnace_kernel_lge_hammerhead.git -b android-4.4
 # git clone https://github.com/binkybear/furnace_kernel_caf_hammerhead.git -b cm-11.0
-# git clone https://github.com/binkybear/mako_kitkat.git -b kitkat-aosp mako_kitkat
-# git clone https://github.com/binkybear/mako_kitkat.git -b kitkat-cm mako_kitkat_cm
+# - Nexus 4
+# git clone https://github.com/binkybear/Unleashed-Kernel-Series.git -b Unleashed-aosp
+# git clone https://github.com/binkybear/Unleashed-Kernel-Series.git -b Unleased-cm11 Unleashed-Kernel-Series-CM
+# - Galaxy S5
 # git clone https://github.com/binkybear/KTSGS5.git -b aosp4.4 galaxy_s5
 # git clone https://github.com/binkybear/KTSGS5.git -b tw4.4 galaxy_s5_tw
+# - Galaxy S4
 # git clone https://github.com/binkybear/android_kernel_samsung_jf.git -b cm-11.0 galaxy_s4
 # git clone https://github.com/binkybear/android_kernel_samsung_exynos5410.git -b cm-11.0 galaxy_s4_i9500
+# - Toolchain
 # git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7
 ######## Local Repo ##########
 # to update :  for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
