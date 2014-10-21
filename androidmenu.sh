@@ -681,6 +681,8 @@ wget -P ${basedir}/flash/data/app/ https://android-vnc-viewer.googlecode.com/fil
 wget -P ${basedir}/flash/data/app/ http://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.9.17.apk
 # Keyboard HID app
 wget -P ${basedir}/flash/data/app/ https://github.com/pelya/android-keyboard-gadget/raw/master/USB-Keyboard.apk
+# Suggested: RFAnalyzer
+wget -P ${basedir}/flash/data/app/ https://github.com/demantz/RFAnalyzer/raw/master/RFAnalyzer.apk
 }
 
 #####################################################
