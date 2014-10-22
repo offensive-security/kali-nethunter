@@ -26,7 +26,7 @@
 # git clone https://github.com/binkybear/furnace_kernel_lge_hammerhead.git -b android-4.4
 # git clone https://github.com/binkybear/furnace_kernel_caf_hammerhead.git -b cm-11.0
 # - Nexus 4
-# git clone https://github.com/binkybear/Unleashed-Kernel-Series.git -b Unleashed-aosp
+# git clone https://github.com/binkybear/kernel_msm.git -b android-msm-mako-3.4-kitkat-mr2 mako
 # git clone https://github.com/binkybear/Unleashed-Kernel-Series.git -b Unleased-cm11 Unleashed-Kernel-Series-CM
 # - Galaxy S5
 # git clone https://github.com/binkybear/KTSGS5.git -b aosp4.4 galaxy_s5
