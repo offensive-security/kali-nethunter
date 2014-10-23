@@ -1,7 +1,7 @@
 #!/system/bin/sh
 
 case $1 in
-1) INPUT=/opt/dic/commonlist.txt;;
+1) INPUT=/opt/dic/wordlist.txt;;
 2) INPUT=/opt/dic/pinlist.txt;;
 esac
 

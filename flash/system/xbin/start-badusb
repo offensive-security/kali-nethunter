@@ -6,8 +6,15 @@ UPSTREAM_NS=8.8.8.8
 
 # Check required tools
 if ! busybox ls > /dev/null;then
+    if [ -f "/data/local/bin/busybox" ]; then
+        echo "Busbox not found. Copying from /data/local/bin/busybox to /system/xbin"
+        mount -o rw,remount /system
+        cp /data/local/bin/busybox /system/xbin/busybox
+        chmod 755 /system/xbin/busybox
+    else
     echo No busybox found
     exit 1
+    fi
 fi
 if ! dnsmasq -v > /dev/null;then
     echo No dnsmasq found
@@ -33,10 +40,18 @@ echo 1 > /sys/devices/virtual/android_usb/android0/enable
 # Check whether it has applied the changes
 cat /sys/devices/virtual/android_usb/android0/functions
 cat /sys/devices/virtual/android_usb/android0/enable
-INTERFACE=rndis0
+
+# Check whether usb0 is created, if not assume we are looking for rndis0
+if netcfg | grep -q usb0; then
+    INTERFACE=usb0
+    echo "Using usb0 interface"
+else
+    INTERFACE=rndis0
+    echo "Using rndis0 interface"
+fi
 
 # Wait until the interface actually exists
-while ! busybox ifconfig $INTERFACE > /dev/null 2>&1;do
+while ! busybox ifconfig $INTERFACE up;ifconfig $INTERFACE > /dev/null 2>&1;do
     echo Waiting for interface $INTERFACE
     busybox sleep 1
 done
@@ -45,6 +60,8 @@ done
 busybox ifconfig $INTERFACE inet 10.0.0.1 netmask 255.255.255.0 up
 iptables -I FORWARD -i $INTERFACE -j ACCEPT
 iptables -t nat -A POSTROUTING -j MASQUERADE
+#iptables -D natctrl_FORWARD 1 #suggested by harmon25 to delete rule which prevented NAT forwarding
+
 echo 1 > /proc/sys/net/ipv4/ip_forward
 
 # dnsmasq -H /data/local/tmp/hosts -i $INTERFACE -R -S 8.8.8.8 -F 10.0.0.100,10.0.0.200 -x $TMPDIR/dnsmasq.pid

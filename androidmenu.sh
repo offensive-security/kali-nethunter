@@ -14,18 +14,27 @@
 # When testing multiple images, it is often faster to first checkout git repos and use them locally.
 # To do this, you can :
 # cd ~/kali-scripts
+#
+# - Nexus 10
 # git clone https://github.com/binkybear/kernel_samsung_manta.git -b thunderkat
+# - Nexus 7 (2012)
 # git clone https://github.com/binkybear/kangaroo.git -b kangaroo
+# - Nexus 7 (2013)
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-flo-3.4-kitkat-mr2 flodeb
 # git clone https://github.com/binkybear/flo.git -b Cyanogenmod cyanflodeb
+# - Nexus 5
 # git clone https://github.com/binkybear/furnace_kernel_lge_hammerhead.git -b android-4.4
 # git clone https://github.com/binkybear/furnace_kernel_caf_hammerhead.git -b cm-11.0
-# git clone https://github.com/binkybear/mako_kitkat.git -b kitkat-aosp mako_kitkat
-# git clone https://github.com/binkybear/mako_kitkat.git -b kitkat-cm mako_kitkat_cm
+# - Nexus 4
+# git clone https://github.com/binkybear/kernel_msm.git -b android-msm-mako-3.4-kitkat-mr2 mako
+# git clone https://github.com/binkybear/Unleashed-Kernel-Series.git -b Unleased-cm11 Unleashed-Kernel-Series-CM
+# - Galaxy S5
 # git clone https://github.com/binkybear/KTSGS5.git -b aosp4.4 galaxy_s5
 # git clone https://github.com/binkybear/KTSGS5.git -b tw4.4 galaxy_s5_tw
+# - Galaxy S4
 # git clone https://github.com/binkybear/android_kernel_samsung_jf.git -b cm-11.0 galaxy_s4
 # git clone https://github.com/binkybear/android_kernel_samsung_exynos5410.git -b cm-11.0 galaxy_s4_i9500
+# - Toolchain
 # git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7
 ######## Local Repo ##########
 # to update :  for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
@@ -377,7 +386,7 @@ extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools p
 mana="python-twisted python-dnspython libnl1 libnl-dev libssl-dev sslsplit python-pcapy tinyproxy isc-dhcp-server rfkill mana-toolkit"
 spiderfoot="python-lxml python-m2crypto python-netaddr python-mako"
 sdr="sox librtlsdr"
-mitmf="python-requests python-configobj python-pefile msgpack-python python-nfqueue python-imaging"
+mitmf="python-requests python-configobj python-pefile msgpack-python python-nfqueue python-imaging capstone"
 
 export packages="${arm} ${base} ${desktop} ${tools} ${wireless} ${services} ${extras} ${mana} ${spiderfoot} ${sdr} ${mitmf}"
 export architecture="armhf"
@@ -528,9 +537,9 @@ EOF
 LANG=C chroot ${rootfs}/kali-$architecture pip install capstone
 cd ${rootfs}/kali-$architecture/opt/
 git clone https://github.com/byt3bl33d3r/MITMf.git
-LANG=C chroot ${rootfs}/kali-$architecture chmod 755 /opt/MITMf/install-bdfactory.sh /opt/MITMf/update.sh /opt/MITMf/mitmf.py
-LANG=C chroot ${rootfs}/kali-$architecture /opt/MITMf/install-bdfactory.sh
-LANG=C chroot ${rootfs}/kali-$architecture /opt/MITMf/update.sh
+LANG=C chroot ${rootfs}/kali-$architecture "chmod 755 /opt/MITMf/install-bdfactory.sh /opt/MITMf/update.sh /opt/MITMf/mitmf.py"
+LANG=C chroot ${rootfs}/kali-$architecture "/opt/MITMf/bdfactory/update.sh"
+LANG=C chroot ${rootfs}/kali-$architecture "/opt/MITMf/install-bdfactory.sh"
 
 # Install Dictionary for wifite
 mkdir -p ${rootfs}/kali-$architecture/opt/dic
@@ -554,18 +563,21 @@ sleep 5
 
 #Installs ADB and fastboot compiled for ARM
 git clone git://git.kali.org/packages/google-nexus-tools
-mv ./google-nexus-tools/bin/linux-arm-adb ${rootfs}/kali-$architecture/usr/bin/adb
-mv ./google-nexus-tools/bin/linux-arm-fastboot ${rootfs}/kali-$architecture/usr/bin/fastboot
+cp ./google-nexus-tools/bin/linux-arm-adb ${rootfs}/kali-$architecture/usr/bin/adb
+cp ./google-nexus-tools/bin/linux-arm-fastboot ${rootfs}/kali-$architecture/usr/bin/fastboot
 rm -rf ./google-nexus-tools 
+LANG=C chroot kali-$architecture chmod 755 /usr/bin/fastboot
+LANG=C chroot kali-$architecture chmod 755 /usr/bin/adb
 
 #Install HID attack script and dictionaries
-mv ${basepwd}/utils/dic/pinlist.txt ${rootfs}/kali-$architecture/opt/dic/pinlist.txt
-mv ${basepwd}/utils/dic/commonlist.txt ${rootfs}/kali-$architecture/opt/dic/commonlist.txt
-mv ${basepwd}/utils/hid/hid-dic.sh ${rootfs}/kali-$architecture/usr/bin/hid-dic
-chmod 755 ${rootfs}/kali-$architecture/usr/bin/hid-dic
+cp ${basepwd}/flash/system/xbin/hid-keyboard ${rootfs}/kali-$architecture/usr/bin/hid-keyboard
+cp ${basepwd}/utils/dic/pinlist.txt ${rootfs}/kali-$architecture/opt/dic/pinlist.txt
+cp ${basepwd}/utils/dic/wordlist.txt ${rootfs}/kali-$architecture/opt/dic/wordlist.txt
+cp ${basepwd}/utils/hid/hid-dic.sh ${rootfs}/kali-$architecture/usr/bin/hid-dic
+LANG=C chroot kali-$architecture chmod 755 /usr/bin/hid-keyboard
+LANG=C chroot kali-$architecture chmod 755 /usr/bin/hid-dic
 
 # Set permissions to executable on newly added scripts
-#LANG=C chroot kali-$architecture chmod 755 /usr/bin/kalimenu /usr/bin/firstrun 
 LANG=C chroot kali-$architecture chmod 755 /usr/bin/kalimenu 
 
 # Sets the default for hostapd.conf but not really needed as evilap will create it's own now
@@ -669,6 +681,8 @@ wget -P ${basedir}/flash/data/app/ https://android-vnc-viewer.googlecode.com/fil
 wget -P ${basedir}/flash/data/app/ http://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.9.17.apk
 # Keyboard HID app
 wget -P ${basedir}/flash/data/app/ https://github.com/pelya/android-keyboard-gadget/raw/master/USB-Keyboard.apk
+# Suggested: RFAnalyzer
+wget -P ${basedir}/flash/data/app/ https://github.com/demantz/RFAnalyzer/raw/master/RFAnalyzer.apk
 }
 
 #####################################################

