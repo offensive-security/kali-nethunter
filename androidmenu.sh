@@ -1040,31 +1040,35 @@ case $1 in
     case $2 in
       flodeb)
         nightlytype=kernel
-        device=n72013
+        device=flodeb
         f_check_version_noui
         f_deb_stock_kernel
         f_zip_kernel_save
         cd ${basedir}
-        mv kernel-kali-$VERSION.zip $exportdir/Kernels/Flo-Deb/Kernel-$device-$VERSION.zip
-        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/Flo-Deb/Kernel-$device-$VERSION.sha1sum
+        mv kernel-kali-$VERSION.zip $exportdir/Kernels/Flo/Kernel-$device-$VERSION.zip
+        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/Flo/Kernel-$device-$VERSION.sha1sum
+        mv kernel-kali-$VERSION.zip $exportdir/Kernels/Deb/Kernel-$device-$VERSION.zip
+        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/Deb/Kernel-$device-$VERSION.sha1sum
         rm -rf ${basedir}
         exit;;
 
       groupertilapia)
         nightlytype=kernel
-        device=n72012
+        device=groupertilapia
         f_check_version_noui
         f_nexus7_grouper_kernel
         f_zip_kernel_save
         cd ${basedir}
-        mv kernel-kali-$VERSION.zip $exportdir/Kernels/Grouper-Tilapia/Kernel-$device-$VERSION.zip
-        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/Grouper-Tilapia/Kernel-$device-$VERSION.sha1sum
+        mv kernel-kali-$VERSION.zip $exportdir/Kernels/Grouper/Kernel-$device-$VERSION.zip
+        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/Grouper/Kernel-$device-$VERSION.sha1sum
+        mv kernel-kali-$VERSION.zip $exportdir/Kernels/Tilapia/Kernel-$device-$VERSION.zip
+        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/Tilapia/Kernel-$device-$VERSION.sha1sum
         rm -rf ${basedir}
         exit;;
 
       hammerhead)
         nightlytype=kernel
-        device=n52013
+        device=hammerhead
         f_check_version_noui
         f_hammerhead_stock_kernel
         f_zip_kernel_save
@@ -1076,7 +1080,7 @@ case $1 in
 
       mako)
         nightlytype=kernel
-        device=n42012
+        device=mako
         f_check_version_noui
         f_mako_stock_kernel
         f_zip_kernel_save
@@ -1088,7 +1092,7 @@ case $1 in
 
       manta)
         nightlytype=kernel
-        device=n102012
+        device=manta
         f_check_version_noui
         f_nexus10_kernel
         f_zip_kernel_save
