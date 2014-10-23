@@ -67,37 +67,55 @@ wram=`pwd`/PLACE_ROM_HERE/working_ramdisk_folder
 bt=`pwd`/utils/boottools
 architecture="armhf"
 
+#Where the nightly built files will be put. This only applies to nightly built files
+exportdir=$exportdir
+
 chmod +x utils/boottools/*
 
 ######### Build script start  #######
 
-printf '\033[8;33;100t' 
+printf '\033[8;33;100t'
 
 f_check_version(){
-	# Allow user input of version number/folder creation to make set up easier
+  # Allow user input of version number/folder creation to make set up easier
   echo "Checking for git updates in local folder..."
   for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
-	clear
+  clear
   # need to exit back to basedir to establish root folder
   cd ${basepwd}
-	echo ""
+  echo ""
         read -p "Create working folder. Enter version number: " VERSION
         export basedir=`pwd`/android-$VERSION
         if [ -d "${basedir}" ]; then
-        	echo ""
+          echo ""
                 echo "Working folder / version already exsists, use a different version number?"
                 echo ""
                 read -p "Do you wish to continue with same version number? (y/n)" CONT
                 if [ "$CONT" == "y" ]; then
-                	f_interface
+                  f_interface
                 else
-                	exit 1
+                  exit 1
                 fi
         else
                 mkdir -p ${basedir}
                 cd ${basedir}
                 f_interface
-	fi
+  fi
+}
+
+
+###Nightly build script version of check version.
+f_check_version_noui(){
+  # Allow user input of version number/folder creation to make set up easier
+  for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
+  cd ${basepwd}
+  VERSION=$(date +%m%d%Y)
+case $nightlytype in
+    rootfs) export basedir=`pwd`/rootfs-$VERSION;;
+    kernel) export basedir=`pwd`/kernel-$device-$VERSION;;
+esac
+  mkdir -p ${basedir}
+  cd ${basedir}
 }
 
 f_interface(){
@@ -329,18 +347,23 @@ esac
 f_check_crosscompile(){
 # Make sure that the cross compiler can be found in the path before we do
 # anything else, that way the builds don't fail half way through.
-export CROSS_COMPILE=arm-linux-gnueabihf-
-if [ $(compgen -c $CROSS_COMPILE | wc -l) -eq 0 ] ; then
-        echo "Missing cross compiler for Android root filesystem." 
-        echo "Set up PATH according to the README"
-        echo ""
-        read -p "Enter export path (probable path): " -e -i "export PATH=${PATH}:/root/gcc-arm-linux-gnueabihf-4.7/bin" EXPORT_PATH
-        $EXPORT_PATH
-        unset CROSS_COMPILE
-else
-        echo "Found cross compiler - will continue"
-        unset CROSS_COMPILE
-fi
+
+case $ccc in
+  1) export PATH=${PATH}:/root/gcc-arm-linux-gnueabihf-4.7/bin; unset CROSS_COMPILE;;
+  *)
+    export CROSS_COMPILE=arm-linux-gnueabihf-
+    if [ $(compgen -c $CROSS_COMPILE | wc -l) -eq 0 ] ; then
+      echo "Missing cross compiler for Android root filesystem."
+      echo "Set up PATH according to the README"
+      echo ""
+      read -p "Enter export path (probable path): " -e -i "export PATH=${PATH}:/root/gcc-arm-linux-gnueabihf-4.7/bin" EXPORT_PATH
+      $EXPORT_PATH
+      unset CROSS_COMPILE
+    else
+      echo "Found cross compiler - will continue"
+      unset CROSS_COMPILE
+    fi;;
+esac
 }
 
 f_rootfs(){
@@ -364,6 +387,11 @@ else
   sleep 5
   f_rootfs_build
 fi
+}
+
+f_rootfs_noui(){
+rm -rf ${rootfs}/kali-armhf
+f_rootfs_build
 }
 
 f_rootfs_build(){
@@ -565,7 +593,7 @@ sleep 5
 git clone git://git.kali.org/packages/google-nexus-tools
 cp ./google-nexus-tools/bin/linux-arm-adb ${rootfs}/kali-$architecture/usr/bin/adb
 cp ./google-nexus-tools/bin/linux-arm-fastboot ${rootfs}/kali-$architecture/usr/bin/fastboot
-rm -rf ./google-nexus-tools 
+rm -rf ./google-nexus-tools
 LANG=C chroot kali-$architecture chmod 755 /usr/bin/fastboot
 LANG=C chroot kali-$architecture chmod 755 /usr/bin/adb
 
@@ -578,7 +606,7 @@ LANG=C chroot kali-$architecture chmod 755 /usr/bin/hid-keyboard
 LANG=C chroot kali-$architecture chmod 755 /usr/bin/hid-dic
 
 # Set permissions to executable on newly added scripts
-LANG=C chroot kali-$architecture chmod 755 /usr/bin/kalimenu 
+LANG=C chroot kali-$architecture chmod 755 /usr/bin/kalimenu
 
 # Sets the default for hostapd.conf but not really needed as evilap will create it's own now
 #sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/etc/hostapd/hostapd.conf#' kali-$architecture/etc/init.d/hostapd
@@ -605,7 +633,7 @@ mkdir -p $cap/evilap $cap/ettercap $cap/kismet/db $cap/nmap $cap/sslstrip $cap/t
 # In order for metasploit to work daemon,nginx,postgres must all be added to inet
 # beef-xss creates user beef-xss. Openvpn server requires nobdy:nobody in order to work
 echo "inet:x:3004:postgres,root,beef-xss,daemon,nginx" >> kali-$architecture/etc/group
-echo "nobody:x:3004:nobody" >> kali-$architecture/etc/group 
+echo "nobody:x:3004:nobody" >> kali-$architecture/etc/group
 
 # CLEANUP STAGE
 
@@ -643,7 +671,7 @@ f_flashzip(){
 #  /data/local/tmp_kali - shell scripts to unzip filesystem/boot chroot
 #  /kernel/kernel - kernel (zImage or zImage-dtb)
 #  /META-INF/com/google/android/updater-binary - Binary file for edify script
-#  /META-INF/com/google/android/updater-script - Edify script to install Kali 
+#  /META-INF/com/google/android/updater-script - Edify script to install Kali
 #  /system/bin/bootkali - Launches the Kali chroot
 #  /system/bin/killkali - Shutsdown Kali chroot (unmounts and stops services)
 #  /system/etc/ - Contains firmware for wireless devices and nano for text editing
@@ -656,7 +684,7 @@ f_flashzip(){
 #	echo "Copying flash to rootfs"
 #        cp -rf ${basepwd}/flash ${basedir}/flash
 #else
-#	git clone https://github.com/binkybear/flash.git ${basedir}/flash 
+#	git clone https://github.com/binkybear/flash.git ${basedir}/flash
 #fi
 
 cp -rf ${basepwd}/flash ${basedir}/flash
@@ -686,7 +714,7 @@ wget -P ${basedir}/flash/data/app/ https://github.com/demantz/RFAnalyzer/raw/mas
 }
 
 #####################################################
-# Zip and save 
+# Zip and save
 #####################################################
 f_zip_save(){
 apt-get install -y zip
@@ -771,7 +799,7 @@ prompt="Please select a file: "
 options=( $(find ${build_dir} -maxdepth 1 -iname '*.zip' | xargs -0) )
 
 PS3="$prompt "
-select zipfile in "${options[@]}" "Quit" ; do 
+select zipfile in "${options[@]}" "Quit" ; do
     if (( REPLY == 1 + ${#options[@]} )) ; then
         f_interface
     elif (( REPLY > 0 && REPLY <= ${#options[@]} )) ; then
@@ -811,7 +839,7 @@ else
   echo "Ramdisk not found!"
   sleep 5
   f_interface
-fi  
+fi
 
 if  ! grep -qr init.d ${wram}/ramdisk/*; then
    echo "" >> ${wram}/ramdisk/init.rc
@@ -910,7 +938,7 @@ cp -rf ${basepwd}/flash/ ${basedir}/flashkernel
 mkdir -p ${basedir}/flashkernel/system/lib/modules
 rm -rf ${basedir}/flashkernel/data
 rm -rf ${basedir}/flashkernel/sdcard
-rm -rf ${basedir}/flashkernel/system/app 
+rm -rf ${basedir}/flashkernel/system/app
 #rm -rf ${basedir}/flashkernel/system/bin ${basedir}/flashkernel/system/xbin
 rm -rf ${basedir}/flashkernel/META-INF/com/google/android/updater-script
 
@@ -986,6 +1014,133 @@ if [ -f "${basedir}/flash/META-INF/com/google/android/updater-script" ]; then
   fi
 fi
 }
+
+
+
+########################################################################################################
+###Nightly build (NOTE: WILL DELETE EXISTING ROOTFS AND OTHER FILES. It will ALWAYS pull from source)###
+########################################################################################################
+case $1 in
+  rootfs)
+    nightlytype=rootfs
+    f_check_version_noui
+    clear
+    ccc=1
+    f_rootfs_noui
+    f_flashzip
+    f_zip_save
+    cd ${basedir}
+    mv update-kali-$VERSION.zip $exportdir/Utilities/NetHunter-$VERSION.zip
+    mv update-kali-$VERSION.sha1sum $exportdir/Utilities/NetHunter-$VERSION.sha1sum
+    rm -rf ${basedir}
+    exit;;
+
+  ###For whatever reason I can't get these kernel scripts to build on my server.###
+  kernel)
+    case $2 in
+      flodeb)
+        nightlytype=kernel
+        device=n72013
+        f_check_version_noui
+        f_deb_stock_kernel
+        f_zip_kernel_save
+        cd ${basedir}
+        mv kernel-kali-$VERSION.zip $exportdir/Kernels/Flo-Deb/Kernel-$device-$VERSION.zip
+        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/Flo-Deb/Kernel-$device-$VERSION.sha1sum
+        rm -rf ${basedir}
+        exit;;
+
+      groupertilapia)
+        nightlytype=kernel
+        device=n72012
+        f_check_version_noui
+        f_nexus7_grouper_kernel
+        f_zip_kernel_save
+        cd ${basedir}
+        mv kernel-kali-$VERSION.zip $exportdir/Kernels/Grouper-Tilapia/Kernel-$device-$VERSION.zip
+        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/Grouper-Tilapia/Kernel-$device-$VERSION.sha1sum
+        rm -rf ${basedir}
+        exit;;
+
+      hammerhead)
+        nightlytype=kernel
+        device=n52013
+        f_check_version_noui
+        f_hammerhead_stock_kernel
+        f_zip_kernel_save
+        cd ${basedir}
+        mv kernel-kali-$VERSION.zip $exportdir/Kernels/Hammerhead/Kernel-$device-$VERSION.zip
+        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/Hammerhead/Kernel-$device-$VERSION.sha1sum
+        rm -rf ${basedir}
+        exit;;
+
+      mako)
+        nightlytype=kernel
+        device=n42012
+        f_check_version_noui
+        f_mako_stock_kernel
+        f_zip_kernel_save
+        cd ${basedir}
+        mv kernel-kali-$VERSION.zip $exportdir/Kernels/Mako/Kernel-$device-$VERSION.zip
+        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/Mako/Kernel-$device-$VERSION.zip.sha1sum
+        rm -rf ${basedir}
+        exit;;
+
+      manta)
+        nightlytype=kernel
+        device=n102012
+        f_check_version_noui
+        f_nexus10_kernel
+        f_zip_kernel_save
+        cd ${basedir}
+        mv kernel-kali-$VERSION.zip $exportdir/Kernels/Manta/Kernel-$device-$VERSION.zip
+        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/Manta/Kernel-$device-$VERSION.sha1sum
+        rm -rf ${basedir}
+        exit;;
+
+      sgs5)
+        nightlytype=kernel
+        device=SGS5-G900
+        f_check_version_noui
+        f_s5_kernel
+        f_zip_kernel_save
+        cd ${basedir}
+        mv kernel-kali-$VERSION.zip $exportdir/Kernels/SGS5-I9500/Kernel-$device-$VERSION.zip
+        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/SGS5-I9500/Kernel-$device-$VERSION.sha1sum
+        rm -rf ${basedir}
+        exit;;
+
+      sgs4)
+        nightlytype=kernel
+        device=SGS4-I9500
+        f_check_version_noui
+        f_s4_kernel
+        f_zip_kernel_save
+        cd ${basedir}
+        mv kernel-kali-$VERSION.zip $exportdir/Kernels/SGS4-G900/Kernel-$device-$VERSION.zip
+        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/SGS4-G900/Kernel-$device-$VERSION.sha1sum
+        rm -rf ${basedir}
+        exit;;
+    esac;;
+  help)
+    clear
+    echo "Usage:"
+    echo "androidmenu.sh [build type] [device]"
+    echo ""
+    echo "Build Types:"
+    echo "[rootfs] -----------Builds the root filesystem only"
+    echo "[kernel] -----------Builds Kernel (Device MUST be specified)"
+    echo ""
+    echo "Devices:"
+    echo "[flodeb] -----------Flo and Deb (Nexus 7 2013)"
+    echo "[groupertilapia] ---Grouper and Tilapia (Nexus 7 2012)"
+    echo "[mako] -------------Mako (Nexus 4)"
+    echo "[manta] ------------Manta (Nexus 10)"
+    echo "[sgs5] -------------Samsung Galaxy S5 (G900)"
+    echo "[sgs4] -------------Samsung Galaxy S4 (I9500)"
+    exit;;
+  *) clear;;
+esac
 
 f_check_version
 f_interface
