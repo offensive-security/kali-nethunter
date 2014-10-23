@@ -1035,7 +1035,7 @@ case $1 in
     rm -rf ${basedir}
     exit;;
 
-  ###For whatever reason I can't get these kernel scripts to build on my server.###
+  ###For whatever reason I can't get these kernel scripts to build on my server. It works on ACTUAL Kali though.###
   kernel)
     case $2 in
       flodeb)
