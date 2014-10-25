@@ -9,14 +9,15 @@ clear
 echo "			KALI ANDROID QUICK MENU"
 echo ""
 echo ""
-echo "[1]	Wireless Attacks	[6] Exploit Tools"
-echo "[2]	Sniffing/Spoofing	[7] OpenVPN Setup"
-echo "[3]	Reverse Shells		[8] VNC Setup"
-echo "[4]	Info Gathering		[9] Log/Capture Menu"
-echo "[5]	Vulnerability Scan	[10] HID Attacks"
+echo "[1]	Wireless Attacks	    [6] Exploit Tools"
+echo "[2]	Sniffing/Spoofing	    [7] OpenVPN Setup"
+echo "[3]	Reverse Shells		    [8] VNC Setup"
+echo "[4]	Info Gathering		    [9] Log/Capture Menu"
+echo "[5]	Vulnerability Scan	  [10] HID Attacks"
 echo ""
-echo "[11]	Settings"
-echo "[12]	Services"
+echo "[11] Enable/Disable Monitor Mode"
+echo "[12]	Settings"
+echo "[13]	Services"
 echo ""
 echo "[q]	Exit To Command Line"
 echo ""
@@ -37,8 +38,9 @@ case $menuchoice in
 8) clear; f_vncmenu ;;
 9) clear; f_capture ;;
 10) clear; f_hid;;
-11) clear; f_settings ;;
-12) clear; f_services ;;
+11) clear; f_mon;;
+12) clear; f_settings ;;
+13) clear; f_services ;;
 q) clear; exit 1 ;;
 *) echo "Incorrect choice..." ;
 esac
@@ -81,7 +83,7 @@ if [ -z "$adaptor" ]; then
     	echo ""
     fi
 else
-	echo -e "\e[92mWLAN1: FOUND\e[0m" 
+	echo -e "\e[92mWLAN1: FOUND\e[0m"
 	echo ""
 fi
 }
@@ -258,7 +260,7 @@ if [ ! -d "/var/lib/openvas/" ]; then
 	read -p "Would you like to install OpenVas (1GB+ space needed)? (y/n): " installopenvas
 		if [ "$installopenvas" == "y" ]; then
 			apt-get update && apt-get install -y openvas
-			openvas-setup && openvas-scapdata-sync && openvas-certdata-sync && openvas-check-setup && openvas-stop 
+			openvas-setup && openvas-scapdata-sync && openvas-certdata-sync && openvas-check-setup && openvas-stop
 			openvasmd --create-user=admin --role=Admin
 			read -p "Enter OpenVas admin user password: " openvas_pass
 			openvasmd --user=admin --new-password="$openvas_pass"
@@ -321,7 +323,7 @@ if ps ax | grep -v grep | grep beef-xss > /dev/null
 		mitmf_startbeef=--beefauto
 		sleep 3
 	else
-		echo "Beef-xss is not running.  Would you like to start? (y/n) " mitmf_beefstart 
+		echo "Beef-xss is not running.  Would you like to start? (y/n) " mitmf_beefstart
 		if 	[ "$mitmf_beefstart" == "y" ]; then
 			echo "Starting beef-xss..."
 			service beef-xss start
@@ -645,9 +647,9 @@ dh /etc/openvpn/easy-rsa/keys/dh1024.pem
 user nobody
 group nobody
 
-server 10.8.0.0 255.255.255.0 
-# server and remote endpoints 
-ifconfig 10.8.0.1 10.8.0.2 
+server 10.8.0.0 255.255.255.0
+# server and remote endpoints
+ifconfig 10.8.0.1 10.8.0.2
 keepalive 10 60
 persist-key
 persist-tun
@@ -687,7 +689,7 @@ ca ca.crt
 cert client1.crt
 key client1.key
 comp-lzo
-verb 3	
+verb 3
 EOF
 echo "Finished. Client key created at /etc/openvpn/easy-rsa/keys/kaliserver.ovpn"
 sleep 5
@@ -817,7 +819,7 @@ if [ ! -d /sdcard/kali-nh/captures ]; then
 	mkdir -p /sdcard/kali-nh/captures
 fi
 echo "Copying captures to /sdcard/kali-nh/captures..."
-sleep 3	
+sleep 3
 rsync -avP /captures /captures/ /sdcard/kali-nh/captures
 f_capture
 }
@@ -871,6 +873,47 @@ case $dictselect in
 esac
 }
 
+######################## MONITOR MODE MENU #############################
+f_mon(){
+  clear
+  echo "Enable or Disable Monitor Mode?"
+  echo "[1] Enable moitor mode"
+  echo "[2] Disable monitor mode"
+  echo ""
+  echo "[0] Main Menu"
+  echo ""
+  read -p "Choice: " monchoice
+
+  case $monchoice in
+    1) monmode=start;;
+    2) monmode=stop;;
+    0) clear; f_interface;;
+  esac
+
+  if [ $DEVICE == "grouper\r\n" ]||[ $DEVICE == "tilapia\r\n" ]; then
+
+    clear
+    echo "Which interface?"
+    echo "[1] External Wifi (Wlan1)"
+    echo "[2] Internal Wifi (Wlan0)"
+    echo ""
+    read -p "Choice: " ifacechoice
+
+    case $ifacechoice in
+      1) moniface=wlan1;;
+      2) moniface=wlan0;;
+    esac
+
+  else
+    moniface=wlan1
+  fi
+
+  airmon-ng $monmode $moniface
+  f_interface
+}
+
+
+
 ########################## SETTINGS MENU ###############################
 f_settings(){
 clear
@@ -923,7 +966,7 @@ f_settings
 f_msuser() {
 	service postgresql start
 	echo "Switching to user postgres"
-	su postgres	
+	su postgres
 	read -p "Enter Metasploit database username:" msuser
 	createuser -D -P -R -S $msuser
 	read -p "Enter Metasploit database name:" dbname
