@@ -33,6 +33,8 @@ fi
 
 cd ${basedir}/kernel
 
+unzip ramdisk/4.4.4/ramdisk_kitkat.zip -d ${basedir}/flashkernel/kernel/
+
 make clean
 sleep 10
 make kali_defconfig
@@ -63,17 +65,17 @@ set_perm(0, 0, 0755, "/tmp/mkbootimg.sh");
 
 ui_print("* Cleaning /system/app...                   *");
 run_program("/tmp/cleansystem.sh");
-run_program("/tmp/busybox", "dd", "if=/dev/block/platform/msm_sdcc.1/by-name/boot", "of=/tmp/boot.img");
-run_program("/tmp/unpackbootimg", "-i", "/tmp/boot.img", "-o", "/tmp/");
-run_program("/tmp/edit_ramdisk.sh");
-run_program("/tmp/mkbootimg.sh");
-run_program("/tmp/busybox", "dd", "if=/tmp/boot.img", "of=/dev/block/platform/msm_sdcc.1/by-name/boot");
+package_extract_file("boot.img", "/dev/block/platform/msm_sdcc.1/by-name/boot");
 
 ui_print("* Kernel installation completed...          *");
 EOF
 
 # Start kernel build
 f_kernel_build
+cd ${basedir}/flashkernel/kernel
+abootimg --create ${basedir}/flashkernel/boot.img -f bootimg.cfg -k ${basedir}/kernel/arch/arm/boot/zImage -r initramfs.cpio.gz
+cd ${basedir}
+f_zip_kernel_save
 fi
 }
 
