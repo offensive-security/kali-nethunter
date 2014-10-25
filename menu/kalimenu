@@ -9,13 +9,13 @@ clear
 echo "			KALI ANDROID QUICK MENU"
 echo ""
 echo ""
-echo "[1]	Wireless Attacks	    [6] Exploit Tools"
-echo "[2]	Sniffing/Spoofing	    [7] OpenVPN Setup"
-echo "[3]	Reverse Shells		    [8] VNC Setup"
-echo "[4]	Info Gathering		    [9] Log/Capture Menu"
-echo "[5]	Vulnerability Scan	  [10] HID Attacks"
+echo "[1]	Wireless Attacks	[6] Exploit Tools"
+echo "[2]	Sniffing/Spoofing	[7] OpenVPN Setup"
+echo "[3]	Reverse Shells		[8] VNC Setup"
+echo "[4]	Info Gathering		[9] Log/Capture Menu"
+echo "[5]	Vulnerability Scan	[10] HID Attacks"
 echo ""
-echo "[11] Enable/Disable Monitor Mode"
+echo "[11]  Enable/Disable Monitor Mode"
 echo "[12]	Settings"
 echo "[13]	Services"
 echo ""
@@ -876,7 +876,7 @@ esac
 ######################## MONITOR MODE MENU #############################
 f_mon(){
   clear
-  echo "Enable or Disable Monitor Mode?"
+  echo "Enable or Disable Monitor Mode"
   echo "[1] Enable moitor mode"
   echo "[2] Disable monitor mode"
   echo ""
@@ -911,8 +911,6 @@ f_mon(){
   airmon-ng $monmode $moniface
   f_interface
 }
-
-
 
 ########################## SETTINGS MENU ###############################
 f_settings(){
