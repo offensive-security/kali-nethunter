@@ -920,7 +920,11 @@ f_safeeject(){
   ifconfig wlan1 down
   sleep 5
   clear
+  clear
   echo "You should now be able to safely remove your wifi card."
+  echo ""
+  read -p "Press [Enter] to return to the main menu" null
+  f_interface
 }
 
 ########################## SETTINGS MENU ###############################
