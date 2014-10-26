@@ -9,15 +9,14 @@ clear
 echo "			KALI ANDROID QUICK MENU"
 echo ""
 echo ""
-echo "[1]	Wireless Attacks	[6] Exploit Tools"
-echo "[2]	Sniffing/Spoofing	[7] OpenVPN Setup"
-echo "[3]	Reverse Shells		[8] VNC Setup"
-echo "[4]	Info Gathering		[9] Log/Capture Menu"
-echo "[5]	Vulnerability Scan	[10] HID Attacks"
+echo "[1]	Wireless Attacks	[6]	Exploit Tools"
+echo "[2]	Sniffing/Spoofing	[7]	OpenVPN Setup"
+echo "[3]	Reverse Shells		[8]	VNC Setup"
+echo "[4]	Info Gathering		[9]	Log/Capture Menu"
+echo "[5]	Vulnerability Scan	[10]	HID Attacks"
 echo ""
-echo "[11]	Enable/Disable Monitor Mode"
-echo "[12]	Settings"
-echo "[13]	Services"
+echo "[11]	Settings		[13]	Enable/Disable Monitor Mode"
+echo "[12]	Services		[14]	Safely Eject External Wifi"
 echo ""
 echo "[q]	Exit To Command Line"
 echo ""
@@ -41,6 +40,7 @@ case $menuchoice in
 11) clear; f_mon;;
 12) clear; f_settings ;;
 13) clear; f_services ;;
+14) clear; f_safeeject;;
 q) clear; exit 1 ;;
 *) echo "Incorrect choice..." ;
 esac
@@ -910,6 +910,17 @@ f_mon(){
 
   airmon-ng $monmode $moniface
   f_interface
+}
+
+######################### SAFELY EJECT WIFI ############################
+f_safeeject(){
+  clear
+  echo "Stopping Services. Please Wait."
+  airmon-ng stop wlan1
+  ifconfig wlan1 down
+  sleep 5
+  clear
+  echo "You should now be able to safely remove your wifi card."
 }
 
 ########################## SETTINGS MENU ###############################
