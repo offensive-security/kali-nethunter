@@ -1035,7 +1035,7 @@ case $1 in
     rm -rf ${basedir}
     exit;;
 
-  ###For whatever reason I can't get these kernel scripts to build on my server. It works on ACTUAL Kali though.###
+  ###Photonicgeek: For whatever reason I can't get these kernel scripts to build on my server. It works on ACTUAL Kali though.###
   kernel)
     case $2 in
       flodeb)
@@ -1046,9 +1046,9 @@ case $1 in
         f_zip_kernel_save
         cd ${basedir}
         mv kernel-kali-$VERSION.zip $exportdir/Kernels/Flo/Kernel-$device-$VERSION.zip
-        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/Flo/Kernel-$device-$VERSION.sha1sum
+        mv kernel-kali-$VERSION.sha1sum $exportdir/Kernels/Flo/Kernel-$device-$VERSION.sha1sum
         mv kernel-kali-$VERSION.zip $exportdir/Kernels/Deb/Kernel-$device-$VERSION.zip
-        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/Deb/Kernel-$device-$VERSION.sha1sum
+        mv kernel-kali-$VERSION.sha1sum $exportdir/Kernels/Deb/Kernel-$device-$VERSION.sha1sum
         rm -rf ${basedir}
         exit;;
 
@@ -1060,9 +1060,9 @@ case $1 in
         f_zip_kernel_save
         cd ${basedir}
         mv kernel-kali-$VERSION.zip $exportdir/Kernels/Grouper/Kernel-$device-$VERSION.zip
-        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/Grouper/Kernel-$device-$VERSION.sha1sum
+        mv kernel-kali-$VERSION.sha1sum $exportdir/Kernels/Grouper/Kernel-$device-$VERSION.sha1sum
         mv kernel-kali-$VERSION.zip $exportdir/Kernels/Tilapia/Kernel-$device-$VERSION.zip
-        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/Tilapia/Kernel-$device-$VERSION.sha1sum
+        mv kernel-kali-$VERSION.sha1sum $exportdir/Kernels/Tilapia/Kernel-$device-$VERSION.sha1sum
         rm -rf ${basedir}
         exit;;
 
@@ -1074,7 +1074,7 @@ case $1 in
         f_zip_kernel_save
         cd ${basedir}
         mv kernel-kali-$VERSION.zip $exportdir/Kernels/Hammerhead/Kernel-$device-$VERSION.zip
-        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/Hammerhead/Kernel-$device-$VERSION.sha1sum
+        mv kernel-kali-$VERSION.sha1sum $exportdir/Kernels/Hammerhead/Kernel-$device-$VERSION.sha1sum
         rm -rf ${basedir}
         exit;;
 
@@ -1086,7 +1086,7 @@ case $1 in
         f_zip_kernel_save
         cd ${basedir}
         mv kernel-kali-$VERSION.zip $exportdir/Kernels/Mako/Kernel-$device-$VERSION.zip
-        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/Mako/Kernel-$device-$VERSION.zip.sha1sum
+        mv kernel-kali-$VERSION.sha1sum $exportdir/Kernels/Mako/Kernel-$device-$VERSION.zip.sha1sum
         rm -rf ${basedir}
         exit;;
 
@@ -1098,7 +1098,7 @@ case $1 in
         f_zip_kernel_save
         cd ${basedir}
         mv kernel-kali-$VERSION.zip $exportdir/Kernels/Manta/Kernel-$device-$VERSION.zip
-        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/Manta/Kernel-$device-$VERSION.sha1sum
+        mv kernel-kali-$VERSION.sha1sum $exportdir/Kernels/Manta/Kernel-$device-$VERSION.sha1sum
         rm -rf ${basedir}
         exit;;
 
@@ -1110,7 +1110,7 @@ case $1 in
         f_zip_kernel_save
         cd ${basedir}
         mv kernel-kali-$VERSION.zip $exportdir/Kernels/SGS5-I9500/Kernel-$device-$VERSION.zip
-        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/SGS5-I9500/Kernel-$device-$VERSION.sha1sum
+        mv kernel-kali-$VERSION.sha1sum $exportdir/Kernels/SGS5-I9500/Kernel-$device-$VERSION.sha1sum
         rm -rf ${basedir}
         exit;;
 
