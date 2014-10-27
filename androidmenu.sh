@@ -67,9 +67,6 @@ wram=`pwd`/PLACE_ROM_HERE/working_ramdisk_folder
 bt=`pwd`/utils/boottools
 architecture="armhf"
 
-#Where the nightly built files will be put. This only applies to nightly built files
-exportdir=$exportdir
-
 chmod +x utils/boottools/*
 
 ######### Build script start  #######
@@ -1022,6 +1019,17 @@ fi
 ########################################################################################################
 case $1 in
   rootfs)
+    exportdir="$2"
+    if [ $2 == "" ]||[ $3 == ""]; then
+      exportdir="~/NetHunter"
+    else
+      if [ $2 == "" ]; then
+        exportdir=$3
+      else
+        exportdir=$2
+      fi
+    fi
+    exportdir=${exportdir%/}
     nightlytype=rootfs
     f_check_version_noui
     clear
@@ -1030,8 +1038,8 @@ case $1 in
     f_flashzip
     f_zip_save
     cd ${basedir}
-    mv update-kali-$VERSION.zip $exportdir/Utilities/NetHunter-$VERSION.zip
-    mv update-kali-$VERSION.sha1sum $exportdir/Utilities/NetHunter-$VERSION.sha1sum
+    mv update-kali-$VERSION.zip $exportdir/RootFS/NetHunter-$VERSION.zip
+    mv update-kali-$VERSION.sha1sum $exportdir/RootFS/NetHunter-$VERSION.sha1sum
     rm -rf ${basedir}
     exit;;
 
@@ -1039,6 +1047,12 @@ case $1 in
   kernel)
     case $2 in
       flodeb)
+        if [ $3 == ""]; then
+          exportdir="~/NetHunter"
+        else
+          exportdir="$3"
+        fi
+        exportdir=${exportdir%/}
         nightlytype=kernel
         device=flodeb
         f_check_version_noui
@@ -1053,7 +1067,12 @@ case $1 in
         exit;;
 
       groupertilapia)
-        nightlytype=kernel
+        if [ $3 == ""]; then
+          exportdir="~/NetHunter"
+        else
+          exportdir="$3"
+        fi
+        exportdir=${exportdir%/}
         device=groupertilapia
         f_check_version_noui
         f_nexus7_grouper_kernel
@@ -1067,6 +1086,12 @@ case $1 in
         exit;;
 
       hammerhead)
+        if [ $3 == ""]; then
+          exportdir="~/NetHunter"
+        else
+          exportdir="$3"
+        fi
+        exportdir=${exportdir%/}
         nightlytype=kernel
         device=hammerhead
         f_check_version_noui
@@ -1079,6 +1104,12 @@ case $1 in
         exit;;
 
       mako)
+        if [ $3 == ""]; then
+          exportdir="~/NetHunter"
+        else
+          exportdir="$3"
+        fi
+        exportdir=${exportdir%/}
         nightlytype=kernel
         device=mako
         f_check_version_noui
@@ -1091,6 +1122,12 @@ case $1 in
         exit;;
 
       manta)
+        if [ $3 == ""]; then
+          exportdir="~/NetHunter"
+        else
+          exportdir="$3"
+        fi
+        exportdir=${exportdir%/}
         nightlytype=kernel
         device=manta
         f_check_version_noui
@@ -1103,6 +1140,12 @@ case $1 in
         exit;;
 
       sgs5)
+        if [ $3 == ""]; then
+          exportdir="~/NetHunter"
+        else
+          exportdir="$3"
+        fi
+        exportdir=${exportdir%/}
         nightlytype=kernel
         device=SGS5-G900
         f_check_version_noui
@@ -1115,6 +1158,12 @@ case $1 in
         exit;;
 
       sgs4)
+        if [ $3 == ""]; then
+          exportdir="~/NetHunter"
+        else
+          exportdir="$3"
+        fi
+        exportdir=${exportdir%/}
         nightlytype=kernel
         device=SGS4-I9500
         f_check_version_noui
@@ -1125,23 +1174,30 @@ case $1 in
         mv update-kali-$VERSION.sha1sum $exportdir/Kernels/SGS4-G900/Kernel-$device-$VERSION.sha1sum
         rm -rf ${basedir}
         exit;;
+      *)
+        clear
+        echo "Please specify a device. use 'androidmenu.sh help' for avaliable options."
     esac;;
   help)
     clear
     echo "Usage:"
-    echo "androidmenu.sh [build type] [device]"
+    echo "androidmenu.sh [Build Type] [Device] [Directory]"
     echo ""
     echo "Build Types:"
-    echo "[rootfs] -----------Builds the root filesystem only"
-    echo "[kernel] -----------Builds Kernel (Device MUST be specified)"
+    echo "   [rootfs] -----------Builds the root filesystem only"
+    echo "   [kernel] -----------Builds Kernel (Device MUST be specified)"
     echo ""
-    echo "Devices:"
-    echo "[flodeb] -----------Flo and Deb (Nexus 7 2013)"
-    echo "[groupertilapia] ---Grouper and Tilapia (Nexus 7 2012)"
-    echo "[mako] -------------Mako (Nexus 4)"
-    echo "[manta] ------------Manta (Nexus 10)"
-    echo "[sgs5] -------------Samsung Galaxy S5 (G900)"
-    echo "[sgs4] -------------Samsung Galaxy S4 (I9500)"
+    echo "Devices: (Only applies to kernel build type)"
+    echo "   [flodeb] -----------Flo and Deb (Nexus 7 2013)"
+    echo "   [groupertilapia] ---Grouper and Tilapia (Nexus 7 2012)"
+    echo "   [mako] -------------Mako (Nexus 4)"
+    echo "   [manta] ------------Manta (Nexus 10)"
+    echo "   [sgs5] -------------Samsung Galaxy S5 (G900)"
+    echo "   [sgs4] -------------Samsung Galaxy S4 (I9500)"
+    echo ""
+    echo "Directory:"
+    echo "Where the generated files will be put. Default is ~/NetHunter"
+
     exit;;
   *) clear;;
 esac
