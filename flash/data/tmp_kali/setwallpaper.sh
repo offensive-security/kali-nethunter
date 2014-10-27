@@ -23,6 +23,12 @@ if [ $(getprop ro.product.device) == "deb" ]; then
 	chown system:system /data/system/users/0/wallpaper
 fi
 
+if [ $(getprop ro.product.device) == "occam" ]; then
+	cp /tmp/hammerheadwallpaper /data/system/users/0/wallpaper
+	chmod 777 /data/system/users/0/wallpaper
+	chown system:system /data/system/users/0/wallpaper
+fi
+
 if [ $(getprop ro.product.device) == "hammerhead" ]; then
 	cp /tmp/hammerheadwallpaper /data/system/users/0/wallpaper
 	chmod 777 /data/system/users/0/wallpaper
