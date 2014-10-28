@@ -37,9 +37,9 @@ case $menuchoice in
 8) clear; f_vncmenu ;;
 9) clear; f_capture ;;
 10) clear; f_hid;;
-11) clear; f_mon;;
-12) clear; f_settings ;;
-13) clear; f_services ;;
+11) clear; f_settings ;;
+12) clear; f_services ;;
+13) clear; f_mon;;
 14) clear; f_safeeject;;
 q) clear; exit 1 ;;
 *) echo "Incorrect choice..." ;
