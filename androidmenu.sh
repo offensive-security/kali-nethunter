@@ -560,11 +560,9 @@ EOF
 
 # Install MITMf
 LANG=C chroot ${rootfs}/kali-$architecture pip install capstone
-cd ${rootfs}/kali-$architecture/opt/
-git clone https://github.com/byt3bl33d3r/MITMf.git
-LANG=C chroot ${rootfs}/kali-$architecture "chmod 755 /opt/MITMf/install-bdfactory.sh /opt/MITMf/update.sh /opt/MITMf/mitmf.py"
-LANG=C chroot ${rootfs}/kali-$architecture "/opt/MITMf/bdfactory/update.sh"
-LANG=C chroot ${rootfs}/kali-$architecture "/opt/MITMf/install-bdfactory.sh"
+git clone https://github.com/byt3bl33d3r/MITMf.git && mv MITMf ${rootfs}/kali-$architecture/opt/MITMf
+chmod 755 ${rootfs}/kali-$architecture/opt/MITMf/setup.sh ${rootfs}/kali-$architecture/opt/MITMf/update.sh
+LANG=C chroot ${rootfs}/kali-$architecture /opt/MITMf/setup.sh
 
 # Install Dictionary for wifite
 mkdir -p ${rootfs}/kali-$architecture/opt/dic
@@ -574,16 +572,15 @@ tar xvf ${basepwd}/utils/dic/89.tar.gz -C ${rootfs}/kali-$architecture/opt/dic
 # Cherrypy is newer in pip then in repo so we need to use that instead.  All other depend are fine.
 LANG=C chroot kali-$architecture pip install cherrypy
 cd ${rootfs}/kali-$architecture/opt/
-wget http://downloads.sourceforge.net/project/spiderfoot/spiderfoot-2.1.5-src.tar.gz -O spiderfoot.tar.gz
-tar xvf spiderfoot.tar.gz && rm spiderfoot.tar.gz && mv spiderfoot-2.1.5 spiderfoot
+wget https://github.com/smicallef/spiderfoot/archive/v2.2.0-final.tar.gz -O spiderfoot.tar.gz
+tar xvf spiderfoot.tar.gz && rm spiderfoot.tar.gz && mv spiderfoot-2.2.0-final spiderfoot
 cd ${rootfs}
 
-# Modify Wifite log saving folder
+# Modify Kismet log saving folder
 sed -i 's/hs/\/captures/g' ${rootfs}/kali-$architecture/etc/kismet/kismet.conf
 
 # Kali Menu (bash script) to quickly launch common Android Programs
 cp -rf ${basepwd}/menu/kalimenu ${rootfs}/kali-$architecture/usr/bin/kalimenu
-# cp -rf ${basepwd}/menu/firstrun kali-$architecture/usr/bin/firstrun
 sleep 5
 
 #Installs ADB and fastboot compiled for ARM
