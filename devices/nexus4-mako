@@ -73,7 +73,7 @@ EOF
 # Start kernel build
 f_kernel_build
 cd ${basedir}/flashkernel/kernel
-abootimg --create ${basedir}/flashkernel/boot.img -f bootimg.cfg -k ${basedir}/kernel/arch/arm/boot/zImage -r initramfs.cpio.gz
+abootimg --create ${basedir}/flashkernel/boot.img -f bootimg.cfg -k ${basedir}/kernel/arch/arm/boot/zImage -r initrd.img
 cd ${basedir}
 f_zip_kernel_save
 fi
