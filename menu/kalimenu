@@ -876,7 +876,7 @@ esac
 ######################## MONITOR MODE MENU #############################
 f_mon(){
   clear
-  echo "Enable or Disable Monitor Mode"
+  echo "Enable or Disable Monitor Mode on wlan1"
   echo "[1] Enable moitor mode"
   echo "[2] Disable monitor mode"
   echo ""
@@ -890,25 +890,7 @@ f_mon(){
     0) clear; f_interface;;
   esac
 
-  if [ $DEVICE == "grouper\r\n" ]||[ $DEVICE == "tilapia\r\n" ]; then
-
-    clear
-    echo "Which interface?"
-    echo "[1] External Wifi (Wlan1)"
-    echo "[2] Internal Wifi (Wlan0)"
-    echo ""
-    read -p "Choice: " ifacechoice
-
-    case $ifacechoice in
-      1) moniface=wlan1;;
-      2) moniface=wlan0;;
-    esac
-
-  else
-    moniface=wlan1
-  fi
-
-  airmon-ng $monmode $moniface
+  airmon-ng $monmode wlan1
   f_interface
 }
 
@@ -919,7 +901,6 @@ f_safeeject(){
   airmon-ng stop wlan1
   ifconfig wlan1 down
   sleep 5
-  clear
   clear
   echo "You should now be able to safely remove your wifi card."
   echo ""

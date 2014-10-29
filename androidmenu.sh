@@ -1168,7 +1168,7 @@ case $1 in
         f_zip_kernel_save
         cd ${basedir}
         mv kernel-kali-$VERSION.zip $exportdir/Kernels/SGS4-G900/Kernel-$device-$VERSION.zip
-        mv update-kali-$VERSION.sha1sum $exportdir/Kernels/SGS4-G900/Kernel-$device-$VERSION.sha1sum
+        mv kernel-kali-$VERSION.sha1sum $exportdir/Kernels/SGS4-G900/Kernel-$device-$VERSION.sha1sum
         rm -rf ${basedir}
         exit;;
       *)
