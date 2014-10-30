@@ -55,6 +55,7 @@ echo ""
 echo ""
 echo "[1]	Wifite - Auotmated Wireless Auditor"
 echo "[2]	Kismet - Wireless network detector, sniffer, IDS"
+echo "[3] AP F**ker - Wireless attack multitool"
 echo ""
 echo "[0]	Exit"
 echo ""
@@ -62,10 +63,11 @@ read -p "Choice: " wirelesschoice
 
 case $wirelesschoice in
 
-1) clear; f_wifite ;;
-2) clear; f_kismet ;;
-0) clear; f_interface ;;
-*) echo "Incorrect choice..." ;
+1) clear; f_wifite;;
+2) clear; f_kismet;;
+3) clear; f_apfucker;;
+0) clear; f_interface;;
+*) echo "Incorrect choice...";
 esac
 }
 
@@ -175,6 +177,28 @@ else
 fi
 }
 
+f_apfucker(){
+  monstat=`grep "mon0" /proc/net/dev`
+
+  if  [ -n "$FOUND" ] ; then
+    clear
+  else
+    ifconfig wlan1 up
+    monstat=`grep "wlan1" /proc/net/dev`
+    if  [ -n "$FOUND" ] ; then
+      airmon-ng start wlan1
+    else
+      echo "You must plug in a compatible wifi card to use this feature."
+      echo ""
+      read -p "Press [Enter] to return to the main menu." null
+      clear
+      f_wireless_attacks
+    fi
+  fi
+  python /usr/bin/apfucker.py
+  clear
+  f_wireless_attacks
+}
 
 ##########################   SNIFFING MENU     ###############################
 f_sniffing(){
