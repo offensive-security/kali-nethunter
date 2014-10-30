@@ -13,7 +13,7 @@ echo "[1]	Wireless Attacks	[6]	Exploit Tools"
 echo "[2]	Sniffing/Spoofing	[7]	OpenVPN Setup"
 echo "[3]	Reverse Shells		[8]	VNC Setup"
 echo "[4]	Info Gathering		[9]	Log/Capture Menu"
-echo "[5]	Vulnerability Scan	[10]	HID Attacks"
+echo "[5]	Vulnerability Scan	[10]	USB Attacks"
 echo ""
 echo "[11]	Settings		[13]	Enable/Disable Monitor Mode"
 echo "[12]	Services		[14]	Safely Eject External Wifi"
@@ -36,7 +36,7 @@ case $menuchoice in
 7) clear; f_vpnmenu ;;
 8) clear; f_vncmenu ;;
 9) clear; f_capture ;;
-10) clear; f_hid;;
+10) clear; f_usb;;
 11) clear; f_settings ;;
 12) clear; f_services ;;
 13) clear; f_mon;;
@@ -820,7 +820,7 @@ if [ ! -d /sdcard/kali-nh/captures ]; then
 fi
 echo "Copying captures to /sdcard/kali-nh/captures..."
 sleep 3
-rsync -avP /captures /captures/ /sdcard/kali-nh/captures
+rsync -avOP /captures/ /sdcard/kali-nh/captures/
 f_capture
 }
 
@@ -836,20 +836,22 @@ read -p "Are you sure you want to wipe all files in /captures? (y/n) : " wipecap
 	fi
 }
 
-############################# HID MENU #################################
-f_hid(){
+############################# USB MENU #################################
+f_usb(){
 clear
-echo "				HID ATTACKS MENU"
+echo "				USB ATTACKS MENU"
 echo ""
 echo "[1] Dictionary based brute force attack"
+echo "[2] deADBolt"
 echo ""
 echo "[0] Exit to main menu"
 echo ""
-read -p "Choice:" hidchoice
+read -p "Choice:" usbchoice
 
-case $hidchoice in
-1) clear; f_hid_dic ;;
-0) f_interface ;;
+case $usbchoice in
+1) clear; f_hid_dic;;
+2) clear; f_deadbolt;;
+0) f_interface;;
 *) f_hid ;;
 esac
 }
@@ -866,11 +868,17 @@ echo ""
 read -p "Selection: " dictselect
 
 case $dictselect in
-	1) hid-dic 1; f_hid;;
-	2) hid-dic 2; f_hid;;
-	0) clear; f_hid;;
+	1) hid-dic 1; f_usb;;
+	2) hid-dic 2; f_usb;;
+	0) clear; f_usb;;
 	*) clear; f_hid_dic;;
 esac
+}
+
+f_deadbolt(){
+  clear
+  sh /usr/bin/deadbolt.sh
+  f_usb
 }
 
 ######################## MONITOR MODE MENU #############################
