@@ -1052,7 +1052,7 @@ case $1 in
   kernel)
     case $2 in
       flodeb)
-        if [ $3 == ""]; then
+        if [ $3 == "" ]; then
           exportdir="~/NetHunter"
         else
           exportdir="$3"
@@ -1074,7 +1074,7 @@ case $1 in
         exit;;
 
       groupertilapia)
-        if [ $3 == ""]; then
+        if [ $3 == "" ]; then
           exportdir="~/NetHunter"
         else
           exportdir="$3"
@@ -1095,7 +1095,7 @@ case $1 in
         exit;;
 
       hammerhead)
-        if [ $3 == ""]; then
+        if [ $3 == "" ]; then
           exportdir="~/NetHunter"
         else
           exportdir="$3"
@@ -1114,7 +1114,7 @@ case $1 in
         exit;;
 
       mako)
-        if [ $3 == ""]; then
+        if [ $3 == "" ]; then
           exportdir="~/NetHunter"
         else
           exportdir="$3"
@@ -1133,7 +1133,7 @@ case $1 in
         exit;;
 
       manta)
-        if [ $3 == ""]; then
+        if [ $3 == "" ]; then
           exportdir="~/NetHunter"
         else
           exportdir="$3"
@@ -1152,7 +1152,7 @@ case $1 in
         exit;;
 
       sgs5)
-        if [ $3 == ""]; then
+        if [ $3 == "" ]; then
           exportdir="~/NetHunter"
         else
           exportdir="$3"
@@ -1171,7 +1171,7 @@ case $1 in
         exit;;
 
       sgs4)
-        if [ $3 == ""]; then
+        if [ $3 == "" ]; then
           exportdir="~/NetHunter"
         else
           exportdir="$3"

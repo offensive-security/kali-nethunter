@@ -183,6 +183,7 @@ f_apfucker(){
   if  [ -n "$FOUND" ] ; then
     clear
   else
+    ifconfig wlan1 up
     monstat=`grep "wlan1" /proc/net/dev`
     if  [ -n "$FOUND" ] ; then
       airmon-ng start wlan1
