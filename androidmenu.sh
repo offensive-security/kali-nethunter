@@ -591,6 +591,12 @@ rm -rf ./google-nexus-tools
 LANG=C chroot kali-$architecture chmod 755 /usr/bin/fastboot
 LANG=C chroot kali-$architecture chmod 755 /usr/bin/adb
 
+#Installs deADBolt
+curl -o deadbolt https://raw.githubusercontent.com/photonicgeek/deADBolt/master/main.sh
+cp ./deadbolt ${rootfs}/kali-$architecture/usr/bin/deadbolt
+rm -rf deadbolt
+LANG=C chroot kali-$architecture chmod 755 /usr/bin/deadbolt
+
 #Install HID attack script and dictionaries
 cp ${basepwd}/flash/system/xbin/hid-keyboard ${rootfs}/kali-$architecture/usr/bin/hid-keyboard
 cp ${basepwd}/utils/dic/pinlist.txt ${rootfs}/kali-$architecture/opt/dic/pinlist.txt
