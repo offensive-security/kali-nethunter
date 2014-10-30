@@ -404,8 +404,8 @@ cd ${rootfs}
 arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils uboot-mkimage"
 base="kali-menu kali-defaults initramfs-tools usbutils openjdk-7-jre mlocate"
 desktop="kali-defaults kali-root-login desktop-base xfce4 xfce4-places-plugin xfce4-goodies"
-tools="nmap metasploit tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set"
-wireless="wifite iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq wvdial dsniff sslstrip"
+tools="nmap metasploit tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set moreutils"
+wireless="wifite iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq wvdial dsniff sslstrip mdk3"
 services="autossh openssh-server tightvncserver apache2 postgresql openvpn php5"
 extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools python-pip hostapd ptunnel"
 mana="python-twisted python-dnspython libnl1 libnl-dev libssl-dev sslsplit python-pcapy tinyproxy isc-dhcp-server rfkill mana-toolkit"
@@ -596,6 +596,12 @@ curl -o deadbolt https://raw.githubusercontent.com/photonicgeek/deADBolt/master/
 cp ./deadbolt ${rootfs}/kali-$architecture/usr/bin/deadbolt
 rm -rf deadbolt
 LANG=C chroot kali-$architecture chmod 755 /usr/bin/deadbolt
+
+#Installs APFucker.py
+curl -o apfucker.py https://raw.githubusercontent.com/mattoufoutu/scripts/master/AP-Fucker.py
+cp ./apfucker.py ${rootfs}/kali-$architecture/usr/bin/apfucker.py
+rm -rf deadbolt
+LANG=C chroot kali-$architecture chmod 755 /usr/bin/apfucker.py
 
 #Install HID attack script and dictionaries
 cp ${basepwd}/flash/system/xbin/hid-keyboard ${rootfs}/kali-$architecture/usr/bin/hid-keyboard
@@ -1022,15 +1028,10 @@ fi
 ########################################################################################################
 case $1 in
   rootfs)
-    exportdir="$2"
-    if [ $2 == "" ]||[ $3 == ""]; then
+    if [ $2 == "" ]; then
       exportdir="~/NetHunter"
     else
-      if [ $2 == "" ]; then
-        exportdir=$3
-      else
-        exportdir=$2
-      fi
+      exportdir=$2
     fi
     exportdir=${exportdir%/}
     nightlytype=rootfs
@@ -1041,6 +1042,7 @@ case $1 in
     f_flashzip
     f_zip_save
     cd ${basedir}
+    mkdir -p $exportdir/RootFS
     mv update-kali-$VERSION.zip $exportdir/RootFS/NetHunter-$VERSION.zip
     mv update-kali-$VERSION.sha1sum $exportdir/RootFS/NetHunter-$VERSION.sha1sum
     rm -rf ${basedir}
@@ -1062,6 +1064,8 @@ case $1 in
         f_deb_stock_kernel
         f_zip_kernel_save
         cd ${basedir}
+        mkdir -p $exportdir/Kernels/Flo
+        mkdir -p $exportdir/Kernels/Deb
         mv kernel-kali-$VERSION.zip $exportdir/Kernels/Flo/Kernel-$device-$VERSION.zip
         mv kernel-kali-$VERSION.sha1sum $exportdir/Kernels/Flo/Kernel-$device-$VERSION.sha1sum
         mv kernel-kali-$VERSION.zip $exportdir/Kernels/Deb/Kernel-$device-$VERSION.zip
@@ -1081,6 +1085,8 @@ case $1 in
         f_nexus7_grouper_kernel
         f_zip_kernel_save
         cd ${basedir}
+        mkdir -p $exportdir/Kernels/Grouper
+        mkdir -p $exportdir/Kernels/Tilapia
         mv kernel-kali-$VERSION.zip $exportdir/Kernels/Grouper/Kernel-$device-$VERSION.zip
         mv kernel-kali-$VERSION.sha1sum $exportdir/Kernels/Grouper/Kernel-$device-$VERSION.sha1sum
         mv kernel-kali-$VERSION.zip $exportdir/Kernels/Tilapia/Kernel-$device-$VERSION.zip
@@ -1101,6 +1107,7 @@ case $1 in
         f_hammerhead_stock_kernel
         f_zip_kernel_save
         cd ${basedir}
+        mkdir -p $exportdir/Kernels/Hammerhead
         mv kernel-kali-$VERSION.zip $exportdir/Kernels/Hammerhead/Kernel-$device-$VERSION.zip
         mv kernel-kali-$VERSION.sha1sum $exportdir/Kernels/Hammerhead/Kernel-$device-$VERSION.sha1sum
         rm -rf ${basedir}
@@ -1119,6 +1126,7 @@ case $1 in
         f_mako_stock_kernel
         f_zip_kernel_save
         cd ${basedir}
+        mkdir -p $exportdir/Kernels/Mako
         mv kernel-kali-$VERSION.zip $exportdir/Kernels/Mako/Kernel-$device-$VERSION.zip
         mv kernel-kali-$VERSION.sha1sum $exportdir/Kernels/Mako/Kernel-$device-$VERSION.zip.sha1sum
         rm -rf ${basedir}
@@ -1137,6 +1145,7 @@ case $1 in
         f_nexus10_kernel
         f_zip_kernel_save
         cd ${basedir}
+        mkdir -p $exportdir/Kernels/Manta
         mv kernel-kali-$VERSION.zip $exportdir/Kernels/Manta/Kernel-$device-$VERSION.zip
         mv kernel-kali-$VERSION.sha1sum $exportdir/Kernels/Manta/Kernel-$device-$VERSION.sha1sum
         rm -rf ${basedir}
@@ -1155,6 +1164,7 @@ case $1 in
         f_s5_kernel
         f_zip_kernel_save
         cd ${basedir}
+        mkdir -p $exportdir/Kernels/SGS5-I9500
         mv kernel-kali-$VERSION.zip $exportdir/Kernels/SGS5-I9500/Kernel-$device-$VERSION.zip
         mv kernel-kali-$VERSION.sha1sum $exportdir/Kernels/SGS5-I9500/Kernel-$device-$VERSION.sha1sum
         rm -rf ${basedir}
@@ -1173,6 +1183,7 @@ case $1 in
         f_s4_kernel
         f_zip_kernel_save
         cd ${basedir}
+        mkdir -p $exportdir/Kernels/SGS4-G900
         mv kernel-kali-$VERSION.zip $exportdir/Kernels/SGS4-G900/Kernel-$device-$VERSION.zip
         mv kernel-kali-$VERSION.sha1sum $exportdir/Kernels/SGS4-G900/Kernel-$device-$VERSION.sha1sum
         rm -rf ${basedir}
