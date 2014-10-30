@@ -820,7 +820,7 @@ if [ ! -d /sdcard/kali-nh/captures ]; then
 fi
 echo "Copying captures to /sdcard/kali-nh/captures..."
 sleep 3
-rsync -avP /captures /captures/ /sdcard/kali-nh/captures
+rsync -avOP /captures/ /sdcard/kali-nh/captures/
 f_capture
 }
 
