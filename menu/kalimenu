@@ -55,7 +55,10 @@ echo ""
 echo ""
 echo "[1]	Wifite - Auotmated Wireless Auditor"
 echo "[2]	Kismet - Wireless network detector, sniffer, IDS"
-echo "[3] AP F**ker - Wireless attack multitool"
+echo "[3]	AP F**ker - Wireless attack multitool"
+echo "[4]	WPS Scanner - Actively scan WPS enabled routers w/ probe requests"
+echo "[5]	WPS Spy - Passively listen to 802.11 beacons for WPS enabled routers "
+echo "[6]	Pingen - Calculate default WPS PINs for some D-Link routers "
 echo ""
 echo "[0]	Exit"
 echo ""
@@ -66,6 +69,9 @@ case $wirelesschoice in
 1) clear; f_wifite;;
 2) clear; f_kismet;;
 3) clear; f_apfucker;;
+4) clear; trap 'f_wireless_attacks' 2 ;f_wps_scanner;;
+5) clear; trap 'f_wireless_attacks' 2 ;f_wps_spy;;
+6) clear; trap 'f_wireless_attacks' 2 ;f_pingen;;
 0) clear; f_interface;;
 *) echo "Incorrect choice...";
 esac
@@ -180,7 +186,7 @@ fi
 f_apfucker(){
   monstat=`grep "mon0" /proc/net/dev`
 
-  if  [ -n "$FOUND" ] ; then
+  if [ -n "$FOUND" ] ; then
     clear
   else
     ifconfig wlan1 up
@@ -198,6 +204,36 @@ f_apfucker(){
   python /usr/bin/apfucker.py
   clear
   f_wireless_attacks
+}
+
+f_wps_scanner(){
+clear
+echo "Starting WPS Scan on wlan1"
+wps_scan -i wlan1 -n -v
+f_wireless_attacks
+}
+
+f_wps_spy(){
+clear
+echo "Starting WPS Spy on wlan1"
+wps_spy -i wlan1 -f
+f_wireless_attacks
+}
+
+f_pingen(){
+clear
+read -p "Enter MAC address (BSSID) of DLINK router: " DLINKMAC
+pingen $DLINKMAC
+read -p "Would you like to try pin in reaver against BSSID? (y/n) :" dlinkpinopt
+if [ "$dlinkpot" == "y"]; then
+	read -p "Enter pin generated from pingen (above pin): " dlinkpin
+	airmon-ng stop mon0
+	airmon-ng start wlan1
+	reaver -i mon0 -b $DLINKMAC -p $dlinkpin
+	read -p "Press [Enter] key to continue..."
+	f_wireless_attacks
+else
+	f_wireless_attacks
 }
 
 ##########################   SNIFFING MENU     ###############################
