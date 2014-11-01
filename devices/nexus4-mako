@@ -37,8 +37,8 @@ unzip ramdisk/4.4.4/ramdisk_kitkat.zip -d ${basedir}/flashkernel/kernel/
 
 make clean
 sleep 10
-#make kali_defconfig
-make mako_defconfig #test default defconfig file
+make kali_defconfig
+#make mako_defconfig #test default defconfig file
 
 # Attach kernel builder to updater-script
 echo "#KERNEL_SCRIPT_START" >> ${basedir}/flashkernel/META-INF/com/google/android/updater-script
