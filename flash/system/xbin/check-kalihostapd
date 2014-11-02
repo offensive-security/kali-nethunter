@@ -1,6 +1,5 @@
-if [[ -n $(ps |grep '/usr/local/bin/hostapd') ]]; then
+if [[ -n $(ps |grep '/usr/sbin/hostapd') ]]; then
     echo "1"
 else
     echo "0"
 fi
-
