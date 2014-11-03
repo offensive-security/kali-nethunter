@@ -186,7 +186,7 @@ fi
 f_apfucker(){
   monstat=`grep "mon0" /proc/net/dev`
 
-  if [ -n "$FOUND" ] ; then
+  if [ -n "$monstat" ] ; then
     clear
   else
     ifconfig wlan1 up
