@@ -208,6 +208,17 @@ f_apfucker(){
 
 f_wps_scanner(){
 clear
+if [ ! -f "/usr/bin/wps_scanner" ]; then
+	read -p "WPS Scanner not found, would you like to download? (y/n) : " wpsscannerdownload
+		if [ "$wpsscannerdownload" == "y" ]; then
+			wget https://raw.githubusercontent.com/devttys0/wps/master/wpstools/wpscan.py -O /usr/bin/wps_scan
+			chmod +x /usr/bin/wps_scan
+		else
+			echo "Cancelled download returning to wireless menu"
+			sleep 3
+			f_wireless_attacks
+		fi
+fi
 echo "Starting WPS Scan on wlan1"
 wps_scan -i wlan1 -n -v
 f_wireless_attacks
@@ -215,6 +226,17 @@ f_wireless_attacks
 
 f_wps_spy(){
 clear
+if [ ! -f "/usr/bin/wps_spy" ]; then
+	read -p "WPS Spy not found, would you like to download? (y/n) : " wpsspydownload
+		if [ "$wpsspydownload" == "y" ]; then
+			wget https://raw.githubusercontent.com/devttys0/wps/master/wpstools/wpspy.py -O /usr/bin/wps_spy
+			chmod +x /usr/bin/wps_spy
+		else
+			echo "Cancelled download returning to wireless menu"
+			sleep 3
+			f_wireless_attacks
+		fi
+fi
 echo "Starting WPS Spy on wlan1"
 wps_spy -i wlan1 -f
 f_wireless_attacks
@@ -224,16 +246,17 @@ f_pingen(){
 clear
 read -p "Enter MAC address (BSSID) of DLINK router: " DLINKMAC
 pingen $DLINKMAC
-read -p "Would you like to try pin in reaver against BSSID? (y/n) :" dlinkpinopt
+read -p "Would you like to try pin in reaver against BSSID? (y/n) : " dlinkpinopt
 if [ "$dlinkpot" == "y"]; then
-	read -p "Enter pin generated from pingen (above pin): " dlinkpin
-	airmon-ng stop mon0
-	airmon-ng start wlan1
-	reaver -i mon0 -b $DLINKMAC -p $dlinkpin
-	read -p "Press [Enter] key to continue..."
-	f_wireless_attacks
-else
-	f_wireless_attacks
+		read -p "Enter pin generated from pingen (above pin): " dlinkpin
+		airmon-ng stop mon0
+		airmon-ng start wlan1
+		reaver -i mon0 -b $DLINKMAC -p $dlinkpin
+		read -p "Press [Enter] key to continue..."
+		f_wireless_attacks
+	else
+		f_wireless_attacks
+fi
 }
 
 ##########################   SNIFFING MENU     ###############################
