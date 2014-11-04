@@ -270,9 +270,7 @@ f_mako(){
 echo -e "\e[31m -------------------------      NEXUS 4    -----------------------\e[0m"
 echo ""
 echo "  [1] Build All - Kali rootfs and Kernel (AOSP/STOCK) (Android 4.4+)"
-echo "  [2] Build All - Kali rootfs and Kernel (CAF/CYANOGENMOD) (Android 4.4+)"
-echo "  [3] Build Kernel (AOSP/STOCK) Only"
-echo "  [4] Build Kernel (CAF/Cyanogenmod) Only"
+echo "  [2] Build Kernel (AOSP/STOCK) Only"
 echo "  [0] Exit to Main Menu"
 echo ""
 echo ""
@@ -283,9 +281,7 @@ read -p "Choice: " deb_menuchoice
 case $deb_menuchoice in
 
 1) clear; f_rootfs ; f_flashzip ; f_mako_stock_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-2) clear; f_rootfs ; f_flashzip ; f_mako_cm_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-3) clear; f_mako_stock_kernel ; f_zip_kernel_save ;;
-4) clear; f_mako_cm_kernel ; f_zip_kernel_save ;;
+2) clear; f_mako_stock_kernel ; f_zip_kernel_save ;;
 0) clear; f_interface ;;
 *) echo "Incorrect choice... " ;
 esac
@@ -411,9 +407,8 @@ extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools p
 mana="python-twisted python-dnspython libnl1 libnl-dev libssl-dev sslsplit python-pcapy tinyproxy isc-dhcp-server rfkill mana-toolkit"
 spiderfoot="python-lxml python-m2crypto python-netaddr python-mako"
 sdr="sox librtlsdr"
-mitmf="python-requests python-configobj python-pefile msgpack-python python-nfqueue python-imaging capstone"
 
-export packages="${arm} ${base} ${desktop} ${tools} ${wireless} ${services} ${extras} ${mana} ${spiderfoot} ${sdr} ${mitmf}"
+export packages="${arm} ${base} ${desktop} ${tools} ${wireless} ${services} ${extras} ${mana} ${spiderfoot} ${sdr}"
 export architecture="armhf"
 
 # create the rootfs - not much to modify here, except maybe the hostname.
