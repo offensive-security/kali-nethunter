@@ -1026,24 +1026,16 @@ esac
 f_nodejs(){
 clear
 cd /tmp
-echo "Downloading Node Version Manager"
-git clone https://github.com/creationix/nvm.git ~/.nvm && cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`
-source ~/.nvm/nvm.sh
-chmod +x ~/.nvm/nvm.sh ~/.nvm/nvm-exec
-# We use bash_profile because .bashrc does not load nvm.sh on opened session
-echo 'export NVM_DIR="/root/.nvm"' >> ~/.bash_profile
-echo '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"'  >> ~/.bash_profile
-echo "Starting NodeJS install.  This will take a while..."
-sleep 5
-nvm install 0.10.32 --without-snapshot
-echo "nvm use v0.10.32 > /dev/null" >> ~/.bash_profile
-npm config set user 0
-npm config set unsafe-perm true
-source ~/.bash_profile # Source bash_profile to update location of /bin for npm/nvm
-echo "NodeJS succesfully installed!  Give it a try! (may require restart)"
+wget https://gist.githubusercontent.com/binkybear/40bd757e47a1649f6732/raw/8fe5b74734d424d74a8e94589faff884a8f5ae58/nodejs_kali_install.sh
+chmod +x nodejs_kali_install.sh
+./nodejs_kali_install.sh
+rm -rf /tmp/nodejs_kali_install.sh
+echo "[+] NodeJS install completed"
 echo ""
 echo "Suggested application: localtunnel.me"
 echo "npm install -g localtunnel"
+echo "example: lt --port 8000 "
+echo "Will proxy port 8000 over https to world"
 sleep 5
 f_settings
 }
