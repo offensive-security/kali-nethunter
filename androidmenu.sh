@@ -121,26 +121,9 @@ echo -e "		         \e[1mKALI NETHUNTER BUILDER FOR ANDROID DEVICES\e[0m"
 echo ""
 echo "	   WORK PATH: ${basedir}"
 echo ""
-echo -e "\e[31m	---- NEXUS 10 (2012) - MANTA --------------------------------------------------------\e[0m"
-echo "	[1] Build for Nexus 10 Kernel with wireless USB support (Android 4.4+)"
+echo -e "\e[31m	[1] Build for Nexus Devices \e[0m"
 echo ""
-echo -e "\e[31m	---- NEXUS 7  (2012) - GROUPER/NAKASI -----------------------------------------------\e[0m"
-echo "	[2] Build for Nexus 7 (2012) with wireless USB support (Android 4.4+)"
-echo ""
-echo -e "\e[31m	---- NEXUS 7  (2013) - DEB/FLO ------------------------------------------------------\e[0m"
-echo "	[3] Build for Nexus 7 (2013) with wireless USB support (Android 4.4+)"
-echo ""
-echo -e "\e[31m	---- NEXUS 5  (2013) - HAMMERHEAD ---------------------------------------------------\e[0m"
-echo "	[4] Build for Nexus 5 with wireless USB support (Android 4.4+)"
-echo ""
-echo -e "\e[31m	---- NEXUS 4  (2012) - MAKO ---------------------------------------------------------\e[0m"
-echo "	[5] Build for Nexus 4 with wireless USB support (Android 4.4+)"
-echo ""
-echo -e "\e[31m	---- SAMSUNG GALAXY S5 - G900(F/I/M/T/DEV/W8) ---------------------------------------\e[0m"
-echo "	[6] Build for Samsung Glaxy S5 G900 with wireless USB support (Android 4.4+)"
-echo ""
-echo -e "\e[31m	---- SAMSUNG GALAXY S4 - I9500 ------------------------------------------------------\e[0m"
-echo "	[7] Build for Samsung Glaxy S4 with wireless USB support (Android 4.4+)"
+echo -e "\e[31m	[2] Build for Samsung Devices \e[0m"
 echo ""
 if [ -f "${basedir}/flashkernel/kernel/kernel" ] && [ -d "${basedir}/flash" ]; then
 echo "	[77] Inject finished rootfs/kernel into ROM"
@@ -157,17 +140,77 @@ read -p "Choice: " menuchoice
 
 case $menuchoice in
 
-1) clear; f_manta ;;
-2) clear; f_grouper ;;
-3) clear; f_deb ;;
-4) clear; f_hammerhead ;;
-5) clear; f_mako ;;
-6) clear; f_galaxyS5 ;;
-7) clear; f_galaxyS4_I9500 ;;
+1) clear; f_interface_nexus ;;
+2) clear; f_interface_samsung ;;
 77) clear; f_rom_build ;;
 88) clear; f_rootfs ; f_flashzip; f_zip_save ;;
 99) f_cleanup ;;
 q) clear; exit 1 ;;
+*) echo "Incorrect choice..." ;
+esac
+}
+
+f_interface_nexus(){
+clear
+echo ""
+echo -e "\e[31m ---- NEXUS 10 (2012) - MANTA --------------------------------------------------------\e[0m"
+echo "  [1] Build for Nexus 10 Kernel with wireless USB support (Android 4.4+)"
+echo ""
+echo -e "\e[31m ---- NEXUS 7  (2012) - GROUPER/NAKASI -----------------------------------------------\e[0m"
+echo "  [2] Build for Nexus 7 (2012) with wireless USB support (Android 4.4+)"
+echo ""
+echo -e "\e[31m ---- NEXUS 7  (2013) - DEB/FLO ------------------------------------------------------\e[0m"
+echo "  [3] Build for Nexus 7 (2013) with wireless USB support (Android 4.4+)"
+echo ""
+echo -e "\e[31m ---- NEXUS 4  (2012) - MAKO ---------------------------------------------------------\e[0m"
+echo "  [4] Build for Nexus 4 with wireless USB support (Android 4.4+)"
+echo ""
+echo -e "\e[31m ---- NEXUS 5  (2013) - HAMMERHEAD ---------------------------------------------------\e[0m"
+echo "  [5] Build for Nexus 5 with wireless USB support (Android 4.4+)"
+echo ""
+echo -e "\e[31m ---- NEXUS 6  (2014) - #### ---------------------------------------------------------\e[0m"
+echo "  [#] Build for Nexus 6 with wireless USB support (Android 4.4+)"
+echo ""
+echo -e "\e[31m ---- NEXUS 10  (2014) - #### ---------------------------------------------------------\e[0m"
+echo "  [#] Build for Nexus 10 with wireless USB support (Android 4.4+)"
+echo ""
+echo "  [0] Exit to Main Menu"
+echo ""
+echo ""
+
+read -p "Choice: " nexusmenuchoice
+
+case $nexusmenuchoice in
+
+1) clear; f_manta ;;
+2) clear; f_grouper ;;
+3) clear; f_deb ;;
+4) clear; f_mako ;;
+5) clear; f_hammerhead ;;
+0) clear; f_interface ;;
+*) echo "Incorrect choice..." ;
+esac
+}
+
+f_interface_samsung(){
+echo ""
+echo -e "\e[31m ---- SAMSUNG GALAXY S5 - G900(F/I/M/T/DEV/W8) ---------------------------------------\e[0m"
+echo "  [1] Build for Samsung Glaxy S5 G900 with wireless USB support (Android 4.4+)"
+echo ""
+echo -e "\e[31m ---- SAMSUNG GALAXY S4 - I9500 ------------------------------------------------------\e[0m"
+echo "  [2] Build for Samsung Glaxy S4 with wireless USB support (Android 4.4+)"
+echo ""
+echo "  [0] Exit to Main Menu"
+echo ""
+echo ""
+
+read -p "Choice: " samsungmenuchoice
+
+case $samsungmenuchoice in
+
+1) clear; f_galaxyS5 ;;
+2) clear; f_galaxyS4_I9500 ;;
+0) clear; f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
 }
