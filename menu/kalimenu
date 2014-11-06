@@ -13,7 +13,7 @@ echo "[1]	Wireless Attacks	[6]	Exploit Tools"
 echo "[2]	Sniffing/Spoofing	[7]	OpenVPN Setup"
 echo "[3]	Reverse Shells		[8]	VNC Setup"
 echo "[4]	Info Gathering		[9]	Log/Capture Menu"
-echo "[5]	Vulnerability Scan	[10]	USB Attacks"
+echo "[5]	Vulnerability Scan	[10] USB Attacks"
 echo ""
 echo "[11]	Settings		[13]	Enable/Disable Monitor Mode"
 echo "[12]	Services		[14]	Safely Eject External Wifi"
@@ -93,6 +93,26 @@ if [ -z "$adaptor" ]; then
 else
 	echo -e "\e[92mWLAN1: FOUND\e[0m"
 	echo ""
+fi
+}
+
+f_monitor_check(){
+monstat='grep "mon0" /proc/net/dev'
+
+if [ -n "$monstat" ] ; then
+    clear
+else
+	ifconfig wlan1 up
+	wlanstat='grep "wlan1" /proc/net/dev'
+	    if  [ -n "$wlanstat" ] ; then
+	    	airmon-ng start wlan1
+	    else
+		    echo "You must plug in a compatible wifi card to use this feature."
+		    echo ""
+		    read -p "Press [Enter] to return to the main menu." null
+		    clear
+		    f_wireless_attacks
+		fi
 fi
 }
 
@@ -184,23 +204,7 @@ fi
 }
 
 f_apfucker(){
-  monstat=`grep "mon0" /proc/net/dev`
-
-  if [ -n "$monstat" ] ; then
-    clear
-  else
-    ifconfig wlan1 up
-    wlanstat=`grep "wlan1" /proc/net/dev`
-    if  [ -n "$wlanstat" ] ; then
-      airmon-ng start wlan1
-    else
-      echo "You must plug in a compatible wifi card to use this feature."
-      echo ""
-      read -p "Press [Enter] to return to the main menu." null
-      clear
-      f_wireless_attacks
-    fi
-  fi
+  f_monitor_check
   python /usr/bin/apfucker.py
   clear
   f_wireless_attacks
@@ -219,8 +223,9 @@ if [ ! -f "/usr/bin/wps_scanner" ]; then
 			f_wireless_attacks
 		fi
 fi
-echo "Starting WPS Scan on wlan1"
-wps_scan -i wlan1 -n -v
+echo "Starting WPS Scan on monitor interface"
+f_monitor_check
+wps_scan -i mon0 -n -v
 f_wireless_attacks
 }
 
@@ -237,8 +242,9 @@ if [ ! -f "/usr/bin/wps_spy" ]; then
 			f_wireless_attacks
 		fi
 fi
-echo "Starting WPS Spy on wlan1"
-wps_spy -i wlan1 -f
+echo "Starting WPS Spy on monitor interface"
+f_monitor_check
+wps_spy -i mon0 -f
 f_wireless_attacks
 }
 
@@ -249,8 +255,7 @@ pingen $DLINKMAC
 read -p "Would you like to try pin in reaver against BSSID? (y/n) : " dlinkpinopt
 if [ "$dlinkpot" == "y"]; then
 		read -p "Enter pin generated from pingen (above pin): " dlinkpin
-		airmon-ng stop mon0
-		airmon-ng start wlan1
+		f_monitor_check
 		reaver -i mon0 -b $DLINKMAC -p $dlinkpin
 		read -p "Press [Enter] key to continue..."
 		f_wireless_attacks
@@ -396,6 +401,7 @@ esac
 }
 
 f_mitmf(){
+# Will develop a better way to interface with mitmf in the future
 clear
 read -p "Enter Interface: " -e -i "wlan0" mitmf_interface
 read -p "Enter Gateway IP: " -e -i "192.168.1.1" mitmf_routerip
