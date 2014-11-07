@@ -1014,6 +1014,7 @@ echo "[1] Configure Timezone"
 echo "[2] Create Metasploit User and Database"
 echo "[3] Macchanger"
 echo "[4] Install NodeJS"
+echo "[5] Update Kalimenu"
 echo ""
 echo "[0] Exit to main menu"
 echo ""
@@ -1024,6 +1025,7 @@ case $settingschoice in
 2) clear; f_msuser ;;
 3) clear; f_macchanger ;;
 4) clear; f_nodejs ;;
+5) clear; wget https://raw.githubusercontent.com/offensive-security/kali-nethunter/master/menu/kalimenu -O /usr/bin/kalimenu; chmod +x /usr/bin/kalimenu ; exit ;;
 0) f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
