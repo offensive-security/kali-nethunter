@@ -49,6 +49,8 @@ FROZENKERNEL=0
 #########  Devices  ##########
 # Build scripts for each kernel is located under devices/devicename
 source devices/nexus10-manta
+source devices/nexus9-flounder
+source devices/nexus6-shamu
 source devices/nexus7-grouper-tilapia
 source devices/nexus7-flo-deb
 source devices/nexus5-hammerhead
@@ -168,11 +170,11 @@ echo ""
 echo -e "\e[31m ---- NEXUS 5  (2013) - HAMMERHEAD ---------------------------------------------------\e[0m"
 echo "  [5] Build for Nexus 5 with wireless USB support (Android 4.4+)"
 echo ""
-echo -e "\e[31m ---- NEXUS 6  (2014) - #### ---------------------------------------------------------\e[0m"
+echo -e "\e[31m ---- NEXUS 6  (2014) - SHAMU --------------------------------------------------------\e[0m"
 echo "  [#] Build for Nexus 6 with wireless USB support (Android 4.4+)"
 echo ""
-echo -e "\e[31m ---- NEXUS 10  (2014) - #### ---------------------------------------------------------\e[0m"
-echo "  [#] Build for Nexus 10 with wireless USB support (Android 4.4+)"
+echo -e "\e[31m ---- NEXUS 9 (2014) - FLOUNDER ------------------------------------------------------\e[0m"
+echo "  [#] Build for Nexus 9 with wireless USB support (Android 4.4+)"
 echo ""
 echo "  [0] Exit to Main Menu"
 echo ""
@@ -187,6 +189,8 @@ case $nexusmenuchoice in
 3) clear; f_deb ;;
 4) clear; f_mako ;;
 5) clear; f_hammerhead ;;
+6) clear; f_shamu ;;
+7) clear; f_flounder ;;
 0) clear; f_interface ;;
 *) echo "Incorrect choice..." ;
 esac

@@ -1,0 +1,3 @@
+f_shamu(){
+echo "Current placeholder"
+}
