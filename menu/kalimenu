@@ -121,12 +121,14 @@ cd /captures/wifite
 while :
 do
 clear
+echo ""
 echo "* WIFITE QUICK SELECT *"
 echo ""
 echo "[1] Regular Wifite"
 echo "[2] Attack all WEP"
-echo "[3] Capture all WPA and use dictionary"
-echo "[4] Attack WPS with power over 40+"
+echo "[3] Capture all WPA and crack (WARNING: can cause overheating / power loss)"
+echo "[4] Capture all WPA"
+echo "[5] Attack WPS with power over 40+"
 echo ""
 echo "[0] Exit to Wirelss Attack Menu"
 echo ""
@@ -136,7 +138,8 @@ case $yourch in
 1) clear; wifite ;;
 2) clear; wifite -all -wep ;;
 3) clear; wifite -all -wpa -dict /opt/dic/89.txt ;;
-4) clear; wifite -p 40 -wps ;;
+4) clear; wifite -all -wpa -dict none ;;
+5) clear; wifite -p 40 -wps ;;
 0) clear; f_wireless_attacks ;;
 *) echo "Incorrect choice..." ;
 echo "Press Enter to continue. . ." ; read ;; esac
@@ -182,7 +185,7 @@ giskismet --database "/captures/kismet_db/wireless.dbl" -q "select * from wirele
 echo "Created kismet-$NOW.kml file for Google Earth"
 if [ -d "/sdcard/kali-nh/captures/" ]; then
 	echo "Detected kali-nh capture folder, moving capture files"
-	cd /sdcard/kali-nh/captures/
+	cd /sdcard/kali-nh/captures/kismet/
 	zip -rj "kismet-captures-$NOW.zip" /captures/kismet/
 	echo "Successfully copied to /sdcard/kali-nh/captures/kismet-captures-$NOW.zip"
 	sleep 3
