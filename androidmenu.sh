@@ -447,15 +447,15 @@ cd ${rootfs}
 arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils uboot-mkimage"
 base="kali-menu kali-defaults initramfs-tools usbutils openjdk-7-jre mlocate"
 desktop="kali-defaults kali-root-login desktop-base xfce4 xfce4-places-plugin xfce4-goodies"
-tools="nmap metasploit tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set moreutils"
-wireless="wifite iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq wvdial dsniff sslstrip mdk3"
+tools="nmap metasploit tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set moreutils device-pharmer"
+wireless="wifite iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq dsniff sslstrip mdk3"
 services="autossh openssh-server tightvncserver apache2 postgresql openvpn php5"
 extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools python-pip hostapd ptunnel"
 mana="python-twisted python-dnspython libnl1 libnl-dev libssl-dev sslsplit python-pcapy tinyproxy isc-dhcp-server rfkill mana-toolkit"
 spiderfoot="python-lxml python-m2crypto python-netaddr python-mako"
 sdr="sox librtlsdr"
 
-export packages="${arm} ${base} ${desktop} ${tools} ${wireless} ${services} ${extras} ${mana} ${spiderfoot} ${sdr}"
+export packages="${arm} ${base} ${desktop} ${tools} ${wireless} ${services} ${extras} ${mana} ${spiderfoot} ${sdr} ${shodan}"
 export architecture="armhf"
 
 # create the rootfs - not much to modify here, except maybe the hostname.
@@ -586,6 +586,11 @@ dos2unix ${rootfs}/kali-$architecture/usr/share/mana-toolkit/run-mana/*
 dos2unix ${rootfs}/kali-$architecture/etc/mana-toolkit/*
 chmod 755 ${rootfs}/kali-$architecture/usr/share/mana-toolkit/run-mana/*
 chmod 755 ${rootfs}/kali-$architecture/usr/bin/*.sh
+
+# Install Faraday Integrated Penetration-Test Environment
+git clone https://github.com/infobyte/faraday.git faraday-dev && mv faraday-dev ${rootfs}/kali-$architecture/opt/faraday-dev
+chmod 755 ${rootfs}/kali-$architecture/opt/faraday-dev/install.sh
+LANG=C chroot ${rootfs}/kali-$architecture /opt/faraday-dev/install.sh
 
 # Install HoneyProxy (MITM SSL Proxy Analyzer)
 LANG=C chroot kali-$architecture pip install Autobahn==0.6.5

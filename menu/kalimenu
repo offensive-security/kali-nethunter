@@ -323,6 +323,7 @@ echo ""
 echo ""
 echo "[1]	Spiderfoot - Footprinting Tool"
 echo "[2]	Recon-ng - Web Reconnaissance Framework"
+echo "[3]	Device-pharmer - Search Shodan using API (requires API key)"
 echo ""
 echo "[0]	Exit to main menu"
 echo ""
@@ -331,6 +332,7 @@ read -p "Choice: " infochoice
 case $infochoice in
 1) clear; trap 'f_information_gathering' 2; f_spiderfoot;;
 2) clear; recon-ng; f_information_gathering;;
+3) clear; f_device_pharmer ;;
 0) clear; f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
@@ -338,6 +340,48 @@ esac
 
 f_spiderfoot(){
 cd /opt/spiderfoot/ && python /opt/spiderfoot/sf.py
+}
+
+f_device_pharmer(){
+if [ ! -f "/usr/bin/device-pharmer" ]; then
+	read -p "Device-pharmer was not found, would you like to download? (y/n) : " devicepharmer
+		if [ "$devicepharmer" == "y" ]; then
+			apt-get update && apt-get install -y device-pharmer
+		else
+			echo "Cancelled download returning to information gathering menu"
+			sleep 3
+			f_information_gathering
+		fi
+fi
+if grep -q "ENTER YOUR API KEY HERE AND KEEP THE QUOTES" /usr/bin/device-pharmer;
+	then
+		echo "Device-pharmer requires a Shodan API key which was not found."
+		read -p "Would you like to add your Shodan API key now? (y/n) : " shodanyesorno
+		if [ "$shodanyesorno" == "y" ]; then
+			read -p "Enter your Shodan API key : " shodanapikey
+			sed -i 's/ENTER YOUR API KEY HERE AND KEEP THE QUOTES/'$shodanapikey'/g' /usr/bin/device-pharmer
+			chmod +x /usr/bin/device-pharmer
+		else
+			echo "Cancelled.  Returning back to information gathering menu."
+			f_information_gathering
+		fi
+else
+	echo "Shodan API key found!"
+fi
+
+read -p "Enter your Shodan search term : " shodan search
+read -p "Would you like to use a proxy? (y/n) " shodanproxyyesorno
+if [ $shodanproxyyesorno == "y" ]; then
+	read -p "Enter your proxy address: " shodanproxyadd
+	shodanproxy="--proxy $shodanproxyadd"
+else
+	shodanproxy=""
+fi
+# Begin device-pharmer
+clear
+device-pharmer -s '$shodan_search' -ssl $shodanproxy
+read -p "Press enter to return to information gathering menu..."
+f_information_gathering
 }
 
 ########################## VULNERABILITY MENU ###########################
