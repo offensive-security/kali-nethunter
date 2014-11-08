@@ -6,14 +6,14 @@ DEVICE=$(cat /system/build.prop | grep -E 'product.device=' | cut -d"=" -f2)
 ########################## QUICK MENU ###############################
 f_interface(){
 clear
-echo "			KALI ANDROID QUICK MENU"
+echo "			KALI NETHUNTER QUICK MENU"
 echo ""
 echo ""
 echo "[1]	Wireless Attacks	[6]	Exploit Tools"
 echo "[2]	Sniffing/Spoofing	[7]	OpenVPN Setup"
 echo "[3]	Reverse Shells		[8]	VNC Setup"
 echo "[4]	Info Gathering		[9]	Log/Capture Menu"
-echo "[5]	Vulnerability Scan	[10] USB Attacks"
+echo "[5]	Vulnerability Scan	[10]	USB Attacks"
 echo ""
 echo "[11]	Settings		[13]	Enable/Disable Monitor Mode"
 echo "[12]	Services		[14]	Safely Eject External Wifi"
