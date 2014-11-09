@@ -448,9 +448,9 @@ arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils uboot-mki
 base="kali-menu kali-defaults initramfs-tools usbutils openjdk-7-jre mlocate"
 desktop="kali-defaults kali-root-login desktop-base xfce4 xfce4-places-plugin xfce4-goodies"
 tools="nmap metasploit tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set moreutils device-pharmer"
-wireless="wifite iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq dsniff sslstrip mdk3"
+wireless="wifite iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq dsniff sslstrip mdk3 mitmproxy"
 services="autossh openssh-server tightvncserver apache2 postgresql openvpn php5"
-extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools python-pip hostapd ptunnel"
+extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools python-pip hostapd ptunnel tcptrace dnsutils"
 mana="python-twisted python-dnspython libnl1 libnl-dev libssl-dev sslsplit python-pcapy tinyproxy isc-dhcp-server rfkill mana-toolkit"
 spiderfoot="python-lxml python-m2crypto python-netaddr python-mako"
 sdr="sox librtlsdr"
@@ -591,19 +591,6 @@ chmod 755 ${rootfs}/kali-$architecture/usr/bin/*.sh
 git clone https://github.com/infobyte/faraday.git faraday-dev && mv faraday-dev ${rootfs}/kali-$architecture/opt/faraday-dev
 chmod 755 ${rootfs}/kali-$architecture/opt/faraday-dev/install.sh
 LANG=C chroot ${rootfs}/kali-$architecture /opt/faraday-dev/install.sh
-
-# Install HoneyProxy (MITM SSL Proxy Analyzer)
-LANG=C chroot kali-$architecture pip install Autobahn==0.6.5
-wget http://honeyproxy.org/download/honeyproxy-latest.zip -O ${rootfs}/kali-$architecture/opt/honeyproxy.zip
-unzip ${rootfs}/kali-$architecture/opt/honeyproxy.zip -d ${rootfs}/kali-$architecture/opt/honeyproxy/
-rm -f ${rootfs}/kali-$architecture/opt/honeyproxy.zip
-cat << EOF > ${rootfs}/kali-$architecture/opt/honeyproxy/default.conf
-# Honeyproxy Configuration File
--w /captures/honeyproxy/http_conversations_outfile
---dump-dir /captures/honeyproxy/
--T
-#-p port
-EOF
 
 # Install MITMf
 LANG=C chroot ${rootfs}/kali-$architecture pip install capstone
