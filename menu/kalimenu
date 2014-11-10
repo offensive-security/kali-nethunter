@@ -366,7 +366,7 @@ echo "[+] Starting tshark on $pickinterface"
 echo "[+] Writing to $PASSIVECAPTURE for $MINUTES minute(s)"
 echo ""
 # Maybe add a trap so we can exit early
-tshark -n -i $pickinterface -w $PASSIVECAPTURE -F pcap -a -V duration:$SECONDS
+tshark -n -i $pickinterface -w $PASSIVECAPTURE -F pcap -a duration:$SECONDS -V
 echo "[-] Stopping tshark "
 
 echo "[+] Starting p0f"
@@ -434,6 +434,8 @@ f_sniffing
 
 f_mitmproxy(){
 if [ ! -f "~/.mitmproxy/cert.key" ]; then
+	echo "Custom MITM Proxy certificate not found. Generating key..."
+	sleep 3
 	mkdir -p ~/.mitmproxy
 	cd ~/.mitmproxy
 	openssl genrsa -out cert.key 8192
@@ -1139,8 +1141,8 @@ f_hid_dic(){
 clear
 cd /opt/dic
 echo "Pick a Dictionary: " dictselect
-echo "[1] Common Passwords"
-echo "[2] 4 digit PIN Numbers"
+echo "[1] Common Passwords - Will bruteforce common password followed by return key"
+echo "[2] 4 digit PIN Numbers - Will bruteforce 4 digit pins followed by return key"
 echo ""
 echo "[0] Back to HID Menu"
 echo ""
