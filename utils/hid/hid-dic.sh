@@ -12,6 +12,6 @@ do
         echo "$char" | $hidkey /dev/hidg0 keyboard
 if [ "$char" == $'\n' ]; then
         # For each new line = return key
-        echo --return | $hidkey /dev/hidg0 keyboard
+        echo enter | $hidkey /dev/hidg0 keyboard
 fi
 done < "$INPUT"
