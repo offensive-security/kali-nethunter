@@ -1225,6 +1225,7 @@ f_updatenethunter(){
   clear
   apt-get update
   apt-get upgrade
+  apt-get install -y dos2unix
   mkdir -p ~/tmp
   cd ~/tmp
   git clone https://github.com/offensive-security/kali-nethunter.git
