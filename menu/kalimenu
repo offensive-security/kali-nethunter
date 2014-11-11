@@ -1162,7 +1162,7 @@ case $settingschoice in
 2) clear; f_msuser ;;
 3) clear; f_macchanger ;;
 4) clear; f_nodejs ;;
-5) clear; wget https://raw.githubusercontent.com/offensive-security/kali-nethunter/master/menu/kalimenu -O /usr/bin/kalimenu; chmod +x /usr/bin/kalimenu ; exit ;;
+5) clear; f_updatenethunter;;
 0) f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
@@ -1219,6 +1219,64 @@ if [ "$randommac" == "y" ]; then
 		fi
 fi
 f_settings
+}
+
+f_updatenethunter(){
+  clear
+  apt-get update
+  apt-get upgrade
+  mkdir -r ~/tmp
+  cd ~/tmp
+  git clone https://github.com/offensive-security/kali-nethunter.git
+
+  cp -rf ~/tmp/kali-nethunter/menu/kalimenu /usr/bin/kalimenu
+
+  chmod 755 /usr/bin/kalimenu
+
+  cp -rf ~/tmp/kali-nethunter/utils/{s,start-*} /usr/bin/
+  cp -rf ~/tmp/kali-nethunter/utils/hid/* /usr/bin/
+  cp -rf ~/tmp/kali-nethunter/utils/msf/*.sh /usr/bin/
+
+  cp -rf ~/tmp/kali-nethunter/utils/manna/start-mana* /usr/bin/
+  cp -rf ~/tmp/kali-nethunter/utils/manna/stop-mana /usr/bin/
+  cp -rf ~/tmp/kali-nethunter/utils/manna/*.sh /usr/share/mana-toolkit/run-mana/
+  dos2unix /usr/share/mana-toolkit/run-mana/*
+  dos2unix /etc/mana-toolkit/*
+  chmod 755 /usr/share/mana-toolkit/run-mana/*
+  chmod 755 /usr/bin/*.sh
+
+  wget https://raw.githubusercontent.com/devttys0/wps/master/wpstools/wpscan.py -O /usr/bin/wps_scan
+  wget https://raw.githubusercontent.com/devttys0/wps/master/wpstools/wpspy.py -O /usr/bin/wps_spy
+  wget https://raw.githubusercontent.com/devttys0/wps/master/pingens/dlink/pingen.py -O /usr/bin/pingen
+  chmod 755 /usr/bin/wps_scan /usr/bin/pingen /usr/bin/wps_spy
+
+  git clone git://git.kali.org/packages/google-nexus-tools
+  cp ./google-nexus-tools/bin/linux-arm-adb /usr/bin/adb
+  cp ./google-nexus-tools/bin/linux-arm-fastboot /usr/bin/fastboot
+  rm -rf ./google-nexus-tools
+  chmod 755 /usr/bin/fastboot
+  chmod 755 /usr/bin/adb
+
+  curl -o deadbolt https://raw.githubusercontent.com/photonicgeek/deADBolt/master/main.sh
+  cp ./deadbolt /usr/bin/deadbolt
+  rm -rf deadbolt
+  chmod 755 /usr/bin/deadbolt
+
+  curl -o apfucker.py https://raw.githubusercontent.com/mattoufoutu/scripts/master/AP-Fucker.py
+  cp ./apfucker.py /usr/bin/apfucker.py
+  rm -rf deadbolt
+  chmod 755 /usr/bin/apfucker.py
+
+  cp ~/tmp/kali-nethunter/flash/system/xbin/hid-keyboard /usr/bin/hid-keyboard
+  cp ~/tmp/kali-nethunter/utils/dic/pinlist.txt /opt/dic/pinlist.txt
+  cp ~/tmp/kali-nethunter/utils/dic/wordlist.txt /opt/dic/wordlist.txt
+  cp ~/tmp/kali-nethunter/utils/hid/hid-dic.sh /usr/bin/hid-dic
+  chmod 755 /usr/bin/hid-keyboard
+  chmod 755 /usr/bin/hid-dic
+
+  cd ~/
+  rm -rf ~/tmp
+  sh /usr/bin/kalimenu
 }
 
 ##############################################
