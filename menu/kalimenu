@@ -370,58 +370,22 @@ tshark -n -i $pickinterface -w $PASSIVECAPTURE -F pcap -a duration:$SECONDS -V
 echo "[-] Stopping tshark "
 
 echo "[+] Starting p0f"
-echo " ------------  P0F OUTPUT ------------- " >> $PASSIVEOUTPUT
-p0f -r $PASSIVECAPTURE -o $PASSIVEOUTPUT
+p0f -s $PASSIVECAPTURE -o $PASSIVEOUTPUT
 
 echo "[+] Scanning $PASSIVECAPTURE for plain text passwords"
-echo "" >> $PASSIVEOUTPUT
-echo " ------------  DSNIFF OUTPUT ------------- " >> $PASSIVEOUTPUT
 dsniff -p $PASSIVECAPTURE >> $PASSIVEOUTPUT
 
 echo "[+] Scanning $PASSIVECAPTURE for HTTP traffic"
-echo "" >> $PASSIVEOUTPUT
-echo " ------------  URLSNARF OUTPUT ------------- " >> $PASSIVEOUTPUT
 urlsnarf -p $PASSIVECAPTURE >> $PASSIVEOUTPUT
 
 echo "[+] Scanning $PASSIVECAPTURE for SMTP/POP Email"
-echo "" >> $PASSIVEOUTPUT
-echo " ------------  MAILSNARF OUTPUT ------------- " >> $PASSIVEOUTPUT
 mailsnarf -p $PASSIVECAPTURE >> $PASSIVEOUTPUT
 
 echo "[+] Scanning $PASSIVECAPTURE for NFS Files"
-echo "" >> $PASSIVEOUTPUT
-echo " ------------  FILESNARF OUTPUT ------------- " >> $PASSIVEOUTPUT
 filesnarf -p $PASSIVECAPTURE >> $PASSIVEOUTPUT
 
 echo "[+] Scanning $PASSIVECAPTURE for Chat messages"
-echo "" >> $PASSIVEOUTPUT
-echo " ------------  MSGSNARF OUTPUT ------------- " >> $PASSIVEOUTPUT
 msgsnarf -p $PASSIVECAPTURE >> $PASSIVEOUTPUT
-
-# Parse out pcap file to log using 
-# From: https://github.com/phreakocious/pcap-scripts/blob/master/summarizePcaps.sh
-echo "" >> $PASSIVEOUTPUT
-echo " -----------  UNIQUE IPs/MAC ------------ " >> $PASSIVEOUTPUT
-
-declare -A IPTOMAC
-
-echo \# filename clientmac clientip clientport  servermac serverip serverport
-for FILE in $PASSIVECAPTURE; do
-
-    while read MAC IP; do
-		IPTOMAC[$IP]=$MAC
-	done < <(tshark -Tfields -e eth.src -e ip.src -e eth.dst -e ip.dst -r $FILE -R tcp 2> >(grep -v dangerous) |
-                 awk '{print $1,$2; print $3,$4}' |
-                 sort | uniq)
-
-	tcptrace -n $FILE |
-        egrep '^\s+[0-9]:' |
-        sed -r -e 's/^\s+[0-9]:\s//' -e 's/:/ /g' -e 's/\s+-\s+/ /' -e 's/\s+\(.*//' |
-        while read CLIENTIP CLIENTPORT SERVERIP SERVERPORT; do
-        echo "$FILE ${IPTOMAC[$CLIENTIP]} $CLIENTIP $CLIENTPORT  ${IPTOMAC[$SERVERIP]} $SERVERIP $SERVERPORT"
-		echo "$FILE ${IPTOMAC[$CLIENTIP]} $CLIENTIP $CLIENTPORT  ${IPTOMAC[$SERVERIP]} $SERVERIP $SERVERPORT" >> $PASSIVEOUTPUT
-	done
-done
 
 cat $PASSIVEOUTPUT
 
@@ -433,25 +397,6 @@ f_sniffing
 }
 
 f_mitmproxy(){
-if [ ! -f "~/.mitmproxy/cert.key" ]; then
-	echo "Custom MITM Proxy certificate not found. Generating key..."
-	sleep 3
-	mkdir -p ~/.mitmproxy
-	cd ~/.mitmproxy
-	openssl genrsa -out cert.key 8192
-	echo "Common name is the domain name e.g.: *.domainname.com"
-	openssl req -new -x509 -key cert.key -out cert.crt
-	cat cert.key cert.crt > cert.pem
-	mkdir -p /sdcard/kali-nh/mitmproxy
-	cp cert.pem /sdcard/kali-nh/mitmproxy/cert.cer
-	clear
-	echo "Copying mitmproxy custom certificate to /sdcard/kali-nh/mitmproxy/cert.cer"
-	echo "To load certificate onto Android device: Settings > Security > Credential Storage > Install from storage "
-	echo ""
-	echo "The easiest way is to load/match MITM proxy settings and go to http://mitm.it"
-	read -p "Press [enter] to continue..."
-fi
-cd ~/.mitmproxy
 echo "Flushing iptables"
 iptables --flush
 echo "Enabling transparent proxy on wlan0"
@@ -459,7 +404,7 @@ iptables -t nat -A PREROUTING -i wlan0 -p tcp --dport 80 -j REDIRECT --to-port 8
 iptables -t nat -A PREROUTING -i wlan0 -p tcp --dport 443 -j REDIRECT --to-port 8080
 LANG=en_US.UTF-8
 echo "Starting MITM proxy and writing to /captures/mitmproxy/mitmlog_$NOW"
-mitmproxy -T --host --cert=cert.pem -w /captures/mitmproxy/mitmlog_$NOW
+mitmproxy -T --host -w /captures/mitmproxy/mitmlog_$NOW
 f_sniffing
 }
 ########################## INFO GATHER MENU ##############################
