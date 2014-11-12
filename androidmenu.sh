@@ -49,7 +49,7 @@ FROZENKERNEL=0
 #########  Devices  ##########
 # Build scripts for each kernel is located under devices/devicename
 case $1 in
-  update) echo "updating";;
+  updater) echo "updating";;
   *)
     source devices/nexus10-manta
     source devices/nexus9-flounder
