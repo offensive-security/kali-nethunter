@@ -215,7 +215,7 @@ f_apfucker(){
 
 f_wps_scanner(){
 clear
-if [ ! -f "/usr/bin/wps_scan" ]; then
+if [ ! -f "/usr/bin/wps_scanner" ]; then
 	read -p "WPS Scanner not found, would you like to download? (y/n) : " wpsscannerdownload
 		if [ "$wpsscannerdownload" == "y" ]; then
 			wget https://raw.githubusercontent.com/devttys0/wps/master/wpstools/wpscan.py -O /usr/bin/wps_scan
@@ -397,27 +397,14 @@ f_sniffing
 }
 
 f_mitmproxy(){
-mitmlog=/captures/mitmproxy/mitmlog_$NOW
-ip_proxy=$(/sbin/ifconfig wlan0 | awk -F ' *|:' '/inet addr/{print $4}')
-
-mkdir -p /captures/mitmproxy
 echo "Flushing iptables"
 iptables --flush
 echo "Enabling transparent proxy on wlan0"
 iptables -t nat -A PREROUTING -i wlan0 -p tcp --dport 80 -j REDIRECT --to-port 8080
 iptables -t nat -A PREROUTING -i wlan0 -p tcp --dport 443 -j REDIRECT --to-port 8080
 LANG=en_US.UTF-8
-echo "Instructions:"
-echo "Starting MITM proxy in transparent mode on wlan0 > writing to $mitmlog"
-echo "IPtables is redirecting port 80 and 443 to port 8080"
-echo "Configure the client to use $ip_proxy as the default gateway"
-echo "Open the magic domain mitm.it and install the certificate on client computer."
-echo ""
-read -p "Press [enter] to continue..."
-#LANG=en_US.UTF-8 mitmproxy -T --host -w $mitmlog
-mitmproxy -T --host -w $mitmlog
-# flush iptables when finished
-iptables --flush
+echo "Starting MITM proxy and writing to /captures/mitmproxy/mitmlog_$NOW"
+mitmproxy -T --host -w /captures/mitmproxy/mitmlog_$NOW
 f_sniffing
 }
 ########################## INFO GATHER MENU ##############################
@@ -1164,18 +1151,18 @@ echo "[1] Configure Timezone"
 echo "[2] Create Metasploit User and Database"
 echo "[3] Macchanger"
 echo "[4] Install NodeJS"
-echo "[5] Update NetHunter"
+echo "[5] Update Kalimenu"
 echo ""
 echo "[0] Exit to main menu"
 echo ""
-read -p "Choice: " settingschoice
+read -p "Choice:" settingschoice
 
 case $settingschoice in
 1) clear; dpkg-reconfigure tzdata ;;
 2) clear; f_msuser ;;
 3) clear; f_macchanger ;;
 4) clear; f_nodejs ;;
-5) clear; f_updatenethunter; f_settings;;
+5) clear; f_updatenethunter;;
 0) f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
@@ -1236,25 +1223,9 @@ f_settings
 
 f_updatenethunter(){
   clear
-  echo "Updating NetHunter..."
-  echo ""
-  echo "Updating repo information"
-  apt-get -y update
-  echo "Upgrading Packages"
-  apt-get -y upgrade
-  echo "Making Temporary Directory"
-  mkdir -p /root/tmp
-  echo "Changing To Temporary Directory"
-  cd /root/tmp
-  echo "Cloning From NetHunter"
-  git clone https://github.com/offensive-security/kali-nethunter.git
-  echo "Making androidmenu.sh Executable"
-  chmod 755 /root/tmp/kali-nethunter/androidmenu.sh
-  echo "Starting Update Script"
-  /root/tmp/kali-nethunter/androidmenu.sh updater
-  echo "Removing Temporary Directory"
-  rm -rf /root/tmp
-  }
+  echo "Still in Development"
+  f_settings
+}
 
 ##############################################
 # PICK INTERFACE USED FOR MULTPILE FUNCTIONS

@@ -48,19 +48,15 @@ FROZENKERNEL=0
 
 #########  Devices  ##########
 # Build scripts for each kernel is located under devices/devicename
-case $1 in
-  updater) echo "updating";;
-  *)
-    source devices/nexus10-manta
-    source devices/nexus9-flounder
-    source devices/nexus6-shamu
-    source devices/nexus7-grouper-tilapia
-    source devices/nexus7-flo-deb
-    source devices/nexus5-hammerhead
-    source devices/nexus4-mako
-    source devices/galaxys5-G900
-    source devices/galaxys4;;
-esac
+source devices/nexus10-manta
+source devices/nexus9-flounder
+source devices/nexus6-shamu
+source devices/nexus7-grouper-tilapia
+source devices/nexus7-flo-deb
+source devices/nexus5-hammerhead
+source devices/nexus4-mako
+source devices/galaxys5-G900
+source devices/galaxys4
 
 ######### Set paths and permissions  #######
 
@@ -72,13 +68,8 @@ wwork=`pwd`/PLACE_ROM_HERE/working_rom_folder
 wram=`pwd`/PLACE_ROM_HERE/working_ramdisk_folder
 bt=`pwd`/utils/boottools
 architecture="armhf"
-chrootcmd="LANG=C chroot kali-$architecture"
-kalirootfs="${rootfs}/kali-$architecture"
 
-case $1 in
-  updater) echo "updating";;
-  *) chmod +x utils/boottools/*;;
-esac
+chmod +x utils/boottools/*
 
 ######### Build script start  #######
 
@@ -456,7 +447,7 @@ cd ${rootfs}
 arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils uboot-mkimage"
 base="kali-menu kali-defaults initramfs-tools usbutils openjdk-7-jre mlocate"
 desktop="kali-defaults kali-root-login desktop-base xfce4 xfce4-places-plugin xfce4-goodies"
-tools="nmap metasploit tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set device-pharmer dos2unix"
+tools="nmap metasploit tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set device-pharmer"
 wireless="wifite iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq dsniff sslstrip mdk3 mitmproxy"
 services="autossh openssh-server tightvncserver apache2 postgresql openvpn php5"
 extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools python-pip hostapd ptunnel tcptrace dnsutils p0f"
@@ -475,7 +466,7 @@ cp /usr/bin/qemu-arm-static kali-$architecture/usr/bin/
 
 # SECOND STAGE CHROOT
 
-$chrootcmd /debootstrap/debootstrap --second-stage
+LANG=C chroot kali-$architecture /debootstrap/debootstrap --second-stage
 
 cat << EOF > kali-$architecture/etc/apt/sources.list
 deb http://http.kali.org/kali kali main contrib non-free
@@ -564,6 +555,7 @@ apt-get install locales-all
 
 debconf-set-selections /debconf.set
 rm -f /debconf.set
+apt-get update
 apt-get -y install git-core binutils ca-certificates initramfs-tools uboot-mkimage
 apt-get -y install locales console-common less nano git
 echo "root:toor" | chpasswd
@@ -579,33 +571,46 @@ rm -f /third-stage
 EOF
 
 chmod +x kali-$architecture/third-stage
-$chrootcmd /third-stage
+LANG=C chroot kali-$architecture /third-stage
 
 # Modify kismet configuration to work with gpsd and socat
-sed -i 's/\# logprefix=\/some\/path\/to\/logs/logprefix=\/captures\/kismet/g' $kalirootfs/etc/kismet/kismet.conf
-sed -i 's/# ncsource=wlan0/ncsource=wlan1/g' $kalirootfs/etc/kismet/kismet.conf
-sed -i 's/gpshost=localhost:2947/gpshost=127.0.0.1:2947/g' $kalirootfs/etc/kismet/kismet.conf
+sed -i 's/\# logprefix=\/some\/path\/to\/logs/logprefix=\/captures\/kismet/g' ${rootfs}/kali-$architecture/etc/kismet/kismet.conf
+sed -i 's/# ncsource=wlan0/ncsource=wlan1/g' ${rootfs}/kali-$architecture/etc/kismet/kismet.conf
+sed -i 's/gpshost=localhost:2947/gpshost=127.0.0.1:2947/g' ${rootfs}/kali-$architecture/etc/kismet/kismet.conf
 
-f_mana_config
+
+# Copy over our kali specific mana config files
+cp -rf ${basepwd}/utils/manna/start-mana* ${rootfs}/kali-$architecture/usr/bin/
+cp -rf ${basepwd}/utils/manna/stop-mana ${rootfs}/kali-$architecture/usr/bin/
+cp -rf ${basepwd}/utils/manna/*.sh ${rootfs}/kali-$architecture/usr/share/mana-toolkit/run-mana/
+dos2unix ${rootfs}/kali-$architecture/usr/share/mana-toolkit/run-mana/*
+dos2unix ${rootfs}/kali-$architecture/etc/mana-toolkit/*
+chmod 755 ${rootfs}/kali-$architecture/usr/share/mana-toolkit/run-mana/*
+chmod 755 ${rootfs}/kali-$architecture/usr/bin/*.sh
+
+# Install Faraday Integrated Penetration-Test Environment
+git clone https://github.com/infobyte/faraday.git faraday-dev && mv faraday-dev ${rootfs}/kali-$architecture/opt/faraday-dev
+chmod 755 ${rootfs}/kali-$architecture/opt/faraday-dev/install.sh
+LANG=C chroot ${rootfs}/kali-$architecture /opt/faraday-dev/install.sh
 
 # Install Phishing Frenzy
 
 ## apt-get install libcurl4-openssl-dev apache2-threaded-dev libapr1-dev libaprutil1-dev redis-server
-#git clone https://github.com/pentestgeek/phishing-frenzy.git $kalirootfs/var/www/phishing-frenzy
-#LANG=C chroot $kalirootfs gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
-#touch $kalirootfs/etc/apache2/pf.conf
-#echo "source /usr/local/rvm/scripts/rvm" >> $kalirootfs/root/.bashrc
-#LANG=C chroot $kalirootfs source /root/.bashrc
-#LANG=C chroot $kalirootfs rvm all do gem install --no-rdoc --no-ri rails passenger
-#LANG=C chroot $kalirootfs passenger-install-apache2-module --auto
-#echo "LoadModule passenger_module /usr/local/rvm/gems/ruby-2.1.4/gems/passenger-4.0.53/buildout/apache2/mod_passenger.so" >> $kalirootfs/etc/apache2/apache2.conf
-#echo "<IfModule mod_passenger.c>" >> $kalirootfs/etc/apache2/apache2.conf
-#echo " PassengerRoot /usr/local/rvm/gems/ruby-2.1.4/gems/passenger-4.0.53" >> $kalirootfs/etc/apache2/apache2.conf
-#echo " PassengerDefaultRuby /usr/local/rvm/gems/ruby-2.1.4/wrappers/ruby" >> $kalirootfs/etc/apache2/apache2.conf
-#echo "</IfModule>" >> $kalirootfs/etc/apache2/apache2.conf
-#LANG=C chroot $kalirootfs /etc/init.d/mysql start
-#LANG=C chroot $kalirootfs mysql -u root -e "create database pf_dev; grant all privileges on pf_dev.* to 'pf_dev'@'localhost' identified by 'password';"
-#cat << EOF > $kalirootfs/etc/apache2/pf.conf
+#git clone https://github.com/pentestgeek/phishing-frenzy.git ${rootfs}/kali-$architecture/var/www/phishing-frenzy
+#LANG=C chroot ${rootfs}/kali-$architecture gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
+#touch ${rootfs}/kali-$architecture/etc/apache2/pf.conf
+#echo "source /usr/local/rvm/scripts/rvm" >> ${rootfs}/kali-$architecture/root/.bashrc
+#LANG=C chroot ${rootfs}/kali-$architecture source /root/.bashrc
+#LANG=C chroot ${rootfs}/kali-$architecture rvm all do gem install --no-rdoc --no-ri rails passenger
+#LANG=C chroot ${rootfs}/kali-$architecture passenger-install-apache2-module --auto
+#echo "LoadModule passenger_module /usr/local/rvm/gems/ruby-2.1.4/gems/passenger-4.0.53/buildout/apache2/mod_passenger.so" >> ${rootfs}/kali-$architecture/etc/apache2/apache2.conf
+#echo "<IfModule mod_passenger.c>" >> ${rootfs}/kali-$architecture/etc/apache2/apache2.conf
+#echo " PassengerRoot /usr/local/rvm/gems/ruby-2.1.4/gems/passenger-4.0.53" >> ${rootfs}/kali-$architecture/etc/apache2/apache2.conf
+#echo " PassengerDefaultRuby /usr/local/rvm/gems/ruby-2.1.4/wrappers/ruby" >> ${rootfs}/kali-$architecture/etc/apache2/apache2.conf
+#echo "</IfModule>" >> ${rootfs}/kali-$architecture/etc/apache2/apache2.conf
+#LANG=C chroot ${rootfs}/kali-$architecture /etc/init.d/mysql start
+#LANG=C chroot ${rootfs}/kali-$architecture mysql -u root -e "create database pf_dev; grant all privileges on pf_dev.* to 'pf_dev'@'localhost' identified by 'password';"
+#cat << EOF > ${rootfs}/kali-$architecture/etc/apache2/pf.conf
 #<IfModule mod_passenger.c>
 #  PassengerRoot %ROOT
 #  PassengerRuby %RUBY
@@ -622,33 +627,74 @@ f_mana_config
 #  </Directory>
 #</VirtualHost>
 #EOF
-#LANG=C chroot $kalirootfs "cd /var/www/phishing-frenzy/ && bundle install"
-#chown -R www-data:www-data $kalirootfs/var/www/phishing-frenzy/
-#chown -R www-data:www-data $kalirootfs/etc/apache2/sites-available/
-#chown -R 755 $kalirootfs/var/www/phishing-frenzy/public/uploads/
-#LANG=C chroot $kalirootfs "cd /var/www/phishing-frenzy/ && rake db:migrate && rake db:seed && rake templates:load"
-#LANG=C chroot $kalirootfs /etc/init.d/mysql stop
+#LANG=C chroot ${rootfs}/kali-$architecture "cd /var/www/phishing-frenzy/ && bundle install"
+#chown -R www-data:www-data ${rootfs}/kali-$architecture/var/www/phishing-frenzy/
+#chown -R www-data:www-data ${rootfs}/kali-$architecture/etc/apache2/sites-available/
+#chown -R 755 ${rootfs}/kali-$architecture/var/www/phishing-frenzy/public/uploads/
+#LANG=C chroot ${rootfs}/kali-$architecture "cd /var/www/phishing-frenzy/ && rake db:migrate && rake db:seed && rake templates:load"
+#LANG=C chroot ${rootfs}/kali-$architecture /etc/init.d/mysql stop
 
-f_mitmf_install
+# Install MITMf
+LANG=C chroot ${rootfs}/kali-$architecture pip install capstone
+git clone https://github.com/byt3bl33d3r/MITMf.git && mv MITMf ${rootfs}/kali-$architecture/opt/MITMf
+chmod 755 ${rootfs}/kali-$architecture/opt/MITMf/setup.sh ${rootfs}/kali-$architecture/opt/MITMf/update.sh
+LANG=C chroot ${rootfs}/kali-$architecture /opt/MITMf/setup.sh
 
-f_wifite_install
+# Install Dictionary for wifite
+mkdir -p ${rootfs}/kali-$architecture/opt/dic
+tar xvf ${basepwd}/utils/dic/89.tar.gz -C ${rootfs}/kali-$architecture/opt/dic
 
-f_wpsscan_install
+# Install WPS Scan which scans routers for enabled WPS & pingen which generates DLINK WPS pins
+wget https://raw.githubusercontent.com/devttys0/wps/master/wpstools/wpscan.py -O ${rootfs}/kali-$architecture/usr/bin/wps_scan
+wget https://raw.githubusercontent.com/devttys0/wps/master/wpstools/wpspy.py -O ${rootfs}/kali-$architecture/usr/bin/wps_spy
+wget https://raw.githubusercontent.com/devttys0/wps/master/pingens/dlink/pingen.py -O ${rootfs}/kali-$architecture/usr/bin/pingen
+chmod 755 ${rootfs}/kali-$architecture/usr/bin/wps_scan ${rootfs}/kali-$architecture/usr/bin/pingen ${rootfs}/kali-$architecture/usr/bin/wps_spy
 
-f_spiderfoot_install
+# Install Spiderfoot
+# Cherrypy is newer in pip then in repo so we need to use that instead.  All other depend are fine.
+LANG=C chroot kali-$architecture pip install cherrypy
+cd ${rootfs}/kali-$architecture/opt/
+wget https://github.com/smicallef/spiderfoot/archive/v2.2.0-final.tar.gz -O spiderfoot.tar.gz
+tar xvf spiderfoot.tar.gz && rm spiderfoot.tar.gz && mv spiderfoot-2.2.0-final spiderfoot
+cd ${rootfs}
 
 # Modify Kismet log saving folder
-sed -i 's/hs/\/captures/g' $kalirootfs/etc/kismet/kismet.conf
+sed -i 's/hs/\/captures/g' ${rootfs}/kali-$architecture/etc/kismet/kismet.conf
 
-f_kalimenu_install
+# Kali Menu (bash script) to quickly launch common Android Programs
+cp -rf ${basepwd}/menu/kalimenu ${rootfs}/kali-$architecture/usr/bin/kalimenu
+sleep 5
 
-f_adb_install
+#Installs ADB and fastboot compiled for ARM
+git clone git://git.kali.org/packages/google-nexus-tools
+cp ./google-nexus-tools/bin/linux-arm-adb ${rootfs}/kali-$architecture/usr/bin/adb
+cp ./google-nexus-tools/bin/linux-arm-fastboot ${rootfs}/kali-$architecture/usr/bin/fastboot
+rm -rf ./google-nexus-tools
+LANG=C chroot kali-$architecture chmod 755 /usr/bin/fastboot
+LANG=C chroot kali-$architecture chmod 755 /usr/bin/adb
 
-f_deadbolt_install
+#Installs deADBolt
+curl -o deadbolt https://raw.githubusercontent.com/photonicgeek/deADBolt/master/main.sh
+cp ./deadbolt ${rootfs}/kali-$architecture/usr/bin/deadbolt
+rm -rf deadbolt
+LANG=C chroot kali-$architecture chmod 755 /usr/bin/deadbolt
 
-f_apfucker_install
+#Installs APFucker.py
+curl -o apfucker.py https://raw.githubusercontent.com/mattoufoutu/scripts/master/AP-Fucker.py
+cp ./apfucker.py ${rootfs}/kali-$architecture/usr/bin/apfucker.py
+rm -rf deadbolt
+LANG=C chroot kali-$architecture chmod 755 /usr/bin/apfucker.py
 
-f_hidattack_install
+#Install HID attack script and dictionaries
+cp ${basepwd}/flash/system/xbin/hid-keyboard ${rootfs}/kali-$architecture/usr/bin/hid-keyboard
+cp ${basepwd}/utils/dic/pinlist.txt ${rootfs}/kali-$architecture/opt/dic/pinlist.txt
+cp ${basepwd}/utils/dic/wordlist.txt ${rootfs}/kali-$architecture/opt/dic/wordlist.txt
+cp ${basepwd}/utils/hid/hid-dic.sh ${rootfs}/kali-$architecture/usr/bin/hid-dic
+LANG=C chroot kali-$architecture chmod 755 /usr/bin/hid-keyboard
+LANG=C chroot kali-$architecture chmod 755 /usr/bin/hid-dic
+
+# Set permissions to executable on newly added scripts
+LANG=C chroot kali-$architecture chmod 755 /usr/bin/kalimenu
 
 # Sets the default for hostapd.conf but not really needed as evilap will create it's own now
 #sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/etc/hostapd/hostapd.conf#' kali-$architecture/etc/init.d/hostapd
@@ -691,100 +737,14 @@ rm -f /usr/bin/qemu*
 EOF
 
 chmod +x kali-$architecture/cleanup
-$chrootcmd /cleanup
+LANG=C chroot kali-$architecture /cleanup
 
-umount $kalirootfs/proc/sys/fs/binfmt_misc
-umount $kalirootfs/dev/pts
-umount $kalirootfs/dev/
-umount $kalirootfs/proc
+umount ${rootfs}/kali-$architecture/proc/sys/fs/binfmt_misc
+umount ${rootfs}/kali-$architecture/dev/pts
+umount ${rootfs}/kali-$architecture/dev/
+umount ${rootfs}/kali-$architecture/proc
 
 sleep 5
-}
-
-f_mana_config(){
-# Copy over our kali specific mana config files
-cp -rf ${basepwd}/utils/manna/start-mana* $kalirootfs/usr/bin/
-cp -rf ${basepwd}/utils/manna/stop-mana $kalirootfs/usr/bin/
-cp -rf ${basepwd}/utils/manna/*.sh $kalirootfs/usr/share/mana-toolkit/run-mana/
-dos2unix $kalirootfs/usr/share/mana-toolkit/run-mana/*
-dos2unix $kalirootfs/etc/mana-toolkit/*
-chmod 755 $kalirootfs/usr/share/mana-toolkit/run-mana/*
-chmod 755 $kalirootfs/usr/bin/*.sh
-}
-
-f_mitmf_install(){
-# Install MITMf
-cd ${rootfs}
-$chrootcmd pip install capstone
-git clone https://github.com/byt3bl33d3r/MITMf.git && mv MITMf $kalirootfs/opt/MITMf
-chmod 755 $kalirootfs/opt/MITMf/setup.sh $kalirootfs/opt/MITMf/update.sh
-$chrootcmd /opt/MITMf/setup.sh
-}
-
-f_wifite_install(){
-# Install Dictionary for wifite
-mkdir -p $kalirootfs/opt/dic
-tar xvf ${basepwd}/utils/dic/89.tar.gz -C $kalirootfs/opt/dic
-}
-
-f_wpsscan_install(){
-# Install WPS Scan which scans routers for enabled WPS & pingen which generates DLINK WPS pins
-wget https://raw.githubusercontent.com/devttys0/wps/master/wpstools/wpscan.py -O $kalirootfs/usr/bin/wps_scan
-wget https://raw.githubusercontent.com/devttys0/wps/master/wpstools/wpspy.py -O $kalirootfs/usr/bin/wps_spy
-wget https://raw.githubusercontent.com/devttys0/wps/master/pingens/dlink/pingen.py -O $kalirootfs/usr/bin/pingen
-chmod 755 $kalirootfs/usr/bin/wps_scan $kalirootfs/usr/bin/pingen $kalirootfs/usr/bin/wps_spy
-}
-
-f_spiderfoot_install(){
-# Install Spiderfoot
-# Cherrypy is newer in pip then in repo so we need to use that instead.  All other depend are fine.
-$chrootcmd pip install cherrypy
-cd $kalirootfs/opt/
-wget https://github.com/smicallef/spiderfoot/archive/v2.2.0-final.tar.gz -O spiderfoot.tar.gz
-tar xvf spiderfoot.tar.gz && rm spiderfoot.tar.gz && mv spiderfoot-2.2.0-final spiderfoot
-}
-
-f_kalimenu_install(){
-# Kali Menu (bash script) to quickly launch common Android Programs
-cp -rf ${basepwd}/menu/kalimenu $kalirootfs/usr/bin/kalimenu
-$chrootcmd chmod 755 /usr/bin/kalimenu
-sleep 5
-}
-
-f_adbinstall(){
-#Installs ADB and fastboot compiled for ARM
-git clone git://git.kali.org/packages/google-nexus-tools
-cp ./google-nexus-tools/bin/linux-arm-adb $kalirootfs/usr/bin/adb
-cp ./google-nexus-tools/bin/linux-arm-fastboot $kalirootfs/usr/bin/fastboot
-rm -rf ./google-nexus-tools
-$chrootcmd chmod 755 /usr/bin/fastboot
-$chrootcmd chmod 755 /usr/bin/adb
-}
-
-f_deadbolt_install(){
-#Installs deADBolt
-curl -o deadbolt https://raw.githubusercontent.com/photonicgeek/deADBolt/master/main.sh
-cp ./deadbolt $kalirootfs/usr/bin/deadbolt
-rm -rf deadbolt
-$chrootcmd chmod 755 /usr/bin/deadbolt
-}
-
-f_apfucker_install(){
-#Installs APFucker.py
-curl -o apfucker.py https://raw.githubusercontent.com/mattoufoutu/scripts/master/AP-Fucker.py
-cp ./apfucker.py $kalirootfs/usr/bin/apfucker.py
-rm -rf deadbolt
-$chrootcmd chmod 755 /usr/bin/apfucker.py
-}
-
-f_hidattack_install(){
-#Install HID attack script and dictionaries
-cp ${basepwd}/flash/system/xbin/hid-keyboard $kalirootfs/usr/bin/hid-keyboard
-cp ${basepwd}/utils/dic/pinlist.txt $kalirootfs/opt/dic/pinlist.txt
-cp ${basepwd}/utils/dic/wordlist.txt $kalirootfs/opt/dic/wordlist.txt
-cp ${basepwd}/utils/hid/hid-dic.sh $kalirootfs/usr/bin/hid-dic
-$chrootcmd chmod 755 /usr/bin/hid-keyboard
-$chrootcmd chmod 755 /usr/bin/hid-dic
 }
 
 f_flashzip(){
@@ -890,10 +850,10 @@ f_cleanup(){
 echo "Unmounting any previous mounted folders"
 sleep 3
 clear
-#umount $kalirootfs/proc/sys/fs/binfmt_misc
-#umount $kalirootfs/dev/pts
-#umount $kalirootfs/dev/
-#umount $kalirootfs/proc
+#umount ${rootfs}/kali-$architecture/proc/sys/fs/binfmt_misc
+#umount ${rootfs}/kali-$architecture/dev/pts
+#umount ${rootfs}/kali-$architecture/dev/
+#umount ${rootfs}/kali-$architecture/proc
 #echo "Removing temporary build files"
 #rm -rf ${basedir}/patches ${basedir}/kernel ${basedir}/flash ${basedir}/kali-$architecture ${basedir}/flashkernel
 }
@@ -1328,33 +1288,6 @@ case $1 in
     echo "Directory:"
     echo "Where the generated files will be put. Default is ~/NetHunter"
 
-    exit;;
-  updater)
-    chrootcmd=""
-    kalirootfs=""
-    rootfs=/root/tmp
-    basepwd=/root/tmp/kali-nethunter
-    echo "Updating Mana"
-    f_mana_config
-    echo "Updating MITMf"
-    f_mitmf_install
-    echo "Updating Wifite"
-    f_wifite_install
-    echo "Updating WPS Scanner"
-    f_wpsscan_install
-    echo "Updating Spiderfoot"
-    f_spiderfoot_install
-    echo "Updating Kalimenu"
-    rm -rf /usr/bin/kalimenu
-    f_kalimenu_install
-    echo "Updating ADB and Fastboot"
-    f_adbinstall
-    echo "Updating deADBolt"
-    f_deadbolt_install
-    echo "Updating APFucker"
-    f_apfucker_install
-    echo "Updating HID Attack Components"
-    f_hidattack_install
     exit;;
   *) clear;;
 esac
