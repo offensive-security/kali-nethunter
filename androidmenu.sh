@@ -588,17 +588,6 @@ sed -i 's/gpshost=localhost:2947/gpshost=127.0.0.1:2947/g' $kalirootfs/etc/kisme
 
 f_mana_config
 
-f_mana_config(){
-# Copy over our kali specific mana config files
-cp -rf ${basepwd}/utils/manna/start-mana* $kalirootfs/usr/bin/
-cp -rf ${basepwd}/utils/manna/stop-mana $kalirootfs/usr/bin/
-cp -rf ${basepwd}/utils/manna/*.sh $kalirootfs/usr/share/mana-toolkit/run-mana/
-dos2unix $kalirootfs/usr/share/mana-toolkit/run-mana/*
-dos2unix $kalirootfs/etc/mana-toolkit/*
-chmod 755 $kalirootfs/usr/share/mana-toolkit/run-mana/*
-chmod 755 $kalirootfs/usr/bin/*.sh
-}
-
 # Install Phishing Frenzy
 
 ## apt-get install libcurl4-openssl-dev apache2-threaded-dev libapr1-dev libaprutil1-dev redis-server
@@ -642,99 +631,24 @@ chmod 755 $kalirootfs/usr/bin/*.sh
 
 f_mitmf_install
 
-f_mitmf_install(){
-# Install MITMf
-cd ${rootfs}
-$chrootcmd pip install capstone
-git clone https://github.com/byt3bl33d3r/MITMf.git && mv MITMf $kalirootfs/opt/MITMf
-chmod 755 $kalirootfs/opt/MITMf/setup.sh $kalirootfs/opt/MITMf/update.sh
-$chrootcmd /opt/MITMf/setup.sh
-}
-
 f_wifite_install
-
-f_wifite_install(){
-# Install Dictionary for wifite
-mkdir -p $kalirootfs/opt/dic
-tar xvf ${basepwd}/utils/dic/89.tar.gz -C $kalirootfs/opt/dic
-}
 
 f_wpsscan_install
 
-f_wpsscan_install(){
-# Install WPS Scan which scans routers for enabled WPS & pingen which generates DLINK WPS pins
-wget https://raw.githubusercontent.com/devttys0/wps/master/wpstools/wpscan.py -O $kalirootfs/usr/bin/wps_scan
-wget https://raw.githubusercontent.com/devttys0/wps/master/wpstools/wpspy.py -O $kalirootfs/usr/bin/wps_spy
-wget https://raw.githubusercontent.com/devttys0/wps/master/pingens/dlink/pingen.py -O $kalirootfs/usr/bin/pingen
-chmod 755 $kalirootfs/usr/bin/wps_scan $kalirootfs/usr/bin/pingen $kalirootfs/usr/bin/wps_spy
-}
-
 f_spiderfoot_install
-
-f_spiderfoot_install(){
-# Install Spiderfoot
-# Cherrypy is newer in pip then in repo so we need to use that instead.  All other depend are fine.
-$chrootcmd pip install cherrypy
-cd $kalirootfs/opt/
-wget https://github.com/smicallef/spiderfoot/archive/v2.2.0-final.tar.gz -O spiderfoot.tar.gz
-tar xvf spiderfoot.tar.gz && rm spiderfoot.tar.gz && mv spiderfoot-2.2.0-final spiderfoot
-}
 
 # Modify Kismet log saving folder
 sed -i 's/hs/\/captures/g' $kalirootfs/etc/kismet/kismet.conf
 
 f_kalimenu_install
 
-f_kalimenu_install(){
-# Kali Menu (bash script) to quickly launch common Android Programs
-cp -rf ${basepwd}/menu/kalimenu $kalirootfs/usr/bin/kalimenu
-$chrootcmd chmod 755 /usr/bin/kalimenu
-sleep 5
-}
-
 f_adb_install
-
-f_adbinstall(){
-#Installs ADB and fastboot compiled for ARM
-git clone git://git.kali.org/packages/google-nexus-tools
-cp ./google-nexus-tools/bin/linux-arm-adb $kalirootfs/usr/bin/adb
-cp ./google-nexus-tools/bin/linux-arm-fastboot $kalirootfs/usr/bin/fastboot
-rm -rf ./google-nexus-tools
-$chrootcmd chmod 755 /usr/bin/fastboot
-$chrootcmd chmod 755 /usr/bin/adb
-}
 
 f_deadbolt_install
 
-f_deadbolt_install(){
-#Installs deADBolt
-curl -o deadbolt https://raw.githubusercontent.com/photonicgeek/deADBolt/master/main.sh
-cp ./deadbolt $kalirootfs/usr/bin/deadbolt
-rm -rf deadbolt
-$chrootcmd chmod 755 /usr/bin/deadbolt
-}
-
 f_apfucker_install
 
-f_apfucker_install(){
-#Installs APFucker.py
-curl -o apfucker.py https://raw.githubusercontent.com/mattoufoutu/scripts/master/AP-Fucker.py
-cp ./apfucker.py $kalirootfs/usr/bin/apfucker.py
-rm -rf deadbolt
-$chrootcmd chmod 755 /usr/bin/apfucker.py
-}
-
 f_hidattack_install
-
-f_hidattack_install(){
-#Install HID attack script and dictionaries
-cp ${basepwd}/flash/system/xbin/hid-keyboard $kalirootfs/usr/bin/hid-keyboard
-cp ${basepwd}/utils/dic/pinlist.txt $kalirootfs/opt/dic/pinlist.txt
-cp ${basepwd}/utils/dic/wordlist.txt $kalirootfs/opt/dic/wordlist.txt
-cp ${basepwd}/utils/hid/hid-dic.sh $kalirootfs/usr/bin/hid-dic
-$chrootcmd chmod 755 /usr/bin/hid-keyboard
-$chrootcmd chmod 755 /usr/bin/hid-dic
-}
 
 # Sets the default for hostapd.conf but not really needed as evilap will create it's own now
 #sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/etc/hostapd/hostapd.conf#' kali-$architecture/etc/init.d/hostapd
@@ -785,6 +699,92 @@ umount $kalirootfs/dev/
 umount $kalirootfs/proc
 
 sleep 5
+}
+
+f_mana_config(){
+# Copy over our kali specific mana config files
+cp -rf ${basepwd}/utils/manna/start-mana* $kalirootfs/usr/bin/
+cp -rf ${basepwd}/utils/manna/stop-mana $kalirootfs/usr/bin/
+cp -rf ${basepwd}/utils/manna/*.sh $kalirootfs/usr/share/mana-toolkit/run-mana/
+dos2unix $kalirootfs/usr/share/mana-toolkit/run-mana/*
+dos2unix $kalirootfs/etc/mana-toolkit/*
+chmod 755 $kalirootfs/usr/share/mana-toolkit/run-mana/*
+chmod 755 $kalirootfs/usr/bin/*.sh
+}
+
+f_mitmf_install(){
+# Install MITMf
+cd ${rootfs}
+$chrootcmd pip install capstone
+git clone https://github.com/byt3bl33d3r/MITMf.git && mv MITMf $kalirootfs/opt/MITMf
+chmod 755 $kalirootfs/opt/MITMf/setup.sh $kalirootfs/opt/MITMf/update.sh
+$chrootcmd /opt/MITMf/setup.sh
+}
+
+f_wifite_install(){
+# Install Dictionary for wifite
+mkdir -p $kalirootfs/opt/dic
+tar xvf ${basepwd}/utils/dic/89.tar.gz -C $kalirootfs/opt/dic
+}
+
+f_wpsscan_install(){
+# Install WPS Scan which scans routers for enabled WPS & pingen which generates DLINK WPS pins
+wget https://raw.githubusercontent.com/devttys0/wps/master/wpstools/wpscan.py -O $kalirootfs/usr/bin/wps_scan
+wget https://raw.githubusercontent.com/devttys0/wps/master/wpstools/wpspy.py -O $kalirootfs/usr/bin/wps_spy
+wget https://raw.githubusercontent.com/devttys0/wps/master/pingens/dlink/pingen.py -O $kalirootfs/usr/bin/pingen
+chmod 755 $kalirootfs/usr/bin/wps_scan $kalirootfs/usr/bin/pingen $kalirootfs/usr/bin/wps_spy
+}
+
+f_spiderfoot_install(){
+# Install Spiderfoot
+# Cherrypy is newer in pip then in repo so we need to use that instead.  All other depend are fine.
+$chrootcmd pip install cherrypy
+cd $kalirootfs/opt/
+wget https://github.com/smicallef/spiderfoot/archive/v2.2.0-final.tar.gz -O spiderfoot.tar.gz
+tar xvf spiderfoot.tar.gz && rm spiderfoot.tar.gz && mv spiderfoot-2.2.0-final spiderfoot
+}
+
+f_kalimenu_install(){
+# Kali Menu (bash script) to quickly launch common Android Programs
+cp -rf ${basepwd}/menu/kalimenu $kalirootfs/usr/bin/kalimenu
+$chrootcmd chmod 755 /usr/bin/kalimenu
+sleep 5
+}
+
+f_adbinstall(){
+#Installs ADB and fastboot compiled for ARM
+git clone git://git.kali.org/packages/google-nexus-tools
+cp ./google-nexus-tools/bin/linux-arm-adb $kalirootfs/usr/bin/adb
+cp ./google-nexus-tools/bin/linux-arm-fastboot $kalirootfs/usr/bin/fastboot
+rm -rf ./google-nexus-tools
+$chrootcmd chmod 755 /usr/bin/fastboot
+$chrootcmd chmod 755 /usr/bin/adb
+}
+
+f_deadbolt_install(){
+#Installs deADBolt
+curl -o deadbolt https://raw.githubusercontent.com/photonicgeek/deADBolt/master/main.sh
+cp ./deadbolt $kalirootfs/usr/bin/deadbolt
+rm -rf deadbolt
+$chrootcmd chmod 755 /usr/bin/deadbolt
+}
+
+f_apfucker_install(){
+#Installs APFucker.py
+curl -o apfucker.py https://raw.githubusercontent.com/mattoufoutu/scripts/master/AP-Fucker.py
+cp ./apfucker.py $kalirootfs/usr/bin/apfucker.py
+rm -rf deadbolt
+$chrootcmd chmod 755 /usr/bin/apfucker.py
+}
+
+f_hidattack_install(){
+#Install HID attack script and dictionaries
+cp ${basepwd}/flash/system/xbin/hid-keyboard $kalirootfs/usr/bin/hid-keyboard
+cp ${basepwd}/utils/dic/pinlist.txt $kalirootfs/opt/dic/pinlist.txt
+cp ${basepwd}/utils/dic/wordlist.txt $kalirootfs/opt/dic/wordlist.txt
+cp ${basepwd}/utils/hid/hid-dic.sh $kalirootfs/usr/bin/hid-dic
+$chrootcmd chmod 755 /usr/bin/hid-keyboard
+$chrootcmd chmod 755 /usr/bin/hid-dic
 }
 
 f_flashzip(){
