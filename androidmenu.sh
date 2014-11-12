@@ -588,11 +588,6 @@ dos2unix ${rootfs}/kali-$architecture/etc/mana-toolkit/*
 chmod 755 ${rootfs}/kali-$architecture/usr/share/mana-toolkit/run-mana/*
 chmod 755 ${rootfs}/kali-$architecture/usr/bin/*.sh
 
-# Install Faraday Integrated Penetration-Test Environment
-git clone https://github.com/infobyte/faraday.git faraday-dev && mv faraday-dev ${rootfs}/kali-$architecture/opt/faraday-dev
-chmod 755 ${rootfs}/kali-$architecture/opt/faraday-dev/install.sh
-LANG=C chroot ${rootfs}/kali-$architecture /opt/faraday-dev/install.sh
-
 # Install Phishing Frenzy
 
 ## apt-get install libcurl4-openssl-dev apache2-threaded-dev libapr1-dev libaprutil1-dev redis-server
