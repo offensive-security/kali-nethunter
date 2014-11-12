@@ -1247,7 +1247,7 @@ f_updatenethunter(){
   echo "Making androidmenu.sh executable"
   chmod +x ~/tmp/kali-nethunter/androidmenu.sh
   echo "Starting update script"
-  sh ~/tmp/kali-nethunter/androidmenu.sh update
+  ./root/tmp/kali-nethunter/androidmenu.sh updater
   echo "Removing ~/tmp directory"
   rm -rf ~/tmp
   }

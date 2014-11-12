@@ -1329,7 +1329,7 @@ case $1 in
     echo "Where the generated files will be put. Default is ~/NetHunter"
 
     exit;;
-  update)
+  updater)
     echo "Setting chrootcmd var"
     chrootcmd=""
     echo "Setting kalirootfs var"
