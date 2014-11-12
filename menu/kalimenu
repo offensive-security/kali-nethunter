@@ -1245,9 +1245,9 @@ f_updatenethunter(){
   echo "Cloning to ~/tmp"
   git clone https://github.com/offensive-security/kali-nethunter.git
   echo "Making androidmenu.sh executable"
-  chmod +x ~/tmp/kali-nethunter/androidmenu.sh
+  chmod 755 ~/tmp/kali-nethunter/androidmenu.sh
   echo "Starting update script"
-  ./root/tmp/kali-nethunter/androidmenu.sh updater
+  ~/tmp/kali-nethunter/androidmenu.sh updater
   echo "Removing ~/tmp directory"
   rm -rf ~/tmp
   }

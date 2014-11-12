@@ -1335,7 +1335,7 @@ case $1 in
     echo "Setting kalirootfs var"
     kalirootfs=""
     echo "settign basepwd"
-    basepwd=~/tmp/kali-nethunter
+    basepwd=/root/tmp/kali-nethunter
     echo "running mana_config"
     f_mana_config
     echo "running mitmf"
