@@ -48,15 +48,19 @@ FROZENKERNEL=0
 
 #########  Devices  ##########
 # Build scripts for each kernel is located under devices/devicename
-source devices/nexus10-manta
-source devices/nexus9-flounder
-source devices/nexus6-shamu
-source devices/nexus7-grouper-tilapia
-source devices/nexus7-flo-deb
-source devices/nexus5-hammerhead
-source devices/nexus4-mako
-source devices/galaxys5-G900
-source devices/galaxys4
+case $1 in
+  update) echo "updating";;
+  *)
+    source devices/nexus10-manta
+    source devices/nexus9-flounder
+    source devices/nexus6-shamu
+    source devices/nexus7-grouper-tilapia
+    source devices/nexus7-flo-deb
+    source devices/nexus5-hammerhead
+    source devices/nexus4-mako
+    source devices/galaxys5-G900
+    source devices/galaxys4;;
+esac
 
 ######### Set paths and permissions  #######
 
@@ -71,7 +75,10 @@ architecture="armhf"
 chrootcmd="LANG=C chroot kali-$architecture"
 kalirootfs="${rootfs}/kali-$architecture"
 
-chmod +x utils/boottools/*
+case $1 in
+  update) echo "updating";;
+  *) chmod +x utils/boottools/*;;
+esac
 
 ######### Build script start  #######
 
