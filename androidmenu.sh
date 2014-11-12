@@ -76,7 +76,7 @@ chrootcmd="LANG=C chroot kali-$architecture"
 kalirootfs="${rootfs}/kali-$architecture"
 
 case $1 in
-  update) echo "updating";;
+  updater) echo "updating";;
   *) chmod +x utils/boottools/*;;
 esac
 
@@ -1355,7 +1355,7 @@ case $1 in
     echo "running apfucker"
     f_apfucker_install
     echo "running hidattack"
-    f_hidattack_install
+    f_hidattack_install;;
 
   *) clear;;
 esac
