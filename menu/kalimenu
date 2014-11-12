@@ -1175,7 +1175,7 @@ case $settingschoice in
 2) clear; f_msuser ;;
 3) clear; f_macchanger ;;
 4) clear; f_nodejs ;;
-5) clear; f_updatenethunter;;
+5) clear; f_updatenethunter; f_settings;;
 0) f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
@@ -1250,8 +1250,6 @@ f_updatenethunter(){
   sh ~/tmp/kali-nethunter/androidmenu.sh update
   echo "Removing ~/tmp directory"
   rm -rf ~/tmp
-  echo "Run kalimenu again"
-  sh /usr/bin/kalimenu
   }
 
 ##############################################
