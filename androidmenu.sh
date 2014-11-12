@@ -595,44 +595,44 @@ LANG=C chroot ${rootfs}/kali-$architecture /opt/faraday-dev/install.sh
 
 # Install Phishing Frenzy
 
-# apt-get install libcurl4-openssl-dev apache2-threaded-dev libapr1-dev libaprutil1-dev redis-server
-git clone https://github.com/pentestgeek/phishing-frenzy.git ${rootfs}/kali-$architecture/var/www/phishing-frenzy
-LANG=C chroot ${rootfs}/kali-$architecture gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
-touch ${rootfs}/kali-$architecture/etc/apache2/pf.conf
-echo "source /usr/local/rvm/scripts/rvm" >> ${rootfs}/kali-$architecture/root/.bashrc
-LANG=C chroot ${rootfs}/kali-$architecture source /root/.bashrc
-LANG=C chroot ${rootfs}/kali-$architecture rvm all do gem install --no-rdoc --no-ri rails passenger
-LANG=C chroot ${rootfs}/kali-$architecture passenger-install-apache2-module --auto
-echo "LoadModule passenger_module /usr/local/rvm/gems/ruby-2.1.4/gems/passenger-4.0.53/buildout/apache2/mod_passenger.so" >> ${rootfs}/kali-$architecture/etc/apache2/apache.conf
-echo "<IfModule mod_passenger.c>" >> ${rootfs}/kali-$architecture/etc/apache2/apache.conf
-echo " PassengerRoot /usr/local/rvm/gems/ruby-2.1.4/gems/passenger-4.0.53" >> ${rootfs}/kali-$architecture/etc/apache2/apache2.conf
-echo " PassengerDefaultRuby /usr/local/rvm/gems/ruby-2.1.4/wrappers/ruby" >> ${rootfs}/kali-$architecture/etc/apache2/apache2.conf
-echo "</IfModule>" >> ${rootfs}/kali-$architecture/etc/apache2/apache2.conf
-LANG=C chroot ${rootfs}/kali-$architecture /etc/init.d/mysql start
-LANG=C chroot ${rootfs}/kali-$architecture mysql -u root -e "create database pf_dev; grant all privileges on pf_dev.* to 'pf_dev'@'localhost' identified by 'password';"
-cat << EOF > ${rootfs}/kali-$architecture/etc/apache2/pf.conf
-<IfModule mod_passenger.c>
-  PassengerRoot %ROOT
-  PassengerRuby %RUBY
-</IfModule>
-
-<VirtualHost 127.0.0.1:80>
-    ServerName phishingfrenzy.local
-    DocumentRoot /var/www/phishing-frenzy/public
-    RailsEnv development
-  <Directory /var/www/phishing-frenzy/public>
-    AllowOverride all
-    # MultiViews must be turned off.
-    Options -MultiViews
-  </Directory>
-</VirtualHost>
-EOF
-LANG=C chroot ${rootfs}/kali-$architecture "cd /var/www/phishing-frenzy/ && bundle install"
-chown -R www-data:www-data ${rootfs}/kali-$architecture/var/www/phishing-frenzy/
-chown -R www-data:www-data ${rootfs}/kali-$architecture/etc/apache2/sites-available/
-chown -R 755 ${rootfs}/kali-$architecture/var/www/phishing-frenzy/public/uploads/
-LANG=C chroot ${rootfs}/kali-$architecture "cd /var/www/phishing-frenzy/ && rake db:migrate && rake db:seed && rake templates:load"
-LANG=C chroot ${rootfs}/kali-$architecture /etc/init.d/mysql stop
+## apt-get install libcurl4-openssl-dev apache2-threaded-dev libapr1-dev libaprutil1-dev redis-server
+#git clone https://github.com/pentestgeek/phishing-frenzy.git ${rootfs}/kali-$architecture/var/www/phishing-frenzy
+#LANG=C chroot ${rootfs}/kali-$architecture gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
+#touch ${rootfs}/kali-$architecture/etc/apache2/pf.conf
+#echo "source /usr/local/rvm/scripts/rvm" >> ${rootfs}/kali-$architecture/root/.bashrc
+#LANG=C chroot ${rootfs}/kali-$architecture source /root/.bashrc
+#LANG=C chroot ${rootfs}/kali-$architecture rvm all do gem install --no-rdoc --no-ri rails passenger
+#LANG=C chroot ${rootfs}/kali-$architecture passenger-install-apache2-module --auto
+#echo "LoadModule passenger_module /usr/local/rvm/gems/ruby-2.1.4/gems/passenger-4.0.53/buildout/apache2/mod_passenger.so" >> ${rootfs}/kali-$architecture/etc/apache2/apache2.conf
+#echo "<IfModule mod_passenger.c>" >> ${rootfs}/kali-$architecture/etc/apache2/apache2.conf
+#echo " PassengerRoot /usr/local/rvm/gems/ruby-2.1.4/gems/passenger-4.0.53" >> ${rootfs}/kali-$architecture/etc/apache2/apache2.conf
+#echo " PassengerDefaultRuby /usr/local/rvm/gems/ruby-2.1.4/wrappers/ruby" >> ${rootfs}/kali-$architecture/etc/apache2/apache2.conf
+#echo "</IfModule>" >> ${rootfs}/kali-$architecture/etc/apache2/apache2.conf
+#LANG=C chroot ${rootfs}/kali-$architecture /etc/init.d/mysql start
+#LANG=C chroot ${rootfs}/kali-$architecture mysql -u root -e "create database pf_dev; grant all privileges on pf_dev.* to 'pf_dev'@'localhost' identified by 'password';"
+#cat << EOF > ${rootfs}/kali-$architecture/etc/apache2/pf.conf
+#<IfModule mod_passenger.c>
+#  PassengerRoot %ROOT
+#  PassengerRuby %RUBY
+#</IfModule>
+#
+#<VirtualHost 127.0.0.1:80>
+#    ServerName phishingfrenzy.local
+#    DocumentRoot /var/www/phishing-frenzy/public
+#    RailsEnv development
+#  <Directory /var/www/phishing-frenzy/public>
+#    AllowOverride all
+#    # MultiViews must be turned off.
+#    Options -MultiViews
+#  </Directory>
+#</VirtualHost>
+#EOF
+#LANG=C chroot ${rootfs}/kali-$architecture "cd /var/www/phishing-frenzy/ && bundle install"
+#chown -R www-data:www-data ${rootfs}/kali-$architecture/var/www/phishing-frenzy/
+#chown -R www-data:www-data ${rootfs}/kali-$architecture/etc/apache2/sites-available/
+#chown -R 755 ${rootfs}/kali-$architecture/var/www/phishing-frenzy/public/uploads/
+#LANG=C chroot ${rootfs}/kali-$architecture "cd /var/www/phishing-frenzy/ && rake db:migrate && rake db:seed && rake templates:load"
+#LANG=C chroot ${rootfs}/kali-$architecture /etc/init.d/mysql stop
 
 # Install MITMf
 LANG=C chroot ${rootfs}/kali-$architecture pip install capstone
