@@ -1330,33 +1330,32 @@ case $1 in
 
     exit;;
   updater)
-    echo "Setting chrootcmd var"
     chrootcmd=""
-    echo "Setting kalirootfs var"
     kalirootfs=""
-    echo "settign basepwd"
+    rootfs=/root/tmp
     basepwd=/root/tmp/kali-nethunter
-    echo "running mana_config"
+    echo "Updating Mana"
     f_mana_config
-    echo "running mitmf"
+    echo "Updating MITMf"
     f_mitmf_install
-    echo "running wifite"
+    echo "Updating Wifite"
     f_wifite_install
-    echo "running wpsscan"
+    echo "Updating WPS Scanner"
     f_wpsscan_install
-    echo "running spiderfoot"
+    echo "Updating Spiderfoot"
     f_spiderfoot_install
-    echo "running kalimenu"
+    echo "Updating Kalimenu"
     f_kalimenu_install
-    echo "running adb"
+    echo "Updating ADB and Fastboot"
     f_adbinstall
-    echo "running deadbolt"
+    echo "Updating deADBolt"
     f_deadbolt_install
-    echo "running apfucker"
+    echo "Updating APFucker"
     f_apfucker_install
-    echo "running hidattack"
-    f_hidattack_install;;
-
+    echo "Updating HID Attack Components"
+    f_hidattack_install
+    sh /usr/bin/kalimenu
+    exit;;
   *) clear;;
 esac
 

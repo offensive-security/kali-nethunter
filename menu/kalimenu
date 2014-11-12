@@ -1168,7 +1168,7 @@ echo "[5] Update NetHunter"
 echo ""
 echo "[0] Exit to main menu"
 echo ""
-read -p "Choice:" settingschoice
+read -p "Choice: " settingschoice
 
 case $settingschoice in
 1) clear; dpkg-reconfigure tzdata ;;
@@ -1236,19 +1236,23 @@ f_settings
 
 f_updatenethunter(){
   clear
+  echo "Updating NetHunter..."
+  echo ""
+  echo "Updating repo information"
   apt-get -y update
+  echo "Upgrading Packages"
   apt-get -y upgrade
-  echo "Making Directory"
+  echo "Making Temporary Directory"
   mkdir -p /root/tmp
-  echo "Changing Directory"
+  echo "Changing To Temporary Directory"
   cd /root/tmp
-  echo "Cloning to ~/tmp"
+  echo "Cloning From NetHunter"
   git clone https://github.com/offensive-security/kali-nethunter.git
-  echo "Making androidmenu.sh executable"
+  echo "Making androidmenu.sh Executable"
   chmod 755 /root/tmp/kali-nethunter/androidmenu.sh
-  echo "Starting update script"
+  echo "Starting Update Script"
   /root/tmp/kali-nethunter/androidmenu.sh updater
-  echo "Removing ~/tmp directory"
+  echo "Removing Temporary Directory"
   rm -rf /root/tmp
   }
 
