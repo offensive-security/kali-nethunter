@@ -1345,6 +1345,7 @@ case $1 in
     echo "Updating Spiderfoot"
     f_spiderfoot_install
     echo "Updating Kalimenu"
+    rm -rf /usr/bin/kalimenu
     f_kalimenu_install
     echo "Updating ADB and Fastboot"
     f_adbinstall
@@ -1354,7 +1355,6 @@ case $1 in
     f_apfucker_install
     echo "Updating HID Attack Components"
     f_hidattack_install
-    sh /usr/bin/kalimenu
     exit;;
   *) clear;;
 esac
