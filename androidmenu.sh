@@ -1330,18 +1330,31 @@ case $1 in
 
     exit;;
   update)
+    echo "Setting chrootcmd var"
     chrootcmd=""
+    echo "Setting kalirootfs var"
     kalirootfs=""
+    echo "settign basepwd"
     basepwd=~/tmp/kali-nethunter
+    echo "running mana_config"
     f_mana_config
+    echo "running mitmf"
     f_mitmf_install
+    echo "running wifite"
     f_wifite_install
+    echo "running wpsscan"
     f_wpsscan_install
+    echo "running spiderfoot"
     f_spiderfoot_install
+    echo "running kalimenu"
     f_kalimenu_install
+    echo "running adb"
     f_adbinstall
+    echo "running deadbolt"
     f_deadbolt_install
+    echo "running apfucker"
     f_apfucker_install
+    echo "running hidattack"
     f_hidattack_install
 
   *) clear;;

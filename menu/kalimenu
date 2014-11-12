@@ -1238,12 +1238,19 @@ f_updatenethunter(){
   clear
   apt-get -y update
   apt-get -y upgrade
+  echo "Making Directory"
   mkdir -p ~/tmp
+  echo "Changing Directory"
   cd ~/tmp
+  echo "Cloning to ~/tmp"
   git clone https://github.com/offensive-security/kali-nethunter.git
+  echo "Making androidmenu.sh executable"
   chmod +x ~/tmp/kali-nethunter/androidmenu.sh
+  echo "Starting update script"
   sh ~/tmp/kali-nethunter/androidmenu.sh update
+  echo "Removing ~/tmp directory"
   rm -rf ~/tmp
+  echo "Run kalimenu again"
   sh /usr/bin/kalimenu
   }
 
