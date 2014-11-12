@@ -3,8 +3,8 @@
 # Kernel Development requires Kali 64bit host
 ######### Dependencies #######
 # cd ~
-# git clone https://github.com/binkybear/kali-scripts.git
-# cd kali-scripts
+# git clone https://github.com/offensive-security/kali-nethunter
+# cd kali-nethunter
 # sh build-deps.sh
 ##########  Compiler ###########
 # cd ~
@@ -13,7 +13,7 @@
 ######### Local git repos  #######
 # When testing multiple images, it is often faster to first checkout git repos and use them locally.
 # To do this, you can :
-# cd ~/kali-scripts
+# cd ~/kali-nethunter
 #
 # - Nexus 10
 # git clone https://github.com/binkybear/kernel_samsung_manta.git -b thunderkat
@@ -768,12 +768,6 @@ f_flashzip(){
 #####################################################
 
 # Create base flashable zip
-#if [ $LOCALGIT == 1 ]; then
-#	echo "Copying flash to rootfs"
-#        cp -rf ${basepwd}/flash ${basedir}/flash
-#else
-#	git clone https://github.com/binkybear/flash.git ${basedir}/flash
-#fi
 
 cp -rf ${basepwd}/flash ${basedir}/flash
 mkdir -p ${basedir}/flash/data/local/
