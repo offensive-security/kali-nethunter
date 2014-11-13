@@ -1164,7 +1164,7 @@ echo "[1] Configure Timezone"
 echo "[2] Create Metasploit User and Database"
 echo "[3] Macchanger"
 echo "[4] Install NodeJS"
-echo "[5] Update Kalimenu"
+#echo "[5] Update NetHunter"
 echo ""
 echo "[0] Exit to main menu"
 echo ""
@@ -1236,7 +1236,9 @@ f_settings
 
 f_updatenethunter(){
   clear
-  echo "Still in Development"
+  curl -o /usr/bin/updater 'https://raw.githubusercontent.com/offensive-security/kali-nethunter/master/updater.sh'
+  chmod 755 /usr/bin/updater
+  sh /usr/bin/updater
   f_settings
 }
 
