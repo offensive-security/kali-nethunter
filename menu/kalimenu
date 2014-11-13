@@ -215,7 +215,7 @@ f_apfucker(){
 
 f_wps_scanner(){
 clear
-if [ ! -f "/usr/bin/wps_scanner" ]; then
+if [ ! -f "/usr/bin/wps_scan" ]; then
 	read -p "WPS Scanner not found, would you like to download? (y/n) : " wpsscannerdownload
 		if [ "$wpsscannerdownload" == "y" ]; then
 			wget https://raw.githubusercontent.com/devttys0/wps/master/wpstools/wpscan.py -O /usr/bin/wps_scan
@@ -397,14 +397,27 @@ f_sniffing
 }
 
 f_mitmproxy(){
+mitmlog=/captures/mitmproxy/mitmlog_$NOW
+ip_proxy=$(/sbin/ifconfig wlan0 | awk -F ' *|:' '/inet addr/{print $4}')
+
+mkdir -p /captures/mitmproxy
 echo "Flushing iptables"
 iptables --flush
 echo "Enabling transparent proxy on wlan0"
 iptables -t nat -A PREROUTING -i wlan0 -p tcp --dport 80 -j REDIRECT --to-port 8080
 iptables -t nat -A PREROUTING -i wlan0 -p tcp --dport 443 -j REDIRECT --to-port 8080
 LANG=en_US.UTF-8
-echo "Starting MITM proxy and writing to /captures/mitmproxy/mitmlog_$NOW"
-mitmproxy -T --host -w /captures/mitmproxy/mitmlog_$NOW
+echo "Instructions:"
+echo "Starting MITM proxy in transparent mode on wlan0 > writing to $mitmlog"
+echo "IPtables is redirecting port 80 and 443 to port 8080"
+echo "Configure the client to use $ip_proxy as the default gateway"
+echo "Open the magic domain mitm.it and install the certificate on client computer."
+echo ""
+read -p "Press [enter] to continue..."
+#LANG=en_US.UTF-8 mitmproxy -T --host -w $mitmlog
+mitmproxy -T --host -w $mitmlog
+# flush iptables when finished
+iptables --flush
 f_sniffing
 }
 ########################## INFO GATHER MENU ##############################
