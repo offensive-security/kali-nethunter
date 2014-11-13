@@ -83,19 +83,36 @@ fi
 }
 
 #####################################################
-# Create Nexus 5 CM Kernel (4.4+)
+# Create Nexus 5 Stock Kernel (5)
 #####################################################
-f_hammerhead_cm_kernel(){
+f_hammerhead_stock_kernel5(){
+
+if [ $FROZENKERNEL == 1 ]; then
+	echo "Using frozen kernel"
+ 	cp -rf ${basepwd}/flash/ ${basedir}/flashkernel
+	rm -rf ${basedir}/flashkernel/data ${basedir}/flashkernel/sdcard ${basedir}/flashkernel/system/app ${basedir}/flashkernel/META-INF/com/google/android/updater-script
+  	cp -rf ${basepwd}/devices/frozen_kernels/5/n5-hammerhead/* ${basedir}/flashkernel/
+  	if [ -f "${basedir}/flash/META-INF/com/google/android/updater-script" ]; then
+	  if grep -Fxq "#KERNEL_SCRIPT_START" "${basedir}/flash/META-INF/com/google/android/updater-script"
+	  then
+	    echo "Kernel already added to main updater-script"
+	  else
+	    echo "Adding Kernel install to updater-script in main update.zip"
+	    cat ${basedir}/flashkernel/META-INF/com/google/android/updater-script >> ${basedir}/flash/META-INF/com/google/android/updater-script
+	    cp -f ${basedir}/flashkernel/kernel/kernel ${basedir}/flash/kernel/kernel	  
+	  fi
+	fi
+else
 
 f_kernel_build_init
 
-echo "Downloading Kernel"
 cd ${basedir}
+echo "Downloading Kernel"
 if [ $LOCALGIT == 1 ]; then
   echo "Copying kernel to rootfs"
-  cp -rf ${basepwd}/furnace_kernel_caf_hammerhead ${basedir}/kernel
+  cp -rf ${basepwd}/nexus5-5 ${basedir}/kernel
 else
-  git clone https://github.com/binkybear/furnace_kernel_caf_hammerhead.git -b cm-11.0 ${basedir}/kernel
+  git clone https://github.com/binkybear/kernel_msm.git -b android-msm-hammerhead-3.4-lollipop-release ${basedir}/kernel
 fi
 
 cd ${basedir}/kernel
@@ -143,5 +160,8 @@ run_program("/tmp/busybox", "dd", "if=/tmp/newboot.img", "of=/dev/block/platform
 
 ui_print("* Kernel installation completed...          *");
 EOF
+
+# Start kernel build
 f_kernel_build
+fi
 }
