@@ -1142,8 +1142,8 @@ case $1 in
         cd ${basedir}
         mkdir -p $exportdir/Kernels/Flo
         mkdir -p $exportdir/Kernels/Deb
-        mv kernel-kali-$VERSION.zip $exportdir/Kernels/Flo/Kernel-$device-$VERSION.zip
-        mv kernel-kali-$VERSION.sha1sum $exportdir/Kernels/Flo/Kernel-$device-$VERSION.sha1sum
+        cp kernel-kali-$VERSION.zip $exportdir/Kernels/Flo/Kernel-$device-$VERSION.zip
+        cp kernel-kali-$VERSION.sha1sum $exportdir/Kernels/Flo/Kernel-$device-$VERSION.sha1sum
         mv kernel-kali-$VERSION.zip $exportdir/Kernels/Deb/Kernel-$device-$VERSION.zip
         mv kernel-kali-$VERSION.sha1sum $exportdir/Kernels/Deb/Kernel-$device-$VERSION.sha1sum
         rm -rf ${basedir}
@@ -1163,8 +1163,8 @@ case $1 in
         cd ${basedir}
         mkdir -p $exportdir/Kernels/Grouper
         mkdir -p $exportdir/Kernels/Tilapia
-        mv kernel-kali-$VERSION.zip $exportdir/Kernels/Grouper/Kernel-$device-$VERSION.zip
-        mv kernel-kali-$VERSION.sha1sum $exportdir/Kernels/Grouper/Kernel-$device-$VERSION.sha1sum
+        cp kernel-kali-$VERSION.zip $exportdir/Kernels/Grouper/Kernel-$device-$VERSION.zip
+        cp kernel-kali-$VERSION.sha1sum $exportdir/Kernels/Grouper/Kernel-$device-$VERSION.sha1sum
         mv kernel-kali-$VERSION.zip $exportdir/Kernels/Tilapia/Kernel-$device-$VERSION.zip
         mv kernel-kali-$VERSION.sha1sum $exportdir/Kernels/Tilapia/Kernel-$device-$VERSION.sha1sum
         rm -rf ${basedir}
