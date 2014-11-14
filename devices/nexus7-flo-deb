@@ -81,16 +81,16 @@ fi
 }
 
 #####################################################
-# Create Nexus 7 (2013) FLO/DEB CM Kernel (4.4+)
+# Create Nexus 7 (2013) FLO/DEB CM Kernel (5)
 #####################################################
 
-f_deb_cm_kernel(){
+f_deb_stock_kernel5(){
 
 if [ $FROZENKERNEL == 1 ]; then
 	echo "Using frozen kernel"
  	cp -rf ${basepwd}/flash/ ${basedir}/flashkernel
 	rm -rf ${basedir}/flashkernel/data ${basedir}/flashkernel/sdcard ${basedir}/flashkernel/system/app ${basedir}/flashkernel/META-INF/com/google/android/updater-script
-  	cp -rf ${basepwd}/devices/frozen_kernels/4.4.4/n7-flodeb-CM/* ${basedir}/flashkernel/
+  	cp -rf ${basepwd}/devices/frozen_kernels/4.4.4/n7-flodeb/* ${basedir}/flashkernel/
   	if [ -f "${basedir}/flash/META-INF/com/google/android/updater-script" ]; then
 	  if grep -Fxq "#KERNEL_SCRIPT_START" "${basedir}/flash/META-INF/com/google/android/updater-script"
 	  then
@@ -101,21 +101,26 @@ if [ $FROZENKERNEL == 1 ]; then
 	    cp -f ${basedir}/flashkernel/kernel/kernel ${basedir}/flash/kernel/kernel  
 	  fi
 	fi
+	if [ -d "${basedir}/flash" ]; then
+		echo "Found flash folder, copying kernel"
+		cp -f ${basedir}/flashkernel/kernel/kernel ${basedir}/flash/kernel/kernel
+	fi
 else
 
 f_kernel_build_init
 
 echo "Downloading Kernel"
 cd ${basedir}
-# Using ElementalX kernel but feel free to change to Android source
 if [ $LOCALGIT == 1 ]; then
   echo "Copying kernel to rootfs"
-  cp -rf ${basepwd}/cyanflodeb ${basedir}/kernel
+  cp -rf ${basepwd}/nexus7_2013-5 ${basedir}/kernel
 else
-  git clone https://github.com/binkybear/flo.git -b Cyanogenmod ${basedir}/kernel
+  git clone https://github.com/binkybear/flo.git -b ElementalX-3.00 ${basedir}/kernel
 fi
 
 cd ${basedir}/kernel
+
+chmod +x scripts/*
 
 make clean
 sleep 10
@@ -154,6 +159,8 @@ run_program("/tmp/busybox", "dd", "if=/tmp/boot.img", "of=/dev/block/mmcblk0p14"
 
 ui_print("* Kernel installation completed...          *");
 EOF
+
+# Start kernel build
 f_kernel_build
 fi
 }

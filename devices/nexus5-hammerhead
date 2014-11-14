@@ -117,6 +117,8 @@ fi
 
 cd ${basedir}/kernel
 
+chmod +x scripts/*
+
 make clean
 sleep 10
 make kali_defconfig
