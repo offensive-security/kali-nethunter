@@ -1,12 +1,12 @@
 busybox=/data/local/bin/busybox
 
-#########  CHECK FOR ROOT ######### 
+#########  CHECK FOR ROOT #########
 f_checkforroot(){
 perm=$(id|$busybox cut -b 5)
 if [ "$perm" != "0" ];then echo "ROOT NOT DETECTED! Type: su or install SuperSU to fix"; exit; fi
 }
 
-#########  EXPORT ######### 
+#########  EXPORT #########
 #$busybox mount -o rw,remount /system
 export bin=/system/bin
 export mnt=/data/local/kali-armhf
@@ -16,7 +16,7 @@ export TERM=linux
 export HOME=/root
 export LOGNAME=root
 
-#########  MOUNT ######### 
+#########  MOUNT #########
 if [ "$($busybox mountpoint $mnt/dev)" == "$mnt/dev is a mountpoint" ]; then
 	# Files exist in /dev so we can assume its mounted and we have root
 	clear
@@ -31,7 +31,7 @@ else
 	$busybox mount -t devpts devpts $mnt/dev/pts
 	$busybox mount -t proc proc $mnt/proc
 	$busybox mount -t sysfs sysfs $mnt/sys
-		
+
 	$busybox chmod 666 /dev/null
 
 	# SET 250MB TO ALLOW POSTGRESQL #
