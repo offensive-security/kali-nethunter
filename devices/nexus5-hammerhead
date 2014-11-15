@@ -141,29 +141,20 @@ set_perm_recursive(0, 2000, 0755, 0777, "/system/var/www");
 set_perm_recursive(0, 2000, 0755, 0777, "/system/var/log");
 set_perm_recursive(0, 0, 0755, 0755, "/system/etc/init.d");
 unmount("/system");
-
 package_extract_dir("kernel", "/tmp");
-set_perm(0, 0, 0775, "/tmp/installHH.sh");
 set_perm(0, 0, 0755, "/tmp/cleansystem.sh");
-set_perm(0, 0, 0755, "/tmp/busybox");
-set_perm(0, 0, 0777, "/tmp/makebootimg.sh");
-set_perm(0, 0, 0777, "/tmp/mkbootimg");
-set_perm(0, 0, 0777, "/tmp/unpackbootimg");
-
 ui_print("* Cleaning /system/app...                   *");
 run_program("/tmp/cleansystem.sh");
-
-run_program("/tmp/busybox", "dd", "if=/dev/block/platform/msm_sdcc.1/by-name/boot", "of=/tmp/boot.img");
-run_program("/tmp/unpackbootimg", "-i", "/tmp/boot.img", "-o", "/tmp/");
-run_program("/tmp/installHH.sh");
-
 ui_print("* Installing Kernel...                      *");
-run_program("/tmp/busybox", "dd", "if=/tmp/newboot.img", "of=/dev/block/platform/msm_sdcc.1/by-name/boot");
-
+package_extract_file("boot.img", "/dev/block/platform/msm_sdcc.1/by-name/boot");
 ui_print("* Kernel installation completed...          *");
 EOF
 
-# Start kernel build
 f_kernel_build
+
+cd ${basedir}/flashkernel/kernel
+abootimg --create ${basedir}/flashkernel/boot.img -f ${basedir}/kernel/ramdisk/5/bootimg.cfg -k ${basedir}/kernel/arch/arm/boot/zImage-dtb -r ${basedir}/kernel/ramdisk/5/initrd.img
+cd ${basedir}
+f_zip_kernel_save
 fi
 }
