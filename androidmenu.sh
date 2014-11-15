@@ -17,17 +17,23 @@
 #
 # - Nexus 10
 # git clone https://github.com/binkybear/kernel_samsung_manta.git -b thunderkat
+# git clone https://github.com/binkybear/####################.git -b ########## nexus10-5
+# - Nexus 9
+# git clone https://github.com/binkybear/####################.git -b ########## nexus9-5
 # - Nexus 7 (2012)
 # git clone https://github.com/binkybear/kangaroo.git -b kangaroo
+# git clone https://github.com/binkybear/####################.git -b ########## nexus7_2012-5
 # - Nexus 7 (2013)
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-flo-3.4-kitkat-mr2 flodeb
-# git clone https://github.com/binkybear/flo.git -b Cyanogenmod cyanflodeb
+# git clone https://github.com/binkybear/flo.git -b ElementalX-3.00 nexus7_2013-5
+# - Nexus 6
+# git clone https://github.com/binkybear/####################.git -b ########## nexus6-5
 # - Nexus 5
 # git clone https://github.com/binkybear/furnace_kernel_lge_hammerhead.git -b android-4.4
-# git clone https://github.com/binkybear/furnace_kernel_caf_hammerhead.git -b cm-11.0
+# git clone https://github.com/binkybear/kernel_msm.git -b android-msm-hammerhead-3.4-lollipop-release nexus5-5
 # - Nexus 4
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-mako-3.4-kitkat-mr2 mako
-# git clone https://github.com/binkybear/Unleashed-Kernel-Series.git -b Unleased-cm11 Unleashed-Kernel-Series-CM
+# git clone https://github.com/binkybear/####################.git -b ########## nexus4-5
 # - Galaxy S5
 # git clone https://github.com/binkybear/KTSGS5.git -b aosp4.4 galaxy_s5
 # git clone https://github.com/binkybear/KTSGS5.git -b tw4.4 galaxy_s5_tw
@@ -223,7 +229,9 @@ f_manta(){
 echo -e "\e[31m	------------------------- NEXUS 10 -----------------------\e[0m"
 echo ""
 echo "	[1] Build All - Kali rootfs and Kernel (Android 4.4+)"
-echo "	[2] Build Kernel Only"
+echo "	[2] Build Kernel Only (Android 4.4+)"
+echo "  [3] Build All - Kali rootfs and Kernel (Android 5)"
+echo "  [4] Build Kernel Only (Android 5)"
 echo "	[0] Exit to Main Menu"
 echo ""
 echo ""
@@ -235,6 +243,30 @@ case $manta_menuchoice in
 
 1) clear; f_rootfs ; f_flashzip ; f_nexus10_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
 2) clear; f_nexus10_kernel ; f_zip_kernel_save ;;
+3) clear; f_rootfs ; f_flashzip ; f_nexus10_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+4) clear; f_nexus10_kernel5 ; f_zip_kernel_save ;;
+0) clear; f_interface ;;
+*) echo "Incorrect choice..." ;
+esac
+
+}
+
+f_flounder(){
+echo -e "\e[31m ------------------------- NEXUS 9 -----------------------\e[0m"
+echo ""
+echo "  [1] Build All - Kali rootfs and Kernel (Android 5)"
+echo "  [2] Build Kernel Only (Android 5)"
+echo "  [0] Exit to Main Menu"
+echo ""
+echo ""
+# wait for character input
+
+read -p "Choice: " manta_menuchoice
+
+case $manta_menuchoice in
+
+1) clear; f_rootfs ; f_flashzip ; f_nexus9_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+2) clear; f_nexus9_kernel5 ; f_zip_kernel_save ;;
 0) clear; f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
@@ -245,7 +277,9 @@ f_grouper(){
 echo -e "\e[31m	------------------------- NEXUS 7 (2012) -----------------------\e[0m"
 echo ""
 echo "	[1] Build All - Kali rootfs and Kernel (Android 4.4+)"
-echo "	[2] Build Kernel Only"
+echo "	[2] Build Kernel Only (Android 4.4+)"
+echo "  [3] Build All - Kali rootfs and Kernel (Android 5)"
+echo "  [4] Build Kernel Only (Android 5)"
 echo "	[0] Exit to Main Menu"
 echo ""
 echo ""
@@ -257,6 +291,8 @@ case $grouper_menuchoice in
 
 1) clear; f_rootfs ; f_flashzip ; f_nexus7_grouper_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
 2) clear; f_nexus7_grouper_kernel ; f_zip_kernel_save ;;
+3) clear; f_rootfs ; f_flashzip ; f_nexus7_grouper_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+4) clear; f_nexus7_grouper_kernel5 ; f_zip_kernel_save ;;
 0) clear; f_interface ;;
 *) echo "Incorrect choice... " ;
 esac
@@ -267,9 +303,9 @@ f_deb(){
 echo -e "\e[31m	------------------------- NEXUS 7 (2013) -----------------------\e[0m"
 echo ""
 echo "  [1] Build All - Kali rootfs and Kernel (AOSP/STOCK) (Android 4.4+)"
-echo "  [2] Build All - Kali rootfs and Kernel (CAF/CYANOGENMOD) (Android 4.4+)"
-echo "  [3] Build Kernel (AOSP/STOCK) Only"
-echo "  [4] Build Kernel (CAF/Cyanogenmod) Only"
+echo "  [2] Build Kernel (AOSP/STOCK) Only"
+echo "  [3] Build All - Kali rootfs and Kernel (AOSP/STOCK) (Android 5)"
+echo "  [4] Build Kernel (AOSP/STOCK) (Android 5) Only"
 echo "  [0] Exit to Main Menu"
 echo ""
 echo ""
@@ -280,9 +316,9 @@ read -p "Choice: " deb_menuchoice
 case $deb_menuchoice in
 
 1) clear; f_rootfs ; f_flashzip ; f_deb_stock_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-2) clear; f_rootfs ; f_flashzip ; f_deb_cm_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-3) clear; f_deb_stock_kernel ; f_zip_kernel_save ;;
-4) clear; f_deb_cm_kernel ; f_zip_kernel_save ;;
+2) clear; f_deb_stock_kernel ; f_zip_kernel_save ;;
+3) clear; f_rootfs ; f_flashzip ; f_deb_stock_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+4) clear; f_deb_stock_kernel5 ; f_zip_kernel_save ;;
 0) clear; f_interface ;;
 *) echo "Incorrect choice... " ;
 esac
@@ -292,9 +328,9 @@ f_hammerhead(){
 echo -e "\e[31m -------------------------      NEXUS 5    -----------------------\e[0m"
 echo ""
 echo "  [1] Build All - Kali rootfs and Kernel (AOSP/STOCK) (Android 4.4+)"
-echo "  [2] Build All - Kali rootfs and Kernel (CAF/CYANOGENMOD) (Android 4.4+)"
-echo "  [3] Build Kernel (AOSP/STOCK) Only"
-echo "  [4] Build Kernel (CAF/Cyanogenmod) Only"
+echo "  [2] Build Kernel (AOSP/STOCK) Only"
+echo "  [3] Build All - Kali rootfs and Kernel (AOSP/STOCK) (Android 5)"
+echo "  [4] Build Kernel (AOSP/STOCK) (Android 5) Only"
 echo "  [0] Exit to Main Menu"
 echo ""
 echo ""
@@ -305,9 +341,9 @@ read -p "Choice: " deb_menuchoice
 case $deb_menuchoice in
 
 1) clear; f_rootfs ; f_flashzip ; f_hammerhead_stock_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-2) clear; f_rootfs ; f_flashzip ; f_hammerhead_cm_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-3) clear; f_hammerhead_stock_kernel ; f_zip_kernel_save ;;
-4) clear; f_hammerhead_cm_kernel ; f_zip_kernel_save ;;
+2) clear; f_hammerhead_stock_kernel ; f_zip_kernel_save ;;
+3) clear; f_rootfs ; f_flashzip ; f_hammerhead_stock_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+4) clear; f_hammerhead_stock_kernel5 ; f_zip_kernel_save ;;
 0) clear; f_interface ;;
 *) echo "Incorrect choice... " ;
 esac
@@ -318,6 +354,8 @@ echo -e "\e[31m -------------------------      NEXUS 4    ----------------------
 echo ""
 echo "  [1] Build All - Kali rootfs and Kernel (AOSP/STOCK) (Android 4.4+)"
 echo "  [2] Build Kernel (AOSP/STOCK) Only"
+echo "  [3] Build All - Kali rootfs and Kernel (AOSP/STOCK) (Android 5)"
+echo "  [4] Build Kernel (AOSP/STOCK) (Android 5) Only"
 echo "  [0] Exit to Main Menu"
 echo ""
 echo ""
@@ -329,6 +367,8 @@ case $deb_menuchoice in
 
 1) clear; f_rootfs ; f_flashzip ; f_mako_stock_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
 2) clear; f_mako_stock_kernel ; f_zip_kernel_save ;;
+3) clear; f_rootfs ; f_flashzip ; f_mako_stock_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+4) clear; f_mako_stock_kernel5 ; f_zip_kernel_save ;;
 0) clear; f_interface ;;
 *) echo "Incorrect choice... " ;
 esac
@@ -1025,6 +1065,7 @@ if [ $LOCALGIT == 1 ]; then
         cp -rf ${basepwd}/arm-eabi-4.7 ${basedir}/toolchain
 else
 	git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basedir}/toolchain
+ #git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.8 ${basedir}/toolchain
 fi
 
 echo "Setting export paths"

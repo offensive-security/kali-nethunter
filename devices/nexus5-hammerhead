@@ -83,22 +83,41 @@ fi
 }
 
 #####################################################
-# Create Nexus 5 CM Kernel (4.4+)
+# Create Nexus 5 Stock Kernel (5)
 #####################################################
-f_hammerhead_cm_kernel(){
+f_hammerhead_stock_kernel5(){
+
+if [ $FROZENKERNEL == 1 ]; then
+	echo "Using frozen kernel"
+ 	cp -rf ${basepwd}/flash/ ${basedir}/flashkernel
+	rm -rf ${basedir}/flashkernel/data ${basedir}/flashkernel/sdcard ${basedir}/flashkernel/system/app ${basedir}/flashkernel/META-INF/com/google/android/updater-script
+  	cp -rf ${basepwd}/devices/frozen_kernels/5/n5-hammerhead/* ${basedir}/flashkernel/
+  	if [ -f "${basedir}/flash/META-INF/com/google/android/updater-script" ]; then
+	  if grep -Fxq "#KERNEL_SCRIPT_START" "${basedir}/flash/META-INF/com/google/android/updater-script"
+	  then
+	    echo "Kernel already added to main updater-script"
+	  else
+	    echo "Adding Kernel install to updater-script in main update.zip"
+	    cat ${basedir}/flashkernel/META-INF/com/google/android/updater-script >> ${basedir}/flash/META-INF/com/google/android/updater-script
+	    cp -f ${basedir}/flashkernel/kernel/kernel ${basedir}/flash/kernel/kernel	  
+	  fi
+	fi
+else
 
 f_kernel_build_init
 
-echo "Downloading Kernel"
 cd ${basedir}
+echo "Downloading Kernel"
 if [ $LOCALGIT == 1 ]; then
   echo "Copying kernel to rootfs"
-  cp -rf ${basepwd}/furnace_kernel_caf_hammerhead ${basedir}/kernel
+  cp -rf ${basepwd}/nexus5-5 ${basedir}/kernel
 else
-  git clone https://github.com/binkybear/furnace_kernel_caf_hammerhead.git -b cm-11.0 ${basedir}/kernel
+  git clone https://github.com/binkybear/kernel_msm.git -b android-msm-hammerhead-3.4-lollipop-release ${basedir}/kernel
 fi
 
 cd ${basedir}/kernel
+
+chmod +x scripts/*
 
 make clean
 sleep 10
@@ -122,26 +141,20 @@ set_perm_recursive(0, 2000, 0755, 0777, "/system/var/www");
 set_perm_recursive(0, 2000, 0755, 0777, "/system/var/log");
 set_perm_recursive(0, 0, 0755, 0755, "/system/etc/init.d");
 unmount("/system");
-
 package_extract_dir("kernel", "/tmp");
-set_perm(0, 0, 0775, "/tmp/installHH.sh");
 set_perm(0, 0, 0755, "/tmp/cleansystem.sh");
-set_perm(0, 0, 0755, "/tmp/busybox");
-set_perm(0, 0, 0777, "/tmp/makebootimg.sh");
-set_perm(0, 0, 0777, "/tmp/mkbootimg");
-set_perm(0, 0, 0777, "/tmp/unpackbootimg");
-
 ui_print("* Cleaning /system/app...                   *");
 run_program("/tmp/cleansystem.sh");
-
-run_program("/tmp/busybox", "dd", "if=/dev/block/platform/msm_sdcc.1/by-name/boot", "of=/tmp/boot.img");
-run_program("/tmp/unpackbootimg", "-i", "/tmp/boot.img", "-o", "/tmp/");
-run_program("/tmp/installHH.sh");
-
 ui_print("* Installing Kernel...                      *");
-run_program("/tmp/busybox", "dd", "if=/tmp/newboot.img", "of=/dev/block/platform/msm_sdcc.1/by-name/boot");
-
+package_extract_file("boot.img", "/dev/block/platform/msm_sdcc.1/by-name/boot");
 ui_print("* Kernel installation completed...          *");
 EOF
+
 f_kernel_build
+
+cd ${basedir}/flashkernel/kernel
+abootimg --create ${basedir}/flashkernel/boot.img -f ${basedir}/kernel/ramdisk/5/bootimg.cfg -k ${basedir}/kernel/arch/arm/boot/zImage-dtb -r ${basedir}/kernel/ramdisk/5/initrd.img
+cd ${basedir}
+f_zip_kernel_save
+fi
 }
