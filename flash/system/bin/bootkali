@@ -26,6 +26,10 @@ if [ "$($busybox mountpoint $mnt/dev)" == "$mnt/dev is a mountpoint" ]; then
 else
 	f_checkforroot
 
+	# Set selinux to permissive mode after we know we have root
+
+	setenforce 0
+
 	$busybox mount -o bind /system $mnt/system
 	$busybox mount -o bind /sdcard $mnt/sdcard
 	$busybox mount -o bind /dev $mnt/dev
