@@ -9,10 +9,6 @@ export HOME=/root
 export LOGNAME=root
 unset LD_PRELOAD
 
-# Return selinux to enforcement
-
-setenforce 1
-
 # set shmmax to 128mb to free memory#
 
 $busybox sysctl -w kernel.shmmax=134217728
