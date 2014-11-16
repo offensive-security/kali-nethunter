@@ -630,7 +630,6 @@ chmod 755 ${rootfs}/kali-$architecture/usr/bin/*.sh
 # Install Rawr (https://bitbucket.org/al14s/rawr/wiki/Usage)
 git clone https://bitbucket.org/al14s/rawr.git ${rootfs}/kali-$architecture/opt/rawr
 chmod 755 ${rootfs}/kali-$architecture/opt/rawr/install.sh
-LANG=C chroot ${rootfs}/kali-$architecture /opt/rawr/install.sh
 
 # Install MITMf
 LANG=C chroot ${rootfs}/kali-$architecture pip install capstone
