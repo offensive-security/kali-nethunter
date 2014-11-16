@@ -1,5 +1,4 @@
 #!/sbin/sh
-
 mkdir /tmp/ramdisk
 cp /tmp/boot.img-ramdisk.gz /tmp/ramdisk/
 cd /tmp/ramdisk/
@@ -9,6 +8,10 @@ rm /tmp/boot.img-ramdisk.gz
 
 if [ $(grep -c "seclabel u:r:install_recovery:s0" /tmp/ramdisk/init.rc) == 0 ]; then
    sed -i "s/seclabel u:r:install_recovery:s0/#seclabel u:r:install_recovery:s0/" /tmp/ramdisk/init.rc
+fi
+
+if [ $(grep -c "setenforce 0" /tmp/ramdisk/init.rc) == 0 ]; then
+   /tmp/busybox sed -i '/start ueventd/i    setenforce 0' /tmp/ramdisk/init.rc
 fi
 
 if  ! grep -qr init.d /tmp/ramdisk/*; then
@@ -25,16 +28,5 @@ if  ! grep -qr TERMINFO /tmp/ramdisk/*; then
 	echo "    export TERM linux"  >> /tmp/ramdisk/init.environ.rc
 fi
 
-if  ! grep -qr "setenforce 0" /tmp/ramdisk/*; then
-   /tmp/busybox sed -i '/start ueventd/i    setenforce 0' /tmp/ramdisk/init.rc
-fi
-
 find . | cpio -o -H newc | gzip > /tmp/boot.img-ramdisk.gz
 rm -r /tmp/ramdisk
-
-echo "console=ttyHSL0,115200,n8 androidboot.hardware=hammerhead user_debug=31 maxcpus=2 msm_watchdog_v2.enable=1" > /tmp/cmdline.cfg
-
-echo \#!/sbin/sh > /tmp/createnewboot.sh
-echo /tmp/mkbootimg --kernel /tmp/kernel --ramdisk /tmp/boot.img-ramdisk.gz --cmdline \"$(cat /tmp/cmdline.cfg)\" --base 0x$(cat /tmp/boot.img-base) --pagesize 2048 --ramdisk_offset 0x02900000 --tags_offset 0x02700000 --output /tmp/newboot.img >> /tmp/createnewboot.sh
-chmod 777 /tmp/createnewboot.sh
-/tmp/createnewboot.sh
