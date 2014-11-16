@@ -155,6 +155,11 @@ f_kernel_build
 cd ${basedir}/flashkernel/kernel
 abootimg --create ${basedir}/flashkernel/boot.img -f ${basedir}/kernel/ramdisk/5/bootimg.cfg -k ${basedir}/kernel/arch/arm/boot/zImage-dtb -r ${basedir}/kernel/ramdisk/5/initrd.img
 cd ${basedir}
+
+if [ -d "${basedir}/flash/" ]; then
+	cp ${basedir}/flashkernel/boot.img ${basedir}/flash/boot.img
+fi
+
 f_zip_kernel_save
 fi
 }
