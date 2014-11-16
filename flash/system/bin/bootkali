@@ -15,6 +15,7 @@ export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
 export TERM=linux
 export HOME=/root
 export LOGNAME=root
+unset LD_PRELOAD
 
 #########  MOUNT #########
 if [ "$($busybox mountpoint $mnt/dev)" == "$mnt/dev is a mountpoint" ]; then
