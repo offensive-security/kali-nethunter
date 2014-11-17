@@ -634,8 +634,14 @@ chmod 755 ${rootfs}/kali-$architecture/opt/rawr/install.sh
 # Install MITMf
 LANG=C chroot ${rootfs}/kali-$architecture pip install capstone
 git clone https://github.com/byt3bl33d3r/MITMf.git ${rootfs}/kali-$architecture/opt/MITMf
-chmod 755 ${rootfs}/kali-$architecture/opt/MITMf/setup.sh ${rootfs}/kali-$architecture/opt/MITMf/update.sh
-LANG=C chroot ${rootfs}/kali-$architecture "cd /opt/MITMf; ./setup.sh"
+cat << EOF > ${rootfs}/kali-$architecture/tmp/mitmf.sh
+cd /opt/MITMf
+chmod +x setup.sh update.sh
+./setup.sh
+EOF
+chmod +x ${rootfs}/kali-$architecture/tmp/mitmf.sh
+LANG=C chroot ${rootfs}/kali-$architecture /tmp/mitmf.sh
+rm -f ${rootfs}/kali-$architecture/tmp/mitmf.sh
 
 # Install Dictionary for wifite
 mkdir -p ${rootfs}/kali-$architecture/opt/dic
