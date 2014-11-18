@@ -19,11 +19,11 @@ export LOGNAME=root
 unset LD_PRELOAD
 
 #########  MOUNT #########
+
 if [ "$($busybox mountpoint $mnt/dev)" == "$mnt/dev is a mountpoint" ]; then
 	# Files exist in /dev so we can assume its mounted and we have root
 	clear
 	echo "Loaded Kali shell"
-	$busybox chroot $mnt /bin/bash -l
 else
 	f_checkforroot
 
@@ -46,7 +46,15 @@ else
 	echo "127.0.0.1 localhost" > $mnt/etc/hosts
 	echo "kali" > $mnt/proc/sys/kernel/hostname
 
-	# execute startup script
 	clear
+fi
+
+# EXECUTE CHROOT / ADD ARGUMENTS TO LAUNCH SPECIFIC PROGRAMS
+
+if [ $# -eq 0 ]; then
 	$busybox chroot $mnt /bin/bash -l
+else
+	if [ "$1" == "wifite" ]; then
+        $busybox chroot $mnt wifite
+   	fi
 fi
