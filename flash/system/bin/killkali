@@ -1,5 +1,9 @@
 busybox=/data/local/bin/busybox
 
+# set selinux enforcement
+
+su 0 setenforce 1
+
 export bin=/system/bin
 export mnt=/data/local/kali-armhf
 PRESERVED_PATH=$PATH

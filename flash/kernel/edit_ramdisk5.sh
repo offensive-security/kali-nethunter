@@ -13,7 +13,7 @@ fi
 
 # Set selinux to permissive
 if [ $(grep -c "setenforce 0" /tmp/ramdisk/init.rc) == 0 ]; then
-   /tmp/busybox sed -i '/start ueventd/i \ \ \ setenforce 0' /tmp/ramdisk/init.rc
+   /tmp/busybox sed -i '/start ueventd/i \ \ \ \ setenforce 0' /tmp/ramdisk/init.rc
 fi
 
 # Enabled /etc/init.d
