@@ -56,9 +56,8 @@ echo ""
 echo "[1]	Wifite - Auotmated Wireless Auditor"
 echo "[2]	Kismet - Wireless network detector, sniffer, IDS"
 echo "[3]	AP F**ker - Wireless attack multitool"
-echo "[4]	WPS Scanner - Actively scan WPS enabled routers w/ probe requests"
-echo "[5]	WPS Spy - Passively listen to 802.11 beacons for WPS enabled routers "
-echo "[6]	Pingen - Calculate default WPS PINs for some D-Link routers "
+echo "[4]	Wash -  Scan for WPS enabled routers"
+echo "[5]	Pingen - Calculate default WPS PINs for some D-Link routers "
 echo ""
 echo "[0]	Exit"
 echo ""
@@ -69,9 +68,8 @@ case $wirelesschoice in
 1) clear; f_wifite;;
 2) clear; f_kismet;;
 3) clear; f_apfucker;;
-4) clear; trap 'f_wireless_attacks' 2 ;f_wps_scanner;;
-5) clear; trap 'f_wireless_attacks' 2 ;f_wps_spy;;
-6) clear; trap 'f_wireless_attacks' 2 ;f_pingen;;
+4) clear; trap 'f_wireless_attacks' 2 ;f_wash;;
+5) clear; trap 'f_wireless_attacks' 2 ;f_pingen;;
 0) clear; f_interface;;
 *) echo "Incorrect choice...";
 esac
@@ -185,6 +183,7 @@ giskismet --database "/captures/kismet_db/wireless.dbl" -q "select * from wirele
 echo "Created kismet-$NOW.kml file for Google Earth"
 if [ -d "/sdcard/kali-nh/captures/" ]; then
 	echo "Detected kali-nh capture folder, moving capture files"
+	mkdir -p /sdcard/kali-nh/captures/kismet
 	cd /sdcard/kali-nh/captures/kismet/
 	zip -rj "kismet-captures-$NOW.zip" /captures/kismet/
 	echo "Successfully copied to /sdcard/kali-nh/captures/kismet-captures-$NOW.zip"
@@ -213,42 +212,10 @@ f_apfucker(){
   f_wireless_attacks
 }
 
-f_wps_scanner(){
+f_wash(){
 clear
-if [ ! -f "/usr/bin/wps_scan" ]; then
-	read -p "WPS Scanner not found, would you like to download? (y/n) : " wpsscannerdownload
-		if [ "$wpsscannerdownload" == "y" ]; then
-			wget https://raw.githubusercontent.com/devttys0/wps/master/wpstools/wpscan.py -O /usr/bin/wps_scan
-			chmod +x /usr/bin/wps_scan
-		else
-			echo "Cancelled download returning to wireless menu"
-			sleep 3
-			f_wireless_attacks
-		fi
-fi
-echo "Starting WPS Scan on monitor interface"
 f_monitor_check
-wps_scan -i mon0 -n -v
-f_wireless_attacks
-}
-
-f_wps_spy(){
-clear
-if [ ! -f "/usr/bin/wps_spy" ]; then
-	read -p "WPS Spy not found, would you like to download? (y/n) : " wpsspydownload
-		if [ "$wpsspydownload" == "y" ]; then
-			wget https://raw.githubusercontent.com/devttys0/wps/master/wpstools/wpspy.py -O /usr/bin/wps_spy
-			chmod +x /usr/bin/wps_spy
-		else
-			echo "Cancelled download returning to wireless menu"
-			sleep 3
-			f_wireless_attacks
-		fi
-fi
-echo "Starting WPS Spy on monitor interface"
-f_monitor_check
-wps_spy -i mon0 -f
-f_wireless_attacks
+wash -i mon0
 }
 
 f_pingen(){

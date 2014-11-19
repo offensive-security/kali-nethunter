@@ -647,11 +647,9 @@ rm -f ${rootfs}/kali-$architecture/tmp/mitmf.sh
 mkdir -p ${rootfs}/kali-$architecture/opt/dic
 tar xvf ${basepwd}/utils/dic/89.tar.gz -C ${rootfs}/kali-$architecture/opt/dic
 
-# Install WPS Scan which scans routers for enabled WPS & pingen which generates DLINK WPS pins
-wget https://raw.githubusercontent.com/devttys0/wps/master/wpstools/wpscan.py -O ${rootfs}/kali-$architecture/usr/bin/wps_scan
-wget https://raw.githubusercontent.com/devttys0/wps/master/wpstools/wpspy.py -O ${rootfs}/kali-$architecture/usr/bin/wps_spy
+# Install Pingen which generates DLINK WPS pins for some routers
 wget https://raw.githubusercontent.com/devttys0/wps/master/pingens/dlink/pingen.py -O ${rootfs}/kali-$architecture/usr/bin/pingen
-chmod 755 ${rootfs}/kali-$architecture/usr/bin/wps_scan ${rootfs}/kali-$architecture/usr/bin/pingen ${rootfs}/kali-$architecture/usr/bin/wps_spy
+chmod 755 ${rootfs}/kali-$architecture/usr/bin/pingen
 
 # Install Spiderfoot
 # Cherrypy is newer in pip then in repo so we need to use that instead.  All other depend are fine.
