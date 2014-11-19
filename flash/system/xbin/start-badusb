@@ -3,6 +3,8 @@
 TMPDIR=/data/local/tmp
 mkdir -p $TMPDIR
 UPSTREAM_NS=8.8.8.8
+unset LD_PRELOAD
+su 0 setenforce 0
 
 # Check required tools
 if ! busybox ls > /dev/null;then
