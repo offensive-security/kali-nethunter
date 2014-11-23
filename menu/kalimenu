@@ -57,7 +57,8 @@ echo "[1]	Wifite - Auotmated Wireless Auditor"
 echo "[2]	Kismet - Wireless network detector, sniffer, IDS"
 echo "[3]	AP F**ker - Wireless attack multitool"
 echo "[4]	Wash -  Scan for WPS enabled routers"
-echo "[5]	Pingen - Calculate default WPS PINs for some D-Link routers "
+echo "[5]	Airodump-ng - Display all wireless networks/clients"
+echo "[6]	Pingen - Calculate default WPS PINs for some D-Link routers "
 echo ""
 echo "[0]	Exit"
 echo ""
@@ -68,8 +69,9 @@ case $wirelesschoice in
 1) clear; f_wifite;;
 2) clear; f_kismet;;
 3) clear; f_apfucker;;
-4) clear; trap 'f_wireless_attacks' 2 ;f_wash;;
-5) clear; trap 'f_wireless_attacks' 2 ;f_pingen;;
+4) clear; trap 'f_wireless_attacks' 2 ;f_monitor_check; wash -i mon0;;
+5) clear; trap 'f_wireless_attacks' 2 ;f_monitor_check; airodump-ng mon0;;
+6) clear; trap 'f_wireless_attacks' 2 ;f_pingen;;
 0) clear; f_interface;;
 *) echo "Incorrect choice...";
 esac
@@ -215,12 +217,6 @@ f_apfucker(){
   python /usr/bin/apfucker.py
   clear
   f_wireless_attacks
-}
-
-f_wash(){
-clear
-f_monitor_check
-wash -i mon0
 }
 
 f_pingen(){
