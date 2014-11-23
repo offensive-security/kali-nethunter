@@ -124,7 +124,7 @@ echo "* WIFITE QUICK SELECT *"
 echo ""
 echo "[1] Regular Wifite"
 echo "[2] Attack all WEP"
-echo "[3] Capture all WPA and crack (WARNING: can cause overheating / power loss)"
+echo "[3] Capture all WPA and crack (WARNING: can cause overheating + power loss)"
 echo "[4] Capture all WPA"
 echo "[5] Attack WPS with power over 40+"
 echo ""
@@ -144,13 +144,35 @@ echo "Press Enter to continue. . ." ; read ;; esac
 done
 }
 
+f_kismet_save(){
+if [ -d "/sdcard/kali-nh/captures/" ]; then
+	echo "Detected kali-nh capture folder, moving capture files"
+	mkdir -p /sdcard/kali-nh/captures/kismet
+	cd /sdcard/kali-nh/captures/kismet/
+	zip -rj "kismet-captures-$NOW.zip" /captures/kismet/Kismet-$NOW*
+	echo "Successfully copied to /sdcard/kali-nh/captures/kismet-captures-$NOW.zip"
+	sleep 3
+else
+	cd /sdcard/
+	zip -rj "kismet-captures-$NOW.zip" /captures/kismet/Kismet-$NOW*
+	echo "Successfully copied to /sdcard/kismet-captures-$NOW.zip"
+	sleep 3
+fi
+# option to erase files
+read -p "Would you like to secure erase all files in Kismet /captures folder and database? (y/n): " ERASEKISMET
+if [ "$ERASEKISMET" == "y" ]; then
+	echo "Removing capture files..."
+	wipe -f -i -r /captures/kismet/*
+	wipe -f -i -r /captures/kismet_db/*
+fi
+}
+
 f_kismet(){
-#!/bin/bash
 echo "Make sure BlueNMEA is running before starting with GPS support"
 sleep 3
 read -p "Would you like to run Kismet with GPS enabled? (y/n)" CONT
 if [ "$CONT" == "y" ]; then
-	(socat TCP:127.0.0.1:4352 PTY,link=/tmp/gps & gpsd /tmp/gps) & kismet -g;
+	(socat TCP:127.0.0.1:4352 PTY,link=/tmp/gps & gpsd /tmp/gps) & kismet -g -t Kismet-$NOW;
 	killall gpsd
 	f_giskismet;
 	wipe -f -P 5 /tmp/gps
@@ -159,7 +181,9 @@ if [ "$CONT" == "y" ]; then
 else
   echo "Running Kismet WITHOUT GPS support..."
   sleep 2
-  kismet -g;
+  kismet -g -t Kismet-$NOW;
+  # save kismet files
+  f_kismet_save
   clear
   f_wireless_attacks;
 fi
@@ -171,38 +195,19 @@ clear
 if [ ! -d "/captures/kismet_db" ]; then
 	mkdir -p "/captures/kismet_db"
 fi
-# process all netxml files
+# process all netxml files (duplicated are ignored)
 cd /captures/kismet/
 for capture in $(find . -iname '*.netxml'); do
-echo "Adding $capture to datbase"
-sleep 5
-giskismet -x "$capture" --database "/captures/kismet_db/wireless.dbl"
+	echo "Adding $capture to datbase"
+	sleep 5
+	giskismet -x "$capture" --database "/captures/kismet_db/wireless.dbl"
 done
 # export kml of all wireless data and copy files to sdcard
 giskismet --database "/captures/kismet_db/wireless.dbl" -q "select * from wireless" -o "/captures/kismet/kismet-$NOW.kml"
 echo "Created kismet-$NOW.kml file for Google Earth"
-if [ -d "/sdcard/kali-nh/captures/" ]; then
-	echo "Detected kali-nh capture folder, moving capture files"
-	mkdir -p /sdcard/kali-nh/captures/kismet
-	cd /sdcard/kali-nh/captures/kismet/
-	zip -rj "kismet-captures-$NOW.zip" /captures/kismet/
-	echo "Successfully copied to /sdcard/kali-nh/captures/kismet-captures-$NOW.zip"
-	sleep 3
-else
-	cd /sdcard/
-	zip -rj "kismet-captures-$NOW.zip" /captures/kismet/
-	echo "Successfully copied to /sdcard/kismet-captures-$NOW.zip"
-	sleep 3
-fi
-# option to erase files
-read -p "Would you like to secure erase all files in Kismet /captures folder and database? (y/n): " CONT
-if [ "$CONT" == "y" ]; then
-	echo "Removing capture files..."
-	wipe -f -i -r /captures/kismet/*
-	wipe -f -i -r /captures/kismet_db/*
-else
-  echo "All files copied successfully!";
-fi
+# save kismet files
+f_kismet_save
+ "All files copied successfully!";
 }
 
 f_apfucker(){
@@ -244,8 +249,7 @@ echo "[1]	tcpdump - Dump network traffic"
 echo "[2]	tshark - Dump and analyze network traffic"
 echo "[3]	urlsnarf - URL sniffer"
 echo "[4]	dsniff - Plain text password sniffer"
-echo "[5]	Passive scanner - Captures with tshark then parses pcap file"
-echo "[6]	MITMproxy - Capture HTTP and HTTPS as a transparent proxy"
+echo "[5]	MITMproxy - Capture HTTP and HTTPS as a transparent proxy"
 echo ""
 echo "[0]	Exit to main menu"
 echo ""
@@ -257,8 +261,7 @@ case $sniffchoice in
 2) clear; trap 'f_sniffing' 2; f_tshark ;;
 3) clear; trap 'f_sniffing' 2; f_urlsnarf ;;
 4) clear; trap 'f_sniffing' 2; f_dsniff ;;
-5) clear; f_passive ;;
-6) clear; trap 'f_sniffing' 2; f_mitmproxy ;;
+5) clear; trap 'f_sniffing' 2; f_mitmproxy ;;
 0) clear; f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
@@ -287,80 +290,6 @@ f_dsniff(){
 	echo "ctrl-c to quit and return to sniffing menu"
 	dsniff -i $pickinterface  -w /captures/dsniff/urlsnarf-$NOW.cap;
 	f_sniffing
-}
-f_passive(){
-f_pick_interface
-if [ ! -f "/usr/bin/tcptrace" ]; then
-	read -p "TCPTRACE not found, would you like to download? (y/n) : " tcptrace
-		if [ "tcptrace" == "y" ]; then
-			apt-get install -y tcptrace
-		else
-			echo "Cancelled download returning to information gathering menu"
-			sleep 3
-			f_information_gathering
-		fi
-fi
-
-# iptables --flush # flush
-# iptables -A OUTPUT -j REJECT # reject outgoing
-# iptables –A INPUT –p icmp –icmp-type echo-request –j DROP # block all ICMP
-# iptables –A OUTPUT –p icmp –icmp-type echo-reply –j DROP # block all ICMP
-# iptables -A OUTPUT -p udp --dport 53 -j DROP # block all outgoing DNS
-# iptables -A OUTPUT -p udp --sport 53 -j DROP # block all outgoing
-
-read -p "Enter the number of minutes to capture using tshark: " MINUTES
-
-SECONDS=$(($MINUTES * 60))
-PASSIVECAPTURE="/captures/tshark/tshark_$NOW.pcap"
-PASSIVEOUTPUT="/captures/passive/passive_$NOW.log"
-GATEWAY=$(/sbin/ip route | awk '/default/ { print $3 }')
-IPADDRESS=$(/sbin/ifconfig $pickinterface | awk -F ' *|:' '/inet addr/{print $4}')
-
-# create required folders/file
-mkdir -p /captures/tshark/
-mkdir -p /captures/passive/
-touch $PASSIVEOUTPUT
-clear
-echo "[+] Your current select interface is: $pickinterface"
-echo "[+] Your current IP is: $IPADDRESS"
-echo "[+] Your current Gatway IP is: $GATEWAY"
-echo "[+] Final log will be saved to $PASSIVEOUTPUT"
-touch $PASSIVEOUTPUT
-
-# Tshark capture
-
-echo "[+] Starting tshark on $pickinterface"
-echo "[+] Writing to $PASSIVECAPTURE for $MINUTES minute(s)"
-echo ""
-# Maybe add a trap so we can exit early
-tshark -n -i $pickinterface -w $PASSIVECAPTURE -F pcap -a duration:$SECONDS -V
-echo "[-] Stopping tshark "
-
-echo "[+] Starting p0f"
-p0f -s $PASSIVECAPTURE -o $PASSIVEOUTPUT
-
-echo "[+] Scanning $PASSIVECAPTURE for plain text passwords"
-dsniff -p $PASSIVECAPTURE >> $PASSIVEOUTPUT
-
-echo "[+] Scanning $PASSIVECAPTURE for HTTP traffic"
-urlsnarf -p $PASSIVECAPTURE >> $PASSIVEOUTPUT
-
-echo "[+] Scanning $PASSIVECAPTURE for SMTP/POP Email"
-mailsnarf -p $PASSIVECAPTURE >> $PASSIVEOUTPUT
-
-echo "[+] Scanning $PASSIVECAPTURE for NFS Files"
-filesnarf -p $PASSIVECAPTURE >> $PASSIVEOUTPUT
-
-echo "[+] Scanning $PASSIVECAPTURE for Chat messages"
-msgsnarf -p $PASSIVECAPTURE >> $PASSIVEOUTPUT
-
-cat $PASSIVEOUTPUT
-
-echo "[+] File $PASSIVEOUTPUT finished."
-sleep 5
-read -p "Press enter to return to menu..."
-iptables --flush && iptables --delete-chain #flush any previous iptable rules
-f_sniffing
 }
 
 f_mitmproxy(){
@@ -1114,7 +1043,7 @@ f_safeeject(){
   echo "Stopping Services. Please Wait."
   airmon-ng stop wlan1
   ifconfig wlan1 down
-  sleep 5
+  sleep 8
   clear
   echo "You should now be able to safely remove your wifi card."
   echo ""
