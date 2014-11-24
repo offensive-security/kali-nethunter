@@ -1,3 +1,0 @@
-export PHP_FCGI_CHILDREN=3
-export PHP_FCGI_MAX_REQUESTS=1000
-php -b 127.0.0.1:9001 -c /system/etc/php/php.ini >> /sdcard/fcgiserver.log 2>&1
