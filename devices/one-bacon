@@ -1,0 +1,175 @@
+#
+# created by @l0rdg3x
+# modified by binkybear
+#####################################################
+# Create OnePlus One Stock Kernel (4.4+)
+#####################################################
+f_oneplus_kernel(){
+
+echo "Downloading Android Toolchian"
+if [ $LOCALGIT == 1 ]; then
+	echo "Copying toolchain to rootfs"
+        cp -rf ${basepwd}/arm-eabi-4.7 ${basedir}/toolchain
+else
+	git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basedir}/toolchain
+fi
+
+echo "Setting export paths"
+# Set path for Kernel building
+export ARCH=arm
+export SUBARCH=arm
+export CROSS_COMPILE=${basedir}/toolchain/bin/arm-eabi-
+if [ $FROZENKERNEL == 1 ]; then
+	echo "Using frozen kernel"
+ 	cp -rf ${basepwd}/flash/ ${basedir}/flashkernel
+	rm -rf ${basedir}/flashkernel/data ${basedir}/flashkernel/sdcard ${basedir}/flashkernel/system/app ${basedir}/flashkernel/META-INF/com/google/android/updater-script
+  	cp -rf ${basepwd}/devices/frozen_kernels/4.4.4/one-bacon/* ${basedir}/flashkernel/
+  	if [ -f "${basedir}/flash/META-INF/com/google/android/updater-script" ]; then
+	  if grep -Fxq "#KERNEL_SCRIPT_START" "${basedir}/flash/META-INF/com/google/android/updater-script"
+	  then
+	    echo "Kernel already added to main updater-script"
+	  else
+	    echo "Adding Kernel install to updater-script in main update.zip"
+	    cat ${basedir}/flashkernel/META-INF/com/google/android/updater-script >> ${basedir}/flash/META-INF/com/google/android/updater-script
+	    cp -f ${basedir}/flashkernel/kernel/kernel ${basedir}/flash/kernel/kernel	  
+	  fi
+	fi
+else
+
+f_kernel_build_init
+
+cd ${basedir}
+echo "Downloading Kernel"
+if [ $LOCALGIT == 1 ]; then
+  echo "Copying kernel to rootfs"
+  cp -rf ${basepwd}/oneplus11 ${basedir}/kernel
+else
+  git clone https://github.com/binkybear/AK-OnePone.git -b cm-11.0-ak oneplus11 ${basedir}/kernel
+fi
+
+cd ${basedir}/kernel
+
+make clean
+sleep 10
+make kali_defconfig
+
+# Attach kernel builder to updater-script
+echo "#KERNEL_SCRIPT_START" >> ${basedir}/flashkernel/META-INF/com/google/android/updater-script
+cat << EOF > ${basedir}/flashkernel/META-INF/com/google/android/updater-script
+
+ui_print("* Starting Kernel install for OnePlus One...    *");
+ui_print("* Mounting System...                        *");
+mount("ext4", "EMMC", "/dev/block/platform/msm_sdcc.1/by-name/system", "/system");
+package_extract_dir("system", "/system");
+set_metadata_recursive("/system/lib/modules", "uid", 0, "gid", 0, "dmode", 0644, "fmode", 0644, "capabilities", 0x0, "selabel", "u:object_r:system_file:s0");
+set_metadata_recursive("/system/bin", "uid", 0, "gid", 0, "dmode", 0755, "fmode", 0755, "capabilities", 0x0, "selabel", "u:object_r:system_file:s0");
+set_metadata_recursive("/system/xbin", "uid", 0, "gid", 0, "dmode", 0755, "fmode", 0755, "capabilities", 0x0, "selabel", "u:object_r:system_file:s0");
+set_metadata_recursive("/system/etc/init.d", "uid", 0, "gid", 0, "dmode", 0755, "fmode", 0755, "capabilities", 0x0, "selabel", "u:object_r:system_file:s0");
+unmount("/system");
+
+package_extract_dir("kernel", "/tmp");
+set_metadata("/tmp/installbacon.sh", "uid", 0, "gid", 0, "mode", 0755);
+set_metadata("/tmp/cleansystem.sh", "uid", 0, "gid", 0, "mode", 0755);
+set_metadata("/tmp/busybox", "uid", 0, "gid", 0, "mode", 0755);
+set_metadata("/tmp/makebootimg.sh", "uid", 0, "gid", 0, "mode", 0777);
+set_metadata("/tmp/mkbootimg", "uid", 0, "gid", 0, "mode", 0777);
+set_metadata("/tmp/unpackbootimg", "uid", 0, "gid", 0, "mode", 0777);
+
+ui_print("* Cleaning /system/app...                   *");
+run_program("/tmp/cleansystem.sh");
+
+run_program("/tmp/installbacon.sh");
+
+ui_print("* Installing Kernel...                      *");
+
+run_program("/tmp/busybox", "dd", "if=/tmp/newboot.img", "of=/dev/block/platform/msm_sdcc.1/by-name/boot");
+
+ui_print("* Kernel installation completed...          *");
+EOF
+
+# Start kernel build
+f_kernel_build
+fi
+}
+
+#####################################################
+# Create OnePlus One Kernel (5+)
+#####################################################
+f_oneplus5_kernel(){
+
+echo "Downloading Android Toolchian"
+if [ $LOCALGIT == 1 ]; then
+	echo "Copying toolchain to rootfs"
+        cp -rf ${basepwd}/arm-eabi-4.7 ${basedir}/toolchain
+else
+	git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basedir}/toolchain
+fi
+
+echo "Setting export paths"
+# Set path for Kernel building
+export ARCH=arm
+export SUBARCH=arm
+export CROSS_COMPILE=${basedir}/toolchain/bin/arm-eabi-
+
+if [ $FROZENKERNEL == 1 ]; then
+	echo "Using frozen kernel"
+ 	cp -rf ${basepwd}/flash/ ${basedir}/flashkernel
+	rm -rf ${basedir}/flashkernel/data ${basedir}/flashkernel/sdcard ${basedir}/flashkernel/system/app ${basedir}/flashkernel/META-INF/com/google/android/updater-script
+  	cp -rf ${basepwd}/devices/frozen_kernels/5/one-bacon/* ${basedir}/flashkernel/
+  	if [ -f "${basedir}/flash/META-INF/com/google/android/updater-script" ]; then
+	  if grep -Fxq "#KERNEL_SCRIPT_START" "${basedir}/flash/META-INF/com/google/android/updater-script"
+	  then
+	    echo "Kernel already added to main updater-script"
+	  else
+	    echo "Adding Kernel install to updater-script in main update.zip"
+	    cat ${basedir}/flashkernel/META-INF/com/google/android/updater-script >> ${basedir}/flash/META-INF/com/google/android/updater-script
+	    cp -f ${basedir}/flashkernel/kernel/kernel ${basedir}/flash/kernel/kernel	  
+	  fi
+	fi
+else
+
+f_kernel_build_init
+
+echo "Downloading Kernel"
+cd ${basedir}
+if [ $LOCALGIT == 1 ]; then
+  echo "Copying kernel to rootfs"
+  cp -rf ${basepwd}/oneplus12 ${basedir}/kernel
+else
+   it clone https://github.com/binkybear/AK-OnePone.git -b cm-12.0-ak oneplus12 ${basedir}/kernel
+fi
+
+cd ${basedir}/kernel
+
+make clean
+sleep 10
+make kali_defconfig
+
+# Attach kernel builder to updater-script
+echo "#KERNEL_SCRIPT_START" >> ${basedir}/flashkernel/META-INF/com/google/android/updater-script
+cat << EOF > ${basedir}/flashkernel/META-INF/com/google/android/updater-script
+ui_print("* Starting Kernel install for OnePlus One...    *");
+ui_print("* Mounting System...                        *");
+mount("ext4", "EMMC", "/dev/block/platform/msm_sdcc.1/by-name/system", "/system");
+package_extract_dir("system", "/system");
+set_metadata_recursive("/system/lib/modules", "uid", 0, "gid", 0, "dmode", 0644, "fmode", 0644, "capabilities", 0x0, "selabel", "u:object_r:system_file:s0");
+set_metadata_recursive("/system/bin", "uid", 0, "gid", 0, "dmode", 0755, "fmode", 0755, "capabilities", 0x0, "selabel", "u:object_r:system_file:s0");
+set_metadata_recursive("/system/xbin", "uid", 0, "gid", 0, "dmode", 0755, "fmode", 0755, "capabilities", 0x0, "selabel", "u:object_r:system_file:s0");
+set_metadata_recursive("/system/etc/init.d", "uid", 0, "gid", 0, "dmode", 0755, "fmode", 0755, "capabilities", 0x0, "selabel", "u:object_r:system_file:s0");
+unmount("/system");
+package_extract_dir("kernel", "/tmp");
+set_metadata("/tmp/installbacon.sh", "uid", 0, "gid", 0, "mode", 0755);
+set_metadata("/tmp/cleansystem.sh", "uid", 0, "gid", 0, "mode", 0755);
+set_metadata("/tmp/busybox", "uid", 0, "gid", 0, "mode", 0755);
+set_metadata("/tmp/makebootimg.sh", "uid", 0, "gid", 0, "mode", 0777);
+set_metadata("/tmp/mkbootimg", "uid", 0, "gid", 0, "mode", 0777);
+set_metadata("/tmp/unpackbootimg", "uid", 0, "gid", 0, "mode", 0777);
+ui_print("* Cleaning /system/app...                   *");
+run_program("/tmp/cleansystem.sh");
+run_program("/tmp/installbacon.sh");
+ui_print("* Installing Kernel...                      *");
+run_program("/tmp/busybox", "dd", "if=/tmp/newboot.img", "of=/dev/block/platform/msm_sdcc.1/by-name/boot");
+ui_print("* Kernel installation completed...          *");
+EOF
+f_kernel_build
+}

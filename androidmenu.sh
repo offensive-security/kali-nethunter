@@ -19,7 +19,7 @@
 # git clone https://github.com/binkybear/kernel_samsung_manta.git -b thunderkat
 # git clone https://github.com/binkybear/####################.git -b ########## nexus10-5
 # - Nexus 9
-# git clone https://github.com/binkybear/####################.git -b ########## nexus9-5
+# git clone https://github.com/binkybear/ElementalX-N9.git -b ElementalX-1.00 nexus9-5
 # - Nexus 7 (2012)
 # git clone https://github.com/binkybear/kangaroo.git -b kangaroo
 # git clone https://github.com/binkybear/####################.git -b ########## nexus7_2012-5
@@ -34,6 +34,9 @@
 # - Nexus 4
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-mako-3.4-kitkat-mr2 mako
 # git clone https://github.com/binkybear/####################.git -b ########## nexus4-5
+# - OnePlus One
+# git clone https://github.com/binkybear/AK-OnePone.git -b cm-11.0-ak oneplus11
+# git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.0-ak oneplus12
 # - Galaxy S5
 # git clone https://github.com/binkybear/KTSGS5.git -b aosp4.4 galaxy_s5
 # git clone https://github.com/binkybear/KTSGS5.git -b tw4.4 galaxy_s5_tw
@@ -42,6 +45,7 @@
 # git clone https://github.com/binkybear/android_kernel_samsung_exynos5410.git -b cm-11.0 galaxy_s4_i9500
 # - Toolchain
 # git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7
+# git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 -b lollipop-release
 ######## Local Repo ##########
 # to update :  for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
 # 0 = use remote git clone | 1 = local copies
@@ -55,7 +59,7 @@ FROZENKERNEL=0
 #########  Devices  ##########
 # Build scripts for each kernel is located under devices/devicename
 source devices/nexus10-manta
-source devices/nexus9-flounder
+source devices/nexus9-volantis #aka flounder
 source devices/nexus6-shamu
 source devices/nexus7-grouper-tilapia
 source devices/nexus7-flo-deb
@@ -133,6 +137,8 @@ echo -e "\e[31m	[1] Build for Nexus Devices \e[0m"
 echo ""
 echo -e "\e[31m	[2] Build for Samsung Devices \e[0m"
 echo ""
+echo -e "\e[31m [3] Build for OnePlus One Devices \e[0m"
+echo ""
 if [ -f "${basedir}/flashkernel/kernel/kernel" ] && [ -d "${basedir}/flash" ]; then
 echo "	[77] Inject finished rootfs/kernel into ROM"
 fi
@@ -150,6 +156,7 @@ case $menuchoice in
 
 1) clear; f_interface_nexus ;;
 2) clear; f_interface_samsung ;;
+3) clear; f_interface_oneplus ;;
 77) clear; f_rom_build ;;
 88) clear; f_rootfs ; f_flashzip; f_zip_save ;;
 99) f_cleanup ;;
@@ -179,7 +186,7 @@ echo ""
 echo -e "\e[31m ---- NEXUS 6  (2014) - SHAMU --------------------------------------------------------\e[0m"
 echo "  [#] Build for Nexus 6 with wireless USB support (Android 4.4+)"
 echo ""
-echo -e "\e[31m ---- NEXUS 9 (2014) - FLOUNDER ------------------------------------------------------\e[0m"
+echo -e "\e[31m ---- NEXUS 9 (2014) - VOLANTIS ------------------------------------------------------\e[0m"
 echo "  [#] Build for Nexus 9 with wireless USB support (Android 4.4+)"
 echo ""
 echo "  [0] Exit to Main Menu"
@@ -223,6 +230,30 @@ case $samsungmenuchoice in
 0) clear; f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
+}
+
+f_interface_oneplus(){
+echo -e "\e[31m ------------------------- OnePlus One --------------------\e[0m"
+echo ""
+echo "  [1] Build All - Kali rootfs and Kernel (Android 4.4+)"
+echo "  [2] Build Kernel Only (Android 4.4+)"
+echo "  [3] Build All - Kali rootfs and Kernel (Android 5)"
+echo "  [4] Build Kernel Only (Android 5)"
+echo "  [0] Exit to Main Menu"
+echo ""
+echo ""
+# wait for character input
+
+read -p "Choice: " grouper_menuchoice
+
+case $grouper_menuchoice in
+
+1) clear; f_rootfs ; f_flashzip ; f_oneplus_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+2) clear; f_oneplus_kernel ; f_zip_kernel_save ;;
+3) clear; f_rootfs ; f_flashzip ; f_oneplus_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+4) clear; f_oneplus_kernel5 ; f_zip_kernel_save ;;
+0) clear; f_interface ;;
+*) echo "Incorrect choice... " ;
 }
 
 f_manta(){
@@ -1024,21 +1055,6 @@ rm -rf ${basedir}/flashkernel/sdcard
 rm -rf ${basedir}/flashkernel/system/app
 #rm -rf ${basedir}/flashkernel/system/bin ${basedir}/flashkernel/system/xbin
 rm -rf ${basedir}/flashkernel/META-INF/com/google/android/updater-script
-
-echo "Downloading Android Toolchian"
-if [ $LOCALGIT == 1 ]; then
-	echo "Copying toolchain to rootfs"
-        cp -rf ${basepwd}/arm-eabi-4.7 ${basedir}/toolchain
-else
-	git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basedir}/toolchain
- #git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.8 ${basedir}/toolchain
-fi
-
-echo "Setting export paths"
-# Set path for Kernel building
-export ARCH=arm
-export SUBARCH=arm
-export CROSS_COMPILE=${basedir}/toolchain/bin/arm-eabi-
 }
 
 ##############################################################
