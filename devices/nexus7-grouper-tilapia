@@ -2,6 +2,21 @@
 # Create Nexus 7 Grouper Kernel (4.4+)
 #####################################################
 f_nexus7_grouper_kernel(){
+
+echo "Downloading Android Toolchian"
+if [ $LOCALGIT == 1 ]; then
+	echo "Copying toolchain to rootfs"
+        cp -rf ${basepwd}/arm-eabi-4.7 ${basedir}/toolchain
+else
+	git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basedir}/toolchain
+fi
+
+echo "Setting export paths"
+# Set path for Kernel building
+export ARCH=arm
+export SUBARCH=arm
+export CROSS_COMPILE=${basedir}/toolchain/bin/arm-eabi-
+
 if [ $FROZENKERNEL == 1 ]; then
 	echo "Using frozen kernel"
  	cp -rf ${basepwd}/flash/ ${basedir}/flashkernel
@@ -47,13 +62,9 @@ ui_print("* Starting Kernel install for Nexus 7 (2012)*");
 ui_print("* Mounting System...                        *");
 mount("ext4", "EMMC", "/dev/block/platform/sdhci-tegra.3/by-name/APP", "/system");
 package_extract_dir("system", "/system");
-symlink("/system/xbin/lighttpd-static", "/system/bin/lighttpd");
-symlink("/system/xbin/php-cgi", "/system/bin/php");
 set_perm_recursive(0, 0, 0644, 0644, "/system/lib/modules");
 set_perm_recursive(0, 2000, 0755, 0755, "/system/bin");
 set_perm_recursive(0, 2000, 0755, 0755, "/system/xbin");
-set_perm_recursive(0, 2000, 0755, 0777, "/system/var/www");
-set_perm_recursive(0, 2000, 0755, 0777, "/system/var/log");
 set_perm_recursive(0, 0, 0755, 0755, "/system/etc/init.d");
 package_extract_dir("kernel", "/tmp");
 set_perm(0, 0, 0777, "/tmp/mkbootimg.sh");
