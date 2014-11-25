@@ -254,6 +254,7 @@ case $grouper_menuchoice in
 4) clear; f_oneplus_kernel5 ; f_zip_kernel_save ;;
 0) clear; f_interface ;;
 *) echo "Incorrect choice... " ;
+esac
 }
 
 f_manta(){
