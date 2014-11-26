@@ -522,7 +522,7 @@ desktop="kali-defaults kali-root-login desktop-base xfce4 xfce4-places-plugin xf
 tools="nmap metasploit tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set device-pharmer"
 wireless="wifite iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq dsniff sslstrip mdk3 mitmproxy"
 services="autossh openssh-server tightvncserver apache2 postgresql openvpn php5"
-extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools python-pip hostapd ptunnel tcptrace dnsutils p0f"
+extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools python-pip hostapd ptunnel tcptrace dnsutils p0f mitmf"
 mana="python-twisted python-dnspython libnl1 libnl-dev libssl-dev sslsplit python-pcapy tinyproxy isc-dhcp-server rfkill mana-toolkit"
 spiderfoot="python-lxml python-m2crypto python-netaddr python-mako"
 sdr="sox librtlsdr"
@@ -663,18 +663,6 @@ chmod 755 ${rootfs}/kali-$architecture/usr/bin/*.sh
 git clone https://bitbucket.org/al14s/rawr.git ${rootfs}/kali-$architecture/opt/rawr
 chmod 755 ${rootfs}/kali-$architecture/opt/rawr/install.sh
 
-# Install MITMf
-LANG=C chroot ${rootfs}/kali-$architecture pip install capstone
-git clone https://github.com/byt3bl33d3r/MITMf.git ${rootfs}/kali-$architecture/opt/MITMf
-cat << EOF > ${rootfs}/kali-$architecture/tmp/mitmf.sh
-cd /opt/MITMf
-chmod +x setup.sh update.sh
-./setup.sh
-EOF
-chmod +x ${rootfs}/kali-$architecture/tmp/mitmf.sh
-LANG=C chroot ${rootfs}/kali-$architecture /tmp/mitmf.sh
-rm -f ${rootfs}/kali-$architecture/tmp/mitmf.sh
-
 # Install Dictionary for wifite
 mkdir -p ${rootfs}/kali-$architecture/opt/dic
 tar xvf ${basepwd}/utils/dic/89.tar.gz -C ${rootfs}/kali-$architecture/opt/dic
@@ -808,8 +796,8 @@ mkdir -p ${basedir}/flash/system/lib/modules
 
 # Copy configuration files needed by nethunter app (we could also move this folder to flash/sdcard/files)
 
-mkdir ${basedir}/flash/sdcard/files
-cp -rf ${basepwd}/utils/files ${basedir}/flash/sdcard/files
+mkdir -p ${basedir}/flash/sdcard
+cp -rf ${basepwd}/utils/files ${basedir}/flash/sdcard
 
 # Download/add Android applications that are useful to our chroot enviornment
 
