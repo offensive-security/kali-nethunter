@@ -845,8 +845,8 @@ cd ${rootfs}
 #######################################
 rm -rf  kali-$architecture/dev/*
 #######################################
-
-tar jcvf kalifs.tar.bz2 kali-$architecture
+echo "Compressing kali rootfs, please wait"
+tar jcf kalifs.tar.bz2 kali-$architecture
 mv kalifs.tar.bz2 ${basedir}/flash/data/local/
 
 #tar jcvf ${basedir}/flash/data/local/kalifs.tar.bz2 ${basedir}/kali-$architecture
