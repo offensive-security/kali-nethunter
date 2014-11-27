@@ -1,6 +1,12 @@
 #!/bin/bash
 # Modified to include menu system
 # Kernel Development requires Kali 64bit host
+
+# Configure the build environment
+DEBUG=0    # Valid values are 0 or 1, with 1 being enabled 
+LOCALGIT=0
+FROZENKERNEL=0
+
 ######### Dependencies #######
 # cd ~
 # git clone https://github.com/offensive-security/kali-nethunter
@@ -53,9 +59,6 @@
 # Save time from having to build kernels every time set FROZENKERNEL=1.
 # This will use premade kernels in devices/frozen_kernels/{VERSION}/{BUILDNAME}
 
-LOCALGIT=0
-FROZENKERNEL=0
-
 #########  Devices  ##########
 # Build scripts for each kernel is located under devices/devicename
 source devices/nexus10-manta
@@ -85,11 +88,20 @@ chmod +x utils/boottools/*
 
 printf '\033[8;33;100t'
 
+d_clear(){
+  # Disable the 'clear' statements, if DEBUG mode is enabled
+  if [ ${DEBUG} == 1 ]; then
+    echo **DEBUG** : Not clearing the screen.
+  else
+    clear
+  fi
+}
+
 f_check_version(){
   # Allow user input of version number/folder creation to make set up easier
   echo "Checking for git updates in local folder..."
   for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
-  clear
+  d_clear
   # need to exit back to basedir to establish root folder
   cd ${basepwd}
   echo ""
@@ -128,7 +140,7 @@ esac
 }
 
 f_interface(){
-clear
+d_clear
 echo -e "		         \e[1mKALI NETHUNTER BUILDER FOR ANDROID DEVICES\e[0m"
 echo ""
 echo "	   WORK PATH: ${basedir}"
@@ -154,19 +166,19 @@ read -p "Choice: " menuchoice
 
 case $menuchoice in
 
-1) clear; f_interface_nexus ;;
-2) clear; f_interface_samsung ;;
-3) clear; f_interface_oneplus ;;
-77) clear; f_rom_build ;;
-88) clear; f_rootfs ; f_flashzip; f_zip_save ;;
+1) d_clear; f_interface_nexus ;;
+2) d_clear; f_interface_samsung ;;
+3) d_clear; f_interface_oneplus ;;
+77) d_clear; f_rom_build ;;
+88) d_clear; f_rootfs ; f_flashzip; f_zip_save ;;
 99) f_cleanup ;;
-q) clear; exit 1 ;;
+q) d_clear; exit 1 ;;
 *) echo "Incorrect choice..." ;
 esac
 }
 
 f_interface_nexus(){
-clear
+d_clear
 echo ""
 echo -e "\e[31m ---- NEXUS 10 (2012) - MANTA --------------------------------------------------------\e[0m"
 echo "  [1] Build for Nexus 10 Kernel with wireless USB support (Android 4.4+)"
@@ -197,14 +209,14 @@ read -p "Choice: " nexusmenuchoice
 
 case $nexusmenuchoice in
 
-1) clear; f_manta ;;
-2) clear; f_grouper ;;
-3) clear; f_deb ;;
-4) clear; f_mako ;;
-5) clear; f_hammerhead ;;
-6) clear; f_shamu ;;
-7) clear; f_flounder ;;
-0) clear; f_interface ;;
+1) d_clear; f_manta ;;
+2) d_clear; f_grouper ;;
+3) d_clear; f_deb ;;
+4) d_clear; f_mako ;;
+5) d_clear; f_hammerhead ;;
+6) d_clear; f_shamu ;;
+7) d_clear; f_flounder ;;
+0) d_clear; f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
 }
@@ -225,9 +237,9 @@ read -p "Choice: " samsungmenuchoice
 
 case $samsungmenuchoice in
 
-1) clear; f_galaxyS5 ;;
-2) clear; f_galaxyS4_I9500 ;;
-0) clear; f_interface ;;
+1) d_clear; f_galaxyS5 ;;
+2) d_clear; f_galaxyS4_I9500 ;;
+0) d_clear; f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
 }
@@ -248,11 +260,11 @@ read -p "Choice: " grouper_menuchoice
 
 case $grouper_menuchoice in
 
-1) clear; f_rootfs ; f_flashzip ; f_oneplus_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-2) clear; f_oneplus_kernel ; f_zip_kernel_save ;;
-3) clear; f_rootfs ; f_flashzip ; f_oneplus_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-4) clear; f_oneplus_kernel5 ; f_zip_kernel_save ;;
-0) clear; f_interface ;;
+1) d_clear; f_rootfs ; f_flashzip ; f_oneplus_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+2) d_clear; f_oneplus_kernel ; f_zip_kernel_save ;;
+3) d_clear; f_rootfs ; f_flashzip ; f_oneplus_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+4) d_clear; f_oneplus_kernel5 ; f_zip_kernel_save ;;
+0) d_clear; f_interface ;;
 *) echo "Incorrect choice... " ;
 esac
 }
@@ -273,11 +285,11 @@ read -p "Choice: " manta_menuchoice
 
 case $manta_menuchoice in
 
-1) clear; f_rootfs ; f_flashzip ; f_nexus10_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-2) clear; f_nexus10_kernel ; f_zip_kernel_save ;;
-3) clear; f_rootfs ; f_flashzip ; f_nexus10_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-4) clear; f_nexus10_kernel5 ; f_zip_kernel_save ;;
-0) clear; f_interface ;;
+1) d_clear; f_rootfs ; f_flashzip ; f_nexus10_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+2) d_clear; f_nexus10_kernel ; f_zip_kernel_save ;;
+3) d_clear; f_rootfs ; f_flashzip ; f_nexus10_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+4) d_clear; f_nexus10_kernel5 ; f_zip_kernel_save ;;
+0) d_clear; f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
 
@@ -297,9 +309,9 @@ read -p "Choice: " manta_menuchoice
 
 case $manta_menuchoice in
 
-1) clear; f_rootfs ; f_flashzip ; f_nexus9_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-2) clear; f_nexus9_kernel5 ; f_zip_kernel_save ;;
-0) clear; f_interface ;;
+1) d_clear; f_rootfs ; f_flashzip ; f_nexus9_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+2) d_clear; f_nexus9_kernel5 ; f_zip_kernel_save ;;
+0) d_clear; f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
 
@@ -321,11 +333,11 @@ read -p "Choice: " grouper_menuchoice
 
 case $grouper_menuchoice in
 
-1) clear; f_rootfs ; f_flashzip ; f_nexus7_grouper_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-2) clear; f_nexus7_grouper_kernel ; f_zip_kernel_save ;;
-3) clear; f_rootfs ; f_flashzip ; f_nexus7_grouper_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-4) clear; f_nexus7_grouper_kernel5 ; f_zip_kernel_save ;;
-0) clear; f_interface ;;
+1) d_clear; f_rootfs ; f_flashzip ; f_nexus7_grouper_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+2) d_clear; f_nexus7_grouper_kernel ; f_zip_kernel_save ;;
+3) d_clear; f_rootfs ; f_flashzip ; f_nexus7_grouper_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+4) d_clear; f_nexus7_grouper_kernel5 ; f_zip_kernel_save ;;
+0) d_clear; f_interface ;;
 *) echo "Incorrect choice... " ;
 esac
 
@@ -347,11 +359,11 @@ read -p "Choice: " deb_menuchoice
 
 case $deb_menuchoice in
 
-1) clear; f_rootfs ; f_flashzip ; f_deb_stock_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-2) clear; f_deb_stock_kernel ; f_zip_kernel_save ;;
-3) clear; f_rootfs ; f_flashzip ; f_deb_stock_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-4) clear; f_deb_stock_kernel5 ; f_zip_kernel_save ;;
-0) clear; f_interface ;;
+1) d_clear; f_rootfs ; f_flashzip ; f_deb_stock_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+2) d_clear; f_deb_stock_kernel ; f_zip_kernel_save ;;
+3) d_clear; f_rootfs ; f_flashzip ; f_deb_stock_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+4) d_clear; f_deb_stock_kernel5 ; f_zip_kernel_save ;;
+0) d_clear; f_interface ;;
 *) echo "Incorrect choice... " ;
 esac
 }
@@ -372,11 +384,11 @@ read -p "Choice: " deb_menuchoice
 
 case $deb_menuchoice in
 
-1) clear; f_rootfs ; f_flashzip ; f_hammerhead_stock_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-2) clear; f_hammerhead_stock_kernel ; f_zip_kernel_save ;;
-3) clear; f_rootfs ; f_flashzip ; f_hammerhead_stock_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-4) clear; f_hammerhead_stock_kernel5 ; f_zip_kernel_save ;;
-0) clear; f_interface ;;
+1) d_clear; f_rootfs ; f_flashzip ; f_hammerhead_stock_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+2) d_clear; f_hammerhead_stock_kernel ; f_zip_kernel_save ;;
+3) d_clear; f_rootfs ; f_flashzip ; f_hammerhead_stock_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+4) d_clear; f_hammerhead_stock_kernel5 ; f_zip_kernel_save ;;
+0) d_clear; f_interface ;;
 *) echo "Incorrect choice... " ;
 esac
 }
@@ -397,11 +409,11 @@ read -p "Choice: " deb_menuchoice
 
 case $deb_menuchoice in
 
-1) clear; f_rootfs ; f_flashzip ; f_mako_stock_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-2) clear; f_mako_stock_kernel ; f_zip_kernel_save ;;
-3) clear; f_rootfs ; f_flashzip ; f_mako_stock_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-4) clear; f_mako_stock_kernel5 ; f_zip_kernel_save ;;
-0) clear; f_interface ;;
+1) d_clear; f_rootfs ; f_flashzip ; f_mako_stock_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+2) d_clear; f_mako_stock_kernel ; f_zip_kernel_save ;;
+3) d_clear; f_rootfs ; f_flashzip ; f_mako_stock_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+4) d_clear; f_mako_stock_kernel5 ; f_zip_kernel_save ;;
+0) d_clear; f_interface ;;
 *) echo "Incorrect choice... " ;
 esac
 }
@@ -422,11 +434,11 @@ read -p "Choice: " deb_menuchoice
 
 case $deb_menuchoice in
 
-1) clear; f_rootfs ; f_flashzip ; f_s5_stock_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-2) clear; f_rootfs ; f_flashzip ; f_s5_tw_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-3) clear; f_s5_kernel ; f_zip_kernel_save ;;
-4) clear; f_s5_tw_kernel ; f_zip_kernel_save ;;
-0) clear; f_interface ;;
+1) d_clear; f_rootfs ; f_flashzip ; f_s5_stock_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+2) d_clear; f_rootfs ; f_flashzip ; f_s5_tw_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+3) d_clear; f_s5_kernel ; f_zip_kernel_save ;;
+4) d_clear; f_s5_tw_kernel ; f_zip_kernel_save ;;
+0) d_clear; f_interface ;;
 *) echo "Incorrect choice... " ;
 esac
 }
@@ -447,11 +459,11 @@ read -p "Choice: " deb_menuchoice
 
 case $deb_menuchoice in
 
-1) clear; f_rootfs ; f_flashzip ; f_s4_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-2) clear; f_rootfs ; f_flashzip ; f_s4_i9500_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-3) clear; f_s4_kernel ; f_zip_kernel_save ;;
-4) clear; f_s4_i9500_kernel ; f_zip_kernel_save ;;
-0) clear; f_interface ;;
+1) d_clear; f_rootfs ; f_flashzip ; f_s4_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+2) d_clear; f_rootfs ; f_flashzip ; f_s4_i9500_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+3) d_clear; f_s4_kernel ; f_zip_kernel_save ;;
+4) d_clear; f_s4_i9500_kernel ; f_zip_kernel_save ;;
+0) d_clear; f_interface ;;
 *) echo "Incorrect choice... " ;
 esac
 }
@@ -483,7 +495,7 @@ f_rootfs(){
 # Conduct check to see if previous rootfs was built
 
 if [ -d "${rootfs}/kali-armhf" ]; then
-  clear
+  d_clear
   echo "Detected prebuilt rootfs."
   echo ""
   read -p "Would you like to create a new rootfs? (y/n): " -e -i "n" createrootfs
@@ -744,28 +756,30 @@ mkdir -p $cap/evilap $cap/ettercap $cap/kismet/db $cap/nmap $cap/sslstrip $cap/t
 echo "inet:x:3004:postgres,root,beef-xss,daemon,nginx" >> kali-$architecture/etc/group
 echo "nobody:x:3004:nobody" >> kali-$architecture/etc/group
 
-# CLEANUP STAGE
+if [ ${DEBUG} == 0 ]; then
+  # CLEANUP STAGE
 
-cat << EOF > kali-$architecture/cleanup
-#!/bin/bash
-rm -rf /root/.bash_history
-apt-get update
-apt-get clean
-rm -f /0
-rm -f /hs_err*
-rm -f cleanup
-rm -f /usr/bin/qemu*
+  cat << EOF > kali-$architecture/cleanup
+  #!/bin/bash
+  rm -rf /root/.bash_history
+  apt-get update
+  apt-get clean
+  rm -f /0
+  rm -f /hs_err*
+  rm -f cleanup
+  rm -f /usr/bin/qemu*
 EOF
 
-chmod +x kali-$architecture/cleanup
-LANG=C chroot kali-$architecture /cleanup
+  chmod +x kali-$architecture/cleanup
+  LANG=C chroot kali-$architecture /cleanup
 
-umount ${rootfs}/kali-$architecture/proc/sys/fs/binfmt_misc
-umount ${rootfs}/kali-$architecture/dev/pts
-umount ${rootfs}/kali-$architecture/dev/
-umount ${rootfs}/kali-$architecture/proc
+  umount ${rootfs}/kali-$architecture/proc/sys/fs/binfmt_misc
+  umount ${rootfs}/kali-$architecture/dev/pts
+  umount ${rootfs}/kali-$architecture/dev/
+  umount ${rootfs}/kali-$architecture/proc
 
-sleep 5
+  sleep 5
+fi
 }
 
 f_flashzip(){
@@ -822,7 +836,7 @@ wget -P ${basedir}/flash/data/app/ https://github.com/demantz/RFAnalyzer/raw/mas
 #####################################################
 f_zip_save(){
 apt-get install -y zip
-clear
+d_clear
 # Compress filesystem and add to our flashable zip
 cd ${rootfs}
 
@@ -852,7 +866,7 @@ sleep 5
 
 f_zip_kernel_save(){
 apt-get install -y zip
-clear
+d_clear
 cd ${basedir}/flashkernel/
 zip -r6 kernel-kali-$VERSION.zip *
 mv kernel-kali-$VERSION.zip ${basedir}
@@ -866,25 +880,27 @@ sleep 5
 }
 
 f_cleanup(){
-# Clean up all the temporary build stuff and remove the directories.
-# Comment this out to keep things around if you want to see what may have gone
-# wrong.
-echo "Unmounting any previous mounted folders"
-sleep 3
-clear
-#umount ${rootfs}/kali-$architecture/proc/sys/fs/binfmt_misc
-#umount ${rootfs}/kali-$architecture/dev/pts
-#umount ${rootfs}/kali-$architecture/dev/
-#umount ${rootfs}/kali-$architecture/proc
-#echo "Removing temporary build files"
-#rm -rf ${basedir}/patches ${basedir}/kernel ${basedir}/flash ${basedir}/kali-$architecture ${basedir}/flashkernel
+  if [ ${DEBUG} == 0 ]; then
+    # Clean up all the temporary build stuff and remove the directories.
+    # This only runs if debug mode is disabled. 
+
+    echo "Unmounting any previous mounted folders"
+    sleep 3
+    d_clear
+    umount ${rootfs}/kali-$architecture/proc/sys/fs/binfmt_misc
+    umount ${rootfs}/kali-$architecture/dev/pts
+    umount ${rootfs}/kali-$architecture/dev/
+    umount ${rootfs}/kali-$architecture/proc
+    echo "Removing temporary build files"
+    rm -rf ${basedir}/patches ${basedir}/kernel ${basedir}/flash ${basedir}/kali-$architecture ${basedir}/flashkernel
+  fi
 }
 
 ##############################################################
 # Attempt to build rom from an existing zip file in ROM folder
 ##############################################################
 f_rom_build(){
-clear
+d_clear
 
 cd ${basepwd}
 
@@ -1017,7 +1033,7 @@ f_interface
 # Setup of the Kernel folder can be resued on multiple kernels
 ##############################################################
 f_kernel_build_init(){
-clear
+d_clear
 # FOLDER CHECKING
 #
 #if [ -d "${basedir}/kernel" ]; then
@@ -1120,7 +1136,7 @@ case $1 in
     exportdir=${exportdir%/}
     nightlytype=rootfs
     f_check_version_noui
-    clear
+    d_clear
     ccc=1
     f_rootfs_noui
     f_flashzip
@@ -1273,11 +1289,11 @@ case $1 in
         rm -rf ${basedir}
         exit;;
       *)
-        clear
+        d_clear
         echo "Please specify a device. use 'androidmenu.sh help' for avaliable options."
     esac;;
   help)
-    clear
+    d_clear
     echo "Usage:"
     echo "androidmenu.sh [Build Type] [Device] [Directory]"
     echo ""
@@ -1297,7 +1313,7 @@ case $1 in
     echo "Where the generated files will be put. Default is ~/NetHunter"
 
     exit;;
-  *) clear;;
+  *) d_clear;;
 esac
 
 f_check_version
