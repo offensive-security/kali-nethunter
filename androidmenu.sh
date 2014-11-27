@@ -1096,11 +1096,6 @@ fi
 if [ -f "${basedir}/kernel/arch/arm/boot/zImage-dtb" ]; then
   cp ${basedir}/kernel/arch/arm/boot/zImage-dtb ${basedir}/flashkernel/kernel/kernel
   echo "zImage-dtb found at ${basedir}/kernel/arch/arm/boot/zImage-dtb"
-elif
-  if [ -f "${basedir}/kernel/arch/arm64/boot/Image.gz-dtb" ]; then
-    cp ${basedir}/kernel/arch/arm64/boot/Image.gz-dtb ${basedir}/flashkernel/kernel/kernel
-    echo "Image.gz-dtb found at ${basedir}/kernel/arch/arm64/boot/Image.gz-dtb"
-  fi
 else
   if [ -f "${basedir}/kernel/arch/arm/boot/zImage" ]; then
     cp ${basedir}/kernel/arch/arm/boot/zImage ${basedir}/flashkernel/kernel/kernel
