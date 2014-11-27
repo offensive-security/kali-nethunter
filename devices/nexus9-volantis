@@ -48,8 +48,44 @@ if [ $FROZENKERNEL == 1 ]; then
 
   cd ${basedir}/kernel
 
+  chmod +x scripts/*
+  chmod +x arch/arm64/kernel/vdso/*.sh
   make clean
   sleep 10
   make kali_defconfig
+
+# Attach kernel builder to updater-script
+echo "#KERNEL_SCRIPT_START" >> ${basedir}/flashkernel/META-INF/com/google/android/updater-script
+cat << EOF > ${basedir}/flashkernel/META-INF/com/google/android/updater-script
+
+ui_print("* Starting Kernel install for Nexus 9...    *");
+ui_print("* Mounting System...                        *");
+mount("ext4", "EMMC", "/dev/block/platform/msm_sdcc.1/by-name/system", "/system");
+package_extract_dir("system", "/system");
+set_perm_recursive(0, 0, 0644, 0644, "/system/lib/modules");
+set_perm_recursive(0, 2000, 0755, 0755, "/system/bin");
+set_perm_recursive(0, 2000, 0755, 0755, "/system/xbin");
+set_perm_recursive(0, 0, 0755, 0755, "/system/etc/init.d");
+unmount("/system");
+package_extract_dir("kernel", "/tmp");
+set_perm(0, 0, 0755, "/tmp/cleansystem.sh");
+ui_print("* Cleaning /system/app...                   *");
+run_program("/tmp/cleansystem.sh");
+ui_print("* Installing Kernel...                      *");
+package_extract_file("boot.img", "/dev/block/platform/sdhci-tegra.3/by-name/LNX");
+ui_print("* Kernel installation completed...          *");
+EOF
+
+f_kernel_build
+
+cd ${basedir}/flashkernel/kernel
+abootimg --create ${basedir}/flashkernel/boot.img -f ${basedir}/kernel/ramdisk/5/bootimg.cfg -k ${basedir}/kernel/arch/arm64/boot/Image.gz-dtb -r ${basedir}/kernel/ramdisk/5/initrd.img
+cd ${basedir}
+
+if [ -d "${basedir}/flash/" ]; then
+  cp ${basedir}/flashkernel/boot.img ${basedir}/flash/boot.img
+fi
+
+f_zip_kernel_save
 fi
 }
