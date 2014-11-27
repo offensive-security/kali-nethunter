@@ -136,7 +136,7 @@ if [ $LOCALGIT == 1 ]; then
   echo "Copying kernel to rootfs"
   cp -rf ${basepwd}/oneplus12 ${basedir}/kernel
 else
-   it clone https://github.com/binkybear/AK-OnePone.git -b cm-12.0-ak oneplus12 ${basedir}/kernel
+   git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.0-ak oneplus12 ${basedir}/kernel
 fi
 
 cd ${basedir}/kernel
@@ -171,5 +171,7 @@ ui_print("* Installing Kernel...                      *");
 run_program("/tmp/busybox", "dd", "if=/tmp/newboot.img", "of=/dev/block/platform/msm_sdcc.1/by-name/boot");
 ui_print("* Kernel installation completed...          *");
 EOF
+
 f_kernel_build
+fi
 }
