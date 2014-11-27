@@ -70,6 +70,7 @@ source devices/nexus5-hammerhead
 source devices/nexus4-mako
 source devices/galaxys5-G900
 source devices/galaxys4
+source devices/one-bacon
 
 ######### Set paths and permissions  #######
 
@@ -1034,25 +1035,6 @@ f_interface
 ##############################################################
 f_kernel_build_init(){
 d_clear
-# FOLDER CHECKING
-#
-#if [ -d "${basedir}/kernel" ]; then
-#  read -p "Kernel folder already exsists, would you like to remove folder and startover? (y/n)" kernelanswer
-#  if [ "$kernelanswer" == "y" ]; then
-#     rm -rf ${basedir}/kernel
-#  fi
-#fi
-
-#if [ -d "${basedir}/flashkernel" ]; then
-#  read -p "Kernel folder already exsists, would you like to remove previous folder? (y/n)" flashanswer
-#  if [ "$flashanswer" == "y" ]; then
-#     rm -rf ${basedir}/flashkernel
-#  fi
-#fi
-
-#if [ -d "${basedir}/toolchain" ]; then
-#  read -p "Toolchain folder already exsists, would you like to redownload? (y/n)" toolchain answer
-#fi
 
 cp -rf ${basepwd}/flash/ ${basedir}/flashkernel
 mkdir -p ${basedir}/flashkernel/system/lib/modules
