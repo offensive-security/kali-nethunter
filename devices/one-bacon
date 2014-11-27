@@ -49,6 +49,7 @@ fi
 
 cd ${basedir}/kernel
 
+chmod +x scripts/*
 make clean
 sleep 10
 make kali_defconfig
@@ -61,34 +62,36 @@ ui_print("* Starting Kernel install for OnePlus One...    *");
 ui_print("* Mounting System...                        *");
 mount("ext4", "EMMC", "/dev/block/platform/msm_sdcc.1/by-name/system", "/system");
 package_extract_dir("system", "/system");
-set_metadata_recursive("/system/lib/modules", "uid", 0, "gid", 0, "dmode", 0644, "fmode", 0644, "capabilities", 0x0, "selabel", "u:object_r:system_file:s0");
-set_metadata_recursive("/system/bin", "uid", 0, "gid", 0, "dmode", 0755, "fmode", 0755, "capabilities", 0x0, "selabel", "u:object_r:system_file:s0");
-set_metadata_recursive("/system/xbin", "uid", 0, "gid", 0, "dmode", 0755, "fmode", 0755, "capabilities", 0x0, "selabel", "u:object_r:system_file:s0");
-set_metadata_recursive("/system/etc/init.d", "uid", 0, "gid", 0, "dmode", 0755, "fmode", 0755, "capabilities", 0x0, "selabel", "u:object_r:system_file:s0");
-unmount("/system");
-
 package_extract_dir("kernel", "/tmp");
-set_metadata("/tmp/installbacon.sh", "uid", 0, "gid", 0, "mode", 0755);
-set_metadata("/tmp/cleansystem.sh", "uid", 0, "gid", 0, "mode", 0755);
-set_metadata("/tmp/busybox", "uid", 0, "gid", 0, "mode", 0755);
-set_metadata("/tmp/makebootimg.sh", "uid", 0, "gid", 0, "mode", 0777);
-set_metadata("/tmp/mkbootimg", "uid", 0, "gid", 0, "mode", 0777);
-set_metadata("/tmp/unpackbootimg", "uid", 0, "gid", 0, "mode", 0777);
+set_perm(0, 0, 0777, "/tmp/mkbootimg.sh");
+set_perm(0, 0, 0777, "/tmp/mkbootimg");
+set_perm(0, 0, 0777, "/tmp/unpackbootimg.sh");
+set_perm(0, 0, 0777, "/tmp/busybox");
+set_perm(0, 0, 0755, "/tmp/cleansystem.sh");
+ui_print("* Cleaning /system/app...                   *");
+run_program("/tmp/cleansystem.sh");
 
 ui_print("* Cleaning /system/app...                   *");
 run_program("/tmp/cleansystem.sh");
 
-run_program("/tmp/installbacon.sh");
-
 ui_print("* Installing Kernel...                      *");
 
-run_program("/tmp/busybox", "dd", "if=/tmp/newboot.img", "of=/dev/block/platform/msm_sdcc.1/by-name/boot");
+package_extract_file("boot.img", "/dev/block/platform/msm_sdcc.1/by-name/boot");
 
 ui_print("* Kernel installation completed...          *");
 EOF
 
 # Start kernel build
 f_kernel_build
+
+cd ${basedir}/flashkernel/kernel
+abootimg --create ${basedir}/flashkernel/boot.img -f ${basedir}/kernel/ramdisk/4/bootimg.cfg -k ${basedir}/kernel/arch/arm/boot/zImage-dtb -r ${basedir}/kernel/ramdisk/4/initrd.img
+cd ${basedir}
+
+if [ -d "${basedir}/flash/" ]; then
+	cp ${basedir}/flashkernel/boot.img ${basedir}/flash/boot.img
+fi
+
 fi
 }
 
