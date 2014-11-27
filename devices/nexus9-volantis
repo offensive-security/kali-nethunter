@@ -11,13 +11,13 @@ echo "Setting export paths"
 # Set path for Kernel building
 export ARCH=arm64
 export SUBARCH=arm
-export CROSS_COMPILE=${basedir}/toolchain/bin/aarch64-linux-android-
+export CROSS_COMPILE=${basedir}/toolchain64/bin/aarch64-linux-android-
 
 if [ $FROZENKERNEL == 1 ]; then
   echo "Using frozen kernel"
   cp -rf ${basepwd}/flash/ ${basedir}/flashkernel
   rm -rf ${basedir}/flashkernel/data ${basedir}/flashkernel/sdcard ${basedir}/flashkernel/system/app ${basedir}/flashkernel/META-INF/com/google/android/updater-script
-  cp -rf ${basepwd}/devices/frozen_kernels/4.4.4/n9-flounder/* ${basedir}/flashkernel/
+  cp -rf ${basepwd}/devices/frozen_kernels/5/n9-flounder/* ${basedir}/flashkernel/
   if [ -f "${basedir}/flash/META-INF/com/google/android/updater-script" ]; then
     if grep -Fxq "#KERNEL_SCRIPT_START" "${basedir}/flash/META-INF/com/google/android/updater-script"
       then
