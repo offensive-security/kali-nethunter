@@ -90,9 +90,11 @@ f_kernel_build
 
 cd ${basedir}/kernel
 
+echo "Creating dt.img"
 ${basedir}/kernel/ramdisk/4/dtbToolCM -2 -o ${basedir}/flashkernel/kernel/dt.img -s 2048 -p ${basedir}/kernel/scripts/dtc/ ${basedir}/kernel/arch/arm/boot/
-sleep3
-${basedir}/kernel/ramdisk/4/ramdisk/4/mkbootimg --kernel arch/arm/boot/zImage --ramdisk ramdisk/4/initrd.img --cmdline "console=ttyHSL0,115200,n8 androidboot.hardware=bacon user_debug=31 msm_rtb.filter=0x3F ehci-hcd.park=3" --dt ../flashkernel/kernel/dt.img --output ../flashkernel/boot.img
+sleep 3
+echo "Creating boot.img"
+${basedir}/kernel/ramdisk/4/mkbootimg --kernel arch/arm/boot/zImage --ramdisk ramdisk/4/initrd.img --cmdline "console=ttyHSL0,115200,n8 androidboot.hardware=bacon user_debug=31 msm_rtb.filter=0x3F ehci-hcd.park=3" --dt ../flashkernel/kernel/dt.img --output ../flashkernel/boot.img
 
 # Copy boot.img to flash folder if it exists
 
