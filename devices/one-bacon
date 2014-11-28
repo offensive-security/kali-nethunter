@@ -19,6 +19,7 @@ echo "Setting export paths"
 export ARCH=arm
 export SUBARCH=arm
 export CROSS_COMPILE=${basedir}/toolchain/bin/arm-eabi-
+
 if [ $FROZENKERNEL == 1 ]; then
 	echo "Using frozen kernel"
  	cp -rf ${basepwd}/flash/ ${basedir}/flashkernel
@@ -49,7 +50,8 @@ fi
 
 cd ${basedir}/kernel
 
-chmod +x scripts/*
+chmod +x scripts/* ramdisk/4/mkbootimg ramdisk/4/dtbToolCM
+
 make clean
 sleep 10
 make kali_defconfig
@@ -84,9 +86,15 @@ EOF
 # Start kernel build
 f_kernel_build
 
-cd ${basedir}/flashkernel/kernel
-abootimg --create ${basedir}/flashkernel/boot.img -f ${basedir}/kernel/ramdisk/4/bootimg.cfg -k ${basedir}/kernel/arch/arm/boot/zImage-dtb -r ${basedir}/kernel/ramdisk/4/initrd.img
-cd ${basedir}
+# Start boot.img creation
+
+cd ${basedir}/kernel
+
+${basedir}/kernel/ramdisk/4/dtbToolCM -2 -o ${basedir}/flashkernel/kernel/dt.img -s 2048 -p ${basedir}/kernel/scripts/dtc/ ${basedir}/kernel/arch/arm/boot/
+sleep3
+${basedir}/kernel/ramdisk/4/ramdisk/4/mkbootimg --kernel arch/arm/boot/zImage --ramdisk ramdisk/4/initrd.img --cmdline "console=ttyHSL0,115200,n8 androidboot.hardware=bacon user_debug=31 msm_rtb.filter=0x3F ehci-hcd.park=3" --dt ../flashkernel/kernel/dt.img --output ../flashkernel/boot.img
+
+# Copy boot.img to flash folder if it exists
 
 if [ -d "${basedir}/flash/" ]; then
 	cp ${basedir}/flashkernel/boot.img ${basedir}/flash/boot.img
