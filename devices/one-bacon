@@ -45,7 +45,7 @@ if [ $LOCALGIT == 1 ]; then
   echo "Copying kernel to rootfs"
   cp -rf ${basepwd}/oneplus11 ${basedir}/kernel
 else
-  git clone https://github.com/binkybear/AK-OnePone.git -b cm-11.0-ak oneplus11 ${basedir}/kernel
+  git clone https://github.com/binkybear/AK-OnePone.git -b cm-11.0-ak ${basedir}/kernel
 fi
 
 cd ${basedir}/kernel
@@ -149,7 +149,7 @@ if [ $LOCALGIT == 1 ]; then
   echo "Copying kernel to rootfs"
   cp -rf ${basepwd}/oneplus12 ${basedir}/kernel
 else
-   git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.0-ak oneplus12 ${basedir}/kernel
+   git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.0-ak ${basedir}/kernel
 fi
 
 cd ${basedir}/kernel
