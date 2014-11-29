@@ -1,10 +1,10 @@
 busybox=/data/local/bin/busybox
+su 0 setenforce 0
 
 #########  CHECK FOR ROOT #########
 f_checkforroot(){
 perm=$(id|$busybox cut -b 5)
 if [ "$perm" != "0" ];then echo "ROOT NOT DETECTED! Type: su or install SuperSU to fix"; exit; fi
-su 0 setenforce 0
 }
 
 #########  EXPORT #########
