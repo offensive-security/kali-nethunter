@@ -138,93 +138,93 @@ f_build(){
 
   case $selecteddevice in
     manta)
-      case $buildtype in
-        kernel)
-          case $targetver in
-            lollipop) f_nexus10_kernel5; f_zip_kernel_save;;
-            kitkat) f_nexus10_kernel; f_zip_kernel_save;;
-          esac;;
-        all)
-          case $targetver in
-            lollipop) f_rootfs; f_flashzip; f_nexus10_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
-            kitkat) f_rootfs; f_flashzip; f_nexus10_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
-          esac;;
+    case $buildtype in
+      kernel)
+      case $targetver in
+        lollipop) f_nexus10_kernel5; f_zip_kernel_save;;
+        kitkat) f_nexus10_kernel; f_zip_kernel_save;;
       esac;;
+      all)
+      case $targetver in
+        lollipop) f_rootfs; f_flashzip; f_nexus10_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
+        kitkat) f_rootfs; f_flashzip; f_nexus10_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+      esac;;
+    esac;;
     groupertilapia)
-      case $buildtype in
-        kernel)
-          case $targetver in
-            lollipop) f_nexus7_grouper_kernel5; f_zip_kernel_save;;
-            kitkat) f_nexus7_grouper_kernel; f_zip_kernel_save;;
-          esac;;
-        all)
-          case $targetver in
-            lollipop) f_rootfs; f_flashzip; f_nexus7_grouper_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
-            kitkat) f_rootfs; f_flashzip; f_nexus7_grouper_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
-          esac;;
+    case $buildtype in
+      kernel)
+      case $targetver in
+        lollipop) f_nexus7_grouper_kernel5; f_zip_kernel_save;;
+        kitkat) f_nexus7_grouper_kernel; f_zip_kernel_save;;
       esac;;
+      all)
+      case $targetver in
+        lollipop) f_rootfs; f_flashzip; f_nexus7_grouper_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
+        kitkat) f_rootfs; f_flashzip; f_nexus7_grouper_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+      esac;;
+    esac;;
     flodeb)
-      case $buildtype in
-        kernel)
-          case $targetver in
-            lollipop) f_deb_stock_kernel5; f_zip_kernel_save;;
-            kitkat) f_deb_stock_kernel; f_zip_kernel_save;;
-          esac;;
-        all)
-          case $targetver in
-            lollipop) f_rootfs; f_flashzip; f_deb_stock_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
-            kitkat) f_rootfs; f_flashzip; f_deb_stock_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
-          esac;;
+    case $buildtype in
+      kernel)
+      case $targetver in
+        lollipop) f_deb_stock_kernel5; f_zip_kernel_save;;
+        kitkat) f_deb_stock_kernel; f_zip_kernel_save;;
       esac;;
+      all)
+      case $targetver in
+        lollipop) f_rootfs; f_flashzip; f_deb_stock_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
+        kitkat) f_rootfs; f_flashzip; f_deb_stock_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+      esac;;
+    esac;;
     mako)
-      case $buildtype in
-        kernel)
-          case $targetver in
-            lollipop) f_mako_stock_kernel5; f_zip_kernel_save;;
-            kitkat) f_mako_stock_kernel; f_zip_kernel_save;;
-          esac;;
-        all)
-          case $targetver in
-            lollipop) f_rootfs; f_flashzip; f_mako_stock_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
-            kitkat) f_rootfs; f_flashzip; f_mako_stock_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
-          esac;;
+    case $buildtype in
+      kernel)
+      case $targetver in
+        lollipop) f_mako_stock_kernel5; f_zip_kernel_save;;
+        kitkat) f_mako_stock_kernel; f_zip_kernel_save;;
       esac;;
+      all)
+      case $targetver in
+        lollipop) f_rootfs; f_flashzip; f_mako_stock_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
+        kitkat) f_rootfs; f_flashzip; f_mako_stock_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+      esac;;
+    esac;;
     hammerhead)
-      case $buildtype in
-        kernel)
-          case $targetver in
-            lollipop) f_hammerhead_stock_kernel5; f_zip_kernel_save;;
-            kitkat) f_hammerhead_stock_kernel; f_zip_kernel_save;;
-          esac;;
-        all)
-          case $targetver in
-            lollipop) f_rootfs; f_flashzip; f_hammerhead_stock_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
-            kitkat) f_rootfs; f_flashzip; f_hammerhead_stock_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
-          esac;;
+    case $buildtype in
+      kernel)
+      case $targetver in
+        lollipop) f_hammerhead_stock_kernel5; f_zip_kernel_save;;
+        kitkat) f_hammerhead_stock_kernel; f_zip_kernel_save;;
       esac;;
+      all)
+      case $targetver in
+        lollipop) f_rootfs; f_flashzip; f_hammerhead_stock_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
+        kitkat) f_rootfs; f_flashzip; f_hammerhead_stock_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+      esac;;
+    esac;;
     #shamu)
     #  case $buildtype in
     #    kernel)
     #    all)
     #  esac;;
     flounder)
-      case $buildtype in
-        kernel) f_nexus9_kernel5; f_zip_kernel_save;;
-        all) f_rootfs; f_flashzip; f_nexus9_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
-      esac;;
+    case $buildtype in
+      kernel) f_nexus9_kernel5; f_zip_kernel_save;;
+      all) f_rootfs; f_flashzip; f_nexus9_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
+    esac;;
     gs5)
-      case $buildtype in
-        kernel)
-          case $targetver in
-            touchwiz) f_s5_tw_kernel; f_zip_kernel_save;;
-            kitkat) f_s5_kernel; f_zip_kernel_save;;
-          esac;;
-        all)
-          case $targetver in
-            touchwiz) f_rootfs; f_flashzip; f_s5_tw_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
-            kitkat) f_rootfs; f_flashzip; f_s5_stock_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
-          esac;;
+    case $buildtype in
+      kernel)
+      case $targetver in
+        touchwiz) f_s5_tw_kernel; f_zip_kernel_save;;
+        kitkat) f_s5_kernel; f_zip_kernel_save;;
       esac;;
+      all)
+      case $targetver in
+        touchwiz) f_rootfs; f_flashzip; f_s5_tw_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+        kitkat) f_rootfs; f_flashzip; f_s5_stock_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+      esac;;
+    esac;;
     #gs4)
     #  case $buildtype in
     #    kernel)
@@ -294,24 +294,9 @@ f_rootfs_build(){
   # fix for TUN symbolic link to enable programs like openvpn
   # set terminal length to 80 because root destroy terminal length
   # add fd to enable stdin/stdout/stderr
-  echo "export TERM=xterm-256color" > kali-$architecture/root/.bash_profile
-  echo "stty columns 80" >> kali-$architecture/root/.bash_profile
-  echo "# /usr/bin/firstrun # we can remove this with sed at the end of the firstrun script" >> kali-$architecture/root/.bash_profile
-  echo "cd /root/" >> kali-$architecture/root/.bash_profile
-  echo "if [ ! -d "/dev/net/" ]; then" >> kali-$architecture/root/.bash_profile
-  echo "  mkdir -p /dev/net" >> kali-$architecture/root/.bash_profile
-  echo "  ln -sf /dev/tun /dev/net/tun" >> kali-$architecture/root/.bash_profile
-  echo "fi" >> kali-$architecture/root/.bash_profile
-  echo "" >> kali-$architecture/root/.bash_profile
-  echo "if [ ! -d "/dev/fd/" ]; then" >> kali-$architecture/root/.bash_profile
-  echo "  ln -sf /proc/self/fd /dev/fd" >> kali-$architecture/root/.bash_profile
-  echo "  ln -sf /dev/fd/0 /dev/stdin" >> kali-$architecture/root/.bash_profile
-  echo "  ln -sf /dev/fd/1 /dev/stdout" >> kali-$architecture/root/.bash_profile
-  echo "  ln -sf /dev/fd/2 /dev/stderr" >> kali-$architecture/root/.bash_profile
-  echo "fi" >> kali-$architecture/root/.bash_profile
+  cp ${basepwd}/utils/config/bashprofile kali-$architecture/root/.bash_profile
 
-  echo "127.0.0.1       localhost" > kali-$architecture/etc/hosts
-  echo "::1             localhost ip6-localhost ip6-loopback" >> kali-$architecture/etc/hosts
+  cp ${basepwd}/utils/config/hosts kali-$architecture/etc/hosts
 
   if [[ $LOCALGIT == 1 ]]; then
     cp /etc/hosts kali-$architecture/etc/
@@ -324,15 +309,9 @@ f_rootfs_build(){
   cp -rf ${basepwd}/utils/hid/* kali-$architecture/usr/bin/
   cp -rf ${basepwd}/utils/msf/*.sh kali-$architecture/usr/bin/
 
-  echo "auto lo" > kali-$architecture/etc/network/interfaces
-  echo "iface lo inet loopback" >> kali-$architecture/etc/network/interfaces
+  cp ${basepwd}/utils/config/interfaces kali-$architecture/etc/network/interfaces
 
-  echo "#opendns" > kali-$architecture/etc/resolv.conf
-  echo "nameserver 208.67.222.222" >> kali-$architecture/etc/resolv.conf
-  echo "nameserver 208.67.220.220" >> kali-$architecture/etc/resolv.conf
-  echo "#google dns" >> kali-$architecture/etc/resolv.conf
-  echo "nameserver 8.8.8.8" >> kali-$architecture/etc/resolv.conf
-  echo "nameserver 8.8.4.4" >> kali-$architecture/etc/resolv.conf
+  cp ${basepwd}/utils/config/resolv.conf kali-$architecture/etc/resolv.conf
 
   # THIRD STAGE CHROOT
 
@@ -344,35 +323,11 @@ f_rootfs_build(){
   mount -o bind /dev/ kali-$architecture/dev/
   mount -o bind /dev/pts kali-$architecture/dev/pts
 
-  echo "console-common console-data/keymap/policy select Select keymap from full list" > kali-$architecture/debconf.set
-  echo "console-common console-data/keymap/full select en-latin1-nodeadkeys" >> kali-$architecture/debconf.set
+  cp ${basepwd}/utils/config/debconf.set kali-$architecture/debconf.set
 
-  echo "#!/bin/bash" > kali-$architecture/third-stage
-  echo "dpkg-divert --add --local --divert /usr/sbin/invoke-rc.d.chroot --rename /usr/sbin/invoke-rc.d" >> kali-$architecture/third-stage
-  echo "cp /bin/true /usr/sbin/invoke-rc.d" >> kali-$architecture/third-stage
-  echo "echo -e "#!/bin/sh\nexit 101" > /usr/sbin/policy-rc.d" >> kali-$architecture/third-stage
-  echo "chmod +x /usr/sbin/policy-rc.d" >> kali-$architecture/third-stage
-  echo "" >> kali-$architecture/third-stage
-  echo "apt-get update" >> kali-$architecture/third-stage
-  echo "apt-get install locales-all" >> kali-$architecture/third-stage
-  echo "" >> kali-$architecture/third-stage
-  echo "debconf-set-selections /debconf.set" >> kali-$architecture/third-stage
-  echo "rm -f /debconf.set" >> kali-$architecture/third-stage
-  echo "apt-get update" >> kali-$architecture/third-stage
-  echo "apt-get -y install git-core binutils ca-certificates initramfs-tools uboot-mkimage" >> kali-$architecture/third-stage
-  echo "apt-get -y install locales console-common less nano git" >> kali-$architecture/third-stage
-  echo "echo "root:toor" | chpasswd" >> kali-$architecture/third-stage
-  echo "sed -i -e 's/KERNEL\!=\"eth\*|/KERNEL\!=\"/' /lib/udev/rules.d/75-persistent-net-generator.rules" >> kali-$architecture/third-stage
-  echo "rm -f /etc/udev/rules.d/70-persistent-net.rules" >> kali-$architecture/third-stage
-  echo "apt-get --yes --force-yes install $packages" >> kali-$architecture/third-stage
-  echo "" >> kali-$architecture/third-stage
-  echo "rm -f /usr/sbin/policy-rc.d" >> kali-$architecture/third-stage
-  echo "rm -f /usr/sbin/invoke-rc.d" >> kali-$architecture/third-stage
-  echo "dpkg-divert --remove --rename /usr/sbin/invoke-rc.d" >> kali-$architecture/third-stage
-  echo "" >> kali-$architecture/third-stage
-  echo "rm -f /third-stage" >> kali-$architecture/third-stage
+  cp ${basepwd}/utils/config/third-stage
 
-  chmod +x kali-$architecture/third-stage
+  chmod +x kali-$architecture/third-stage kali-$architecture/third-stage
   LANG=C chroot kali-$architecture /third-stage
 
   # Modify kismet configuration to work with gpsd and socat
@@ -497,15 +452,7 @@ f_rootfs_build(){
   #sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/etc/hostapd/hostapd.conf#' kali-$architecture/etc/init.d/hostapd
 
   # DNSMASQ Configuration options for optional access point
-  echo "log-facility=/var/log/dnsmasq.log" > kali-$architecture/etc/dnsmasq.conf
-  echo "#address=/#/10.0.0.1" >> kali-$architecture/etc/dnsmasq.conf
-  echo "#address=/google.com/10.0.0.1" >> kali-$architecture/etc/dnsmasq.conf
-  echo "interface=wlan1" >> kali-$architecture/etc/dnsmasq.conf
-  echo "dhcp-range=10.0.0.10,10.0.0.250,12h" >> kali-$architecture/etc/dnsmasq.conf
-  echo "dhcp-option=3,10.0.0.1" >> kali-$architecture/etc/dnsmasq.conf
-  echo "dhcp-option=6,10.0.0.1" >> kali-$architecture/etc/dnsmasq.conf
-  echo "#no-resolv" >> kali-$architecture/etc/dnsmasq.conf
-  echo "log-queries" >> kali-$architecture/etc/dnsmasq.conf
+  cp ${basepwd}/utils/config/dnsmasq.conf kali-$architecture/etc/dnsmasq.conf
 
   # Add missing folders to chroot needed
   cap=kali-$architecture/captures
@@ -520,13 +467,7 @@ f_rootfs_build(){
 
   # CLEANUP STAGE
 
-  echo "#!/bin/bash" > kali-$architecture/cleanup
-  echo "apt-get update" >> kali-$architecture/cleanup
-  echo "apt-get clean" >> kali-$architecture/cleanup
-  echo "rm -f /0" >> kali-$architecture/cleanup
-  echo "rm -f /hs_err*" >> kali-$architecture/cleanup
-  echo "rm -f cleanup" >> kali-$architecture/cleanup
-  echo "rm -f /usr/bin/qemu*" >> kali-$architecture/cleanup
+  cp ${basepwd}/utils/config/cleanup kali-$architecture/cleanup
 
   chmod +x kali-$architecture/cleanup
   LANG=C chroot kali-$architecture /cleanup
@@ -887,74 +828,74 @@ f_kernel_build(){
 f_movefiles(){
   case $buildtype in
     rootfs)
-      cd ${basedir}
-      mkdir -p $outputdir/RootFS
-      mv update-kali-$VERSION.zip $outputdir/RootFS/NetHunter-$VERSION.zip
-      mv update-kali-$VERSION.sha1sum $outputdir/RootFS/NetHunter-$VERSION.sha1sum
-      rm -rf ${basedir}
-      exit;;
+    cd ${basedir}
+    mkdir -p $outputdir/RootFS
+    mv update-kali-$VERSION.zip $outputdir/RootFS/NetHunter-$VERSION.zip
+    mv update-kali-$VERSION.sha1sum $outputdir/RootFS/NetHunter-$VERSION.sha1sum
+    rm -rf ${basedir}
+    exit;;
   esac
   case $selecteddevice in
     manta)
-      cd ${basedir}
-      mkdir -p $outputdir/Kernels/Manta
-      mv kernel-kali-$VERSION.zip $outputdir/Kernels/Manta/Kernel-$selecteddevice-$VERSION.zip
-      mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Manta/Kernel-$selecteddevice-$VERSION.sha1sum
-      rm -rf ${basedir};;
+    cd ${basedir}
+    mkdir -p $outputdir/Kernels/Manta
+    mv kernel-kali-$VERSION.zip $outputdir/Kernels/Manta/Kernel-$selecteddevice-$VERSION.zip
+    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Manta/Kernel-$selecteddevice-$VERSION.sha1sum
+    rm -rf ${basedir};;
     groupertilapia)
-      cd ${basedir}
-      mkdir -p $outputdir/Kernels/Grouper
-      mkdir -p $outputdir/Kernels/Tilapia
-      cp kernel-kali-$VERSION.zip $outputdir/Kernels/Grouper/Kernel-$selecteddevice-$VERSION.zip
-      cp kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Grouper/Kernel-$selecteddevice-$VERSION.sha1sum
-      mv kernel-kali-$VERSION.zip $outputdir/Kernels/Tilapia/Kernel-$selecteddevice-$VERSION.zip
-      mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Tilapia/Kernel-$selecteddevice-$VERSION.sha1sum
-      rm -rf ${basedir};;
+    cd ${basedir}
+    mkdir -p $outputdir/Kernels/Grouper
+    mkdir -p $outputdir/Kernels/Tilapia
+    cp kernel-kali-$VERSION.zip $outputdir/Kernels/Grouper/Kernel-$selecteddevice-$VERSION.zip
+    cp kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Grouper/Kernel-$selecteddevice-$VERSION.sha1sum
+    mv kernel-kali-$VERSION.zip $outputdir/Kernels/Tilapia/Kernel-$selecteddevice-$VERSION.zip
+    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Tilapia/Kernel-$selecteddevice-$VERSION.sha1sum
+    rm -rf ${basedir};;
     flodeb)
-      cd ${basedir}
-      mkdir -p $outputdir/Kernels/Flo
-      mkdir -p $outputdir/Kernels/Deb
-      cp kernel-kali-$VERSION.zip $outputdir/Kernels/Flo/Kernel-$selecteddevice-$VERSION.zip
-      cp kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Flo/Kernel-$selecteddevice-$VERSION.sha1sum
-      mv kernel-kali-$VERSION.zip $outputdir/Kernels/Deb/Kernel-$selecteddevice-$VERSION.zip
-      mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Deb/Kernel-$selecteddevice-$VERSION.sha1sum
-      rm -rf ${basedir};;
+    cd ${basedir}
+    mkdir -p $outputdir/Kernels/Flo
+    mkdir -p $outputdir/Kernels/Deb
+    cp kernel-kali-$VERSION.zip $outputdir/Kernels/Flo/Kernel-$selecteddevice-$VERSION.zip
+    cp kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Flo/Kernel-$selecteddevice-$VERSION.sha1sum
+    mv kernel-kali-$VERSION.zip $outputdir/Kernels/Deb/Kernel-$selecteddevice-$VERSION.zip
+    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Deb/Kernel-$selecteddevice-$VERSION.sha1sum
+    rm -rf ${basedir};;
     mako)
-      cd ${basedir}
-      mkdir -p $outputdir/Kernels/Mako
-      mv kernel-kali-$VERSION.zip $outputdir/Kernels/Mako/Kernel-$selecteddevice-$VERSION.zip
-      mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Mako/Kernel-$selecteddevice-$VERSION.zip.sha1sum
-      rm -rf ${basedir};;
+    cd ${basedir}
+    mkdir -p $outputdir/Kernels/Mako
+    mv kernel-kali-$VERSION.zip $outputdir/Kernels/Mako/Kernel-$selecteddevice-$VERSION.zip
+    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Mako/Kernel-$selecteddevice-$VERSION.zip.sha1sum
+    rm -rf ${basedir};;
     hammerhead)
-      cd ${basedir}
-      mkdir -p $outputdir/Kernels/Hammerhead
-      mv kernel-kali-$VERSION.zip $outputdir/Kernels/Hammerhead/Kernel-$selecteddevice-$VERSION.zip
-      mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Hammerhead/Kernel-$selecteddevice-$VERSION.sha1sum
-      rm -rf ${basedir};;
+    cd ${basedir}
+    mkdir -p $outputdir/Kernels/Hammerhead
+    mv kernel-kali-$VERSION.zip $outputdir/Kernels/Hammerhead/Kernel-$selecteddevice-$VERSION.zip
+    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Hammerhead/Kernel-$selecteddevice-$VERSION.sha1sum
+    rm -rf ${basedir};;
     shamu)
-      cd ${basedir}
-      mkdir -p $outputdir/Kernels/Shamu
-      mv kernel-kali-$VERSION.zip $outputdir/Kernels/Shamu/Kernel-$selecteddevice-$VERSION.zip
-      mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Shamu/Kernel-$selecteddevice-$VERSION.sha1sum
-      rm -rf ${basedir};;
+    cd ${basedir}
+    mkdir -p $outputdir/Kernels/Shamu
+    mv kernel-kali-$VERSION.zip $outputdir/Kernels/Shamu/Kernel-$selecteddevice-$VERSION.zip
+    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Shamu/Kernel-$selecteddevice-$VERSION.sha1sum
+    rm -rf ${basedir};;
     flounder)
-      cd ${basedir}
-      mkdir -p $outputdir/Kernels/Flounder
-      mv kernel-kali-$VERSION.zip $outputdir/Kernels/Flounder/Kernel-$selecteddevice-$VERSION.zip
-      mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Flounder/Kernel-$selecteddevice-$VERSION.sha1sum
-      rm -rf ${basedir};;
+    cd ${basedir}
+    mkdir -p $outputdir/Kernels/Flounder
+    mv kernel-kali-$VERSION.zip $outputdir/Kernels/Flounder/Kernel-$selecteddevice-$VERSION.zip
+    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Flounder/Kernel-$selecteddevice-$VERSION.sha1sum
+    rm -rf ${basedir};;
     gs5)
-      cd ${basedir}
-      mkdir -p $outputdir/Kernels/SGS5-I9500
-      mv kernel-kali-$VERSION.zip $outputdir/Kernels/SGS5-I9500/Kernel-$selecteddevice-$VERSION.zip
-      mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/SGS5-I9500/Kernel-$selecteddevice-$VERSION.sha1sum
-      rm -rf ${basedir};;
+    cd ${basedir}
+    mkdir -p $outputdir/Kernels/SGS5-I9500
+    mv kernel-kali-$VERSION.zip $outputdir/Kernels/SGS5-I9500/Kernel-$selecteddevice-$VERSION.zip
+    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/SGS5-I9500/Kernel-$selecteddevice-$VERSION.sha1sum
+    rm -rf ${basedir};;
     gs4)
-      cd ${basedir}
-      mkdir -p $outputdir/Kernels/SGS4-G900
-      mv kernel-kali-$VERSION.zip $outputdir/Kernels/SGS4-G900/Kernel-$selecteddevice-$VERSION.zip
-      mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/SGS4-G900/Kernel-$selecteddevice-$VERSION.sha1sum
-      rm -rf ${basedir};;
+    cd ${basedir}
+    mkdir -p $outputdir/Kernels/SGS4-G900
+    mv kernel-kali-$VERSION.zip $outputdir/Kernels/SGS4-G900/Kernel-$selecteddevice-$VERSION.zip
+    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/SGS4-G900/Kernel-$selecteddevice-$VERSION.sha1sum
+    rm -rf ${basedir};;
   esac
 }
 
@@ -965,49 +906,49 @@ f_movefiles(){
 while getopts "h:b:a:t:o:" flag; do
   case "$flag" in
     h)
-      clear
-      echo "Help Menu"
-      exit;;
+    clear
+    echo "Help Menu"
+    exit;;
     b)
-      clear
-      case $OPTARG in
-        kernel)
-          buildtype="kernel";;
-        rootfs)
-          buildtype="rootfs";;
-        all)
-          buildtype="all";;
-        *)
-          echo "Invalid build type: $OPTARG"
-          exit;;
-      esac
-      echo "";;
+    clear
+    case $OPTARG in
+      kernel)
+      buildtype="kernel";;
+      rootfs)
+      buildtype="rootfs";;
+      all)
+      buildtype="all";;
+      *)
+      echo "Invalid build type: $OPTARG"
+      exit;;
+    esac
+    echo "";;
     a)
-      case $OPTARG in
-        lollipop|Lollipop)
-          targetver=lollipop;;
-        kitkat|KitKat)
-          targetver=kitkat;;
-        touchwiz|Touchwiz)
-          targetver=touchwiz;;
-        *)
-          echo "Invalid Device Selected: $OPTARG"
-          exit;;
-      esac;;
+    case $OPTARG in
+      lollipop|Lollipop)
+      targetver=lollipop;;
+      kitkat|KitKat)
+      targetver=kitkat;;
+      touchwiz|Touchwiz)
+      targetver=touchwiz;;
+      *)
+      echo "Invalid Device Selected: $OPTARG"
+      exit;;
+    esac;;
     t)
-      clear
-      case $OPTARG in
-        manta) selecteddevice="manta";;
-        grouper|tilapia|groupertilapia|tilapiagrouper) selecteddevice="groupertilapia";;
-        flo|deb|flodeb|debflo) selecteddevice="flodeb";;
-        mako) selecteddevice="mako";;
-        hammerhead) selecteddevice="hammerhead";;
-        shamu) selecteddevice="shamu";;
-        flounder) selecteddevice="flounder";;
-        gs5) selecteddevice="gs5";;
-        gs4) selecteddevice="gs4";;
-        *) echo "Invalid device: $OPTARG"
-      esac;;
+    clear
+    case $OPTARG in
+      manta) selecteddevice="manta";;
+      grouper|tilapia|groupertilapia|tilapiagrouper) selecteddevice="groupertilapia";;
+      flo|deb|flodeb|debflo) selecteddevice="flodeb";;
+      mako) selecteddevice="mako";;
+      hammerhead) selecteddevice="hammerhead";;
+      shamu) selecteddevice="shamu";;
+      flounder) selecteddevice="flounder";;
+      gs5) selecteddevice="gs5";;
+      gs4) selecteddevice="gs4";;
+      *) echo "Invalid device: $OPTARG"
+    esac;;
     o)
     clear
     outputdir=$OPTARG
