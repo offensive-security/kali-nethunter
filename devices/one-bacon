@@ -108,7 +108,7 @@ fi
 #####################################################
 # Create OnePlus One Kernel (5+)
 #####################################################
-f_oneplus5_kernel(){
+f_oneplus_kernel5(){
 
 echo "Downloading Android Toolchian"
 if [ $LOCALGIT == 1 ]; then
