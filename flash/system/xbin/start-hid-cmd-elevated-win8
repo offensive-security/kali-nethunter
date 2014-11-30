@@ -1,2 +1,2 @@
-LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin chroot /data/local/kali-armhf /usr/bin/hid-cmd-elevated-win8.py |/system/bin/sh
+PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin chroot /data/local/kali-armhf /usr/bin/hid-cmd-elevated-win8.py |/system/bin/sh
 
