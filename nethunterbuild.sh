@@ -490,7 +490,7 @@ f_flashzip(){
   #  /busybox/busybox - for mounting data folders for kernel install
   #  /data/app/kalilauncher.apk - Launches into root or menu
   #  /data/local/kalifs.tar.bz2 - The filesystem
-  #  /data/local/tmp_kali - shell scripts to unzip filesystem/boot chroot
+  #  /data/local/tmp_kali - shell scripts to unzip filesystem/boot chroot + config files
   #  /kernel/kernel - kernel (zImage or zImage-dtb)
   #  /META-INF/com/google/android/updater-binary - Binary file for edify script
   #  /META-INF/com/google/android/updater-script - Edify script to install Kali
@@ -507,12 +507,13 @@ f_flashzip(){
   mkdir -p ${basedir}/flash/data/local/
   mkdir -p ${basedir}/flash/system/lib/modules
 
-  # Add Webinterface
+  # Copy configuration files needed by nethunter app (we could also move this folder to flash/sdcard/files)
 
-  cp -rf ${basepwd}/utils/config/htdocs.tar.gz ${basedir}/flash/data/tmp_kali
-  cp -rf ${basepwd}/utils/files ${basedir}/flash/data/tmp_kali/
+  mkdir -p ${basedir}/flash/sdcard
+  cp -rf ${basepwd}/utils/files ${basedir}/flash/sdcard
 
-  # Add Android applications that are useful to our chroot enviornment
+  # Download/add Android applications that are useful to our chroot enviornment
+
   # Required: Terminal application is required
   wget -P ${basedir}/flash/data/app/ http://jackpal.github.com/Android-Terminal-Emulator/downloads/Term.apk
   # Suggested: BlueNMEA to enable GPS logging in Kismet
