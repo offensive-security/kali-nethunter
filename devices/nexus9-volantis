@@ -46,13 +46,13 @@ if [ $FROZENKERNEL == 1 ]; then
     git clone https://github.com/binkybear/ElementalX-N9.git -b ElementalX-1.00 ${basedir}/kernel
   fi
 
-  cd ${basedir}/kernel
+cd ${basedir}/kernel
 
-  chmod +x scripts/*
-  chmod +x arch/arm64/kernel/vdso/*.sh
-  make clean
-  sleep 10
-  make kali_defconfig
+chmod +x scripts/*
+chmod +x arch/arm64/kernel/vdso/*.sh
+make clean
+sleep 10
+make kali_defconfig
 
 # Attach kernel builder to updater-script
 echo "#KERNEL_SCRIPT_START" >> ${basedir}/flashkernel/META-INF/com/google/android/updater-script
