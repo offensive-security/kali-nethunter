@@ -15,12 +15,12 @@ f_ostest(){
     exit;;
     *)
     echo "Linux based OS Detected."
-    testkali=$(echo $(cat /etc/issue) | grep -o "Kali")
+    testkali=$(dpkg --get-selections | grep -o "kali-linux")
     case $unamearch in
       x86_64|amd64)
       echo "64 bit linux detected"
       case $testkali in
-        Kali)
+        kali-linux*)
         echo "Kali Linux OS detected.";;
         *)
         echo "Non-Kali distributions aren't supported!"
@@ -47,7 +47,7 @@ f_builddeps(){
     cd ~/arm-stuff
     git clone https://github.com/offensive-security/gcc-arm-linux-gnueabihf-4.7
     export PATH=${PATH}:/root/arm-stuff/gcc-arm-linux-gnueabihf-4.7/bin
-    git clone https://github.com/offensive-security/kali-nethunter
+    git clone -b development https://github.com/offensive-security/kali-nethunter
     cd ~/arm-stuff/kali-nethunter
 
     ### Build Dependencies for script
