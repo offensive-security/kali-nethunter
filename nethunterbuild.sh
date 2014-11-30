@@ -23,7 +23,7 @@ f_ostest(){
         Kali)
         echo "Kali Linux OS detected.";;
         *)
-        echo "32 Bit OSs not supported!"
+        echo "Non-Kali distributions aren't supported!"
         echo ""
         read -p "Press [Enter] to exit the script." null
         clear
