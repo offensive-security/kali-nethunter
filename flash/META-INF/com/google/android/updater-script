@@ -52,11 +52,11 @@ set_perm(0, 0, 0755, "/tmp/extractkali.sh");
 set_perm(0, 0, 0755, "/tmp/cleansystem.sh");
 set_perm(0, 0, 0755, "/tmp/setwallpaper.sh");
 
-ui_print("* Installing BusyBox...                     *");
-run_program("/data/local/bin/busybox", "--install", "-s", "/system/xbin/");
-
 ui_print("* Cleaning /system/app...                   *");
 run_program("/tmp/cleansystem.sh");
+
+ui_print("* Installing BusyBox...                     *");
+run_program("/data/local/bin/busybox", "--install", "-s", "/system/xbin/");
 
 ui_print("* Extracting Kali chroot...                 *");
 ui_print("* ...This will take ~30 minutes.            *");
@@ -66,6 +66,10 @@ ui_print("* Extracting wallpapers...                  *");
 run_program("/tmp/busybox", "mount", "/sdcard");
 package_extract_dir("sdcard", "/sdcard/");
 run_program("/tmp/setwallpaper.sh");
+
+ui_print("* Setting write permissions to /sdcard/	  *");
+set_perm_recursive(1023, 1023, 0775, 0777, "/sdcard/files");
+set_perm_recursive(1023, 1023, 0775, 0777, "/sdcard/kali-nh");
 
 ui_print("");
 ui_print("* Kali chroot is now successfully installed.*");
