@@ -89,7 +89,7 @@ f_setup(){
   #########  Devices  ##########
   # Build scripts for each kernel is located under devices/devicename
   source devices/nexus10-manta
-  source devices/nexus9-flounder
+  source devices/nexus9-volantis #aka flounder
   source devices/nexus6-shamu
   source devices/nexus7-grouper-tilapia
   source devices/nexus7-flo-deb
@@ -97,6 +97,7 @@ f_setup(){
   source devices/nexus4-mako
   source devices/galaxys5-G900
   source devices/galaxys4
+  source devices/one-bacon
 
   ######### Set paths and permissions  #######
 
@@ -238,6 +239,19 @@ f_build(){
     #        kitkat)
     #      esac;;
     #  esac;;
+    bacon)
+    case $buildtype in
+      kernel)
+      case $targetver in
+        lollipop) f_oneplus_kernel5; f_zip_kernel_save;;
+        kitkat) f_oneplus_kernel; f_zip_kernel_save;;
+      esac;;
+      all)
+      case $targetver in
+        lollipop) f_rootfs; f_flashzip; f_oneplus_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
+        kitkat) f_rootfs; f_flashzip; f_deb_stock_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+      esac;;
+    esac;;
   esac
 
 }
@@ -284,12 +298,11 @@ f_rootfs_build(){
 
   LANG=C chroot kali-$architecture /debootstrap/debootstrap --second-stage
 
-  echo "deb http://http.kali.org/kali kali main contrib non-free" > kali-$architecture/etc/apt/sources.list
-  echo "deb http://security.kali.org/kali-security kali/updates main contrib non-free" >> kali-$architecture/etc/apt/sources.list
+  cp ${basepwd}/utils/sources.list kali-$architecture/etc/apt/sources.list
 
   #define hostname
 
-  echo "localhost" > kali-$architecture/etc/hostname
+  cp ${basepwd}/utils/hostname kali-$architecture/etc/hostname
 
   # fix for TUN symbolic link to enable programs like openvpn
   # set terminal length to 80 because root destroy terminal length
@@ -345,62 +358,17 @@ f_rootfs_build(){
   chmod 755 ${rootfs}/kali-$architecture/usr/share/mana-toolkit/run-mana/*
   chmod 755 ${rootfs}/kali-$architecture/usr/bin/*.sh
 
-  # Install Phishing Frenzy
-
-  ## apt-get install libcurl4-openssl-dev apache2-threaded-dev libapr1-dev libaprutil1-dev redis-server
-  #git clone https://github.com/pentestgeek/phishing-frenzy.git ${rootfs}/kali-$architecture/var/www/phishing-frenzy
-  #LANG=C chroot ${rootfs}/kali-$architecture gpg --keyserver hkp://keys.gnupg.net --recv-keys D39DC0E3
-  #touch ${rootfs}/kali-$architecture/etc/apache2/pf.conf
-  #echo "source /usr/local/rvm/scripts/rvm" >> ${rootfs}/kali-$architecture/root/.bashrc
-  #LANG=C chroot ${rootfs}/kali-$architecture source /root/.bashrc
-  #LANG=C chroot ${rootfs}/kali-$architecture rvm all do gem install --no-rdoc --no-ri rails passenger
-  #LANG=C chroot ${rootfs}/kali-$architecture passenger-install-apache2-module --auto
-  #echo "LoadModule passenger_module /usr/local/rvm/gems/ruby-2.1.4/gems/passenger-4.0.53/buildout/apache2/mod_passenger.so" >> ${rootfs}/kali-$architecture/etc/apache2/apache2.conf
-  #echo "<IfModule mod_passenger.c>" >> ${rootfs}/kali-$architecture/etc/apache2/apache2.conf
-  #echo " PassengerRoot /usr/local/rvm/gems/ruby-2.1.4/gems/passenger-4.0.53" >> ${rootfs}/kali-$architecture/etc/apache2/apache2.conf
-  #echo " PassengerDefaultRuby /usr/local/rvm/gems/ruby-2.1.4/wrappers/ruby" >> ${rootfs}/kali-$architecture/etc/apache2/apache2.conf
-  #echo "</IfModule>" >> ${rootfs}/kali-$architecture/etc/apache2/apache2.conf
-  #LANG=C chroot ${rootfs}/kali-$architecture /etc/init.d/mysql start
-  #LANG=C chroot ${rootfs}/kali-$architecture mysql -u root -e "create database pf_dev; grant all privileges on pf_dev.* to 'pf_dev'@'localhost' identified by 'password';"
-  #cat << EOF > ${rootfs}/kali-$architecture/etc/apache2/pf.conf
-  #<IfModule mod_passenger.c>
-  #  PassengerRoot %ROOT
-  #  PassengerRuby %RUBY
-  #</IfModule>
-  #
-  #<VirtualHost 127.0.0.1:80>
-  #    ServerName phishingfrenzy.local
-  #    DocumentRoot /var/www/phishing-frenzy/public
-  #    RailsEnv development
-  #  <Directory /var/www/phishing-frenzy/public>
-  #    AllowOverride all
-  #    # MultiViews must be turned off.
-  #    Options -MultiViews
-  #  </Directory>
-  #</VirtualHost>
-  #EOF
-  #LANG=C chroot ${rootfs}/kali-$architecture "cd /var/www/phishing-frenzy/ && bundle install"
-  #chown -R www-data:www-data ${rootfs}/kali-$architecture/var/www/phishing-frenzy/
-  #chown -R www-data:www-data ${rootfs}/kali-$architecture/etc/apache2/sites-available/
-  #chown -R 755 ${rootfs}/kali-$architecture/var/www/phishing-frenzy/public/uploads/
-  #LANG=C chroot ${rootfs}/kali-$architecture "cd /var/www/phishing-frenzy/ && rake db:migrate && rake db:seed && rake templates:load"
-  #LANG=C chroot ${rootfs}/kali-$architecture /etc/init.d/mysql stop
-
-  # Install MITMf
-  LANG=C chroot ${rootfs}/kali-$architecture pip install capstone
-  git clone https://github.com/byt3bl33d3r/MITMf.git && mv MITMf ${rootfs}/kali-$architecture/opt/MITMf
-  chmod 755 ${rootfs}/kali-$architecture/opt/MITMf/setup.sh ${rootfs}/kali-$architecture/opt/MITMf/update.sh
-  LANG=C chroot ${rootfs}/kali-$architecture /opt/MITMf/setup.sh
+  # Install Rawr (https://bitbucket.org/al14s/rawr/wiki/Usage)
+  git clone https://bitbucket.org/al14s/rawr.git ${rootfs}/kali-$architecture/opt/rawr
+  chmod 755 ${rootfs}/kali-$architecture/opt/rawr/install.sh
 
   # Install Dictionary for wifite
   mkdir -p ${rootfs}/kali-$architecture/opt/dic
   tar xvf ${basepwd}/utils/dic/89.tar.gz -C ${rootfs}/kali-$architecture/opt/dic
 
-  # Install WPS Scan which scans routers for enabled WPS & pingen which generates DLINK WPS pins
-  wget https://raw.githubusercontent.com/devttys0/wps/master/wpstools/wpscan.py -O ${rootfs}/kali-$architecture/usr/bin/wps_scan
-  wget https://raw.githubusercontent.com/devttys0/wps/master/wpstools/wpspy.py -O ${rootfs}/kali-$architecture/usr/bin/wps_spy
+  # Install Pingen which generates DLINK WPS pins for some routers
   wget https://raw.githubusercontent.com/devttys0/wps/master/pingens/dlink/pingen.py -O ${rootfs}/kali-$architecture/usr/bin/pingen
-  chmod 755 ${rootfs}/kali-$architecture/usr/bin/wps_scan ${rootfs}/kali-$architecture/usr/bin/pingen ${rootfs}/kali-$architecture/usr/bin/wps_spy
+  chmod 755 ${rootfs}/kali-$architecture/usr/bin/pingen
 
   # Install Spiderfoot
   # Cherrypy is newer in pip then in repo so we need to use that instead.  All other depend are fine.
@@ -948,6 +916,7 @@ while getopts "h:b:a:t:o:" flag; do
       flounder) selecteddevice="flounder";;
       gs5) selecteddevice="gs5";;
       gs4) selecteddevice="gs4";;
+      bacon) selecteddevice="bacon";;
       *) echo "Invalid device: $OPTARG"
     esac;;
     o)
