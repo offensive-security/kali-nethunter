@@ -49,8 +49,8 @@
 # Save time from having to build kernels every time set FROZENKERNEL=1.
 # This will use premade kernels in devices/frozen_kernels/{VERSION}/{BUILDNAME}
 
-LOCALGIT=0
-FROZENKERNEL=0
+LOCALGIT=1
+FROZENKERNEL=1
 
 #########  Devices  ##########
 # Build scripts for each kernel is located under devices/devicename
@@ -84,7 +84,7 @@ printf '\033[8;33;100t'
 f_check_version(){
   # Allow user input of version number/folder creation to make set up easier
   echo "Checking for git updates in local folder..."
-  for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
+  for directory in $(ls -l |grep "^d" | awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
   clear
   # need to exit back to basedir to establish root folder
   cd ${basepwd}
