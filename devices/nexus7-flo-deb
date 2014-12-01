@@ -7,7 +7,7 @@ if [ $FROZENKERNEL == 1 ]; then
 	echo "Using frozen kernel"
  	cp -rf ${basepwd}/flash/ ${basedir}/flashkernel
 	rm -rf ${basedir}/flashkernel/data ${basedir}/flashkernel/sdcard ${basedir}/flashkernel/system/app ${basedir}/flashkernel/META-INF/com/google/android/updater-script
-  	cp -rf ${basepwd}/devices/frozen_kernels/4.4.4/n7-flodeb/* ${basedir}/flashkernel/
+  	cp -rf ${basepwd}/devices/frozen_kernels/4.4.4/n7-flodeb-CM/* ${basedir}/flashkernel/
   	if [ -f "${basedir}/flash/META-INF/com/google/android/updater-script" ]; then
 	  if grep -Fxq "#KERNEL_SCRIPT_START" "${basedir}/flash/META-INF/com/google/android/updater-script"
 	  then
@@ -30,7 +30,7 @@ echo "Downloading Kernel"
 cd ${basedir}
 if [ $LOCALGIT == 1 ]; then
   echo "Copying kernel to rootfs"
-  cp -rf ${basepwd}/flodeb ${basedir}/kernel
+  cp -rf ${basepwd}/cyanflodeb ${basedir}/kernel
 else
   git clone https://github.com/binkybear/kernel_msm.git -b android-msm-flo-3.4-kitkat-mr2 ${basedir}/kernel
 fi

@@ -49,8 +49,8 @@
 # Save time from having to build kernels every time set FROZENKERNEL=1.
 # This will use premade kernels in devices/frozen_kernels/{VERSION}/{BUILDNAME}
 
-LOCALGIT=0
-FROZENKERNEL=0
+LOCALGIT=1
+FROZENKERNEL=1
 
 #########  Devices  ##########
 # Build scripts for each kernel is located under devices/devicename
