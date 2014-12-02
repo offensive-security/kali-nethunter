@@ -47,7 +47,7 @@ f_builddeps(){
     cd ~/arm-stuff
     git clone https://github.com/offensive-security/gcc-arm-linux-gnueabihf-4.7
     export PATH=${PATH}:/root/arm-stuff/gcc-arm-linux-gnueabihf-4.7/bin
-    git clone -b development https://github.com/offensive-security/kali-nethunter
+    git clone https://github.com/offensive-security/kali-nethunter
     cd ~/arm-stuff/kali-nethunter
 
     ### Build Dependencies for script
@@ -557,137 +557,6 @@ f_cleanup(){
   #umount ${rootfs}/kali-$architecture/proc
   #echo "Removing temporary build files"
   #rm -rf ${basedir}/patches ${basedir}/kernel ${basedir}/flash ${basedir}/kali-$architecture ${basedir}/flashkernel
-}
-
-### Builds rootfs and kernel into ROM zip
-f_rom_build(){
-  clear
-
-  cd ${basepwd}
-
-  echo "If you plan to add to ROM please place zip file in:"
-  echo "${basepwd}/PLACE_ROM_HERE"
-  echo ""
-  read -p "Would you like to attach Kali build to ROM? (y/n): " buildrom
-  if [ "$buildrom" == "n" ]; then
-    echo "All done!"
-    sleep 3
-    f_interface
-  fi
-
-  f_rom_build_menu(){
-    prompt="Please select a file: "
-    options=( $(find ${build_dir} -maxdepth 1 -iname '*.zip' | xargs -0) )
-
-    PS3="$prompt "
-    select zipfile in "${options[@]}" "Quit" ; do
-      if (( REPLY == 1 + ${#options[@]} )) ; then
-        f_interface
-      elif (( REPLY > 0 && REPLY <= ${#options[@]} )) ; then
-        echo  "$zipfile chosen"
-        break
-      else
-        echo "Invalid option. Try another one."
-        f_rom_build_menu
-      fi
-    done
-  }
-
-  f_rom_build_menu
-
-  # Remove previous work folders, create necessary folders and unzip rom
-
-  cd $build_dir
-  rm -rf ${wwork} ${wram}
-  mkdir -p ${wwork} ${wram}
-  unzip -q $zipfile -d ${wwork}
-  cp ${wwork}/boot.img ${wram}
-  cd ${wram}
-
-  # Extract Kernel and config file
-
-  $bt/umkbootimg boot.img
-  abootimg -x boot.img bootimg.cfg
-
-  # Replace bootsize in bootimg.cfg - our kernel will be larger
-  sed -i '/bootsize/d' ${wram}/bootimg.cfg
-
-  if [ -f "${wram}/initramfs.cpio.gz" ]; then
-    echo "Found ramdisk: initramfs.cpio.gz"
-    $bt/unpack_ramdisk initramfs.cpio.gz ramdisk
-    rm ${wram}/initramfs.cpio.gz
-  else
-    echo "Ramdisk not found!"
-    sleep 5
-    f_interface
-  fi
-
-  if  ! grep -qr init.d ${wram}/ramdisk/*; then
-    echo "" >> ${wram}/ramdisk/init.rc
-    echo "service userinit /data/local/bin/busybox run-parts /system/etc/init.d" >> ${wram}/ramdisk/init.rc
-    echo "    oneshot" >> ${wram}/ramdisk/init.rc
-    echo "    class late_start" >> ${wram}/ramdisk/init.rc
-    echo "    user root" >> ${wram}/ramdisk/init.rc
-    echo "    group root" >> ${wram}/ramdisk/init.rc
-  fi
-
-  if  ! grep -qr TERMINFO ${wram}/ramdisk/*; then
-    echo "    export TERMINFO /system/etc/terminfo"  >> ${wram}/ramdisk/init.environ.rc
-    echo "    export TERM linux"  >> ${wram}/ramdisk/init.environ.rc
-  fi
-
-  # Repack ramdisk
-
-  cd ${wram}
-  $bt/repack_ramdisk ramdisk initramfs.cpio.gz
-  rm -r ${wram}/ramdisk
-
-  # Copy kernel from working folder and replace one that came with ROM
-
-  rm ${wram}/boot.img ${wram}/zImage
-  cp ${basedir}/flashkernel/kernel/kernel ${wram}/zImage
-
-  # Rebuild kernel with new ramdisk and zImage
-
-  echo "Creating boot.img"
-  #$bt/mkbootimg --kernel zImage --ramdisk initramfs.cpio.gz --cmdline "$(cat bootimg.cfg | grep "cmdline" | cut -c 10-)" -o boot.img
-  abootimg --create boot.img -f bootimg.cfg -k zImage -r initramfs.cpio.gz
-  echo "New boot.img created:"
-  abootimg -i boot.img
-  sleep 5
-
-  # Copy new kernel boot.img back to ROM
-
-  echo "Overwriting new boot.img with ROM's boot.img"
-  cp -rf ${wram}/boot.img ${wwork}/boot.img
-
-  # Back to ROM folder to finish up. Copy files normally that go into flashable zip to ROM.
-
-  echo "Copying Kali flash files to ROM folder"
-
-  cp -rf ${basedir}/flash/system ${wwork}/
-  cp -rf ${basedir}/flash/sdcard ${wwork}/
-  cp -rf ${basedir}/flash/data ${wwork}/
-  cp -rf ${basedir}/flash/kernel ${wwork}/
-
-  # Add default updater-script to end of ROM edify script.
-
-  echo "Modifying updater-script from ROM"
-  cat ${basepwd}/flash/META-INF/com/google/android/updater-script >> ${wwork}/META-INF/com/google/android/updater-script
-
-  # Zip then transfer back to basedir
-
-  cd ${wwork}
-  echo "Zipping up rom and transfering to ${basedir}/KaliROM-$VERSION.zip "
-  zip -r6 -q KaliROM-$VERSION.zip *
-  mv KaliROM-$VERSION.zip ${basedir}
-
-  echo "Cleaning up work folders"
-  rm -rf ${wwork} ${wram}
-  echo "All done!"
-  sleep 5
-
-  f_interface
 }
 
 ### Set up kernel folder
