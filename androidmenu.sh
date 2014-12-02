@@ -23,7 +23,7 @@ FROZENKERNEL=0
 #
 # - Nexus 10
 # git clone https://github.com/binkybear/kernel_samsung_manta.git -b thunderkat
-# git clone https://github.com/binkybear/####################.git -b ########## nexus10-5
+# git clone https://github.com/binkybear/nexus10-5.git -b android-exynos-manta-3.4-lollipop-release
 # - Nexus 9
 # git clone https://github.com/binkybear/ElementalX-N9.git -b ElementalX-1.00 nexus9-5
 # - Nexus 7 (2012)
@@ -33,7 +33,7 @@ FROZENKERNEL=0
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-flo-3.4-kitkat-mr2 flodeb
 # git clone https://github.com/binkybear/flo.git -b ElementalX-3.00 nexus7_2013-5
 # - Nexus 6
-# git clone https://github.com/binkybear/####################.git -b ########## nexus6-5
+# git clone https://github.com/binkybear/shamu.git -b ElementalX-1.00 nexus6-5
 # - Nexus 5
 # git clone https://github.com/binkybear/furnace_kernel_lge_hammerhead.git -b android-4.4
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-hammerhead-3.4-lollipop-release nexus5-5
@@ -101,7 +101,7 @@ d_clear(){
 f_check_version(){
   # Allow user input of version number/folder creation to make set up easier
   echo "Checking for git updates in local folder..."
-  for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
+  for directory in $(ls -l |grep "^d"|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
   d_clear
   # need to exit back to basedir to establish root folder
   cd ${basepwd}
@@ -299,8 +299,8 @@ esac
 f_flounder(){
 echo -e "\e[31m ------------------------- NEXUS 9 -----------------------\e[0m"
 echo ""
-echo "  [1] Build All - Kali rootfs and Kernel (Android 5)"
-echo "  [2] Build Kernel Only (Android 5)"
+echo "  [1] Build All - Kali rootfs and Kernel (Android 9)"
+echo "  [2] Build Kernel Only (Android 9)"
 echo "  [0] Exit to Main Menu"
 echo ""
 echo ""
@@ -312,6 +312,28 @@ case $manta_menuchoice in
 
 1) d_clear; f_rootfs ; f_flashzip ; f_nexus9_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
 2) d_clear; f_nexus9_kernel5 ; f_zip_kernel_save ;;
+0) d_clear; f_interface ;;
+*) echo "Incorrect choice..." ;
+esac
+
+}
+
+f_shamu(){
+echo -e "\e[31m ------------------------- NEXUS 6 -----------------------\e[0m"
+echo ""
+echo "  [1] Build All - Kali rootfs and Kernel (Android 6)"
+echo "  [2] Build Kernel Only (Android 6)"
+echo "  [0] Exit to Main Menu"
+echo ""
+echo ""
+# wait for character input
+
+read -p "Choice: " shamu_menuchoice
+
+case $shamu_menuchoice in
+
+1) d_clear; f_rootfs ; f_flashzip ; f_nexus6_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+2) d_clear; f_nexus6_kernel5 ; f_zip_kernel_save ;;
 0) d_clear; f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
@@ -406,9 +428,9 @@ echo ""
 echo ""
 # wait for character input
 
-read -p "Choice: " deb_menuchoice
+read -p "Choice: " mako_menuchoice
 
-case $deb_menuchoice in
+case $mako_menuchoice in
 
 1) d_clear; f_rootfs ; f_flashzip ; f_mako_stock_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
 2) d_clear; f_mako_stock_kernel ; f_zip_kernel_save ;;
@@ -431,9 +453,9 @@ echo ""
 echo ""
 # wait for character input
 
-read -p "Choice: " deb_menuchoice
+read -p "Choice: " s5_menuchoice
 
-case $deb_menuchoice in
+case $s5_menuchoice in
 
 1) d_clear; f_rootfs ; f_flashzip ; f_s5_stock_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
 2) d_clear; f_rootfs ; f_flashzip ; f_s5_tw_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
@@ -456,9 +478,9 @@ echo ""
 echo ""
 # wait for character input
 
-read -p "Choice: " deb_menuchoice
+read -p "Choice: " s4_menuchoice
 
-case $deb_menuchoice in
+case $s4_menuchoice in
 
 1) d_clear; f_rootfs ; f_flashzip ; f_s4_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
 2) d_clear; f_rootfs ; f_flashzip ; f_s4_i9500_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
