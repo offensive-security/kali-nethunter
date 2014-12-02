@@ -38,7 +38,7 @@ if [ $LOCALGIT == 1 ]; then
   echo "Copying kernel to rootfs"
   cp -rf ${basepwd}/nexus6-5 ${basedir}/kernel
 else
-  git clone https://github.com/binkybear/shamu.git -b ElementalX-1.00 ${basedir}/kernel
+  git clone https://github.com/binkybear/kernel_msm.git -b android-msm-shamu-3.10-lollipop-release ${basedir}/kernel
 fi
 
 cd ${basedir}/kernel
