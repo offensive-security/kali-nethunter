@@ -101,7 +101,7 @@ d_clear(){
 f_check_version(){
   # Allow user input of version number/folder creation to make set up easier
   echo "Checking for git updates in local folder..."
-  for directory in $(ls -l |grep "^d"|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
+  for directory in $(ls -l | grep "^d" | awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
   d_clear
   # need to exit back to basedir to establish root folder
   cd ${basepwd}
@@ -129,7 +129,7 @@ f_check_version(){
 ###Nightly build script version of check version.
 f_check_version_noui(){
   # Allow user input of version number/folder creation to make set up easier
-  for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
+  for directory in $(ls -l | grep "^d" | awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
   cd ${basepwd}
   VERSION=$(date +%m%d%Y)
 case $nightlytype in
