@@ -47,7 +47,7 @@ f_builddeps(){
     cd ~/arm-stuff
     git clone https://github.com/offensive-security/gcc-arm-linux-gnueabihf-4.7
     export PATH=${PATH}:/root/arm-stuff/gcc-arm-linux-gnueabihf-4.7/bin
-    git clone -b development https://github.com/offensive-security/kali-nethunter
+    git clone https://github.com/offensive-security/kali-nethunter
     cd ~/arm-stuff/kali-nethunter
 
     ### Build Dependencies for script
@@ -280,13 +280,12 @@ f_rootfs_build(){
   tools="nmap metasploit tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set device-pharmer"
   wireless="wifite iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq dsniff sslstrip mdk3 mitmproxy"
   services="autossh openssh-server tightvncserver apache2 postgresql openvpn php5"
-  extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools python-pip hostapd ptunnel tcptrace dnsutils p0f"
+  extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools python-pip hostapd ptunnel tcptrace dnsutils p0f mitmf"
   mana="python-twisted python-dnspython libnl1 libnl-dev libssl-dev sslsplit python-pcapy tinyproxy isc-dhcp-server rfkill mana-toolkit"
   spiderfoot="python-lxml python-m2crypto python-netaddr python-mako"
-  phishingfrenzy="libcurl4-openssl-dev apache2-threaded-dev libapr1-dev libaprutil1-dev redis-server"
   sdr="sox librtlsdr"
 
-  export packages="${arm} ${base} ${desktop} ${tools} ${wireless} ${services} ${extras} ${mana} ${spiderfoot} ${sdr} ${phishingfrenzy}"
+  export packages="${arm} ${base} ${desktop} ${tools} ${wireless} ${services} ${extras} ${mana} ${spiderfoot} ${sdr}"
   export architecture="armhf"
 
   # create the rootfs - not much to modify here, except maybe the hostname.
@@ -298,20 +297,42 @@ f_rootfs_build(){
 
   LANG=C chroot kali-$architecture /debootstrap/debootstrap --second-stage
 
-  cp ${basepwd}/utils/sources.list kali-$architecture/etc/apt/sources.list
+  cat << EOF > kali-$architecture/etc/apt/sources.list
+  deb http://http.kali.org/kali kali main contrib non-free
+  deb http://security.kali.org/kali-security kali/updates main contrib non-free
+  EOF
 
   #define hostname
 
-  cp ${basepwd}/utils/hostname kali-$architecture/etc/hostname
+  echo "localhost" > kali-$architecture/etc/hostname
 
   # fix for TUN symbolic link to enable programs like openvpn
   # set terminal length to 80 because root destroy terminal length
   # add fd to enable stdin/stdout/stderr
-  cp ${basepwd}/utils/config/bashprofile kali-$architecture/root/.bash_profile
+  cat << EOF > kali-$architecture/root/.bash_profile
+  export TERM=xterm-256color
+  stty columns 80
+  # /usr/bin/firstrun # we can remove this with sed at the end of the firstrun script
+  cd /root/
+  if [ ! -d "/dev/net/" ]; then
+    mkdir -p /dev/net
+    ln -sf /dev/tun /dev/net/tun
+  fi
 
-  cp ${basepwd}/utils/config/hosts kali-$architecture/etc/hosts
+  if [ ! -d "/dev/fd/" ]; then
+    ln -sf /proc/self/fd /dev/fd
+    ln -sf /dev/fd/0 /dev/stdin
+    ln -sf /dev/fd/1 /dev/stdout
+    ln -sf /dev/fd/2 /dev/stderr
+  fi
+  EOF
 
-  if [[ $LOCALGIT == 1 ]]; then
+  cat << EOF > kali-$architecture/etc/hosts
+  127.0.0.1       localhost
+  ::1             localhost ip6-localhost ip6-loopback
+  EOF
+
+  if [ $LOCALGIT == 1 ]; then
     cp /etc/hosts kali-$architecture/etc/
   fi
 
@@ -322,9 +343,19 @@ f_rootfs_build(){
   cp -rf ${basepwd}/utils/hid/* kali-$architecture/usr/bin/
   cp -rf ${basepwd}/utils/msf/*.sh kali-$architecture/usr/bin/
 
-  cp ${basepwd}/utils/config/interfaces kali-$architecture/etc/network/interfaces
+  cat << EOF > kali-$architecture/etc/network/interfaces
+  auto lo
+  iface lo inet loopback
+  EOF
 
-  cp ${basepwd}/utils/config/resolv.conf kali-$architecture/etc/resolv.conf
+  cat << EOF > kali-$architecture/etc/resolv.conf
+  #opendns
+  nameserver 208.67.222.222
+  nameserver 208.67.220.220
+  #google dns
+  nameserver 8.8.8.8
+  nameserver 8.8.4.4
+  EOF
 
   # THIRD STAGE CHROOT
 
@@ -336,11 +367,39 @@ f_rootfs_build(){
   mount -o bind /dev/ kali-$architecture/dev/
   mount -o bind /dev/pts kali-$architecture/dev/pts
 
-  cp ${basepwd}/utils/config/debconf.set kali-$architecture/debconf.set
+  cat << EOF > kali-$architecture/debconf.set
+  console-common console-data/keymap/policy select Select keymap from full list
+  console-common console-data/keymap/full select en-latin1-nodeadkeys
+  EOF
 
-  cp ${basepwd}/utils/config/third-stage
+  cat << EOF > kali-$architecture/third-stage
+  #!/bin/bash
+  dpkg-divert --add --local --divert /usr/sbin/invoke-rc.d.chroot --rename /usr/sbin/invoke-rc.d
+  cp /bin/true /usr/sbin/invoke-rc.d
+  echo -e "#!/bin/sh\nexit 101" > /usr/sbin/policy-rc.d
+  chmod +x /usr/sbin/policy-rc.d
 
-  chmod +x kali-$architecture/third-stage kali-$architecture/third-stage
+  apt-get update
+  apt-get install locales-all
+
+  debconf-set-selections /debconf.set
+  rm -f /debconf.set
+  apt-get update
+  apt-get -y install git-core binutils ca-certificates initramfs-tools uboot-mkimage
+  apt-get -y install locales console-common less nano git
+  echo "root:toor" | chpasswd
+  sed -i -e 's/KERNEL\!=\"eth\*|/KERNEL\!=\"/' /lib/udev/rules.d/75-persistent-net-generator.rules
+  rm -f /etc/udev/rules.d/70-persistent-net.rules
+  apt-get --yes --force-yes install $packages
+
+  rm -f /usr/sbin/policy-rc.d
+  rm -f /usr/sbin/invoke-rc.d
+  dpkg-divert --remove --rename /usr/sbin/invoke-rc.d
+
+  rm -f /third-stage
+  EOF
+
+  chmod +x kali-$architecture/third-stage
   LANG=C chroot kali-$architecture /third-stage
 
   # Modify kismet configuration to work with gpsd and socat
@@ -420,7 +479,17 @@ f_rootfs_build(){
   #sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/etc/hostapd/hostapd.conf#' kali-$architecture/etc/init.d/hostapd
 
   # DNSMASQ Configuration options for optional access point
-  cp ${basepwd}/utils/config/dnsmasq.conf kali-$architecture/etc/dnsmasq.conf
+  cat << EOF > kali-$architecture/etc/dnsmasq.conf
+  log-facility=/var/log/dnsmasq.log
+  #address=/#/10.0.0.1
+  #address=/google.com/10.0.0.1
+  interface=wlan1
+  dhcp-range=10.0.0.10,10.0.0.250,12h
+  dhcp-option=3,10.0.0.1
+  dhcp-option=6,10.0.0.1
+  #no-resolv
+  log-queries
+  EOF
 
   # Add missing folders to chroot needed
   cap=kali-$architecture/captures
@@ -433,19 +502,30 @@ f_rootfs_build(){
   echo "inet:x:3004:postgres,root,beef-xss,daemon,nginx" >> kali-$architecture/etc/group
   echo "nobody:x:3004:nobody" >> kali-$architecture/etc/group
 
-  # CLEANUP STAGE
+  if [ ${DEBUG} == 0 ]; then
+    # CLEANUP STAGE
 
-  cp ${basepwd}/utils/config/cleanup kali-$architecture/cleanup
+    cat << EOF > kali-$architecture/cleanup
+    #!/bin/bash
+    rm -rf /root/.bash_history
+    apt-get update
+    apt-get clean
+    rm -f /0
+    rm -f /hs_err*
+    rm -f cleanup
+    rm -f /usr/bin/qemu*
+    EOF
 
-  chmod +x kali-$architecture/cleanup
-  LANG=C chroot kali-$architecture /cleanup
+    chmod +x kali-$architecture/cleanup
+    LANG=C chroot kali-$architecture /cleanup
 
-  umount ${rootfs}/kali-$architecture/proc/sys/fs/binfmt_misc
-  umount ${rootfs}/kali-$architecture/dev/pts
-  umount ${rootfs}/kali-$architecture/dev/
-  umount ${rootfs}/kali-$architecture/proc
+    umount ${rootfs}/kali-$architecture/proc/sys/fs/binfmt_misc
+    umount ${rootfs}/kali-$architecture/dev/pts
+    umount ${rootfs}/kali-$architecture/dev/
+    umount ${rootfs}/kali-$architecture/proc
 
-  sleep 5
+    sleep 5
+  fi
 }
 
 ### Create flashable zip
@@ -557,137 +637,6 @@ f_cleanup(){
   #umount ${rootfs}/kali-$architecture/proc
   #echo "Removing temporary build files"
   #rm -rf ${basedir}/patches ${basedir}/kernel ${basedir}/flash ${basedir}/kali-$architecture ${basedir}/flashkernel
-}
-
-### Builds rootfs and kernel into ROM zip
-f_rom_build(){
-  clear
-
-  cd ${basepwd}
-
-  echo "If you plan to add to ROM please place zip file in:"
-  echo "${basepwd}/PLACE_ROM_HERE"
-  echo ""
-  read -p "Would you like to attach Kali build to ROM? (y/n): " buildrom
-  if [ "$buildrom" == "n" ]; then
-    echo "All done!"
-    sleep 3
-    f_interface
-  fi
-
-  f_rom_build_menu(){
-    prompt="Please select a file: "
-    options=( $(find ${build_dir} -maxdepth 1 -iname '*.zip' | xargs -0) )
-
-    PS3="$prompt "
-    select zipfile in "${options[@]}" "Quit" ; do
-      if (( REPLY == 1 + ${#options[@]} )) ; then
-        f_interface
-      elif (( REPLY > 0 && REPLY <= ${#options[@]} )) ; then
-        echo  "$zipfile chosen"
-        break
-      else
-        echo "Invalid option. Try another one."
-        f_rom_build_menu
-      fi
-    done
-  }
-
-  f_rom_build_menu
-
-  # Remove previous work folders, create necessary folders and unzip rom
-
-  cd $build_dir
-  rm -rf ${wwork} ${wram}
-  mkdir -p ${wwork} ${wram}
-  unzip -q $zipfile -d ${wwork}
-  cp ${wwork}/boot.img ${wram}
-  cd ${wram}
-
-  # Extract Kernel and config file
-
-  $bt/umkbootimg boot.img
-  abootimg -x boot.img bootimg.cfg
-
-  # Replace bootsize in bootimg.cfg - our kernel will be larger
-  sed -i '/bootsize/d' ${wram}/bootimg.cfg
-
-  if [ -f "${wram}/initramfs.cpio.gz" ]; then
-    echo "Found ramdisk: initramfs.cpio.gz"
-    $bt/unpack_ramdisk initramfs.cpio.gz ramdisk
-    rm ${wram}/initramfs.cpio.gz
-  else
-    echo "Ramdisk not found!"
-    sleep 5
-    f_interface
-  fi
-
-  if  ! grep -qr init.d ${wram}/ramdisk/*; then
-    echo "" >> ${wram}/ramdisk/init.rc
-    echo "service userinit /data/local/bin/busybox run-parts /system/etc/init.d" >> ${wram}/ramdisk/init.rc
-    echo "    oneshot" >> ${wram}/ramdisk/init.rc
-    echo "    class late_start" >> ${wram}/ramdisk/init.rc
-    echo "    user root" >> ${wram}/ramdisk/init.rc
-    echo "    group root" >> ${wram}/ramdisk/init.rc
-  fi
-
-  if  ! grep -qr TERMINFO ${wram}/ramdisk/*; then
-    echo "    export TERMINFO /system/etc/terminfo"  >> ${wram}/ramdisk/init.environ.rc
-    echo "    export TERM linux"  >> ${wram}/ramdisk/init.environ.rc
-  fi
-
-  # Repack ramdisk
-
-  cd ${wram}
-  $bt/repack_ramdisk ramdisk initramfs.cpio.gz
-  rm -r ${wram}/ramdisk
-
-  # Copy kernel from working folder and replace one that came with ROM
-
-  rm ${wram}/boot.img ${wram}/zImage
-  cp ${basedir}/flashkernel/kernel/kernel ${wram}/zImage
-
-  # Rebuild kernel with new ramdisk and zImage
-
-  echo "Creating boot.img"
-  #$bt/mkbootimg --kernel zImage --ramdisk initramfs.cpio.gz --cmdline "$(cat bootimg.cfg | grep "cmdline" | cut -c 10-)" -o boot.img
-  abootimg --create boot.img -f bootimg.cfg -k zImage -r initramfs.cpio.gz
-  echo "New boot.img created:"
-  abootimg -i boot.img
-  sleep 5
-
-  # Copy new kernel boot.img back to ROM
-
-  echo "Overwriting new boot.img with ROM's boot.img"
-  cp -rf ${wram}/boot.img ${wwork}/boot.img
-
-  # Back to ROM folder to finish up. Copy files normally that go into flashable zip to ROM.
-
-  echo "Copying Kali flash files to ROM folder"
-
-  cp -rf ${basedir}/flash/system ${wwork}/
-  cp -rf ${basedir}/flash/sdcard ${wwork}/
-  cp -rf ${basedir}/flash/data ${wwork}/
-  cp -rf ${basedir}/flash/kernel ${wwork}/
-
-  # Add default updater-script to end of ROM edify script.
-
-  echo "Modifying updater-script from ROM"
-  cat ${basepwd}/flash/META-INF/com/google/android/updater-script >> ${wwork}/META-INF/com/google/android/updater-script
-
-  # Zip then transfer back to basedir
-
-  cd ${wwork}
-  echo "Zipping up rom and transfering to ${basedir}/KaliROM-$VERSION.zip "
-  zip -r6 -q KaliROM-$VERSION.zip *
-  mv KaliROM-$VERSION.zip ${basedir}
-
-  echo "Cleaning up work folders"
-  rm -rf ${wwork} ${wram}
-  echo "All done!"
-  sleep 5
-
-  f_interface
 }
 
 ### Set up kernel folder

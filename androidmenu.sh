@@ -101,7 +101,7 @@ d_clear(){
 f_check_version(){
   # Allow user input of version number/folder creation to make set up easier
   echo "Checking for git updates in local folder..."
-  for directory in $(ls -l |grep "^d"|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
+  for directory in $(ls -l | grep "^d" | awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
   d_clear
   # need to exit back to basedir to establish root folder
   cd ${basepwd}
@@ -129,7 +129,7 @@ f_check_version(){
 ###Nightly build script version of check version.
 f_check_version_noui(){
   # Allow user input of version number/folder creation to make set up easier
-  for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
+  for directory in $(ls -l | grep "^d" | awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
   cd ${basepwd}
   VERSION=$(date +%m%d%Y)
 case $nightlytype in
@@ -371,8 +371,10 @@ echo -e "\e[31m	------------------------- NEXUS 7 (2013) -----------------------
 echo ""
 echo "  [1] Build All - Kali rootfs and Kernel (AOSP/STOCK) (Android 4.4+)"
 echo "  [2] Build Kernel (AOSP/STOCK) Only"
-echo "  [3] Build All - Kali rootfs and Kernel (AOSP/STOCK) (Android 5)"
-echo "  [4] Build Kernel (AOSP/STOCK) (Android 5) Only"
+echo "  [3] Build All - Kali rootfs and Kernel (CyanogenMod) (Android 4.4+)"
+echo "  [4] Build Kernel (CyanogenMod) Only"
+echo "  [5] Build All - Kali rootfs and Kernel (AOSP/STOCK) (Android 5)"
+echo "  [6] Build Kernel (AOSP/STOCK) (Android 5) Only"
 echo "  [0] Exit to Main Menu"
 echo ""
 echo ""
@@ -384,8 +386,10 @@ case $deb_menuchoice in
 
 1) d_clear; f_rootfs ; f_flashzip ; f_deb_stock_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
 2) d_clear; f_deb_stock_kernel ; f_zip_kernel_save ;;
-3) d_clear; f_rootfs ; f_flashzip ; f_deb_stock_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
-4) d_clear; f_deb_stock_kernel5 ; f_zip_kernel_save ;;
+3) d_clear; f_rootfs ; f_flashzip ; f_deb_cyanogen_kernel ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+4) d_clear; f_deb_cyanogen_kernel ; f_zip_kernel_save ;;
+5) d_clear; f_rootfs ; f_flashzip ; f_deb_stock_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+6) d_clear; f_deb_stock_kernel5 ; f_zip_kernel_save ;;
 0) d_clear; f_interface ;;
 *) echo "Incorrect choice... " ;
 esac
