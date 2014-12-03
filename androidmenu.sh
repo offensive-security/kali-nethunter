@@ -521,14 +521,14 @@ f_rootfs(){
 
 # Conduct check to see if previous rootfs was built
 
-if [ -d "${rootfs}/kali-armhf" ]; then
+if [ -d "${rootfs}/kali-$architecture" ]; then
   d_clear
   echo "Detected prebuilt rootfs."
   echo ""
   read -p "Would you like to create a new rootfs? (y/n): " -e -i "n" createrootfs
     if [ "$createrootfs" == "y" ]; then
       echo "Removing previous rootfs"
-      rm -rf ${rootfs}/kali-armhf
+      rm -rf ${rootfs}/kali-$architecture
       f_rootfs_build
     else
       echo "Continue with current build"
