@@ -1,0 +1,17 @@
+#!/bin/bash
+
+apt-get $* 1>apt.log 2>&1
+
+while [ ! -z "$(cat apt.log | grep "^Failed to fetch")"]
+do
+ apt-get $* 1>apt.log 2>&1
+done
+
+if [ ! -z "$(cat apt.log | grep "^E:")" ]; then
+ echo "There are dependency issues during the installation, the rest packages cannot be installed until you solve the errors below:"
+ cat apt.log | grep ":"
+ rm apt.log
+ exit 001
+fi
+
+rm apt.log

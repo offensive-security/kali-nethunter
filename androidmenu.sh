@@ -4,8 +4,8 @@
 
 # Configure the build environment
 DEBUG=0    # Valid values are 0 or 1, with 1 being enabled 
-LOCALGIT=1
-FROZENKERNEL=1
+LOCALGIT=0
+FROZENKERNEL=0
 
 ######### Dependencies #######
 # cd ~
@@ -653,15 +653,7 @@ console-common console-data/keymap/policy select Select keymap from full list
 console-common console-data/keymap/full select en-latin1-nodeadkeys
 EOF
 
-cat << EOF > kali-$architecture/safe-apt-get
-#!/bin/bash
-apt-get $* 1>apt.log 2>&1
-while [ ! -z "$(cat apt.log | grep "^Failed to fetch")"]
-do
- apt-get $* 1>apt.log 2>&1
-done
-rm apt.log
-EOF
+cp ${basepwd}/utils/safe-apt-get kali-$architecture/safe-apt-get
 
 cat << EOF > kali-$architecture/third-stage
 #!/bin/bash
@@ -670,12 +662,12 @@ cp /bin/true /usr/sbin/invoke-rc.d
 echo -e "#!/bin/sh\nexit 101" > /usr/sbin/policy-rc.d
 chmod +x /usr/sbin/policy-rc.d
 
-apt-get update
+safe-apt-get update
 safe-apt-get install locales-all
 
 debconf-set-selections /debconf.set
 rm -f /debconf.set
-apt-get update
+safe-apt-get update
 safe-apt-get -y install git-core binutils ca-certificates initramfs-tools uboot-mkimage
 safe-apt-get -y install locales console-common less nano git
 echo "root:toor" | chpasswd
@@ -691,7 +683,6 @@ rm -f /safe-apt-get
 rm -f /third-stage
 EOF
 
-chmod +x kali-$architecture/safe-apt-get
 chmod +x kali-$architecture/third-stage
 LANG=C chroot kali-$architecture /third-stage
 
