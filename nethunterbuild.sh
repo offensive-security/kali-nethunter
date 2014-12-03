@@ -297,10 +297,10 @@ f_rootfs_build(){
 
   LANG=C chroot kali-$architecture /debootstrap/debootstrap --second-stage
 
-  cat << EOF > kali-$architecture/etc/apt/sources.list
-  deb http://http.kali.org/kali kali main contrib non-free
-  deb http://security.kali.org/kali-security kali/updates main contrib non-free
-  EOF
+cat << EOF > kali-$architecture/etc/apt/sources.list
+deb http://http.kali.org/kali kali main contrib non-free
+deb http://security.kali.org/kali-security kali/updates main contrib non-free
+EOF
 
   #define hostname
 
@@ -309,30 +309,30 @@ f_rootfs_build(){
   # fix for TUN symbolic link to enable programs like openvpn
   # set terminal length to 80 because root destroy terminal length
   # add fd to enable stdin/stdout/stderr
-  cat << EOF > kali-$architecture/root/.bash_profile
-  export TERM=xterm-256color
-  stty columns 80
-  # /usr/bin/firstrun # we can remove this with sed at the end of the firstrun script
-  cd /root/
-  if [ ! -d "/dev/net/" ]; then
-    mkdir -p /dev/net
-    ln -sf /dev/tun /dev/net/tun
-  fi
+cat << EOF > kali-$architecture/root/.bash_profile
+export TERM=xterm-256color
+stty columns 80
+# /usr/bin/firstrun # we can remove this with sed at the end of the firstrun script
+cd /root/
+if [ ! -d "/dev/net/" ]; then
+  mkdir -p /dev/net
+  ln -sf /dev/tun /dev/net/tun
+fi
 
-  if [ ! -d "/dev/fd/" ]; then
-    ln -sf /proc/self/fd /dev/fd
-    ln -sf /dev/fd/0 /dev/stdin
-    ln -sf /dev/fd/1 /dev/stdout
-    ln -sf /dev/fd/2 /dev/stderr
-  fi
-  EOF
+if [ ! -d "/dev/fd/" ]; then
+  ln -sf /proc/self/fd /dev/fd
+  ln -sf /dev/fd/0 /dev/stdin
+  ln -sf /dev/fd/1 /dev/stdout
+  ln -sf /dev/fd/2 /dev/stderr
+fi
+EOF
 
-  cat << EOF > kali-$architecture/etc/hosts
-  127.0.0.1       localhost
-  ::1             localhost ip6-localhost ip6-loopback
-  EOF
+cat << EOF > kali-$architecture/etc/hosts
+127.0.0.1       localhost
+::1             localhost ip6-localhost ip6-loopback
+EOF
 
-  if [ $LOCALGIT == 1 ]; then
+  if [[ $LOCALGIT == 1 ]]; then
     cp /etc/hosts kali-$architecture/etc/
   fi
 
@@ -343,19 +343,19 @@ f_rootfs_build(){
   cp -rf ${basepwd}/utils/hid/* kali-$architecture/usr/bin/
   cp -rf ${basepwd}/utils/msf/*.sh kali-$architecture/usr/bin/
 
-  cat << EOF > kali-$architecture/etc/network/interfaces
-  auto lo
-  iface lo inet loopback
-  EOF
+cat << EOF > kali-$architecture/etc/network/interfaces
+auto lo
+iface lo inet loopback
+EOF
 
-  cat << EOF > kali-$architecture/etc/resolv.conf
-  #opendns
-  nameserver 208.67.222.222
-  nameserver 208.67.220.220
-  #google dns
-  nameserver 8.8.8.8
-  nameserver 8.8.4.4
-  EOF
+cat << EOF > kali-$architecture/etc/resolv.conf
+#opendns
+nameserver 208.67.222.222
+nameserver 208.67.220.220
+#google dns
+nameserver 8.8.8.8
+nameserver 8.8.4.4
+EOF
 
   # THIRD STAGE CHROOT
 
@@ -367,37 +367,37 @@ f_rootfs_build(){
   mount -o bind /dev/ kali-$architecture/dev/
   mount -o bind /dev/pts kali-$architecture/dev/pts
 
-  cat << EOF > kali-$architecture/debconf.set
-  console-common console-data/keymap/policy select Select keymap from full list
-  console-common console-data/keymap/full select en-latin1-nodeadkeys
-  EOF
+cat << EOF > kali-$architecture/debconf.set
+console-common console-data/keymap/policy select Select keymap from full list
+console-common console-data/keymap/full select en-latin1-nodeadkeys
+EOF
 
-  cat << EOF > kali-$architecture/third-stage
-  #!/bin/bash
-  dpkg-divert --add --local --divert /usr/sbin/invoke-rc.d.chroot --rename /usr/sbin/invoke-rc.d
-  cp /bin/true /usr/sbin/invoke-rc.d
-  echo -e "#!/bin/sh\nexit 101" > /usr/sbin/policy-rc.d
-  chmod +x /usr/sbin/policy-rc.d
+cat << EOF > kali-$architecture/third-stage
+#!/bin/bash
+dpkg-divert --add --local --divert /usr/sbin/invoke-rc.d.chroot --rename /usr/sbin/invoke-rc.d
+cp /bin/true /usr/sbin/invoke-rc.d
+echo -e "#!/bin/sh\nexit 101" > /usr/sbin/policy-rc.d
+chmod +x /usr/sbin/policy-rc.d
 
-  apt-get update
-  apt-get install locales-all
+apt-get update
+apt-get install locales-all
 
-  debconf-set-selections /debconf.set
-  rm -f /debconf.set
-  apt-get update
-  apt-get -y install git-core binutils ca-certificates initramfs-tools uboot-mkimage
-  apt-get -y install locales console-common less nano git
-  echo "root:toor" | chpasswd
-  sed -i -e 's/KERNEL\!=\"eth\*|/KERNEL\!=\"/' /lib/udev/rules.d/75-persistent-net-generator.rules
-  rm -f /etc/udev/rules.d/70-persistent-net.rules
-  apt-get --yes --force-yes install $packages
+debconf-set-selections /debconf.set
+rm -f /debconf.set
+apt-get update
+apt-get -y install git-core binutils ca-certificates initramfs-tools uboot-mkimage
+apt-get -y install locales console-common less nano git
+echo "root:toor" | chpasswd
+sed -i -e 's/KERNEL\!=\"eth\*|/KERNEL\!=\"/' /lib/udev/rules.d/75-persistent-net-generator.rules
+rm -f /etc/udev/rules.d/70-persistent-net.rules
+apt-get --yes --force-yes install $packages
 
-  rm -f /usr/sbin/policy-rc.d
-  rm -f /usr/sbin/invoke-rc.d
-  dpkg-divert --remove --rename /usr/sbin/invoke-rc.d
+rm -f /usr/sbin/policy-rc.d
+rm -f /usr/sbin/invoke-rc.d
+dpkg-divert --remove --rename /usr/sbin/invoke-rc.d
 
-  rm -f /third-stage
-  EOF
+rm -f /third-stage
+EOF
 
   chmod +x kali-$architecture/third-stage
   LANG=C chroot kali-$architecture /third-stage
@@ -479,17 +479,17 @@ f_rootfs_build(){
   #sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/etc/hostapd/hostapd.conf#' kali-$architecture/etc/init.d/hostapd
 
   # DNSMASQ Configuration options for optional access point
-  cat << EOF > kali-$architecture/etc/dnsmasq.conf
-  log-facility=/var/log/dnsmasq.log
-  #address=/#/10.0.0.1
-  #address=/google.com/10.0.0.1
-  interface=wlan1
-  dhcp-range=10.0.0.10,10.0.0.250,12h
-  dhcp-option=3,10.0.0.1
-  dhcp-option=6,10.0.0.1
-  #no-resolv
-  log-queries
-  EOF
+cat << EOF > kali-$architecture/etc/dnsmasq.conf
+log-facility=/var/log/dnsmasq.log
+#address=/#/10.0.0.1
+#address=/google.com/10.0.0.1
+interface=wlan1
+dhcp-range=10.0.0.10,10.0.0.250,12h
+dhcp-option=3,10.0.0.1
+dhcp-option=6,10.0.0.1
+#no-resolv
+log-queries
+EOF
 
   # Add missing folders to chroot needed
   cap=kali-$architecture/captures
@@ -505,16 +505,16 @@ f_rootfs_build(){
   if [ ${DEBUG} == 0 ]; then
     # CLEANUP STAGE
 
-    cat << EOF > kali-$architecture/cleanup
-    #!/bin/bash
-    rm -rf /root/.bash_history
-    apt-get update
-    apt-get clean
-    rm -f /0
-    rm -f /hs_err*
-    rm -f cleanup
-    rm -f /usr/bin/qemu*
-    EOF
+cat << EOF > kali-$architecture/cleanup
+#!/bin/bash
+rm -rf /root/.bash_history
+apt-get update
+apt-get clean
+rm -f /0
+rm -f /hs_err*
+rm -f cleanup
+rm -f /usr/bin/qemu*
+EOF
 
     chmod +x kali-$architecture/cleanup
     LANG=C chroot kali-$architecture /cleanup

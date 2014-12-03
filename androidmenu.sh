@@ -33,7 +33,7 @@ FROZENKERNEL=0
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-flo-3.4-kitkat-mr2 flodeb
 # git clone https://github.com/binkybear/flo.git -b ElementalX-3.00 nexus7_2013-5
 # - Nexus 6
-# git clone https://github.com/binkybear/shamu.git -b ElementalX-1.00 nexus6-5
+# git clone https://github.com/binkybear/kernel_msm.git -b android-msm-shamu-3.10-lollipop-release nexus6-5
 # - Nexus 5
 # git clone https://github.com/binkybear/furnace_kernel_lge_hammerhead.git -b android-4.4
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-hammerhead-3.4-lollipop-release nexus5-5
