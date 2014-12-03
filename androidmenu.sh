@@ -653,7 +653,7 @@ console-common console-data/keymap/policy select Select keymap from full list
 console-common console-data/keymap/full select en-latin1-nodeadkeys
 EOF
 
-cp ${basepwd}/utils/safe-apt-get kali-$architecture/safe-apt-get
+cp ${basepwd}/utils/safe-apt-get kali-$architecture/usr/bin/safe-apt-get
 
 cat << EOF > kali-$architecture/third-stage
 #!/bin/bash
@@ -679,7 +679,6 @@ rm -f /usr/sbin/policy-rc.d
 rm -f /usr/sbin/invoke-rc.d
 dpkg-divert --remove --rename /usr/sbin/invoke-rc.d
 
-rm -f /safe-apt-get
 rm -f /third-stage
 EOF
 
