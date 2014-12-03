@@ -521,14 +521,14 @@ f_rootfs(){
 
 # Conduct check to see if previous rootfs was built
 
-if [ -d "${rootfs}/kali-armhf" ]; then
+if [ -d "${rootfs}/kali-$architecture" ]; then
   d_clear
   echo "Detected prebuilt rootfs."
   echo ""
   read -p "Would you like to create a new rootfs? (y/n): " -e -i "n" createrootfs
     if [ "$createrootfs" == "y" ]; then
       echo "Removing previous rootfs"
-      rm -rf ${rootfs}/kali-armhf
+      rm -rf ${rootfs}/kali-$architecture
       f_rootfs_build
     else
       echo "Continue with current build"
@@ -653,6 +653,8 @@ console-common console-data/keymap/policy select Select keymap from full list
 console-common console-data/keymap/full select en-latin1-nodeadkeys
 EOF
 
+cp ${basepwd}/utils/safe-apt-get kali-$architecture/usr/bin/safe-apt-get
+
 cat << EOF > kali-$architecture/third-stage
 #!/bin/bash
 dpkg-divert --add --local --divert /usr/sbin/invoke-rc.d.chroot --rename /usr/sbin/invoke-rc.d
@@ -660,18 +662,18 @@ cp /bin/true /usr/sbin/invoke-rc.d
 echo -e "#!/bin/sh\nexit 101" > /usr/sbin/policy-rc.d
 chmod +x /usr/sbin/policy-rc.d
 
-apt-get update
-apt-get install locales-all
+safe-apt-get update
+safe-apt-get install locales-all
 
 debconf-set-selections /debconf.set
 rm -f /debconf.set
-apt-get update
-apt-get -y install git-core binutils ca-certificates initramfs-tools uboot-mkimage
-apt-get -y install locales console-common less nano git
+safe-apt-get update
+safe-apt-get -y install git-core binutils ca-certificates initramfs-tools uboot-mkimage
+safe-apt-get -y install locales console-common less nano git
 echo "root:toor" | chpasswd
 sed -i -e 's/KERNEL\!=\"eth\*|/KERNEL\!=\"/' /lib/udev/rules.d/75-persistent-net-generator.rules
 rm -f /etc/udev/rules.d/70-persistent-net.rules
-apt-get --yes --force-yes install $packages
+safe-apt-get --yes --force-yes install $packages
 
 rm -f /usr/sbin/policy-rc.d
 rm -f /usr/sbin/invoke-rc.d
