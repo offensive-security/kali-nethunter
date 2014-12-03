@@ -749,17 +749,47 @@ d_clear(){
 ### Use these variables to set the defaults if no argument was set
 buildtype="all"
 targetver="lollipop"
-outputdir=~/Nethunter-Builds
+outputdir=~/NetHunter-Builds
 
 ### Arguments ###
 ### '$OPTARG' is the var with the string after the -?
 while getopts "h:b:a:t:o:" flag; do
   case "$flag" in
-    h)
+    H|h)
       clear
       echo "Help Menu"
+      echo ""
+      echo "-h           | This help menu"
+      echo "-b           | Build type"
+      echo "-t           | Android device to build for (Kernel buids only)"
+      echo "-a           | Android version to build for (Kernel buids only)"
+      echo "-o           | Where the files are output (Defaults to ~/NetHunter-Builds)"
+      echo ""
+      echo "Devices:"
+      echo "manta         | Nexus 10"
+      echo "grouper       | Nexus 7 (2012) Wifi"
+      echo "tilapia       | Nexus 7 (2012) 3G"
+      echo "flo           | Nexus 7 (2013) Wifi"
+      echo "deb           | Nexus 7 (2013) LTE"
+      echo "mako          | Nexus 4"
+      echo "hammerhead    | Nexus 5"
+      echo "shamu         | Nexus 6"
+      echo "flounder      | Nexus 9 Wifi"
+      #echo "gs5           | Galaxy S5 G900"
+      #echo "gs4           | Galaxy S4 I9500"
+      echo "bacon         | OnePlus One"
+      echo ""
+      echo "Build Types:"
+      echo "all           | Builds kernel and RootFS (Requires -t [device] and -a [Android Vesion])"
+      echo "kernel        | Builds just a kernel (Requires -t [device] and -a [Android Vesion])"
+      echo "rootfs        | Builds Nethunter RootFS"
+      echo ""
+      echo "Android Versions:"
+      echo "lollipop      | Android 5.0 Lollipop"
+      echo "KtiKat        | Android 4.4 - 4.4.4 KitKat"
+      #echo "touchwiz      | Samsung's TouchWiz"
       exit;;
-    b)
+    B|b)
       case $OPTARG in
         kernel)
         buildtype="kernel";;
@@ -772,7 +802,7 @@ while getopts "h:b:a:t:o:" flag; do
         exit;;
       esac
       echo "";;
-    a)
+    A|a)
       case $OPTARG in
         lollipop|Lollipop)
         targetver=lollipop;;
@@ -784,7 +814,7 @@ while getopts "h:b:a:t:o:" flag; do
         echo "Invalid Device Selected: $OPTARG"
         exit;;
       esac;;
-    t)
+    T|t)
       case $OPTARG in
         manta) selecteddevice="manta";;
         grouper|tilapia|groupertilapia|tilapiagrouper) selecteddevice="groupertilapia";;
@@ -798,7 +828,7 @@ while getopts "h:b:a:t:o:" flag; do
         bacon) selecteddevice="bacon";;
         *) echo "Invalid device: $OPTARG"
       esac;;
-    o)
+    O|o)
       outputdir=$OPTARG
       if [ -d "$outputdir" ]; then
         sleep 0
