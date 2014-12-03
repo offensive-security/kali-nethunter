@@ -4,8 +4,8 @@
 
 # Configure the build environment
 DEBUG=0    # Valid values are 0 or 1, with 1 being enabled 
-LOCALGIT=0
-FROZENKERNEL=0
+LOCALGIT=1
+FROZENKERNEL=1
 
 ######### Dependencies #######
 # cd ~
@@ -528,7 +528,7 @@ if [ -d "${rootfs}/kali-armhf" ]; then
   read -p "Would you like to create a new rootfs? (y/n): " -e -i "n" createrootfs
     if [ "$createrootfs" == "y" ]; then
       echo "Removing previous rootfs"
-      rm -rf ${rootfs}/kali-armhf
+#      rm -rf ${rootfs}/kali-armhf
       f_rootfs_build
     else
       echo "Continue with current build"
@@ -671,7 +671,11 @@ apt-get -y install locales console-common less nano git
 echo "root:toor" | chpasswd
 sed -i -e 's/KERNEL\!=\"eth\*|/KERNEL\!=\"/' /lib/udev/rules.d/75-persistent-net-generator.rules
 rm -f /etc/udev/rules.d/70-persistent-net.rules
-apt-get --yes --force-yes install $packages
+apt-get --yes --force-yes install $packages 1>apt.log 2>&1
+while [ -z "$(cat apt.log | grep "^Failed")"]
+do
+ apt-get --yes --force-yes install $packages 1>apt.log 2>&1
+done
 
 rm -f /usr/sbin/policy-rc.d
 rm -f /usr/sbin/invoke-rc.d
