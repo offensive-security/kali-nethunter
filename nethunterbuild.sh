@@ -134,7 +134,7 @@ f_setup(){
 f_build(){
   case $buildtype in
     rootfs) f_rootfs ; f_flashzip; f_zip_save;;
-    *) echo "" >/dev/null 2>&1;;
+    *) sleep 0;;
   esac
 
   case $selecteddevice in
@@ -258,7 +258,7 @@ f_build(){
 
 ### Deletes rootfs. Will change to allow keep rootfs
 f_rootfs(){
-  rm -rf ${rootfs}/kali-armhf
+  rm -rf ${rootfs}/*
   f_rootfs_build
 }
 
@@ -739,7 +739,7 @@ f_movefiles(){
 
 d_clear(){
   # Disable the 'clear' statements, if DEBUG mode is enabled
-  if [ ${DEBUG} == 1 ]; then
+  if [[ ${DEBUG} == 1 ]]; then
     echo **DEBUG** : Not clearing the screen.
   else
     clear
@@ -752,7 +752,7 @@ targetver="lollipop"
 outputdir=~/NetHunter-Builds
 
 ### Arguments ###
-### '$OPTARG' is the var with the string after the -?
+### '$OPTARG' is the var with the string after the -[letter]
 while getopts "h:b:a:t:o:" flag; do
   case "$flag" in
     H|h)
@@ -843,6 +843,18 @@ while getopts "h:b:a:t:o:" flag; do
       fi;;
     esac
 done
+
+if [[ $buildtype == "" ]]; then
+  echo "The build cannot continue because a build type was not specified"
+  error=1
+fi
+if [[ $selecteddevice == "" ]]&&[[ $buildtype == "kernel" ]]; then
+  echo "The build cannot continue because a device was not specified"
+  error=1
+fi
+if [[ $error == 1 ]]; then
+  exit
+fi
 
 f_ostest
 f_builddeps
