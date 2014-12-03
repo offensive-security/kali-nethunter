@@ -1,9 +1,11 @@
 #!/bin/bash
 
+echo "Executing apt-get $*"
 apt-get $* 1>apt.log 2>&1
 
 while [ ! -z "$(cat apt.log | grep "^Failed to fetch")"]
 do
+ echo $(cat apt.log | grep "^Failed to fetch")
  apt-get $* 1>apt.log 2>&1
 done
 
