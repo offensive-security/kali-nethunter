@@ -3,7 +3,15 @@ apt-get install -y git-core gnupg flex bison gperf libesd0-dev build-essential \
 zip curl libncurses5-dev zlib1g-dev libncurses5-dev gcc-multilib g++-multilib \
 parted kpartx debootstrap pixz qemu-user-static abootimg cgpt vboot-kernel-utils \
 vboot-utils uboot-mkimage bc lzma lzop automake autoconf m4 dosfstools rsync \
-schedtool git e2fsprogs device-tree-compiler ccache dos2unix
+schedtool git e2fsprogs device-tree-compiler ccache dos2unix \
+1>build-deps-apt.log 2>&1
+
+if [ ! -z "$(cat build-deps-apt.log | grep "^E:")" ]; then
+ echo "There are errors in installing necessary packages, the rest packages cannot install until you solve errors below:"
+ cat build-deps-apt.log | grep ":"
+ exit
+fi
+
 MACHINE_TYPE=`uname -m`
 if [ ${MACHINE_TYPE} == 'x86_64' ]; then
     dpkg --add-architecture i386
