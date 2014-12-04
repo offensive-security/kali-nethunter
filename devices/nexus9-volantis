@@ -1,6 +1,6 @@
 f_nexus9_kernel5(){
 echo "Downloading Android Toolchian"
-if [ $LOCALGIT == 1 ]; then
+if [[ $LOCALGIT == 1 ]]; then
 	echo "Copying toolchain to rootfs"
         cp -rf ${basepwd}/aarch64-linux-android-4.9 ${basedir}/toolchain64
 else
@@ -13,7 +13,7 @@ export ARCH=arm64
 export SUBARCH=arm
 export CROSS_COMPILE=${basedir}/toolchain64/bin/aarch64-linux-android-
 
-if [ $FROZENKERNEL == 1 ]; then
+if [[ $FROZENKERNEL == 1 ]]; then
   echo "Using frozen kernel"
   cp -rf ${basepwd}/flash/ ${basedir}/flashkernel
   rm -rf ${basedir}/flashkernel/data ${basedir}/flashkernel/sdcard ${basedir}/flashkernel/system/app ${basedir}/flashkernel/META-INF/com/google/android/updater-script
@@ -25,7 +25,7 @@ if [ $FROZENKERNEL == 1 ]; then
     else
       echo "Adding Kernel install to updater-script in main update.zip"
       cat ${basedir}/flashkernel/META-INF/com/google/android/updater-script >> ${basedir}/flash/META-INF/com/google/android/updater-script
-      cp -f ${basedir}/flashkernel/kernel/kernel ${basedir}/flash/kernel/kernel  
+      cp -f ${basedir}/flashkernel/kernel/kernel ${basedir}/flash/kernel/kernel
     fi
   fi
 
@@ -39,7 +39,7 @@ if [ $FROZENKERNEL == 1 ]; then
 
   echo "Downloading Kernel"
   cd ${basedir}
-  if [ $LOCALGIT == 1 ]; then
+  if [[ $LOCALGIT == 1 ]]; then
     echo "Copying kernel to rootfs"
     cp -rf ${basepwd}/nexus9-5 ${basedir}/kernel
   else

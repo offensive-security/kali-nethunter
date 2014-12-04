@@ -3,7 +3,7 @@
 #####################################################
 f_s5_stock_kernel(){
 
-if [ $FROZENKERNEL == 1 ]; then
+if [[ $FROZENKERNEL == 1 ]]; then
 	echo "Using frozen kernel"
  	cp -rf ${basepwd}/flash/ ${basedir}/flashkernel
 	rm -rf ${basedir}/flashkernel/data ${basedir}/flashkernel/sdcard ${basedir}/flashkernel/system/app ${basedir}/flashkernel/META-INF/com/google/android/updater-script
@@ -15,7 +15,7 @@ if [ $FROZENKERNEL == 1 ]; then
 	  else
 	    echo "Adding Kernel install to updater-script in main update.zip"
 	    cat ${basedir}/flashkernel/META-INF/com/google/android/updater-script >> ${basedir}/flash/META-INF/com/google/android/updater-script
-	    cp -f ${basedir}/flashkernel/kernel/kernel ${basedir}/flash/kernel/kernel	  
+	    cp -f ${basedir}/flashkernel/kernel/kernel ${basedir}/flash/kernel/kernel
 	  fi
 	fi
 else
@@ -24,7 +24,7 @@ f_kernel_build_init
 
 cd ${basedir}
 echo "Downloading Kernel"
-if [ $LOCALGIT == 1 ]; then
+if [[ $LOCALGIT == 1 ]]; then
   echo "Copying kernel to rootfs"
   cp -rf ${basepwd}/galaxy_s5 ${basedir}/kernel
 else
@@ -87,7 +87,7 @@ f_kernel_build_init
 
 echo "Downloading Kernel"
 cd ${basedir}
-if [ $LOCALGIT == 1 ]; then
+if [[ $LOCALGIT == 1 ]]; then
   echo "Copying kernel to rootfs"
   cp -rf ${basepwd}/galaxy_s5_tw ${basedir}/kernel
 else

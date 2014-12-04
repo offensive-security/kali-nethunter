@@ -521,13 +521,14 @@ EOF
     chmod +x kali-$architecture/cleanup
     LANG=C chroot kali-$architecture /cleanup
 
-    umount ${rootfs}/kali-$architecture/proc/sys/fs/binfmt_misc
-    umount ${rootfs}/kali-$architecture/dev/pts
-    umount ${rootfs}/kali-$architecture/dev/
-    umount ${rootfs}/kali-$architecture/proc
-
     sleep 5
   fi
+
+  umount ${rootfs}/kali-$architecture/proc/sys/fs/binfmt_misc
+  umount ${rootfs}/kali-$architecture/dev/pts
+  umount ${rootfs}/kali-$architecture/dev/
+  umount ${rootfs}/kali-$architecture/proc
+  
 }
 
 ### Create flashable zip
