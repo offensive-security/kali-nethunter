@@ -41,7 +41,15 @@ f_ostest(){
 
 ### Builds dependencies required for the script
 f_builddeps(){
-  if [ ! -f ~/arm-stuff/kali-nethunter/.completebuild ]; then
+  if [ -d ~/arm-stuff/kali-nethunter ]; then
+    cd ${basepwd}
+    for directory in $(ls -l |grep ^d|awk -F" " '{print $9}'); do
+      cd $directory
+      git pull
+      cd ..
+    done
+    cd ~/arm-stuff/kali-nethunter
+  else
     ### Make Directories and Prepare to build
     mkdir ~/arm-stuff
     cd ~/arm-stuff
@@ -78,9 +86,6 @@ f_builddeps(){
       cd ..
       rm -rf lz4-r112.tar.gz lz4-r112
     fi
-    echo "This is a file to show that the building of dependencies is complete." > ~/arm-stuff/kali-nethunter/.completebuild
-  else
-    cd ~/arm-stuff/kali-nethunter
   fi
 }
 
@@ -115,13 +120,11 @@ f_setup(){
   ######### Build script start  #######
 
   # Allow user input of version number/folder creation to make set up easier
-  for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
   cd ${basepwd}
   VERSION=$(date +%m%d%Y)
   case $buildtype in
     rootfs) export basedir=$basepwd/rootfs-$VERSION;;
     kernel) export basedir=$basepwd/kernel-$selecteddevice-$VERSION;;
-    all) export;;
   esac
   if [ -d "${basedir}" ]; then
     rm -rf ${basedir}
@@ -528,7 +531,7 @@ EOF
   umount ${rootfs}/kali-$architecture/dev/pts
   umount ${rootfs}/kali-$architecture/dev/
   umount ${rootfs}/kali-$architecture/proc
-  
+
 }
 
 ### Create flashable zip
@@ -725,13 +728,13 @@ f_movefiles(){
     exit;;
   esac
 
-  if [ -d ${basedir}/kernel-kali-$VERSION.zip ]; then
+  if [ -a ${basedir}/kernel-kali-$VERSION.zip ]; then
     cd ${basedir}
     mkdir -p $outputdir/Kernels/$selecteddevice
-    mv kernel-kali-$VERSION.zip $outputdir/Kernels/$selecteddevice/Kernel-$selecteddevice-$VERSION.zip
-    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/$selecteddevice/Kernel-$selecteddevice-$VERSION.sha1sum
-    echo "File is now located at $outputdir/Kernels/$selecteddevice/Kernel-$selecteddevice-$VERSION.zip"
-    echo "SHA1 sum located at $outputdir/Kernels/$selecteddevice/Kernel-$selecteddevice-$VERSION.sha1sum"
+    mv kernel-kali-$VERSION.zip $outputdir/Kernels/$selecteddevice/Kernel-$selecteddevice-$targetver-$VERSION.zip
+    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/$selecteddevice/Kernel-$selecteddevice-$targetver-$VERSION.sha1sum
+    echo "File is now located at $outputdir/Kernels/$selecteddevice/Kernel-$selecteddevice-$targetver-$VERSION.zip"
+    echo "SHA1 sum located at $outputdir/Kernels/$selecteddevice/Kernel-$selecteddevice-$targetver-$VERSION.sha1sum"
     rm -rf ${basedir}
   else
     echo "No kernel file found. Skipping transfer to output directory."

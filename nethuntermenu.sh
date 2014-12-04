@@ -41,7 +41,9 @@ f_ostest(){
 
 ### Builds dependencies required for the script
 f_builddeps(){
-  if [ ! -f ~/arm-stuff/kali-nethunter/.completebuild ]; then
+  if [ -d ~/arm-stuff/kali-nethunter ]; then
+    cd ~/arm-stuff/kali-nethunter
+  else
     ### Make Directories and Prepare to build
     mkdir ~/arm-stuff
     cd ~/arm-stuff
@@ -78,9 +80,6 @@ f_builddeps(){
       cd ..
       rm -rf lz4-r112.tar.gz lz4-r112
     fi
-    echo "This is a file to show that the building of dependencies is complete." > ~/arm-stuff/kali-nethunter/.completebuild
-  else
-    cd ~/arm-stuff/kali-nethunter
   fi
 }
 
