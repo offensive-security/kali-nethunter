@@ -833,7 +833,7 @@ f_flashzip(){
 
 # Create base flashable zip
 
-cp -rf ${basepwd}/flash ${basedir}/flash
+cp -rf ${basepwd}/flash ${basedir}/
 mkdir -p ${basedir}/flash/data/local/
 mkdir -p ${basedir}/flash/system/lib/modules
 
