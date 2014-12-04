@@ -7,11 +7,11 @@ f_ostest(){
 
   case $unamestr in
     Darwin)
-    clear
+    d_clear
     echo "OS X is not supported!"
     echo ""
     read -p "Press [Enter] to exit the script." null
-    clear
+    d_clear
     exit;;
     *)
     echo "Linux based OS Detected."
@@ -26,14 +26,14 @@ f_ostest(){
         echo "Non-Kali distributions aren't supported!"
         echo ""
         read -p "Press [Enter] to exit the script." null
-        clear
+        d_clear
         exit;;
       esac;;
       *)
       echo "32 Bit OSs not supported!"
       echo ""
       read -p "Press [Enter] to exit the script." null
-      clear
+      d_clear
       exit
     esac;;
   esac
@@ -47,7 +47,7 @@ f_builddeps(){
     cd ~/arm-stuff
     git clone https://github.com/offensive-security/gcc-arm-linux-gnueabihf-4.7
     export PATH=${PATH}:/root/arm-stuff/gcc-arm-linux-gnueabihf-4.7/bin
-    git clone https://github.com/offensive-security/kali-nethunter
+    git clone -b development https://github.com/offensive-security/kali-nethunter
     cd ~/arm-stuff/kali-nethunter
 
     ### Build Dependencies for script
@@ -134,7 +134,7 @@ f_setup(){
 f_build(){
   case $buildtype in
     rootfs) f_rootfs ; f_flashzip; f_zip_save;;
-    *) echo "" >/dev/null 2>&1;;
+    *) sleep 0;;
   esac
 
   case $selecteddevice in
@@ -258,7 +258,7 @@ f_build(){
 
 ### Deletes rootfs. Will change to allow keep rootfs
 f_rootfs(){
-  rm -rf ${rootfs}/kali-armhf
+  rm -rf ${rootfs}/*
   f_rootfs_build
 }
 
@@ -372,6 +372,8 @@ console-common console-data/keymap/policy select Select keymap from full list
 console-common console-data/keymap/full select en-latin1-nodeadkeys
 EOF
 
+  cp ${basepwd}/utils/safe-apt-get kali-$architecture/usr/bin/safe-apt-get
+
 cat << EOF > kali-$architecture/third-stage
 #!/bin/bash
 dpkg-divert --add --local --divert /usr/sbin/invoke-rc.d.chroot --rename /usr/sbin/invoke-rc.d
@@ -379,18 +381,18 @@ cp /bin/true /usr/sbin/invoke-rc.d
 echo -e "#!/bin/sh\nexit 101" > /usr/sbin/policy-rc.d
 chmod +x /usr/sbin/policy-rc.d
 
-apt-get update
-apt-get install locales-all
+safe-apt-get update
+safe-apt-get install locales-all
 
 debconf-set-selections /debconf.set
 rm -f /debconf.set
-apt-get update
-apt-get -y install git-core binutils ca-certificates initramfs-tools uboot-mkimage
-apt-get -y install locales console-common less nano git
+safe-apt-get update
+safe-apt-get -y install git-core binutils ca-certificates initramfs-tools uboot-mkimage
+safe-apt-get -y install locales console-common less nano git
 echo "root:toor" | chpasswd
 sed -i -e 's/KERNEL\!=\"eth\*|/KERNEL\!=\"/' /lib/udev/rules.d/75-persistent-net-generator.rules
 rm -f /etc/udev/rules.d/70-persistent-net.rules
-apt-get --yes --force-yes install $packages
+safe-apt-get --yes --force-yes install $packages
 
 rm -f /usr/sbin/policy-rc.d
 rm -f /usr/sbin/invoke-rc.d
@@ -502,7 +504,7 @@ EOF
   echo "inet:x:3004:postgres,root,beef-xss,daemon,nginx" >> kali-$architecture/etc/group
   echo "nobody:x:3004:nobody" >> kali-$architecture/etc/group
 
-  if [ ${DEBUG} == 0 ]; then
+  if [[ ${DEBUG} == 0 ]]; then
     # CLEANUP STAGE
 
 cat << EOF > kali-$architecture/cleanup
@@ -581,7 +583,7 @@ f_flashzip(){
 ### Zip everything up
 f_zip_save(){
   apt-get install -y zip
-  clear
+  d_clear
   # Compress filesystem and add to our flashable zip
   cd ${rootfs}
 
@@ -589,20 +591,18 @@ f_zip_save(){
   #######################################
   rm -rf  kali-$architecture/dev/*
   #######################################
-
-  tar jcvf kalifs.tar.bz2 kali-$architecture
+  echo "Compressing kali rootfs, please wait"
+  tar jcf kalifs.tar.bz2 kali-$architecture
   mv kalifs.tar.bz2 ${basedir}/flash/data/local/
 
   #tar jcvf ${basedir}/flash/data/local/kalifs.tar.bz2 ${basedir}/kali-$architecture
   echo "Structure for flashable zip file is complete."
-  echo "Build a kernel next or select build flashable zip form the main menu."
-
   cd ${basedir}/flash/
   zip -r6 update-kali-$VERSION.zip *
   mv update-kali-$VERSION.zip ${basedir}
   cd ${basedir}
   # Generate sha1sum
-  echo "Generating sha1sum for NetHunter RootFS"
+  echo "Generating sha1sum for update-kali-$version.zip"
   sha1sum update-kali-$VERSION.zip > ${basedir}/update-kali-$VERSION.sha1sum
   sleep 5
 }
@@ -610,7 +610,7 @@ f_zip_save(){
 ### Zip up the kernel
 f_zip_kernel_save(){
   apt-get install -y zip
-  clear
+  d_clear
   cd ${basedir}/flashkernel/
   zip -r6 kernel-kali-$VERSION.zip *
   mv kernel-kali-$VERSION.zip ${basedir}
@@ -625,42 +625,25 @@ f_zip_kernel_save(){
 
 ### Cleans up mounts and stuff
 f_cleanup(){
-  # Clean up all the temporary build stuff and remove the directories.
-  # Comment this out to keep things around if you want to see what may have gone
-  # wrong.
-  echo "Unmounting any previous mounted folders"
-  sleep 3
-  clear
-  #umount ${rootfs}/kali-$architecture/proc/sys/fs/binfmt_misc
-  #umount ${rootfs}/kali-$architecture/dev/pts
-  #umount ${rootfs}/kali-$architecture/dev/
-  #umount ${rootfs}/kali-$architecture/proc
-  #echo "Removing temporary build files"
-  #rm -rf ${basedir}/patches ${basedir}/kernel ${basedir}/flash ${basedir}/kali-$architecture ${basedir}/flashkernel
+  if [[ ${DEBUG} == 0 ]]; then
+    # Clean up all the temporary build stuff and remove the directories.
+    # This only runs if debug mode is disabled.
+
+    echo "Unmounting any previous mounted folders"
+    sleep 3
+    d_clear
+    umount ${rootfs}/kali-$architecture/proc/sys/fs/binfmt_misc
+    umount ${rootfs}/kali-$architecture/dev/pts
+    umount ${rootfs}/kali-$architecture/dev/
+    umount ${rootfs}/kali-$architecture/proc
+    echo "Removing temporary build files"
+    rm -rf ${basedir}/patches ${basedir}/kernel ${basedir}/flash ${basedir}/kali-$architecture ${basedir}/flashkernel
+  fi
 }
 
 ### Set up kernel folder
 f_kernel_build_init(){
-  clear
-  # FOLDER CHECKING
-  #
-  #if [ -d "${basedir}/kernel" ]; then
-  #  read -p "Kernel folder already exsists, would you like to remove folder and startover? (y/n)" kernelanswer
-  #  if [ "$kernelanswer" == "y" ]; then
-  #     rm -rf ${basedir}/kernel
-  #  fi
-  #fi
-
-  #if [ -d "${basedir}/flashkernel" ]; then
-  #  read -p "Kernel folder already exsists, would you like to remove previous folder? (y/n)" flashanswer
-  #  if [ "$flashanswer" == "y" ]; then
-  #     rm -rf ${basedir}/flashkernel
-  #  fi
-  #fi
-
-  #if [ -d "${basedir}/toolchain" ]; then
-  #  read -p "Toolchain folder already exsists, would you like to redownload? (y/n)" toolchain answer
-  #fi
+  d_clear
 
   cp -rf ${basepwd}/flash/ ${basedir}/flashkernel
   mkdir -p ${basedir}/flashkernel/system/lib/modules
@@ -669,21 +652,6 @@ f_kernel_build_init(){
   rm -rf ${basedir}/flashkernel/system/app
   #rm -rf ${basedir}/flashkernel/system/bin ${basedir}/flashkernel/system/xbin
   rm -rf ${basedir}/flashkernel/META-INF/com/google/android/updater-script
-
-  echo "Downloading Android Toolchian"
-  if [[ $LOCALGIT == 1 ]]; then
-    echo "Copying toolchain to rootfs"
-    cp -rf ${basepwd}/arm-eabi-4.7 ${basedir}/toolchain
-  else
-    git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basedir}/toolchain
-    #git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.8 ${basedir}/toolchain
-  fi
-
-  echo "Setting export paths"
-  # Set path for Kernel building
-  export ARCH=arm
-  export SUBARCH=arm
-  export CROSS_COMPILE=${basedir}/toolchain/bin/arm-eabi-
 }
 
 ### Builds the kernel
@@ -713,7 +681,7 @@ f_kernel_build(){
     rsync -HPavm --include='*.ko' -f 'hide,! */' ${basedir}/kernel/modules/lib/modules ${rootfs}/kali-armhf/lib/
   fi
 
-  # Copy kernel to flashable package, prefer zImage-dtb
+  # Copy kernel to flashable package, prefer zImage-dtb. Image.gz-dtb appears to be for 64bit kernels for now
   if [ -f "${basedir}/kernel/arch/arm/boot/zImage-dtb" ]; then
     cp ${basedir}/kernel/arch/arm/boot/zImage-dtb ${basedir}/flashkernel/kernel/kernel
     echo "zImage-dtb found at ${basedir}/kernel/arch/arm/boot/zImage-dtb"
@@ -750,143 +718,147 @@ f_movefiles(){
     mkdir -p $outputdir/RootFS
     mv update-kali-$VERSION.zip $outputdir/RootFS/NetHunter-$VERSION.zip
     mv update-kali-$VERSION.sha1sum $outputdir/RootFS/NetHunter-$VERSION.sha1sum
+    echo "File is now located at $outputdir/RootFS/NetHunter-$VERSION.zip"
+    echo "SHA1 sum located at $outputdir/RootFS/NetHunter-$VERSION.sha1sum"
     rm -rf ${basedir}
     exit;;
   esac
-  case $selecteddevice in
-    manta)
+
+  if [ -d ${basedir}/kernel-kali-$VERSION.zip ]; then
     cd ${basedir}
-    mkdir -p $outputdir/Kernels/Manta
-    mv kernel-kali-$VERSION.zip $outputdir/Kernels/Manta/Kernel-$selecteddevice-$VERSION.zip
-    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Manta/Kernel-$selecteddevice-$VERSION.sha1sum
-    rm -rf ${basedir};;
-    groupertilapia)
-    cd ${basedir}
-    mkdir -p $outputdir/Kernels/Grouper
-    mkdir -p $outputdir/Kernels/Tilapia
-    cp kernel-kali-$VERSION.zip $outputdir/Kernels/Grouper/Kernel-$selecteddevice-$VERSION.zip
-    cp kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Grouper/Kernel-$selecteddevice-$VERSION.sha1sum
-    mv kernel-kali-$VERSION.zip $outputdir/Kernels/Tilapia/Kernel-$selecteddevice-$VERSION.zip
-    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Tilapia/Kernel-$selecteddevice-$VERSION.sha1sum
-    rm -rf ${basedir};;
-    flodeb)
-    cd ${basedir}
-    mkdir -p $outputdir/Kernels/Flo
-    mkdir -p $outputdir/Kernels/Deb
-    cp kernel-kali-$VERSION.zip $outputdir/Kernels/Flo/Kernel-$selecteddevice-$VERSION.zip
-    cp kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Flo/Kernel-$selecteddevice-$VERSION.sha1sum
-    mv kernel-kali-$VERSION.zip $outputdir/Kernels/Deb/Kernel-$selecteddevice-$VERSION.zip
-    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Deb/Kernel-$selecteddevice-$VERSION.sha1sum
-    rm -rf ${basedir};;
-    mako)
-    cd ${basedir}
-    mkdir -p $outputdir/Kernels/Mako
-    mv kernel-kali-$VERSION.zip $outputdir/Kernels/Mako/Kernel-$selecteddevice-$VERSION.zip
-    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Mako/Kernel-$selecteddevice-$VERSION.zip.sha1sum
-    rm -rf ${basedir};;
-    hammerhead)
-    cd ${basedir}
-    mkdir -p $outputdir/Kernels/Hammerhead
-    mv kernel-kali-$VERSION.zip $outputdir/Kernels/Hammerhead/Kernel-$selecteddevice-$VERSION.zip
-    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Hammerhead/Kernel-$selecteddevice-$VERSION.sha1sum
-    rm -rf ${basedir};;
-    shamu)
-    cd ${basedir}
-    mkdir -p $outputdir/Kernels/Shamu
-    mv kernel-kali-$VERSION.zip $outputdir/Kernels/Shamu/Kernel-$selecteddevice-$VERSION.zip
-    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Shamu/Kernel-$selecteddevice-$VERSION.sha1sum
-    rm -rf ${basedir};;
-    flounder)
-    cd ${basedir}
-    mkdir -p $outputdir/Kernels/Flounder
-    mv kernel-kali-$VERSION.zip $outputdir/Kernels/Flounder/Kernel-$selecteddevice-$VERSION.zip
-    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/Flounder/Kernel-$selecteddevice-$VERSION.sha1sum
-    rm -rf ${basedir};;
-    gs5)
-    cd ${basedir}
-    mkdir -p $outputdir/Kernels/SGS5-I9500
-    mv kernel-kali-$VERSION.zip $outputdir/Kernels/SGS5-I9500/Kernel-$selecteddevice-$VERSION.zip
-    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/SGS5-I9500/Kernel-$selecteddevice-$VERSION.sha1sum
-    rm -rf ${basedir};;
-    gs4)
-    cd ${basedir}
-    mkdir -p $outputdir/Kernels/SGS4-G900
-    mv kernel-kali-$VERSION.zip $outputdir/Kernels/SGS4-G900/Kernel-$selecteddevice-$VERSION.zip
-    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/SGS4-G900/Kernel-$selecteddevice-$VERSION.sha1sum
-    rm -rf ${basedir};;
-  esac
+    mkdir -p $outputdir/Kernels/$selecteddevice
+    mv kernel-kali-$VERSION.zip $outputdir/Kernels/$selecteddevice/Kernel-$selecteddevice-$VERSION.zip
+    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/$selecteddevice/Kernel-$selecteddevice-$VERSION.sha1sum
+    echo "File is now located at $outputdir/Kernels/$selecteddevice/Kernel-$selecteddevice-$VERSION.zip"
+    echo "SHA1 sum located at $outputdir/Kernels/$selecteddevice/Kernel-$selecteddevice-$VERSION.sha1sum"
+    rm -rf ${basedir}
+  else
+    echo "No kernel file found. Skipping transfer to output directory."
+  fi
 }
 
+d_clear(){
+  # Disable the 'clear' statements, if DEBUG mode is enabled
+  if [[ ${DEBUG} == 1 ]]; then
+    echo **DEBUG** : Not clearing the screen.
+  else
+    clear
+  fi
+}
 
+### Use these variables to set the defaults if no argument was set
+buildtype="all"
+targetver="lollipop"
+outputdir=~/NetHunter-Builds
 
 ### Arguments ###
-### '$OPTARG' is the var with the string after the -?
+### '$OPTARG' is the var with the string after the -[letter]
 while getopts "h:b:a:t:o:" flag; do
   case "$flag" in
-    h)
-    clear
-    echo "Help Menu"
-    exit;;
-    b)
-    clear
-    case $OPTARG in
-      kernel)
-      buildtype="kernel";;
-      rootfs)
-      buildtype="rootfs";;
-      all)
-      buildtype="all";;
-      *)
-      echo "Invalid build type: $OPTARG"
+    H|h)
+      clear
+      echo "Help Menu"
+      echo ""
+      echo "-h           | This help menu"
+      echo "-b           | Build type"
+      echo "-t           | Android device to build for (Kernel buids only)"
+      echo "-a           | Android version to build for (Kernel buids only)"
+      echo "-o           | Where the files are output (Defaults to ~/NetHunter-Builds)"
+      echo ""
+      echo "Devices:"
+      echo "manta         | Nexus 10"
+      echo "grouper       | Nexus 7 (2012) Wifi"
+      echo "tilapia       | Nexus 7 (2012) 3G"
+      echo "flo           | Nexus 7 (2013) Wifi"
+      echo "deb           | Nexus 7 (2013) LTE"
+      echo "mako          | Nexus 4"
+      echo "hammerhead    | Nexus 5"
+      echo "shamu         | Nexus 6"
+      echo "flounder      | Nexus 9 Wifi"
+      #echo "gs5           | Galaxy S5 G900"
+      #echo "gs4           | Galaxy S4 I9500"
+      echo "bacon         | OnePlus One"
+      echo ""
+      echo "Build Types:"
+      echo "all           | Builds kernel and RootFS (Requires -t [device] and -a [Android Vesion])"
+      echo "kernel        | Builds just a kernel (Requires -t [device] and -a [Android Vesion])"
+      echo "rootfs        | Builds Nethunter RootFS"
+      echo ""
+      echo "Android Versions:"
+      echo "lollipop      | Android 5.0 Lollipop"
+      echo "KtiKat        | Android 4.4 - 4.4.4 KitKat"
+      #echo "touchwiz      | Samsung's TouchWiz"
       exit;;
-    esac
-    echo "";;
-    a)
-    case $OPTARG in
-      lollipop|Lollipop)
-      targetver=lollipop;;
-      kitkat|KitKat)
-      targetver=kitkat;;
-      touchwiz|Touchwiz)
-      targetver=touchwiz;;
-      *)
-      echo "Invalid Device Selected: $OPTARG"
-      exit;;
-    esac;;
-    t)
-    clear
-    case $OPTARG in
-      manta) selecteddevice="manta";;
-      grouper|tilapia|groupertilapia|tilapiagrouper) selecteddevice="groupertilapia";;
-      flo|deb|flodeb|debflo) selecteddevice="flodeb";;
-      mako) selecteddevice="mako";;
-      hammerhead) selecteddevice="hammerhead";;
-      shamu) selecteddevice="shamu";;
-      flounder) selecteddevice="flounder";;
-      gs5) selecteddevice="gs5";;
-      gs4) selecteddevice="gs4";;
-      bacon) selecteddevice="bacon";;
-      *) echo "Invalid device: $OPTARG"
-    esac;;
-    o)
-    clear
-    outputdir=$OPTARG
-    if [ -d "$outputdir" ]; then
-      sleep 0
-    else
-      mkdir -p $outputdir
+    B|b)
+      case $OPTARG in
+        kernel)
+        buildtype="kernel";;
+        rootfs)
+        buildtype="rootfs";;
+        all)
+        buildtype="all";;
+        *)
+        echo "Invalid build type: $OPTARG"
+        exit;;
+      esac
+      echo "";;
+    A|a)
+      case $OPTARG in
+        lollipop|Lollipop)
+        targetver=lollipop;;
+        kitkat|KitKat)
+        targetver=kitkat;;
+        touchwiz|Touchwiz)
+        targetver=touchwiz;;
+        *)
+        echo "Invalid Device Selected: $OPTARG"
+        exit;;
+      esac;;
+    T|t)
+      case $OPTARG in
+        manta) selecteddevice="manta";;
+        grouper|tilapia|groupertilapia|tilapiagrouper) selecteddevice="groupertilapia";;
+        flo|deb|flodeb|debflo) selecteddevice="flodeb";;
+        mako) selecteddevice="mako";;
+        hammerhead) selecteddevice="hammerhead";;
+        shamu) selecteddevice="shamu";;
+        flounder) selecteddevice="flounder";;
+        gs5) selecteddevice="gs5";;
+        gs4) selecteddevice="gs4";;
+        bacon) selecteddevice="bacon";;
+        *) echo "Invalid device: $OPTARG"
+      esac;;
+    O|o)
+      outputdir=$OPTARG
       if [ -d "$outputdir" ]; then
         sleep 0
       else
-        echo "There was an error creating the directory. Make sure it is correct before continuing."
-        exit
-      fi
-    fi;;
-  esac
+        mkdir -p $outputdir
+        if [ -d "$outputdir" ]; then
+          sleep 0
+        else
+          echo "There was an error creating the directory. Make sure it is correct before continuing."
+          exit
+        fi
+      fi;;
+    esac
 done
+
+if [[ $buildtype == "" ]]; then
+  echo "The build cannot continue because a build type was not specified"
+  error=1
+fi
+if [[ $selecteddevice == "" ]]&&[[ $buildtype == "kernel" ]]; then
+  echo "The build cannot continue because a device was not specified"
+  error=1
+fi
+if [[ $error == 1 ]]; then
+  exit
+fi
 
 f_ostest
 f_builddeps
 f_setup
 f_build
 f_movefiles
+echo "Build complete."

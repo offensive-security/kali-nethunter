@@ -1,13 +1,13 @@
 #!/bin/bash
 
 echo "Executing apt-get $*"
-apt-get $* 1>apt.log 2>&1
+apt-get $* 1>apt.log 1>/dev/tty 2>&1
 
 while [ ! -z "$(cat apt.log | grep "^Failed to fetch")"]
 do
  echo $(cat apt.log | grep "^Failed to fetch")
  echo "Restarting apt-get $*"
- apt-get $* 1>apt.log 2>&1
+ apt-get $* 1>apt.log 1>/dev/tty 2>&1
 done
 
 if [ ! -z "$(cat apt.log | grep "^E:")" ]; then
