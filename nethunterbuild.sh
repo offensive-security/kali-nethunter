@@ -42,12 +42,6 @@ f_ostest(){
 ### Builds dependencies required for the script
 f_builddeps(){
   if [ -d ~/arm-stuff/kali-nethunter ]; then
-    cd ${basepwd}
-    for directory in $(ls -l |grep ^d|awk -F" " '{print $9}'); do
-      cd $directory
-      git pull
-      cd ..
-    done
     cd ~/arm-stuff/kali-nethunter
   else
     ### Make Directories and Prepare to build
@@ -120,6 +114,7 @@ f_setup(){
   ######### Build script start  #######
 
   # Allow user input of version number/folder creation to make set up easier
+  for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
   cd ${basepwd}
   VERSION=$(date +%m%d%Y)
   case $buildtype in
