@@ -53,7 +53,7 @@ FROZENKERNEL=0
 # git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7
 # git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 -b lollipop-release
 ######## Local Repo ##########
-# to update :  for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
+# to update :  for directory in $(ls -l |grep "^d" | awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
 # 0 = use remote git clone | 1 = local copies
 ######## Frozen Kernels ##########
 # Save time from having to build kernels every time set FROZENKERNEL=1.
@@ -170,9 +170,9 @@ case $menuchoice in
 1) d_clear; f_interface_nexus ;;
 2) d_clear; f_interface_samsung ;;
 3) d_clear; f_interface_oneplus ;;
-77) d_clear; f_rom_build ;;
-88) d_clear; f_rootfs ; f_flashzip; f_zip_save ;;
-99) f_cleanup ;;
+77) d_clear; f_rom_build; f_interface ;;
+88) d_clear; f_rootfs ; f_flashzip; f_zip_save; f_interface ;;
+99) f_cleanup; f_interface ;;
 q) d_clear; exit 1 ;;
 *) echo "Incorrect choice..." ;
 esac
@@ -843,6 +843,8 @@ mkdir -p ${basedir}/flash/sdcard
 cp -rf ${basepwd}/utils/files ${basedir}/flash/sdcard
 
 # Download/add Android applications that are useful to our chroot enviornment
+
+rm ${basedir}/flash/data/app/*
 
 # Required: Terminal application is required
 wget -P ${basedir}/flash/data/app/ http://jackpal.github.com/Android-Terminal-Emulator/downloads/Term.apk
