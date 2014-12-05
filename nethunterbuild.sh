@@ -202,12 +202,11 @@ f_build(){
         kitkat) f_rootfs; f_flashzip; f_hammerhead_stock_kernel; f_zip_save; f_zip_kernel_save;;
       esac;;
     esac;;
-    ### Shamu is currently unsupported
-    #shamu)
-    #  case $buildtype in
-    #    kernel)
-    #    all)
-    #  esac;;
+    shamu)
+      case $buildtype in
+        kernel) f_nexus6_kernel5; f_zip_kernel_save;;
+        all) f_rootfs; f_flashzip; f_nexus6_kernel5; f_zip_save; f_zip_kernel_save;;
+      esac;;
     flounder)
     case $buildtype in
       kernel) f_nexus9_kernel5; f_zip_kernel_save;;
@@ -787,7 +786,7 @@ f_inputverify(){
     fi
   fi
   # If the device isn't currently supported, display error and set $error var to 1
-  if [[ $selecteddevice == "shamu" ]]||[[ $selecteddevice == "gs4" ]]; then
+  if [[ $selecteddevice == "gs4" ]]; then
     echo "$selecteddevice isn't currently supported."
     error=1
   fi
@@ -899,7 +898,6 @@ while getopts "b:a:t:o:dh" flag; do
       echo -e  "KtiKat           \e[31m||\e[0m Android 4.4.2 - 4.4.4 KitKat"
       echo -e  "touchwiz         \e[31m||\e[0m TouchWiz 4.4-based (Samsung Only)"
       echo -e "\e[31m###\e[0m\e[31m#######################################################################################\e[0m"
-      #echo "touchwiz      | Samsung's TouchWiz"
       exit;;
   esac
 done

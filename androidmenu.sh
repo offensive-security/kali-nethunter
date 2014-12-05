@@ -3,7 +3,7 @@
 # Kernel Development requires Kali 64bit host
 
 # Configure the build environment
-DEBUG=0    # Valid values are 0 or 1, with 1 being enabled 
+DEBUG=0    # Valid values are 0 or 1, with 1 being enabled
 LOCALGIT=0
 FROZENKERNEL=0
 
@@ -321,8 +321,8 @@ esac
 f_shamu(){
 echo -e "\e[31m ------------------------- NEXUS 6 -----------------------\e[0m"
 echo ""
-echo "  [1] Build All - Kali rootfs and Kernel (Android 6)"
-echo "  [2] Build Kernel Only (Android 6)"
+echo "  [1] Build All - Kali rootfs and Kernel (Android 5)"
+echo "  [2] Build Kernel Only (Android 5)"
 echo "  [0] Exit to Main Menu"
 echo ""
 echo ""
@@ -913,7 +913,7 @@ sleep 5
 f_cleanup(){
   if [ ${DEBUG} == 0 ]; then
     # Clean up all the temporary build stuff and remove the directories.
-    # This only runs if debug mode is disabled. 
+    # This only runs if debug mode is disabled.
 
     echo "Unmounting any previous mounted folders"
     sleep 3
