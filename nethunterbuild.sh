@@ -7,35 +7,35 @@ f_ostest(){
 
   case $unamestr in
     Darwin)
-    d_clear
-    echo "OS X is not supported!"
-    echo ""
-    read -p "Press [Enter] to exit the script." null
-    d_clear
-    exit;;
-    *)
-    echo "Linux based OS Detected."
-    testkali=$(dpkg --get-selections | grep -o "kali-linux")
-    case $unamearch in
-      x86_64|amd64)
-      echo "64 bit linux detected"
-      case $testkali in
-        kali-linux*)
-        echo "Kali Linux OS detected.";;
-        *)
-        echo "Non-Kali distributions aren't supported!"
-        echo ""
-        read -p "Press [Enter] to exit the script." null
-        d_clear
-        exit;;
-      esac;;
-      *)
-      echo "32 Bit OSs not supported!"
+      d_clear
+      echo "OS X is not supported!"
       echo ""
       read -p "Press [Enter] to exit the script." null
       d_clear
-      exit
-    esac;;
+      exit;;
+    *)
+      echo "Linux based OS Detected."
+      testkali=$(dpkg --get-selections | grep -o "kali-linux")
+      case $unamearch in
+        x86_64|amd64)
+          echo "64 bit linux detected"
+          case $testkali in
+            kali-linux*)
+              echo "Kali Linux OS detected.";;
+            *)
+              echo "Non-Kali distributions aren't supported!"
+              echo ""
+              read -p "Press [Enter] to exit the script." null
+              d_clear
+              exit;;
+          esac;;
+        *)
+          echo "32 Bit OSs not supported!"
+          echo ""
+          read -p "Press [Enter] to exit the script." null
+          d_clear
+          exit
+      esac;;
   esac
 }
 
@@ -76,7 +76,7 @@ f_builddeps(){
       cd lz4-r112
       make
       make install
-      echo "lz4c now installed.  Removing leftover files"
+      echo "lz4c now installed.  Removing leftover files."
       cd ..
       rm -rf lz4-r112.tar.gz lz4-r112
     fi
@@ -552,7 +552,7 @@ f_flashzip(){
 
   # Create base flashable zip
 
-  cp -rf ${basepwd}/flash ${basedir}/flash
+  cp -rf ${basepwd}/flash ${basedir}/
   mkdir -p ${basedir}/flash/data/local/
   mkdir -p ${basedir}/flash/system/lib/modules
 
@@ -562,6 +562,8 @@ f_flashzip(){
   cp -rf ${basepwd}/utils/files ${basedir}/flash/sdcard
 
   # Download/add Android applications that are useful to our chroot enviornment
+
+  rm ${basedir}/flash/data/app/*
 
   # Required: Terminal application is required
   wget -P ${basedir}/flash/data/app/ http://jackpal.github.com/Android-Terminal-Emulator/downloads/Term.apk
@@ -615,10 +617,8 @@ f_zip_kernel_save(){
   mv kernel-kali-$VERSION.zip ${basedir}
   cd ${basedir}
   # Generate sha1sum
-  echo "Generating sha1sum for kernelkali$1.zip"
+  echo "Generating sha1sum for kernel-kali-$VERSION.zip"
   sha1sum kernel-kali-$VERSION.zip > ${basedir}/kernel-kali-$VERSION.sha1sum
-  echo "Kernel can be flashed seperatley if needed using kernel-kali-$VERSION.zip"
-  echo "Transfer file to device and flash in recovery"
   sleep 5
 }
 
@@ -843,14 +843,43 @@ while getopts "h:b:a:t:o:" flag; do
     esac
 done
 
+# Checks to see if input matches script's abilities
+# If nothing is selectd, display error and exit
+if [[ $buildtype == "" ]]&&[[ $targetver == "" ]]&&[[ $selecteddevice == "" ]]; then
+  echo "You must specify arguments in order for the script to work."
+  exit
+fi
+# If build type is blank, display error and exit
 if [[ $buildtype == "" ]]; then
   echo "The build cannot continue because a build type was not specified"
   error=1
 fi
+# If Kernel build is selected, but no device specified, display error and exit
 if [[ $selecteddevice == "" ]]&&[[ $buildtype == "kernel" ]]; then
   echo "The build cannot continue because a device was not specified"
   error=1
 fi
+# If Kernel build is selected but no android version selected, display error and exit
+if [[ $targetver == "" ]]&&[[ $buildtype == "kernel" ]]; then
+  echo "The build cannot continue because an Android version was not specified"
+  error=1
+fi
+# If Lollipop kernel is selected for an unsupported device, display error and exit
+if [[ $buildtype == "kernel" ]]&&[[ $targetver == "lollipop" ]]; then
+  if [[ $selecteddevice == "manta" ]]||[[ $selecteddevice == "groupertilapia" ]]||[[ $selecteddevice == "mako" ]]||[[ $selecteddevice == "gs5" ]]||[[ $selecteddevice == "gs4" ]]||[[ $selecteddevice == "bacon" ]]; then
+    echo "Lollipop isn't currently supported by your device."
+    error=1
+  fi
+fi
+# If KitKat kernel is selected for an unsupported device, display error and exit
+if [[ $buildtype == "kernel" ]]&&[[ $targetver == "kitkat" ]]; then
+  if [[ $selecteddevice == "shamu" ]]||[[ $selecteddevice == "flounder" ]]; then
+    echo "KitKat isn't supported by your device."
+    error=1
+  fi
+fi
+
+# Exits if there are any errors
 if [[ $error == 1 ]]; then
   exit
 fi
