@@ -747,65 +747,11 @@ d_clear(){
   fi
 }
 
-### Verifies input from user
-f_inputverify(){
-  # Checks to see if input matches script's abilities
-  # If nothing is selectd, display error and exit immediately
-  if [[ $buildtype == "" ]]&&[[ $targetver == "" ]]&&[[ $selecteddevice == "" ]]; then
-    echo "You must specify arguments in order for the script to work."
-    echo "Use the flag -help or -h to see what arguments are needed."
-    exit
-  fi
-  # If build type is blank, display error and set $error var to 1
-  if [[ $buildtype == "" ]]; then
-    echo "The build cannot continue because a build type was not specified"
-    error=1
-  fi
-  # If Kernel build is selected, but no device specified, display error and set $error var to 1
-  if [[ $selecteddevice == "" ]]&&[[ $buildtype == "kernel" ]]; then
-    echo "The build cannot continue because a device was not specified"
-    error=1
-  fi
-  # If Kernel build is selected but no android version selected, display error and set $error var to 1
-  if [[ $targetver == "" ]]&&[[ $buildtype == "kernel" ]]; then
-    echo "The build cannot continue because an Android version was not specified"
-    error=1
-  fi
-  # If Lollipop kernel is selected for an unsupported device, display error and set $error var to 1
-  if [[ $buildtype == "kernel" ]]&&[[ $targetver == "lollipop" ]]; then
-    if [[ $selecteddevice == "manta" ]]||[[ $selecteddevice == "groupertilapia" ]]||[[ $selecteddevice == "mako" ]]||[[ $selecteddevice == "gs5" ]]||[[ $selecteddevice == "gs4" ]]||[[ $selecteddevice == "bacon" ]]; then
-      echo "Lollipop isn't currently supported by your device."
-      error=1
-    fi
-  fi
-  # If KitKat kernel is selected for an unsupported device, display error and set $error var to 1
-  if [[ $buildtype == "kernel" ]]&&[[ $targetver == "kitkat" ]]; then
-    if [[ $selecteddevice == "shamu" ]]||[[ $selecteddevice == "flounder" ]]; then
-      echo "KitKat isn't supported by your device."
-      error=1
-    fi
-  fi
-  # If the device isn't currently supported, display error and set $error var to 1
-  if [[ $selecteddevice == "gs4" ]]; then
-    echo "$selecteddevice isn't currently supported."
-    error=1
-  fi
-
-  # Displays the errors above and exits
-  if [[ $error == 1 ]]; then
-    exit
-  fi
-}
-
-
-
 ######################### The commands below this line execute first #########################
 ### Set window size
 printf '\033[8;30;90t'
 
 ### Use these variables to set the defaults if no argument was set
-buildtype="all"
-targetver="lollipop"
 outputdir=~/NetHunter-Builds
 
 ### Arguments ###
@@ -823,8 +769,7 @@ while getopts "b:a:t:o:dh" flag; do
         *)
         echo "Invalid build type: $OPTARG"
         exit;;
-      esac
-      echo "";;
+      esac;;
     a)
       case $OPTARG in
         lollipop|Lollipop)
@@ -902,13 +847,63 @@ while getopts "b:a:t:o:dh" flag; do
   esac
 done
 
+### Verifies input from user
+f_inputverify(){
+  # Checks to see if input matches script's abilities
+  # If nothing is selectd, display error and exit immediately
+  if [[ $buildtype == "" ]]&&[[ $targetver == "" ]]&&[[ $selecteddevice == "" ]]; then
+    echo "You must specify arguments in order for the script to work."
+    echo "Use the flag -help or -h to see what arguments are needed."
+    exit
+  fi
+  # If build type is blank, display error and set $error var to 1
+  if [[ $buildtype == "" ]]; then
+    echo "The build cannot continue because a build type was not specified."
+    error=1
+  fi
+  # If Kernel build is selected, but no device specified, display error and set $error var to 1
+  if [[ $selecteddevice == "" ]]&&[[ $buildtype == "kernel" ]]; then
+    echo "The build cannot continue because a device was not specified."
+    error=1
+  fi
+  # If Kernel build is selected but no android version selected, display error and set $error var to 1
+  if [[ $targetver == "" ]]&&[[ $buildtype == "kernel" ]]; then
+    echo "The build cannot continue because an Android version was not specified."
+    error=1
+  fi
+  # If Lollipop kernel is selected for an unsupported device, display error and set $error var to 1
+  if [[ $buildtype == "kernel" ]]&&[[ $targetver == "lollipop" ]]; then
+    if [[ $selecteddevice == "manta" ]]||[[ $selecteddevice == "groupertilapia" ]]||[[ $selecteddevice == "mako" ]]||[[ $selecteddevice == "gs5" ]]||[[ $selecteddevice == "gs4" ]]||[[ $selecteddevice == "bacon" ]]; then
+      echo "Lollipop isn't currently supported by your device."
+      error=1
+    fi
+  fi
+  # If KitKat kernel is selected for an unsupported device, display error and set $error var to 1
+  if [[ $buildtype == "kernel" ]]&&[[ $targetver == "kitkat" ]]; then
+    if [[ $selecteddevice == "shamu" ]]||[[ $selecteddevice == "flounder" ]]; then
+      echo "KitKat isn't supported by your device."
+      error=1
+    fi
+  fi
+  # If the device isn't currently supported, display error and set $error var to 1
+  if [[ $selecteddevice == "gs4" ]]; then
+    echo "$selecteddevice isn't currently supported."
+    error=1
+  fi
+
+  # Displays the errors above and exits
+  if [[ $error == 1 ]]; then
+    exit
+  fi
+}
+
 # Checks if script can run with given arguments
 f_inputverify
 # Checks if computer is Running 64 Bit Kali
 f_ostest
 # Makes sure ~/arm-stuff/kali-nethunter exists and sets it up if not
 f_builddeps
-# Sets up build environment and variables
+# Sets up build environment and variables and updates files
 f_setup
 # Builds kernel and/or rootfs
 f_build
