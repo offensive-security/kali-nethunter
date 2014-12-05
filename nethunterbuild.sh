@@ -646,7 +646,6 @@ f_cleanup(){
 ### Set up kernel folder
 f_kernel_build_init(){
   d_clear
-
   cp -rf ${basepwd}/flash/ ${basedir}/flashkernel
   mkdir -p ${basedir}/flashkernel/system/lib/modules
   rm -rf ${basedir}/flashkernel/data
@@ -755,6 +754,7 @@ f_inputverify(){
   # If nothing is selectd, display error and exit immediately
   if [[ $buildtype == "" ]]&&[[ $targetver == "" ]]&&[[ $selecteddevice == "" ]]; then
     echo "You must specify arguments in order for the script to work."
+    echo "Use the flag -help or -h to see what arguments are needed."
     exit
   fi
   # If build type is blank, display error and set $error var to 1
@@ -801,6 +801,9 @@ f_inputverify(){
 
 
 ######################### The commands below this line execute first #########################
+### Set window size
+printf '\033[8;30;90t'
+
 ### Use these variables to set the defaults if no argument was set
 buildtype="all"
 targetver="lollipop"
@@ -808,43 +811,9 @@ outputdir=~/NetHunter-Builds
 
 ### Arguments ###
 ### '$OPTARG' is the var with the string after the -[letter]
-while getopts "h:b:a:t:o:d:" flag; do
+while getopts "b:a:t:o:dh" flag; do
   case "$flag" in
-    H|h)
-      clear
-      echo "Help Menu"
-      echo ""
-      echo "-h           | This help menu"
-      echo "-b           | Build type"
-      echo "-t           | Android device to build for (Kernel buids only)"
-      echo "-a           | Android version to build for (Kernel buids only)"
-      echo "-o           | Where the files are output (Defaults to ~/NetHunter-Builds)"
-      echo ""
-      echo "Devices:"
-      echo "manta         | Nexus 10"
-      echo "grouper       | Nexus 7 (2012) Wifi"
-      echo "tilapia       | Nexus 7 (2012) 3G"
-      echo "flo           | Nexus 7 (2013) Wifi"
-      echo "deb           | Nexus 7 (2013) LTE"
-      echo "mako          | Nexus 4"
-      echo "hammerhead    | Nexus 5"
-      echo "shamu         | Nexus 6"
-      echo "flounder      | Nexus 9 Wifi"
-      #echo "gs5           | Galaxy S5 G900"
-      #echo "gs4           | Galaxy S4 I9500"
-      echo "bacon         | OnePlus One"
-      echo ""
-      echo "Build Types:"
-      echo "all           | Builds kernel and RootFS (Requires -t [device] and -a [Android Vesion])"
-      echo "kernel        | Builds just a kernel (Requires -t [device] and -a [Android Vesion])"
-      echo "rootfs        | Builds Nethunter RootFS"
-      echo ""
-      echo "Android Versions:"
-      echo "lollipop      | Android 5.0 Lollipop"
-      echo "KtiKat        | Android 4.4 - 4.4.4 KitKat"
-      #echo "touchwiz      | Samsung's TouchWiz"
-      exit;;
-    B|b)
+    b)
       case $OPTARG in
         kernel)
         buildtype="kernel";;
@@ -857,7 +826,7 @@ while getopts "h:b:a:t:o:d:" flag; do
         exit;;
       esac
       echo "";;
-    A|a)
+    a)
       case $OPTARG in
         lollipop|Lollipop)
         targetver=lollipop;;
@@ -869,7 +838,7 @@ while getopts "h:b:a:t:o:d:" flag; do
         echo "Invalid Device Selected: $OPTARG"
         exit;;
       esac;;
-    T|t)
+    t)
       case $OPTARG in
         manta) selecteddevice="manta";;
         grouper|tilapia|groupertilapia|tilapiagrouper) selecteddevice="groupertilapia";;
@@ -883,7 +852,7 @@ while getopts "h:b:a:t:o:d:" flag; do
         bacon) selecteddevice="bacon";;
         *) echo "Invalid device: $OPTARG"
       esac;;
-    O|o)
+    o)
       outputdir=$OPTARG
       if [ -d "$outputdir" ]; then
         sleep 0
@@ -899,6 +868,39 @@ while getopts "h:b:a:t:o:d:" flag; do
     d)
       echo "Debugging Mode On"
       DEBUG=1;;
+    h)
+      echo -e "\e[31m###\e[0m Help Menu \e[31m############################################################################\e[0m"
+      echo -e "\e[31m###\e[0m Options \e[31m##############################################################################\e[0m"
+      echo -e  "-h               \e[31m||\e[0m This help menu"
+      echo -e  "-b [type]        \e[31m||\e[0m Build type"
+      echo -e  "-t [device]      \e[31m||\e[0m Android device to build for (Kernel buids only)"
+      echo -e  "-a [Version]     \e[31m||\e[0m Android version to build for (Kernel buids only)"
+      echo -e  "-o [directory]   \e[31m||\e[0m Where the files are output (Defaults to ~/NetHunter-Builds)"
+      echo -e  "-d               \e[31m||\e[0m Turn debug mode on"
+      echo -e "\e[31m###\e[0m Devices \e[31m##############################################################################\e[0m"
+      echo -e  "manta            \e[31m||\e[0m Nexus 10"
+      echo -e  "grouper          \e[31m||\e[0m Nexus 7 (2012) Wifi"
+      echo -e  "tilapia          \e[31m||\e[0m Nexus 7 (2012) 3G"
+      echo -e  "flo              \e[31m||\e[0m Nexus 7 (2013) Wifi"
+      echo -e  "deb              \e[31m||\e[0m Nexus 7 (2013) LTE"
+      echo -e  "mako             \e[31m||\e[0m Nexus 4"
+      echo -e  "hammerhead       \e[31m||\e[0m Nexus 5"
+      echo -e  "shamu            \e[31m||\e[0m Nexus 6"
+      echo -e  "flounder         \e[31m||\e[0m Nexus 9 Wifi"
+      echo -e  "bacon            \e[31m||\e[0m OnePlus One"
+      echo -e  "gs5              \e[31m||\e[0m Galaxy S5 G900"
+      #echo -e  "gs4              \e[31m||\e[0m Galaxy S4 I9500"
+      echo -e "\e[31m###\e[0m Build Types \e[31m##########################################################################\e[0m"
+      echo -e  "all              \e[31m||\e[0m Builds kernel and RootFS (Requires -t and -a arguments)"
+      echo -e  "kernel           \e[31m||\e[0m Builds just a kernel (Requires -t and -a arguments)"
+      echo -e  "rootfs           \e[31m||\e[0m Builds Nethunter RootFS"
+      echo -e "\e[31m###\e[0m Versions \e[31m#############################################################################\e[0m"
+      echo -e  "lollipop         \e[31m||\e[0m Android 5.0 Lollipop"
+      echo -e  "KtiKat           \e[31m||\e[0m Android 4.4.2 - 4.4.4 KitKat"
+      echo -e  "touchwiz         \e[31m||\e[0m TouchWiz 4.4-based (Samsung Only)"
+      echo -e "\e[31m###\e[0m\e[31m#######################################################################################\e[0m"
+      #echo "touchwiz      | Samsung's TouchWiz"
+      exit;;
   esac
 done
 
