@@ -47,7 +47,6 @@ set_perm(0, 0, 0755, "/system/xbin/nano");
 set_perm(0, 0, 0777, "/data/local/kalifs.tar.bz2");
 set_perm(0, 0, 0755, "/data/local/bin/busybox");
 set_perm(0, 0, 0755, "/system/etc/init.d/90userinit");
-set_perm(0, 0, 0777, "/tmp/files");
 set_perm(0, 0, 0755, "/tmp/extractkali.sh");
 set_perm(0, 0, 0755, "/tmp/cleansystem.sh");
 set_perm(0, 0, 0755, "/tmp/setwallpaper.sh");
