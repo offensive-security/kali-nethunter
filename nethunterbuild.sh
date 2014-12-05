@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 ### Tests the os and only allows 64 bit Kali
 f_ostest(){
@@ -807,7 +808,7 @@ outputdir=~/NetHunter-Builds
 
 ### Arguments ###
 ### '$OPTARG' is the var with the string after the -[letter]
-while getopts "h:b:a:t:o:" flag; do
+while getopts "h:b:a:t:o:d:" flag; do
   case "$flag" in
     H|h)
       clear
@@ -895,7 +896,10 @@ while getopts "h:b:a:t:o:" flag; do
           exit
         fi
       fi;;
-    esac
+    d)
+      echo "Debugging Mode On"
+      DEBUG=1;;
+  esac
 done
 
 # Checks if script can run with given arguments
