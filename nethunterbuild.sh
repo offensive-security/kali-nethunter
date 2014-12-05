@@ -145,8 +145,8 @@ f_build(){
       esac;;
       all)
       case $targetver in
-        lollipop) f_rootfs; f_flashzip; f_nexus10_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
-        kitkat) f_rootfs; f_flashzip; f_nexus10_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+        lollipop) f_rootfs; f_flashzip; f_nexus10_kernel5; f_zip_save; f_zip_kernel_save;;
+        kitkat) f_rootfs; f_flashzip; f_nexus10_kernel; f_zip_save; f_zip_kernel_save;;
       esac;;
     esac;;
     groupertilapia)
@@ -158,8 +158,8 @@ f_build(){
       esac;;
       all)
       case $targetver in
-        lollipop) f_rootfs; f_flashzip; f_nexus7_grouper_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
-        kitkat) f_rootfs; f_flashzip; f_nexus7_grouper_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+        lollipop) f_rootfs; f_flashzip; f_nexus7_grouper_kernel5; f_zip_save; f_zip_kernel_save;;
+        kitkat) f_rootfs; f_flashzip; f_nexus7_grouper_kernel; f_zip_save; f_zip_kernel_save;;
       esac;;
     esac;;
     flodeb)
@@ -171,8 +171,8 @@ f_build(){
       esac;;
       all)
       case $targetver in
-        lollipop) f_rootfs; f_flashzip; f_deb_stock_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
-        kitkat) f_rootfs; f_flashzip; f_deb_stock_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+        lollipop) f_rootfs; f_flashzip; f_deb_stock_kernel5; f_zip_save; f_zip_kernel_save;;
+        kitkat) f_rootfs; f_flashzip; f_deb_stock_kernel; f_zip_save; f_zip_kernel_save;;
       esac;;
     esac;;
     mako)
@@ -184,8 +184,8 @@ f_build(){
       esac;;
       all)
       case $targetver in
-        lollipop) f_rootfs; f_flashzip; f_mako_stock_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
-        kitkat) f_rootfs; f_flashzip; f_mako_stock_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+        lollipop) f_rootfs; f_flashzip; f_mako_stock_kernel5; f_zip_save; f_zip_kernel_save;;
+        kitkat) f_rootfs; f_flashzip; f_mako_stock_kernel; f_zip_save; f_zip_kernel_save;;
       esac;;
     esac;;
     hammerhead)
@@ -197,10 +197,11 @@ f_build(){
       esac;;
       all)
       case $targetver in
-        lollipop) f_rootfs; f_flashzip; f_hammerhead_stock_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
-        kitkat) f_rootfs; f_flashzip; f_hammerhead_stock_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+        lollipop) f_rootfs; f_flashzip; f_hammerhead_stock_kernel5; f_zip_save; f_zip_kernel_save;;
+        kitkat) f_rootfs; f_flashzip; f_hammerhead_stock_kernel; f_zip_save; f_zip_kernel_save;;
       esac;;
     esac;;
+    ### Shamu is currently unsupported
     #shamu)
     #  case $buildtype in
     #    kernel)
@@ -209,7 +210,7 @@ f_build(){
     flounder)
     case $buildtype in
       kernel) f_nexus9_kernel5; f_zip_kernel_save;;
-      all) f_rootfs; f_flashzip; f_nexus9_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
+      all) f_rootfs; f_flashzip; f_nexus9_kernel5; f_zip_save; f_zip_kernel_save;;
     esac;;
     gs5)
     case $buildtype in
@@ -220,10 +221,11 @@ f_build(){
       esac;;
       all)
       case $targetver in
-        touchwiz) f_rootfs; f_flashzip; f_s5_tw_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
-        kitkat) f_rootfs; f_flashzip; f_s5_stock_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+        touchwiz) f_rootfs; f_flashzip; f_s5_tw_kernel; f_zip_save; f_zip_kernel_save;;
+        kitkat) f_rootfs; f_flashzip; f_s5_stock_kernel; f_zip_save; f_zip_kernel_save;;
       esac;;
     esac;;
+    ### Samsung Galaxy S4 is currently unsupported
     #gs4)
     #  case $buildtype in
     #    kernel)
@@ -246,8 +248,8 @@ f_build(){
       esac;;
       all)
       case $targetver in
-        lollipop) f_rootfs; f_flashzip; f_oneplus_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
-        kitkat) f_rootfs; f_flashzip; f_deb_stock_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+        lollipop) f_rootfs; f_flashzip; f_oneplus_kernel5; f_zip_save; f_zip_kernel_save;;
+        kitkat) f_rootfs; f_flashzip; f_deb_stock_kernel; f_zip_save; f_zip_kernel_save;;
       esac;;
     esac;;
   esac
@@ -736,6 +738,7 @@ f_movefiles(){
   fi
 }
 
+### doesn't clear screen if debug mode on
 d_clear(){
   # Disable the 'clear' statements, if DEBUG mode is enabled
   if [[ ${DEBUG} == 1 ]]; then
@@ -745,6 +748,58 @@ d_clear(){
   fi
 }
 
+### Verifies input from user
+f_inputverify(){
+  # Checks to see if input matches script's abilities
+  # If nothing is selectd, display error and exit immediately
+  if [[ $buildtype == "" ]]&&[[ $targetver == "" ]]&&[[ $selecteddevice == "" ]]; then
+    echo "You must specify arguments in order for the script to work."
+    exit
+  fi
+  # If build type is blank, display error and set $error var to 1
+  if [[ $buildtype == "" ]]; then
+    echo "The build cannot continue because a build type was not specified"
+    error=1
+  fi
+  # If Kernel build is selected, but no device specified, display error and set $error var to 1
+  if [[ $selecteddevice == "" ]]&&[[ $buildtype == "kernel" ]]; then
+    echo "The build cannot continue because a device was not specified"
+    error=1
+  fi
+  # If Kernel build is selected but no android version selected, display error and set $error var to 1
+  if [[ $targetver == "" ]]&&[[ $buildtype == "kernel" ]]; then
+    echo "The build cannot continue because an Android version was not specified"
+    error=1
+  fi
+  # If Lollipop kernel is selected for an unsupported device, display error and set $error var to 1
+  if [[ $buildtype == "kernel" ]]&&[[ $targetver == "lollipop" ]]; then
+    if [[ $selecteddevice == "manta" ]]||[[ $selecteddevice == "groupertilapia" ]]||[[ $selecteddevice == "mako" ]]||[[ $selecteddevice == "gs5" ]]||[[ $selecteddevice == "gs4" ]]||[[ $selecteddevice == "bacon" ]]; then
+      echo "Lollipop isn't currently supported by your device."
+      error=1
+    fi
+  fi
+  # If KitKat kernel is selected for an unsupported device, display error and set $error var to 1
+  if [[ $buildtype == "kernel" ]]&&[[ $targetver == "kitkat" ]]; then
+    if [[ $selecteddevice == "shamu" ]]||[[ $selecteddevice == "flounder" ]]; then
+      echo "KitKat isn't supported by your device."
+      error=1
+    fi
+  fi
+  # If the device isn't currently supported, display error and set $error var to 1
+  if [[ $selecteddevice == "shamu" ]]||[[ $selecteddevice == "gs4" ]]; then
+    echo "$selecteddevice isn't currently supported."
+    error=1
+  fi
+
+  # Displays the errors above and exits
+  if [[ $error == 1 ]]; then
+    exit
+  fi
+}
+
+
+
+######################### The commands below this line execute first #########################
 ### Use these variables to set the defaults if no argument was set
 buildtype="all"
 targetver="lollipop"
@@ -843,50 +898,15 @@ while getopts "h:b:a:t:o:" flag; do
     esac
 done
 
-# Checks to see if input matches script's abilities
-# If nothing is selectd, display error and exit
-if [[ $buildtype == "" ]]&&[[ $targetver == "" ]]&&[[ $selecteddevice == "" ]]; then
-  echo "You must specify arguments in order for the script to work."
-  exit
-fi
-# If build type is blank, display error and exit
-if [[ $buildtype == "" ]]; then
-  echo "The build cannot continue because a build type was not specified"
-  error=1
-fi
-# If Kernel build is selected, but no device specified, display error and exit
-if [[ $selecteddevice == "" ]]&&[[ $buildtype == "kernel" ]]; then
-  echo "The build cannot continue because a device was not specified"
-  error=1
-fi
-# If Kernel build is selected but no android version selected, display error and exit
-if [[ $targetver == "" ]]&&[[ $buildtype == "kernel" ]]; then
-  echo "The build cannot continue because an Android version was not specified"
-  error=1
-fi
-# If Lollipop kernel is selected for an unsupported device, display error and exit
-if [[ $buildtype == "kernel" ]]&&[[ $targetver == "lollipop" ]]; then
-  if [[ $selecteddevice == "manta" ]]||[[ $selecteddevice == "groupertilapia" ]]||[[ $selecteddevice == "mako" ]]||[[ $selecteddevice == "gs5" ]]||[[ $selecteddevice == "gs4" ]]||[[ $selecteddevice == "bacon" ]]; then
-    echo "Lollipop isn't currently supported by your device."
-    error=1
-  fi
-fi
-# If KitKat kernel is selected for an unsupported device, display error and exit
-if [[ $buildtype == "kernel" ]]&&[[ $targetver == "kitkat" ]]; then
-  if [[ $selecteddevice == "shamu" ]]||[[ $selecteddevice == "flounder" ]]; then
-    echo "KitKat isn't supported by your device."
-    error=1
-  fi
-fi
-
-# Exits if there are any errors
-if [[ $error == 1 ]]; then
-  exit
-fi
-
+# Checks if script can run with given arguments
+f_inputverify
+# Checks if computer is Running 64 Bit Kali
 f_ostest
+# Makes sure ~/arm-stuff/kali-nethunter exists and sets it up if not
 f_builddeps
+# Sets up build environment and variables
 f_setup
+# Builds kernel and/or rootfs
 f_build
+# Moves files to specified output directory
 f_movefiles
-echo "Build complete."
