@@ -212,33 +212,6 @@ f_build(){
       kernel) f_nexus9_kernel5; f_zip_kernel_save;;
       all) f_rootfs; f_flashzip; f_nexus9_kernel5; f_zip_save; f_zip_kernel_save;;
     esac;;
-    gs5)
-    case $buildtype in
-      kernel)
-      case $targetver in
-        touchwiz) f_s5_tw_kernel; f_zip_kernel_save;;
-        kitkat) f_s5_kernel; f_zip_kernel_save;;
-      esac;;
-      all)
-      case $targetver in
-        touchwiz) f_rootfs; f_flashzip; f_s5_tw_kernel; f_zip_save; f_zip_kernel_save;;
-        kitkat) f_rootfs; f_flashzip; f_s5_stock_kernel; f_zip_save; f_zip_kernel_save;;
-      esac;;
-    esac;;
-    ### Samsung Galaxy S4 is currently unsupported
-    #gs4)
-    #  case $buildtype in
-    #    kernel)
-    #      case $targetver in
-    #        touchwiz)
-    #        kitkat)
-    #      esac;;
-    #    all)
-    #      case $targetver in
-    #        touchwiz)
-    #        kitkat)
-    #      esac;;
-    #  esac;;
     bacon)
     case $buildtype in
       kernel)
@@ -595,7 +568,7 @@ f_zip_save(){
   rm -rf  kali-$architecture/dev/*
   #######################################
   echo "Compressing kali rootfs, please wait"
-  tar -jcvf kalifs.tar.bz2 kali-$architecture
+  tar jcf kalifs.tar.bz2 kali-$architecture
   mv kalifs.tar.bz2 ${basedir}/flash/data/local/
 
   #tar jcvf ${basedir}/flash/data/local/kalifs.tar.bz2 ${basedir}/kali-$architecture
@@ -749,7 +722,7 @@ d_clear(){
 
 ######################### The commands below this line execute first #########################
 ### Set window size
-printf '\033[8;30;90t'
+printf '\033[8;40;90t'
 
 ### Use these variables to set the defaults if no argument was set
 outputdir=~/NetHunter-Builds
@@ -813,15 +786,15 @@ while getopts "b:a:t:o:dh" flag; do
       echo "Debugging Mode On"
       DEBUG=1;;
     h)
-      echo -e "\e[31m###\e[0m Help Menu \e[31m############################################################################\e[0m"
-      echo -e "\e[31m###\e[0m Options \e[31m##############################################################################\e[0m"
+      echo -e "\e[31m##################################\e[37m NetHunter Help Menu \e[31m###################################\e[0m"
+      echo -e "\e[31m###\e[37m Options \e[31m##############################################################################\e[0m"
       echo -e  "-h               \e[31m||\e[0m This help menu"
       echo -e  "-b [type]        \e[31m||\e[0m Build type"
       echo -e  "-t [device]      \e[31m||\e[0m Android device to build for (Kernel buids only)"
       echo -e  "-a [Version]     \e[31m||\e[0m Android version to build for (Kernel buids only)"
       echo -e  "-o [directory]   \e[31m||\e[0m Where the files are output (Defaults to ~/NetHunter-Builds)"
       echo -e  "-d               \e[31m||\e[0m Turn debug mode on"
-      echo -e "\e[31m###\e[0m Devices \e[31m##############################################################################\e[0m"
+      echo -e "\e[31m###\e[37m Devices \e[31m##############################################################################\e[0m"
       echo -e  "manta            \e[31m||\e[0m Nexus 10"
       echo -e  "grouper          \e[31m||\e[0m Nexus 7 (2012) Wifi"
       echo -e  "tilapia          \e[31m||\e[0m Nexus 7 (2012) 3G"
@@ -832,17 +805,14 @@ while getopts "b:a:t:o:dh" flag; do
       echo -e  "shamu            \e[31m||\e[0m Nexus 6"
       echo -e  "flounder         \e[31m||\e[0m Nexus 9 Wifi"
       echo -e  "bacon            \e[31m||\e[0m OnePlus One"
-      echo -e  "gs5              \e[31m||\e[0m Galaxy S5 G900"
-      #echo -e  "gs4              \e[31m||\e[0m Galaxy S4 I9500"
-      echo -e "\e[31m###\e[0m Build Types \e[31m##########################################################################\e[0m"
+      echo -e "\e[31m###\e[37m Build Types \e[31m##########################################################################\e[0m"
       echo -e  "all              \e[31m||\e[0m Builds kernel and RootFS (Requires -t and -a arguments)"
       echo -e  "kernel           \e[31m||\e[0m Builds just a kernel (Requires -t and -a arguments)"
       echo -e  "rootfs           \e[31m||\e[0m Builds Nethunter RootFS"
-      echo -e "\e[31m###\e[0m Versions \e[31m#############################################################################\e[0m"
+      echo -e "\e[31m###\e[37m Versions \e[31m#############################################################################\e[0m"
       echo -e  "lollipop         \e[31m||\e[0m Android 5.0 Lollipop"
       echo -e  "KtiKat           \e[31m||\e[0m Android 4.4.2 - 4.4.4 KitKat"
-      echo -e  "touchwiz         \e[31m||\e[0m TouchWiz 4.4-based (Samsung Only)"
-      echo -e "\e[31m###\e[0m\e[31m#######################################################################################\e[0m"
+      echo -e "\e[31m##########################################################################################\e[0m"
       exit;;
   esac
 done
