@@ -477,9 +477,6 @@ EOF
   echo "inet:x:3004:postgres,root,beef-xss,daemon,nginx" >> kali-$architecture/etc/group
   echo "nobody:x:3004:nobody" >> kali-$architecture/etc/group
 
-  if [[ ${DEBUG} == 0 ]]; then
-    # CLEANUP STAGE
-
 cat << EOF > kali-$architecture/cleanup
 #!/bin/bash
 rm -rf /root/.bash_history
@@ -491,13 +488,13 @@ rm -f cleanup
 rm -f /usr/bin/qemu*
 EOF
 
-    chmod +x kali-$architecture/cleanup
-    LANG=C chroot kali-$architecture /cleanup
+  chmod +x kali-$architecture/cleanup
+  LANG=C chroot kali-$architecture /cleanup
 
-    sleep 5
-  fi
+  sleep 5
 
-  umount ${rootfs}/kali-$architecture/proc/sys/fs/binfmt_misc
+  #It isn't mounted anyway.
+  #umount ${rootfs}/kali-$architecture/proc/sys/fs/binfmt_misc
   umount ${rootfs}/kali-$architecture/dev/pts
   umount ${rootfs}/kali-$architecture/dev/
   umount ${rootfs}/kali-$architecture/proc
@@ -632,7 +629,7 @@ f_kernel_build(){
   echo "Building Kernel"
   make -j $(grep -c processor /proc/cpuinfo)
   echo "Building modules"
-  
+
 # Detect if module support is enabled in kernel and if so then build/copy.
 if grep -q CONFIG_MODULES=y .config
   then
