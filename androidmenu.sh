@@ -25,7 +25,7 @@ FROZENKERNEL=0
 # git clone https://github.com/binkybear/kernel_samsung_manta.git -b thunderkat
 # git clone https://github.com/binkybear/nexus10-5.git -b android-exynos-manta-3.4-lollipop-release
 # - Nexus 9
-# git clone https://github.com/binkybear/ElementalX-N9.git -b ElementalX-1.00 nexus9-5
+# git clone https://github.com/binkybear/flounder.git -b android-tegra-flounder-3.10-lollipop-release  nexus9-5
 # - Nexus 7 (2012)
 # git clone https://github.com/binkybear/kangaroo.git -b kangaroo
 # git clone https://github.com/binkybear/####################.git -b ########## nexus7_2012-5
@@ -1081,11 +1081,18 @@ rm -rf ${basedir}/flashkernel/META-INF/com/google/android/updater-script
 f_kernel_build(){
 echo "Building Kernel"
 make -j $(grep -c processor /proc/cpuinfo)
-echo "Building modules"
-mkdir -p modules
-make modules_install INSTALL_MOD_PATH=${basedir}/kernel/modules
-echo "Copying Kernel and modules to flashable kernel folder"
-find modules -name "*.ko" -exec cp -t ../flashkernel/system/lib/modules {} +
+
+# Detect if module support is enabled in kernel and if so then build/copy.
+if grep -q CONFIG_MODULES=y .config
+  then
+    echo "Building modules"
+    mkdir -p modules
+    make modules_install INSTALL_MOD_PATH=${basedir}/kernel/modules
+    echo "Copying Kernel and modules to flashable kernel folder"
+    find modules -name "*.ko" -exec cp -t ../flashkernel/system/lib/modules {} +
+  else
+    echo "Module support is disabled."
+fi
 
 # If this is not just a kernel build by itself it will copy modules and kernel to main flash (rootfs+kernel)
 if [ -d "${basedir}/flash/" ]; then

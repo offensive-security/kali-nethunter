@@ -632,10 +632,18 @@ f_kernel_build(){
   echo "Building Kernel"
   make -j $(grep -c processor /proc/cpuinfo)
   echo "Building modules"
-  mkdir -p modules
-  make modules_install INSTALL_MOD_PATH=${basedir}/kernel/modules
-  echo "Copying Kernel and modules to flashable kernel folder"
-  find modules -name "*.ko" -exec cp -t ../flashkernel/system/lib/modules {} +
+  
+# Detect if module support is enabled in kernel and if so then build/copy.
+if grep -q CONFIG_MODULES=y .config
+  then
+    echo "Building modules"
+    mkdir -p modules
+    make modules_install INSTALL_MOD_PATH=${basedir}/kernel/modules
+    echo "Copying Kernel and modules to flashable kernel folder"
+    find modules -name "*.ko" -exec cp -t ../flashkernel/system/lib/modules {} +
+  else
+    echo "Module support is disabled."
+fi
 
   # If this is not just a kernel build by itself it will copy modules and kernel to main flash (rootfs+kernel)
   if [ -d "${basedir}/flash/" ]; then
@@ -787,6 +795,7 @@ while getopts "b:a:t:o:dh" flag; do
       DEBUG=1;;
     h)
       echo -e "\e[31m##################################\e[37m NetHunter Help Menu \e[31m###################################\e[0m"
+      echo -e "\e[31m###e.g. ./nethunterbuilder.sh -b kernel -t grouper -a lollipop -o ~/newbuild                       ###\e[0m"
       echo -e "\e[31m###\e[37m Options \e[31m##############################################################################\e[0m"
       echo -e  "-h               \e[31m||\e[0m This help menu"
       echo -e  "-b [type]        \e[31m||\e[0m Build type"
@@ -811,7 +820,7 @@ while getopts "b:a:t:o:dh" flag; do
       echo -e  "rootfs           \e[31m||\e[0m Builds Nethunter RootFS"
       echo -e "\e[31m###\e[37m Versions \e[31m#############################################################################\e[0m"
       echo -e  "lollipop         \e[31m||\e[0m Android 5.0 Lollipop"
-      echo -e  "KtiKat           \e[31m||\e[0m Android 4.4.2 - 4.4.4 KitKat"
+      echo -e  "kitkat           \e[31m||\e[0m Android 4.4.2 - 4.4.4 KitKat"
       echo -e "\e[31m##########################################################################################\e[0m"
       exit;;
   esac
