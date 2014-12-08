@@ -62,7 +62,7 @@ fi
 
 if [ $# -eq 0 ]; then
 	$busybox chroot $mnt /bin/bash -l
-else   	
+else
    	#APACHE
 
    	if [ "$1" == "apache" ] && [ "$2" == "start" ]; then
@@ -193,7 +193,7 @@ else
    	fi
 
    	#SSH
-   	
+
    	if [ "$1" == "ssh" ] && [ "$2" == "start" ]; then
    		$busybox chroot $mnt service ssh start
    	fi
@@ -208,8 +208,14 @@ else
    	fi
 
    	#WIFITE
-	
-	if [ "$1" == "wifite" ]; then
+
+		if [ "$1" == "wifite" ]; then
         $busybox chroot $mnt wifite
    	fi
+
+		#KALIMENU
+
+		if [ "$1" == "kalimenu" ]; then
+			$busybox chroot $mnt /usr/bin/kalimenu
+		fi
 fi
