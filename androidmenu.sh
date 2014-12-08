@@ -3,7 +3,7 @@
 # Kernel Development requires Kali 64bit host
 
 # Configure the build environment
-DEBUG=0    # Valid values are 0 or 1, with 1 being enabled 
+DEBUG=0    # Valid values are 0 or 1, with 1 being enabled
 LOCALGIT=0
 FROZENKERNEL=0
 
@@ -25,7 +25,7 @@ FROZENKERNEL=0
 # git clone https://github.com/binkybear/kernel_samsung_manta.git -b thunderkat
 # git clone https://github.com/binkybear/nexus10-5.git -b android-exynos-manta-3.4-lollipop-release
 # - Nexus 9
-# git clone https://github.com/binkybear/ElementalX-N9.git -b ElementalX-1.00 nexus9-5
+# git clone https://github.com/binkybear/flounder.git -b android-tegra-flounder-3.10-lollipop-release  nexus9-5
 # - Nexus 7 (2012)
 # git clone https://github.com/binkybear/kangaroo.git -b kangaroo
 # git clone https://github.com/binkybear/####################.git -b ########## nexus7_2012-5
@@ -321,8 +321,8 @@ esac
 f_shamu(){
 echo -e "\e[31m ------------------------- NEXUS 6 -----------------------\e[0m"
 echo ""
-echo "  [1] Build All - Kali rootfs and Kernel (Android 6)"
-echo "  [2] Build Kernel Only (Android 6)"
+echo "  [1] Build All - Kali rootfs and Kernel (Android 5)"
+echo "  [2] Build Kernel Only (Android 5)"
 echo "  [0] Exit to Main Menu"
 echo ""
 echo ""
@@ -913,7 +913,7 @@ sleep 5
 f_cleanup(){
   if [ ${DEBUG} == 0 ]; then
     # Clean up all the temporary build stuff and remove the directories.
-    # This only runs if debug mode is disabled. 
+    # This only runs if debug mode is disabled.
 
     echo "Unmounting any previous mounted folders"
     sleep 3
@@ -1081,11 +1081,18 @@ rm -rf ${basedir}/flashkernel/META-INF/com/google/android/updater-script
 f_kernel_build(){
 echo "Building Kernel"
 make -j $(grep -c processor /proc/cpuinfo)
-echo "Building modules"
-mkdir -p modules
-make modules_install INSTALL_MOD_PATH=${basedir}/kernel/modules
-echo "Copying Kernel and modules to flashable kernel folder"
-find modules -name "*.ko" -exec cp -t ../flashkernel/system/lib/modules {} +
+
+# Detect if module support is enabled in kernel and if so then build/copy.
+if grep -q CONFIG_MODULES=y .config
+  then
+    echo "Building modules"
+    mkdir -p modules
+    make modules_install INSTALL_MOD_PATH=${basedir}/kernel/modules
+    echo "Copying Kernel and modules to flashable kernel folder"
+    find modules -name "*.ko" -exec cp -t ../flashkernel/system/lib/modules {} +
+  else
+    echo "Module support is disabled."
+fi
 
 # If this is not just a kernel build by itself it will copy modules and kernel to main flash (rootfs+kernel)
 if [ -d "${basedir}/flash/" ]; then

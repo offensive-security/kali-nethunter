@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 ### Tests the os and only allows 64 bit Kali
 f_ostest(){
@@ -7,41 +8,43 @@ f_ostest(){
 
   case $unamestr in
     Darwin)
-    d_clear
-    echo "OS X is not supported!"
-    echo ""
-    read -p "Press [Enter] to exit the script." null
-    d_clear
-    exit;;
-    *)
-    echo "Linux based OS Detected."
-    testkali=$(dpkg --get-selections | grep -o "kali-linux")
-    case $unamearch in
-      x86_64|amd64)
-      echo "64 bit linux detected"
-      case $testkali in
-        kali-linux*)
-        echo "Kali Linux OS detected.";;
-        *)
-        echo "Non-Kali distributions aren't supported!"
-        echo ""
-        read -p "Press [Enter] to exit the script." null
-        d_clear
-        exit;;
-      esac;;
-      *)
-      echo "32 Bit OSs not supported!"
+      d_clear
+      echo "OS X is not supported!"
       echo ""
       read -p "Press [Enter] to exit the script." null
       d_clear
-      exit
-    esac;;
+      exit;;
+    *)
+      echo "Linux based OS Detected."
+      testkali=$(dpkg --get-selections | grep -o "kali-linux")
+      case $unamearch in
+        x86_64|amd64)
+          echo "64 bit linux detected"
+          case $testkali in
+            kali-linux*)
+              echo "Kali Linux OS detected.";;
+            *)
+              echo "Non-Kali distributions aren't supported!"
+              echo ""
+              read -p "Press [Enter] to exit the script." null
+              d_clear
+              exit;;
+          esac;;
+        *)
+          echo "32 Bit OSs not supported!"
+          echo ""
+          read -p "Press [Enter] to exit the script." null
+          d_clear
+          exit
+      esac;;
   esac
 }
 
 ### Builds dependencies required for the script
 f_builddeps(){
-  if [ ! -f ~/arm-stuff/kali-nethunter/.completebuild ]; then
+  if [ -d ~/arm-stuff/kali-nethunter ]; then
+    cd ~/arm-stuff/kali-nethunter
+  else
     ### Make Directories and Prepare to build
     mkdir ~/arm-stuff
     cd ~/arm-stuff
@@ -74,13 +77,10 @@ f_builddeps(){
       cd lz4-r112
       make
       make install
-      echo "lz4c now installed.  Removing leftover files"
+      echo "lz4c now installed.  Removing leftover files."
       cd ..
       rm -rf lz4-r112.tar.gz lz4-r112
     fi
-    echo "This is a file to show that the building of dependencies is complete." > ~/arm-stuff/kali-nethunter/.completebuild
-  else
-    cd ~/arm-stuff/kali-nethunter
   fi
 }
 
@@ -121,7 +121,6 @@ f_setup(){
   case $buildtype in
     rootfs) export basedir=$basepwd/rootfs-$VERSION;;
     kernel) export basedir=$basepwd/kernel-$selecteddevice-$VERSION;;
-    all) export;;
   esac
   if [ -d "${basedir}" ]; then
     rm -rf ${basedir}
@@ -147,8 +146,8 @@ f_build(){
       esac;;
       all)
       case $targetver in
-        lollipop) f_rootfs; f_flashzip; f_nexus10_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
-        kitkat) f_rootfs; f_flashzip; f_nexus10_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+        lollipop) f_rootfs; f_flashzip; f_nexus10_kernel5; f_zip_save; f_zip_kernel_save;;
+        kitkat) f_rootfs; f_flashzip; f_nexus10_kernel; f_zip_save; f_zip_kernel_save;;
       esac;;
     esac;;
     groupertilapia)
@@ -160,8 +159,8 @@ f_build(){
       esac;;
       all)
       case $targetver in
-        lollipop) f_rootfs; f_flashzip; f_nexus7_grouper_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
-        kitkat) f_rootfs; f_flashzip; f_nexus7_grouper_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+        lollipop) f_rootfs; f_flashzip; f_nexus7_grouper_kernel5; f_zip_save; f_zip_kernel_save;;
+        kitkat) f_rootfs; f_flashzip; f_nexus7_grouper_kernel; f_zip_save; f_zip_kernel_save;;
       esac;;
     esac;;
     flodeb)
@@ -173,8 +172,8 @@ f_build(){
       esac;;
       all)
       case $targetver in
-        lollipop) f_rootfs; f_flashzip; f_deb_stock_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
-        kitkat) f_rootfs; f_flashzip; f_deb_stock_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+        lollipop) f_rootfs; f_flashzip; f_deb_stock_kernel5; f_zip_save; f_zip_kernel_save;;
+        kitkat) f_rootfs; f_flashzip; f_deb_stock_kernel; f_zip_save; f_zip_kernel_save;;
       esac;;
     esac;;
     mako)
@@ -186,8 +185,8 @@ f_build(){
       esac;;
       all)
       case $targetver in
-        lollipop) f_rootfs; f_flashzip; f_mako_stock_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
-        kitkat) f_rootfs; f_flashzip; f_mako_stock_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+        lollipop) f_rootfs; f_flashzip; f_mako_stock_kernel5; f_zip_save; f_zip_kernel_save;;
+        kitkat) f_rootfs; f_flashzip; f_mako_stock_kernel; f_zip_save; f_zip_kernel_save;;
       esac;;
     esac;;
     hammerhead)
@@ -199,46 +198,20 @@ f_build(){
       esac;;
       all)
       case $targetver in
-        lollipop) f_rootfs; f_flashzip; f_hammerhead_stock_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
-        kitkat) f_rootfs; f_flashzip; f_hammerhead_stock_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+        lollipop) f_rootfs; f_flashzip; f_hammerhead_stock_kernel5; f_zip_save; f_zip_kernel_save;;
+        kitkat) f_rootfs; f_flashzip; f_hammerhead_stock_kernel; f_zip_save; f_zip_kernel_save;;
       esac;;
     esac;;
-    #shamu)
-    #  case $buildtype in
-    #    kernel)
-    #    all)
-    #  esac;;
+    shamu)
+      case $buildtype in
+        kernel) f_nexus6_kernel5; f_zip_kernel_save;;
+        all) f_rootfs; f_flashzip; f_nexus6_kernel5; f_zip_save; f_zip_kernel_save;;
+      esac;;
     flounder)
     case $buildtype in
       kernel) f_nexus9_kernel5; f_zip_kernel_save;;
-      all) f_rootfs; f_flashzip; f_nexus9_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
+      all) f_rootfs; f_flashzip; f_nexus9_kernel5; f_zip_save; f_zip_kernel_save;;
     esac;;
-    gs5)
-    case $buildtype in
-      kernel)
-      case $targetver in
-        touchwiz) f_s5_tw_kernel; f_zip_kernel_save;;
-        kitkat) f_s5_kernel; f_zip_kernel_save;;
-      esac;;
-      all)
-      case $targetver in
-        touchwiz) f_rootfs; f_flashzip; f_s5_tw_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
-        kitkat) f_rootfs; f_flashzip; f_s5_stock_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
-      esac;;
-    esac;;
-    #gs4)
-    #  case $buildtype in
-    #    kernel)
-    #      case $targetver in
-    #        touchwiz)
-    #        kitkat)
-    #      esac;;
-    #    all)
-    #      case $targetver in
-    #        touchwiz)
-    #        kitkat)
-    #      esac;;
-    #  esac;;
     bacon)
     case $buildtype in
       kernel)
@@ -248,8 +221,8 @@ f_build(){
       esac;;
       all)
       case $targetver in
-        lollipop) f_rootfs; f_flashzip; f_oneplus_kernel5; f_zip_save; f_zip_kernel_save; f_rom_build;;
-        kitkat) f_rootfs; f_flashzip; f_deb_stock_kernel; f_zip_save; f_zip_kernel_save; f_rom_build;;
+        lollipop) f_rootfs; f_flashzip; f_oneplus_kernel5; f_zip_save; f_zip_kernel_save;;
+        kitkat) f_rootfs; f_flashzip; f_deb_stock_kernel; f_zip_save; f_zip_kernel_save;;
       esac;;
     esac;;
   esac
@@ -504,9 +477,6 @@ EOF
   echo "inet:x:3004:postgres,root,beef-xss,daemon,nginx" >> kali-$architecture/etc/group
   echo "nobody:x:3004:nobody" >> kali-$architecture/etc/group
 
-  if [[ ${DEBUG} == 0 ]]; then
-    # CLEANUP STAGE
-
 cat << EOF > kali-$architecture/cleanup
 #!/bin/bash
 rm -rf /root/.bash_history
@@ -518,16 +488,17 @@ rm -f cleanup
 rm -f /usr/bin/qemu*
 EOF
 
-    chmod +x kali-$architecture/cleanup
-    LANG=C chroot kali-$architecture /cleanup
+  chmod +x kali-$architecture/cleanup
+  LANG=C chroot kali-$architecture /cleanup
 
-    umount ${rootfs}/kali-$architecture/proc/sys/fs/binfmt_misc
-    umount ${rootfs}/kali-$architecture/dev/pts
-    umount ${rootfs}/kali-$architecture/dev/
-    umount ${rootfs}/kali-$architecture/proc
+  sleep 5
 
-    sleep 5
-  fi
+  #It isn't mounted anyway.
+  #umount ${rootfs}/kali-$architecture/proc/sys/fs/binfmt_misc
+  umount ${rootfs}/kali-$architecture/dev/pts
+  umount ${rootfs}/kali-$architecture/dev/
+  umount ${rootfs}/kali-$architecture/proc
+
 }
 
 ### Create flashable zip
@@ -553,7 +524,7 @@ f_flashzip(){
 
   # Create base flashable zip
 
-  cp -rf ${basepwd}/flash ${basedir}/flash
+  cp -rf ${basepwd}/flash ${basedir}/
   mkdir -p ${basedir}/flash/data/local/
   mkdir -p ${basedir}/flash/system/lib/modules
 
@@ -563,6 +534,8 @@ f_flashzip(){
   cp -rf ${basepwd}/utils/files ${basedir}/flash/sdcard
 
   # Download/add Android applications that are useful to our chroot enviornment
+
+  rm ${basedir}/flash/data/app/*
 
   # Required: Terminal application is required
   wget -P ${basedir}/flash/data/app/ http://jackpal.github.com/Android-Terminal-Emulator/downloads/Term.apk
@@ -616,10 +589,8 @@ f_zip_kernel_save(){
   mv kernel-kali-$VERSION.zip ${basedir}
   cd ${basedir}
   # Generate sha1sum
-  echo "Generating sha1sum for kernelkali$1.zip"
+  echo "Generating sha1sum for kernel-kali-$VERSION.zip"
   sha1sum kernel-kali-$VERSION.zip > ${basedir}/kernel-kali-$VERSION.sha1sum
-  echo "Kernel can be flashed seperatley if needed using kernel-kali-$VERSION.zip"
-  echo "Transfer file to device and flash in recovery"
   sleep 5
 }
 
@@ -644,7 +615,6 @@ f_cleanup(){
 ### Set up kernel folder
 f_kernel_build_init(){
   d_clear
-
   cp -rf ${basepwd}/flash/ ${basedir}/flashkernel
   mkdir -p ${basedir}/flashkernel/system/lib/modules
   rm -rf ${basedir}/flashkernel/data
@@ -659,10 +629,18 @@ f_kernel_build(){
   echo "Building Kernel"
   make -j $(grep -c processor /proc/cpuinfo)
   echo "Building modules"
-  mkdir -p modules
-  make modules_install INSTALL_MOD_PATH=${basedir}/kernel/modules
-  echo "Copying Kernel and modules to flashable kernel folder"
-  find modules -name "*.ko" -exec cp -t ../flashkernel/system/lib/modules {} +
+
+# Detect if module support is enabled in kernel and if so then build/copy.
+if grep -q CONFIG_MODULES=y .config
+  then
+    echo "Building modules"
+    mkdir -p modules
+    make modules_install INSTALL_MOD_PATH=${basedir}/kernel/modules
+    echo "Copying Kernel and modules to flashable kernel folder"
+    find modules -name "*.ko" -exec cp -t ../flashkernel/system/lib/modules {} +
+  else
+    echo "Module support is disabled."
+fi
 
   # If this is not just a kernel build by itself it will copy modules and kernel to main flash (rootfs+kernel)
   if [ -d "${basedir}/flash/" ]; then
@@ -724,19 +702,20 @@ f_movefiles(){
     exit;;
   esac
 
-  if [ -d ${basedir}/kernel-kali-$VERSION.zip ]; then
+  if [ -a ${basedir}/kernel-kali-$VERSION.zip ]; then
     cd ${basedir}
     mkdir -p $outputdir/Kernels/$selecteddevice
-    mv kernel-kali-$VERSION.zip $outputdir/Kernels/$selecteddevice/Kernel-$selecteddevice-$VERSION.zip
-    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/$selecteddevice/Kernel-$selecteddevice-$VERSION.sha1sum
-    echo "File is now located at $outputdir/Kernels/$selecteddevice/Kernel-$selecteddevice-$VERSION.zip"
-    echo "SHA1 sum located at $outputdir/Kernels/$selecteddevice/Kernel-$selecteddevice-$VERSION.sha1sum"
+    mv kernel-kali-$VERSION.zip $outputdir/Kernels/$selecteddevice/Kernel-$selecteddevice-$targetver-$VERSION.zip
+    mv kernel-kali-$VERSION.sha1sum $outputdir/Kernels/$selecteddevice/Kernel-$selecteddevice-$targetver-$VERSION.sha1sum
+    echo "File is now located at $outputdir/Kernels/$selecteddevice/Kernel-$selecteddevice-$targetver-$VERSION.zip"
+    echo "SHA1 sum located at $outputdir/Kernels/$selecteddevice/Kernel-$selecteddevice-$targetver-$VERSION.sha1sum"
     rm -rf ${basedir}
   else
     echo "No kernel file found. Skipping transfer to output directory."
   fi
 }
 
+### doesn't clear screen if debug mode on
 d_clear(){
   # Disable the 'clear' statements, if DEBUG mode is enabled
   if [[ ${DEBUG} == 1 ]]; then
@@ -746,50 +725,18 @@ d_clear(){
   fi
 }
 
+######################### The commands below this line execute first #########################
+### Set window size
+printf '\033[8;40;90t'
+
 ### Use these variables to set the defaults if no argument was set
-buildtype="all"
-targetver="lollipop"
 outputdir=~/NetHunter-Builds
 
 ### Arguments ###
 ### '$OPTARG' is the var with the string after the -[letter]
-while getopts "h:b:a:t:o:" flag; do
+while getopts "b:a:t:o:dh" flag; do
   case "$flag" in
-    H|h)
-      clear
-      echo "Help Menu"
-      echo ""
-      echo "-h           | This help menu"
-      echo "-b           | Build type"
-      echo "-t           | Android device to build for (Kernel buids only)"
-      echo "-a           | Android version to build for (Kernel buids only)"
-      echo "-o           | Where the files are output (Defaults to ~/NetHunter-Builds)"
-      echo ""
-      echo "Devices:"
-      echo "manta         | Nexus 10"
-      echo "grouper       | Nexus 7 (2012) Wifi"
-      echo "tilapia       | Nexus 7 (2012) 3G"
-      echo "flo           | Nexus 7 (2013) Wifi"
-      echo "deb           | Nexus 7 (2013) LTE"
-      echo "mako          | Nexus 4"
-      echo "hammerhead    | Nexus 5"
-      echo "shamu         | Nexus 6"
-      echo "flounder      | Nexus 9 Wifi"
-      #echo "gs5           | Galaxy S5 G900"
-      #echo "gs4           | Galaxy S4 I9500"
-      echo "bacon         | OnePlus One"
-      echo ""
-      echo "Build Types:"
-      echo "all           | Builds kernel and RootFS (Requires -t [device] and -a [Android Vesion])"
-      echo "kernel        | Builds just a kernel (Requires -t [device] and -a [Android Vesion])"
-      echo "rootfs        | Builds Nethunter RootFS"
-      echo ""
-      echo "Android Versions:"
-      echo "lollipop      | Android 5.0 Lollipop"
-      echo "KtiKat        | Android 4.4 - 4.4.4 KitKat"
-      #echo "touchwiz      | Samsung's TouchWiz"
-      exit;;
-    B|b)
+    b)
       case $OPTARG in
         kernel)
         buildtype="kernel";;
@@ -800,9 +747,8 @@ while getopts "h:b:a:t:o:" flag; do
         *)
         echo "Invalid build type: $OPTARG"
         exit;;
-      esac
-      echo "";;
-    A|a)
+      esac;;
+    a)
       case $OPTARG in
         lollipop|Lollipop)
         targetver=lollipop;;
@@ -814,7 +760,7 @@ while getopts "h:b:a:t:o:" flag; do
         echo "Invalid Device Selected: $OPTARG"
         exit;;
       esac;;
-    T|t)
+    t)
       case $OPTARG in
         manta) selecteddevice="manta";;
         grouper|tilapia|groupertilapia|tilapiagrouper) selecteddevice="groupertilapia";;
@@ -828,7 +774,7 @@ while getopts "h:b:a:t:o:" flag; do
         bacon) selecteddevice="bacon";;
         *) echo "Invalid device: $OPTARG"
       esac;;
-    O|o)
+    o)
       outputdir=$OPTARG
       if [ -d "$outputdir" ]; then
         sleep 0
@@ -841,24 +787,101 @@ while getopts "h:b:a:t:o:" flag; do
           exit
         fi
       fi;;
-    esac
+    d)
+      echo "Debugging Mode On"
+      DEBUG=1;;
+    h)
+      echo -e "\e[31m##################################\e[37m NetHunter Help Menu \e[31m###################################\e[0m"
+      echo -e "\e[31m###e.g. ./nethunterbuilder.sh -b kernel -t grouper -a lollipop -o ~/newbuild                       ###\e[0m"
+      echo -e "\e[31m###\e[37m Options \e[31m##############################################################################\e[0m"
+      echo -e  "-h               \e[31m||\e[0m This help menu"
+      echo -e  "-b [type]        \e[31m||\e[0m Build type"
+      echo -e  "-t [device]      \e[31m||\e[0m Android device to build for (Kernel buids only)"
+      echo -e  "-a [Version]     \e[31m||\e[0m Android version to build for (Kernel buids only)"
+      echo -e  "-o [directory]   \e[31m||\e[0m Where the files are output (Defaults to ~/NetHunter-Builds)"
+      echo -e  "-d               \e[31m||\e[0m Turn debug mode on"
+      echo -e "\e[31m###\e[37m Devices \e[31m##############################################################################\e[0m"
+      echo -e  "manta            \e[31m||\e[0m Nexus 10"
+      echo -e  "grouper          \e[31m||\e[0m Nexus 7 (2012) Wifi"
+      echo -e  "tilapia          \e[31m||\e[0m Nexus 7 (2012) 3G"
+      echo -e  "flo              \e[31m||\e[0m Nexus 7 (2013) Wifi"
+      echo -e  "deb              \e[31m||\e[0m Nexus 7 (2013) LTE"
+      echo -e  "mako             \e[31m||\e[0m Nexus 4"
+      echo -e  "hammerhead       \e[31m||\e[0m Nexus 5"
+      echo -e  "shamu            \e[31m||\e[0m Nexus 6"
+      echo -e  "flounder         \e[31m||\e[0m Nexus 9 Wifi"
+      echo -e  "bacon            \e[31m||\e[0m OnePlus One"
+      echo -e "\e[31m###\e[37m Build Types \e[31m##########################################################################\e[0m"
+      echo -e  "all              \e[31m||\e[0m Builds kernel and RootFS (Requires -t and -a arguments)"
+      echo -e  "kernel           \e[31m||\e[0m Builds just a kernel (Requires -t and -a arguments)"
+      echo -e  "rootfs           \e[31m||\e[0m Builds Nethunter RootFS"
+      echo -e "\e[31m###\e[37m Versions \e[31m#############################################################################\e[0m"
+      echo -e  "lollipop         \e[31m||\e[0m Android 5.0 Lollipop"
+      echo -e  "kitkat           \e[31m||\e[0m Android 4.4.2 - 4.4.4 KitKat"
+      echo -e "\e[31m##########################################################################################\e[0m"
+      exit;;
+  esac
 done
 
-if [[ $buildtype == "" ]]; then
-  echo "The build cannot continue because a build type was not specified"
-  error=1
-fi
-if [[ $selecteddevice == "" ]]&&[[ $buildtype == "kernel" ]]; then
-  echo "The build cannot continue because a device was not specified"
-  error=1
-fi
-if [[ $error == 1 ]]; then
-  exit
-fi
+### Verifies input from user
+f_inputverify(){
+  # Checks to see if input matches script's abilities
+  # If nothing is selectd, display error and exit immediately
+  if [[ $buildtype == "" ]]&&[[ $targetver == "" ]]&&[[ $selecteddevice == "" ]]; then
+    echo "You must specify arguments in order for the script to work."
+    echo "Use the flag -help or -h to see what arguments are needed."
+    exit
+  fi
+  # If build type is blank, display error and set $error var to 1
+  if [[ $buildtype == "" ]]; then
+    echo "The build cannot continue because a build type was not specified."
+    error=1
+  fi
+  # If Kernel build is selected, but no device specified, display error and set $error var to 1
+  if [[ $selecteddevice == "" ]]&&[[ $buildtype == "kernel" ]]; then
+    echo "The build cannot continue because a device was not specified."
+    error=1
+  fi
+  # If Kernel build is selected but no android version selected, display error and set $error var to 1
+  if [[ $targetver == "" ]]&&[[ $buildtype == "kernel" ]]; then
+    echo "The build cannot continue because an Android version was not specified."
+    error=1
+  fi
+  # If Lollipop kernel is selected for an unsupported device, display error and set $error var to 1
+  if [[ $buildtype == "kernel" ]]&&[[ $targetver == "lollipop" ]]; then
+    if [[ $selecteddevice == "manta" ]]||[[ $selecteddevice == "groupertilapia" ]]||[[ $selecteddevice == "mako" ]]||[[ $selecteddevice == "gs5" ]]||[[ $selecteddevice == "gs4" ]]||[[ $selecteddevice == "bacon" ]]; then
+      echo "Lollipop isn't currently supported by your device."
+      error=1
+    fi
+  fi
+  # If KitKat kernel is selected for an unsupported device, display error and set $error var to 1
+  if [[ $buildtype == "kernel" ]]&&[[ $targetver == "kitkat" ]]; then
+    if [[ $selecteddevice == "shamu" ]]||[[ $selecteddevice == "flounder" ]]; then
+      echo "KitKat isn't supported by your device."
+      error=1
+    fi
+  fi
+  # If the device isn't currently supported, display error and set $error var to 1
+  if [[ $selecteddevice == "gs4" ]]; then
+    echo "$selecteddevice isn't currently supported."
+    error=1
+  fi
 
+  # Displays the errors above and exits
+  if [[ $error == 1 ]]; then
+    exit
+  fi
+}
+
+# Checks if script can run with given arguments
+f_inputverify
+# Checks if computer is Running 64 Bit Kali
 f_ostest
+# Makes sure ~/arm-stuff/kali-nethunter exists and sets it up if not
 f_builddeps
+# Sets up build environment and variables and updates files
 f_setup
+# Builds kernel and/or rootfs
 f_build
+# Moves files to specified output directory
 f_movefiles
-echo "Build complete."
