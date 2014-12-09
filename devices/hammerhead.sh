@@ -56,7 +56,7 @@ f_hammerhead_stock_kernel(){
 #####################################################
 f_hammerhead_stock_kernel5(){
 	echo "Downloading Android Toolchian"
-	if [[ -d ${basepwd}/toolchains/toolchain32 ${basedir} ]]; then
+	if [[ -d ${basepwd}/toolchains/toolchain32 ]]; then
 		echo "Copying toolchain to rootfs"
   	cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	else
