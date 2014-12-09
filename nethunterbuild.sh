@@ -72,7 +72,7 @@ f_setup(){
   printf '\033[8;40;90t'
 
   ######### Set paths and permissions  #######
-  export basepwd=~/NetHunter
+  export basepwd=~/arm-stuff
   export rootfs=$basepwd/rootfs
   export bt=$basepwd/utils/boottools
   export architecture="armhf"
@@ -85,7 +85,8 @@ f_setup(){
     mkdir -p $basepwd
     cd $basepwd
     git clone -b development https://github.com/offensive-security/kali-nethunter $basepwd
-    cd $basepwd
+    git clone https://github.com/offensive-security/gcc-arm-linux-gnueabihf-4.7 $basepwd/toolchains/gcc-arm-linux-gnueabihf-4.7
+    export PATH=${PATH}:$basepwd/toolchains/gcc-arm-linux-gnueabihf-4.7/bin
     ### Build Dependencies for script
     apt-get install -y git-core gnupg flex bison gperf libesd0-dev build-essential \
     zip curl libncurses5-dev zlib1g-dev libncurses5-dev gcc-multilib g++-multilib \
@@ -116,6 +117,7 @@ f_setup(){
     fi
   fi
 
+  export PATH=${PATH}:/root/NetHunter/toolchains/rootfs/bin
   chmod +x $bt/*
 
   case $keepfiles in
@@ -296,7 +298,7 @@ f_rootfs(){
     ###################
     ### BUILD SETUP ###
     ###################
-    rm -rf ${rootfs}/kali-armhf
+    rm -rf ${rootfs}/*
     export PATH=${PATH}:/root/gcc-arm-linux-gnueabihf-4.7/bin
     unset CROSS_COMPILE
     # Set working folder to rootfs
@@ -359,6 +361,18 @@ f_rootfs(){
     ### Install extra Kali Linux tools ###
     ######################################
 
+    arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils uboot-mkimage"
+    base="kali-menu kali-defaults initramfs-tools usbutils openjdk-7-jre mlocate"
+    desktop="kali-defaults kali-root-login desktop-base xfce4 xfce4-places-plugin xfce4-goodies"
+    tools="nmap metasploit tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set device-pharmer"
+    wireless="wifite iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq dsniff sslstrip mdk3 mitmproxy"
+    services="autossh openssh-server tightvncserver apache2 postgresql openvpn php5"
+    extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools python-pip hostapd ptunnel tcptrace dnsutils p0f mitmf"
+    mana="python-twisted python-dnspython libnl1 libnl-dev libssl-dev sslsplit python-pcapy tinyproxy isc-dhcp-server rfkill mana-toolkit"
+    spiderfoot="python-lxml python-m2crypto python-netaddr python-mako"
+    sdr="sox librtlsdr"
+    export packages="${arm} ${base} ${desktop} ${tools} ${wireless} ${services} ${extras} ${mana} ${spiderfoot} ${sdr}"
+
     export MALLOC_CHECK_=0 # workaround for LP: #520465
     export LC_ALL=C
     export DEBIAN_FRONTEND=noninteractive
@@ -367,8 +381,29 @@ f_rootfs(){
     mount -o bind /dev/ ${rootfs}/kali-$architecture/dev/
     mount -o bind /dev/pts ${rootfs}/kali-$architecture/dev/pts
 
+    echo "#!/bin/bash" > ${rootfs}/kali-$architecture/third-stage
+    echo "dpkg-divert --add --local --divert /usr/sbin/invoke-rc.d.chroot --rename /usr/sbin/invoke-rc.d" >> ${rootfs}/kali-$architecture/third-stage
+    echo "cp /bin/true /usr/sbin/invoke-rc.d" >> ${rootfs}/kali-$architecture/third-stage
+    echo "echo -e "#!/bin/sh\nexit 101" > /usr/sbin/policy-rc.d" >> ${rootfs}/kali-$architecture/third-stage
+    echo "chmod +x /usr/sbin/policy-rc.d" >> ${rootfs}/kali-$architecture/third-stage
+    echo "safe-apt-get update" >> ${rootfs}/kali-$architecture/third-stage
+    echo "safe-apt-get install locales-all" >> ${rootfs}/kali-$architecture/third-stage
+    echo "debconf-set-selections /debconf.set" >> ${rootfs}/kali-$architecture/third-stage
+    echo "rm -f /debconf.set" >> ${rootfs}/kali-$architecture/third-stage
+    echo "safe-apt-get update" >> ${rootfs}/kali-$architecture/third-stage
+    echo "safe-apt-get -y install git-core binutils ca-certificates initramfs-tools uboot-mkimage" >> ${rootfs}/kali-$architecture/third-stage
+    echo "safe-apt-get -y install locales console-common less nano git" >> ${rootfs}/kali-$architecture/third-stage
+    echo "echo "root:toor" | chpasswd" >> ${rootfs}/kali-$architecture/third-stage
+    echo "sed -i -e 's/KERNEL\!=\"eth\*|/KERNEL\!=\"/' /lib/udev/rules.d/75-persistent-net-generator.rules" >> ${rootfs}/kali-$architecture/third-stage
+    echo "rm -f /etc/udev/rules.d/70-persistent-net.rules" >> ${rootfs}/kali-$architecture/third-stage
+    echo "safe-apt-get --yes --force-yes install $packages" >> ${rootfs}/kali-$architecture/third-stage
+    echo "rm -f /usr/sbin/policy-rc.d" >> ${rootfs}/kali-$architecture/third-stage
+    echo "rm -f /usr/sbin/invoke-rc.d" >> ${rootfs}/kali-$architecture/third-stage
+    echo "dpkg-divert --remove --rename /usr/sbin/invoke-rc.d" >> ${rootfs}/kali-$architecture/third-stage
+    echo "rm -f /third-stage" >> ${rootfs}/kali-$architecture/third-stage
+
     cp -rf ${basepwd}/utils/config/debconf.set ${rootfs}/kali-$architecture/debconf.set
-    cp -rf ${basepwd}/utils/config/third-stage ${rootfs}/kali-$architecture/third-stage
+    #cp -rf ${basepwd}/utils/config/third-stage ${rootfs}/kali-$architecture/third-stage
     cp -rf ${basepwd}/utils/safe-apt-get kali-$architecture/usr/bin/safe-apt-get
     chmod 755 ${rootfs}/kali-$architecture/third-stage
     LANG=C chroot kali-$architecture /third-stage
@@ -565,18 +600,13 @@ f_rootfs(){
     sleep 5
   }
 
-  if [[ -d ${rootfs}/kali-$architecture ]]; then
-    echo "Reusing existing RootFS"
-    f_rootfs_create_zip
-  else
-    f_rootfs_setup
-    f_rootfs_stage_one
-    f_rootfs_stage_two
-    f_rootfs_stage_three
-    f_rootfs_stage_four
-    f_rootfs_cleanup
-    f_rootfs_create_zip
-  fi
+  f_rootfs_setup
+  f_rootfs_stage_one
+  f_rootfs_stage_two
+  f_rootfs_stage_three
+  f_rootfs_stage_four
+  f_rootfs_cleanup
+  f_rootfs_create_zip
 }
 
 ### Zip up the kernel
