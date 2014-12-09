@@ -116,20 +116,6 @@ f_setup(){
     fi
   fi
 
-  # Allow user input of version number/folder creation to make set up easier
-  cd $basepwd
-  for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
-  cd $basepwd
-  builddate=$(date +%m%d%Y)
-  case $buildtype in
-    rootfs) export basedir=$basepwd/rootfs-$builddate;;
-    kernel) export basedir=$basepwd/kernel-$selecteddevice-$builddate;;
-  esac
-  if [ -d "${basedir}" ]; then
-    rm -rf ${basedir}
-  fi
-  mkdir -p ${basedir}
-
   chmod +x $bt/*
 
   case $keepfiles in
@@ -187,6 +173,20 @@ f_setup(){
   source $basepwd/devices/hammerhead.sh
   source $basepwd/devices/mako.sh
   source $basepwd/devices/bacon.sh
+
+  # Allow user input of version number/folder creation to make set up easier
+  cd $basepwd
+  for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
+  cd $basepwd
+  builddate=$(date +%m%d%Y)
+  case $buildtype in
+    rootfs) export basedir=$basepwd/rootfs-$builddate;;
+    kernel) export basedir=$basepwd/kernel-$selecteddevice-$builddate;;
+  esac
+  if [ -d "${basedir}" ]; then
+    rm -rf ${basedir}
+  fi
+  mkdir -p ${basedir}
   cd ${basedir}
 }
 
@@ -296,13 +296,8 @@ f_rootfs(){
     ###################
     ### BUILD SETUP ###
     ###################
-    if [[ -d $basepwd/toolchains/gcc-arm-linux-gnueabihf-4.7 ]]; then
-      echo "Using existing toolchain"
-    else
-      echo "Cloning toolchain"
-      git clone https://github.com/offensive-security/gcc-arm-linux-gnueabihf-4.7 $basepwd/toolchains/gcc-arm-linux-gnueabihf-4.7
-    fi
-    export PATH=${PATH}:$basepwd/toolchains/gcc-arm-linux-gnueabihf-4.7/bin
+    rm -rf ${rootfs}/kali-armhf
+    export PATH=${PATH}:/root/gcc-arm-linux-gnueabihf-4.7/bin
     unset CROSS_COMPILE
     # Set working folder to rootfs
     cd ${rootfs}
@@ -375,7 +370,7 @@ f_rootfs(){
     cp -rf ${basepwd}/utils/config/debconf.set ${rootfs}/kali-$architecture/debconf.set
     cp -rf ${basepwd}/utils/config/third-stage ${rootfs}/kali-$architecture/third-stage
     cp -rf ${basepwd}/utils/safe-apt-get kali-$architecture/usr/bin/safe-apt-get
-    chmod +x ${rootfs}/kali-$architecture/third-stage
+    chmod 755 ${rootfs}/kali-$architecture/third-stage
     LANG=C chroot kali-$architecture /third-stage
   }
 
