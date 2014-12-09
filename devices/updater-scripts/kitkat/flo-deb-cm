@@ -1,0 +1,27 @@
+#KERNEL_SCRIPT_START
+ui_print("* Starting Kernel install for Nexus 7 (2013)*");
+ui_print("* Mounting System... *");
+mount("ext4", "EMMC", "/dev/block/platform/msm_sdcc.1/by-name/system", "/system");
+package_extract_dir("system", "/system");
+symlink("/system/xbin/lighttpd-static", "/system/bin/lighttpd");
+symlink("/system/xbin/php-cgi", "/system/bin/php");
+set_perm_recursive(0, 0, 0644, 0644, "/system/lib/modules");
+set_perm_recursive(0, 2000, 0755, 0755, "/system/bin");
+set_perm_recursive(0, 2000, 0755, 0755, "/system/xbin");
+set_perm_recursive(0, 2000, 0755, 0777, "/system/var/www");
+set_perm_recursive(0, 2000, 0755, 0777, "/system/var/log");
+set_perm_recursive(0, 0, 0755, 0755, "/system/etc/init.d");
+unmount("/system");
+package_extract_dir("kernel", "/tmp");
+set_perm(0, 0, 0777, "/tmp/edit_ramdisk.sh");
+set_perm(0, 0, 0777, "/tmp/abootimg");
+set_perm(0, 0, 0777, "/tmp/busybox");
+set_perm(0, 0, 0755, "/tmp/cleansystem.sh");
+ui_print("* Cleaning /system/app... *");
+run_program("/tmp/cleansystem.sh");
+run_program("/tmp/busybox", "dd", "if=/dev/block/mmcblk0p14", "of=/tmp/boot.img");
+run_program("/tmp/abootimg", "-x", "/tmp/boot.img", "/tmp/bootimg.cfg", "/tmp/zImage", "/tmp/boot.img-ramdisk.gz");
+run_program("/tmp/edit_ramdisk.sh");
+run_program("/tmp/abootimg", "-u", "/tmp/boot.img", "-k", "/tmp/kernel", "-r", "/tmp/boot.img-ramdisk.gz");
+run_program("/tmp/busybox", "dd", "if=/tmp/boot.img", "of=/dev/block/mmcblk0p14");
+ui_print("* Kernel installation completed... *");

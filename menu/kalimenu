@@ -895,24 +895,23 @@ esac
 f_vncres(){
 if [ "$DEVICE" == "hammerhead" ]; then
 	vncres="1920x1080"
-fi
-if [ "$DEVICE" == "flo" ] || [ "$DEVICE" == "deb" ]; then
+elif [ "$DEVICE" == "flo" ] || [ "$DEVICE" == "deb" ]; then
 	vncres="1920x1200"
-fi
-if [ "$DEVICE" == "grouper" ] || [ "$DEVICE" == "tilapia" ]; then
+elif [ "$DEVICE" == "grouper" ] || [ "$DEVICE" == "tilapia" ]; then
 	vncres="1280x1024"
-fi
-if [ "$DEVICE" == "manta" ]; then
+elif [ "$DEVICE" == "manta" ]; then
 	vncres="2650x1600"
-fi
-if [ "$DEVICE" == "mako" ]; then
+elif [ "$DEVICE" == "mako" ]; then
   vncres="1280x768"
-fi
-if [ "$DEVICE" == "shamu" ]; then
+elif [ "$DEVICE" == "shamu" ]; then
   vncres="2560x1440"
-fi
-if [ "$DEVICE" == "flounder" ]; then
+elif [ "$DEVICE" == "flounder" ]; then
   vncres="2048x1536"
+elif [ "$DEVICE" == "A0001 - bacon" ]; then
+  vncres="1920x1080"
+else
+  DEVICE="unknown device"
+  vncres="1920x1080"
 fi
 
 echo ""

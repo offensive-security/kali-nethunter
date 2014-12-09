@@ -1,0 +1,23 @@
+#KERNEL_SCRIPT_START
+getprop("ro.product.device") == "mako" || abort("This package is for \"mako\" devices; this is a \"" + getprop("ro.product.device") + "\".");
+
+ui_print("* Starting Kernel install for Nexus 4       *");
+ui_print("* Mounting System...                        *");
+mount("ext4", "EMMC", "/dev/block/platform/msm_sdcc.1/by-name/system", "/system");
+package_extract_dir("system", "/system");
+set_perm_recursive(0, 0, 0644, 0644, "/system/lib/modules");
+set_perm_recursive(0, 2000, 0755, 0755, "/system/bin");
+set_perm_recursive(0, 2000, 0755, 0755, "/system/xbin");
+set_perm_recursive(0, 0, 0755, 0755, "/system/etc/init.d");
+unmount("/system");
+package_extract_dir("kernel", "/tmp");
+set_perm(0, 0, 0777, "/tmp/edit_ramdisk.sh");
+set_perm(0, 0, 0777, "/tmp/unpackbootimg");
+set_perm(0, 0, 0777, "/tmp/busybox");
+set_perm(0, 0, 0755, "/tmp/mkbootimg.sh");
+
+ui_print("* Cleaning /system/app...                   *");
+run_program("/tmp/cleansystem.sh");
+package_extract_file("boot.img", "/dev/block/platform/msm_sdcc.1/by-name/boot");
+
+ui_print("* Kernel installation completed...          *");

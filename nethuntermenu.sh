@@ -95,9 +95,7 @@ f_mainmenu(){
   echo ""
   echo "[2] Build for OnePlus devices"
   echo ""
-  echo "[3] Build for Samsung devices"
-  echo ""
-  echo "[4] RootFS only for all devices"
+  echo "[3] RootFS only for all devices"
   echo ""
   #echo "[O] Options"
   echo "[Q] Quit"
@@ -107,8 +105,7 @@ f_mainmenu(){
   case $brandselection in
     1) f_nexusmenu;;
     2) f_oneplusmenu;;
-    3) f_samsungmenu;;
-    4) f_rootfsonly;;
+    3) f_rootfsonly;;
     Q|q) clear; exit;;
   esac
 }
@@ -163,28 +160,6 @@ f_oneplusmenu(){
 
   case $deviceselection in
     1) f_oneplusone;;
-    R|r) f_mainmenu;;
-    Q|q) clear; exit;;
-  esac
-}
-
-f_samsungmenu(){
-  clear
-  echo "NetHunter>Samsung Build Menu"
-  echo ""
-  echo "##################################################"
-  echo "[1] Galaxy S5 --- G900"
-  echo "[2] Galaxy S4 --- I9500"
-  echo ""
-  echo ""
-  echo "[R] Return to previous menu"
-  echo "[Q] Quit"
-  echo ""
-  read -p "Selection: " deviceselection
-
-  case $deviceselection in
-    1) f_gs5;;
-    2) f_gs4;;
     R|r) f_mainmenu;;
     Q|q) clear; exit;;
   esac
@@ -396,61 +371,6 @@ f_oneplusone(){
   esac
 }
 
-#######################
-### Samsung Devices ###
-#######################
-f_gs5(){
-  clear
-  device=gs5
-  echo "NetHunter>Samsung>Galaxy S5 Build Menu"
-  echo "##################################################"
-  echo "	[1] Rootfs and Kernel --- (Android  4.4.2 - 4.4.4)"
-  echo "	[2] Kernel Only --------- (Android  4.4.2 - 4.4.4)"
-  echo "  [3] RootFS and Kernel --- (TouchWiz 4.4.2 - 4.4.4)"
-  echo "  [4] Kernel Only --------- (TouchWiz 4.4.2 - 4.4.4)"
-  echo ""
-  echo ""
-  echo "[R] Return to previous menu"
-  echo "[Q] Quit"
-  echo ""
-  read -p "Selection: " buildselection
-
-  case $buildselection in
-    1) f_kitkatall;;
-    2) f_kitkatkernel;;
-    3) f_touchwizall;;
-    4) f_touchwizkernel;;
-    R|r) f_oneplusmenu;;
-    Q|q) clear; exit;;
-  esac
-}
-
-f_gs4(){
-  clear
-  device=gs4
-  echo "NetHunter>Samsung>Galaxy S4 Build Menu"
-  echo "##################################################"
-  echo "	[1] Rootfs and Kernel --- (Android  4.4.2 - 4.4.4)"
-  echo "	[2] Kernel Only --------- (Android  4.4.2 - 4.4.4)"
-  echo "  [3] RootFS and Kernel --- (TouchWiz 4.4.2 - 4.4.4)"
-  echo "  [4] Kernel Only --------- (TouchWiz 4.4.2 - 4.4.4)"
-  echo ""
-  echo ""
-  echo "[R] Return to previous menu"
-  echo "[Q] Quit"
-  echo ""
-  read -p "Selection: " buildselection
-
-  case $buildselection in
-    1) f_kitkatall;;
-    2) f_kitkatkernel;;
-    3) f_touchwizall;;
-    4) f_touchwizkernel;;
-    R|r) f_oneplusmenu;;
-    Q|q) clear; exit;;
-  esac
-}
-
 #############################
 ### Build Kernel / RootFS ###
 #############################
@@ -471,16 +391,6 @@ f_lollipopall(){
 
 f_lollipopkernel(){
   ./nethunterbuild -b kernel -a lollipop -t $device
-  exit
-}
-
-f_touchwizall(){
-  ./nethunterbuild -b all -a touchwiz -t $device
-  exit
-}
-
-f_touchwizkernel(){
-  ./nethunterbuild -b kernel -a touchwiz -t $device
   exit
 }
 
