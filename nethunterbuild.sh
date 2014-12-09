@@ -116,6 +116,20 @@ f_setup(){
     fi
   fi
 
+  # Allow user input of version number/folder creation to make set up easier
+  cd $basepwd
+  for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
+  cd $basepwd
+  builddate=$(date +%m%d%Y)
+  case $buildtype in
+    rootfs) export basedir=$basepwd/rootfs-$builddate;;
+    kernel) export basedir=$basepwd/kernel-$selecteddevice-$builddate;;
+  esac
+  if [ -d "${basedir}" ]; then
+    rm -rf ${basedir}
+  fi
+  mkdir -p ${basedir}
+
   chmod +x $bt/*
 
   case $keepfiles in
@@ -173,20 +187,6 @@ f_setup(){
   source $basepwd/devices/hammerhead.sh
   source $basepwd/devices/mako.sh
   source $basepwd/devices/bacon.sh
-
-  # Allow user input of version number/folder creation to make set up easier
-  cd $basepwd
-  for directory in $(ls -l |grep ^d|awk -F" " '{print $9}');do cd $directory && git pull && cd ..;done
-  cd $basepwd
-  builddate=$(date +%m%d%Y)
-  case $buildtype in
-    rootfs) export basedir=$basepwd/rootfs-$builddate;;
-    kernel) export basedir=$basepwd/kernel-$selecteddevice-$builddate;;
-  esac
-  if [ -d "${basedir}" ]; then
-    rm -rf ${basedir}
-  fi
-  mkdir -p ${basedir}
   cd ${basedir}
 }
 
