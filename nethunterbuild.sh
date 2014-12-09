@@ -296,7 +296,7 @@ f_rootfs(){
     ###################
     ### BUILD SETUP ###
     ###################
-    if [ ! -d $basepwd/toolchains/gcc-arm-linux-gnueabihf-4.7 ]]; then
+    if [[ -d $basepwd/toolchains/gcc-arm-linux-gnueabihf-4.7 ]]; then
       echo "Using existing toolchain"
     else
       echo "Cloning toolchain"
@@ -368,14 +368,14 @@ f_rootfs(){
     export LC_ALL=C
     export DEBIAN_FRONTEND=noninteractive
 
-    mount -t proc proc kali-$architecture/proc
-    mount -o bind /dev/ kali-$architecture/dev/
-    mount -o bind /dev/pts kali-$architecture/dev/pts
+    mount -t proc proc ${rootfs}/kali-$architecture/proc
+    mount -o bind /dev/ ${rootfs}/kali-$architecture/dev/
+    mount -o bind /dev/pts ${rootfs}/kali-$architecture/dev/pts
 
     cp -rf ${basepwd}/utils/config/debconf.set ${rootfs}/kali-$architecture/debconf.set
     cp -rf ${basepwd}/utils/config/third-stage ${rootfs}/kali-$architecture/third-stage
     cp -rf ${basepwd}/utils/safe-apt-get kali-$architecture/usr/bin/safe-apt-get
-    chmod +x kali-$architecture/third-stage
+    chmod +x ${rootfs}/kali-$architecture/third-stage
     LANG=C chroot kali-$architecture /third-stage
   }
 
@@ -570,7 +570,7 @@ f_rootfs(){
     sleep 5
   }
 
-  if [ -d ${rootfs}/kali-$architecture ]]; then
+  if [[ -d ${rootfs}/kali-$architecture ]]; then
     echo "Reusing existing RootFS"
     f_rootfs_create_zip
   else
