@@ -905,6 +905,15 @@ fi
 if [ "$DEVICE" == "manta" ]; then
 	vncres="2650x1600"
 fi
+if [ "$DEVICE" == "mako" ]; then
+  vncres="1280x768"
+fi
+if [ "$DEVICE" == "shamu" ]; then
+  vncres="2560x1440"
+fi
+if [ "$DEVICE" == "flounder" ]; then
+  vncres="2048x1536"
+fi
 
 echo ""
 echo "Detected ${DEVICE}: will set resolution to ${vncres} in /etc/vnc.conf "
@@ -1041,8 +1050,8 @@ esac
 f_mifareclone(){
 # This script will automatically clone cards that are presented
 # to the reader. If a card has already been cloned then the script we
-# not try to clone the card again. If a card fails to clone (e.g., moved 
-# too far from reader) an error will be presented and the loop will 
+# not try to clone the card again. If a card fails to clone (e.g., moved
+# too far from reader) an error will be presented and the loop will
 # restart. Tested using a SCL3711 usb dongle.
 
 # Make sure the Mifare NFC tools are installed. If not, ask to install.
@@ -1092,7 +1101,7 @@ if [ "$CARD" == "found" ] ; then
 	else
 		CTIME=$(date -u '+20%y%m%d-%H:%M:%S-UTC')
 		mfoc -O $LOG_PATH/$CTIME-$TEMP_CARD.mfd
-		
+
 		# Ensure we got a good dump. If not loop back around.
 		if [ -s $LOG_PATH/$CTIME-$TEMP_CARD.mfd ]; then
 			echo ""
@@ -1201,7 +1210,6 @@ echo "[1] Configure Timezone"
 echo "[2] Create Metasploit User and Database"
 echo "[3] Macchanger"
 echo "[4] Install NodeJS"
-#echo "[5] Update NetHunter"
 echo ""
 echo "[0] Exit to main menu"
 echo ""
@@ -1212,7 +1220,6 @@ case $settingschoice in
 2) clear; f_msuser ;;
 3) clear; f_macchanger ;;
 4) clear; f_nodejs ;;
-5) clear; f_updatenethunter;;
 0) f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
@@ -1269,14 +1276,6 @@ if [ "$randommac" == "y" ]; then
 		fi
 fi
 f_settings
-}
-
-f_updatenethunter(){
-  clear
-  curl -o /usr/bin/updater 'https://raw.githubusercontent.com/offensive-security/kali-nethunter/master/updater.sh'
-  chmod 755 /usr/bin/updater
-  sh /usr/bin/updater
-  f_settings
 }
 
 ##############################################
