@@ -118,8 +118,9 @@ f_setup(){
 
   chmod +x $bt/*
 
-  case $deletefiles in
-    1)
+  case $keepfiles in
+    1) echo "Keep Existing files";;
+    *)
       if [[ $buildtype == "rootfs" ]]||[[ $buildtype == "all" ]]; then
         rm -rf $basepwd/rootfs/*
         rm -rf $basepwd/toolchains/gcc-arm-linux-gnueabihf-4.7
@@ -161,6 +162,7 @@ f_setup(){
         rm -rf ${basepwd}/toolchains/toolchain32
       fi;;
   esac
+
   #########  Devices  ##########
   # Build scripts for each kernel is located under devices/devicename
   source $basepwd/devices/manta.sh
@@ -294,7 +296,7 @@ f_rootfs(){
     ###################
     ### BUILD SETUP ###
     ###################
-    if [[ -d $basepwd/toolchains/gcc-arm-linux-gnueabihf-4.7 ]]; then
+    if [ ! -d $basepwd/toolchains/gcc-arm-linux-gnueabihf-4.7 ]]; then
       echo "Using existing toolchain"
     else
       echo "Cloning toolchain"
@@ -568,7 +570,7 @@ f_rootfs(){
     sleep 5
   }
 
-  if [[ -d ${rootfs}/kali-$architecture ]]; then
+  if [ -d ${rootfs}/kali-$architecture ]]; then
     echo "Reusing existing RootFS"
     f_rootfs_create_zip
   else
@@ -717,7 +719,7 @@ outputdir=~/NetHunter-Builds
 deletefiles=0
 
 ### Arguments ###
-while getopts "b:a:t:o:dlh" flag; do
+while getopts "b:a:t:o:dkh" flag; do
   case "$flag" in
     b)
       case $OPTARG in
@@ -773,9 +775,8 @@ while getopts "b:a:t:o:dlh" flag; do
     d)
       echo "Debugging Mode On"
       DEBUG=1;;
-    r)
-      echo "Deleting files"
-      deletefiles=1;;
+    k)
+      keepfiles=1;;
     h)
       clear
       echo -e "\e[31m##################################\e[37m NetHunter Help Menu \e[31m###################################\e[0m"
@@ -786,7 +787,7 @@ while getopts "b:a:t:o:dlh" flag; do
       echo -e  "-t [device]      \e[31m||\e[0m Android device to build for (Kernel buids only)"
       echo -e  "-a [Version]     \e[31m||\e[0m Android version to build for (Kernel buids only)"
       echo -e  "-o [directory]   \e[31m||\e[0m Where the files are output (Defaults to ~/NetHunter-Builds)"
-      echo -e  "-r               \e[31m||\e[0m Removes files and re-downloads kernels/toolchains/rootfs from source"
+      echo -e  "-k               \e[31m||\e[0m Keep previously downloaded files (If they exist)"
       echo -e  "-d               \e[31m||\e[0m Turn debug mode on"
       echo -e "\e[31m###\e[37m Devices \e[31m##############################################################################\e[0m"
       echo -e  "manta            \e[31m||\e[0m Nexus 10"
