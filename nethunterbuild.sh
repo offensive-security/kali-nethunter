@@ -76,7 +76,6 @@ f_setup(){
   export rootfs=$basepwd/rootfs
   export bt=$basepwd/utils/boottools
   export architecture="armhf"
-  chmod +x $bt/*
 
   ### Tests if kali-nethunter build directory exists
   if [ -d $basepwd ]; then
@@ -85,11 +84,8 @@ f_setup(){
     ### Make Directories and Prepare to build
     mkdir -p $basepwd
     cd $basepwd
-    git clone https://github.com/offensive-security/gcc-arm-linux-gnueabihf-4.7 $basepwd/toolchains/gcc-arm-linux-gnueabihf-4.7
-    export PATH=${PATH}:$basepwd/toolchains/gcc-arm-linux-gnueabihf-4.7/bin
-    git clone -b development https://github.com/offensive-security/kali-nethunter
+    git clone -b development https://github.com/offensive-security/kali-nethunter $basepwd
     cd $basepwd
-
     ### Build Dependencies for script
     apt-get install -y git-core gnupg flex bison gperf libesd0-dev build-essential \
     zip curl libncurses5-dev zlib1g-dev libncurses5-dev gcc-multilib g++-multilib \
@@ -119,6 +115,8 @@ f_setup(){
       rm -rf lz4-r112.tar.gz lz4-r112
     fi
   fi
+
+  chmod +x $bt/*
 
   case $deletefiles in
     1)
@@ -296,7 +294,7 @@ f_rootfs(){
     ###################
     ### BUILD SETUP ###
     ###################
-    if [[ -d git clone https://github.com/offensive-security/gcc-arm-linux-gnueabihf-4.7 ]]; then
+    if [[ -d $basepwd/toolchains/gcc-arm-linux-gnueabihf-4.7 ]]; then
       echo "Using existing toolchain"
     else
       echo "Cloning toolchain"

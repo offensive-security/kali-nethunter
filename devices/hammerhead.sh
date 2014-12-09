@@ -56,12 +56,12 @@ f_hammerhead_stock_kernel(){
 #####################################################
 f_hammerhead_stock_kernel5(){
 	echo "Downloading Android Toolchian"
-	if [[ -d cp -rf ${basepwd}/toolchains/toolchain32 ${basedir} ]]; then
+	if [[ -d ${basepwd}/toolchains/toolchain32 ${basedir} ]]; then
 		echo "Copying toolchain to rootfs"
-  	cp -rf cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
+  	cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	else
 		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 cp -rf ${basepwd}/toolchains/toolchain32
-		cp -rf cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
+		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	fi
 	echo "Setting export paths"
 	# Set path for Kernel building

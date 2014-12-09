@@ -37,7 +37,7 @@ f_deb_stock_kernel(){
 		f_kernel_build_init
 		echo "Downloading Kernel"
 		cd ${basedir}
-		if [[ - d ${basepwd}/devices/kernels/flodeb-4 ]]; then
+		if [[ -d ${basepwd}/devices/kernels/flodeb-4 ]]; then
   		echo "Copying kernel to rootfs"
   		cp -rf ${basepwd}/devices/kernels/flodeb-4 ${basedir}/kernel
 		else
