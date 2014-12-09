@@ -6,11 +6,12 @@
 #####################################################
 f_oneplus_kernel(){
 	echo "Downloading Android Toolchian"
-	if [[ $LOCALGIT == 1 ]]; then
+	if [[ -d ${basepwd}/toolchains/toolchain32 ]]; then
 		echo "Copying toolchain to rootfs"
-    cp -rf ${basepwd}/arm-eabi-4.7 ${basedir}/toolchain
+    cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	else
-		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basedir}/toolchain
+		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basepwd}/toolchains/toolchain32
+		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	fi
 	echo "Setting export paths"
 	# Set path for Kernel building
@@ -35,11 +36,12 @@ f_oneplus_kernel(){
 		f_kernel_build_init
 		cd ${basedir}
 		echo "Downloading Kernel"
-		if [[ $LOCALGIT == 1 ]]; then
+		if [[ -d ${basepwd}/devices/kernels/oneplus11 ]]; then
   		echo "Copying kernel to rootfs"
-  		cp -rf ${basepwd}/oneplus11 ${basedir}/kernel
+  		cp -rf ${basepwd}/devices/kernels/oneplus11 ${basedir}/kernel
 		else
-  		git clone https://github.com/binkybear/AK-OnePone.git -b cm-11.0-ak ${basedir}/kernel
+  		git clone https://github.com/binkybear/AK-OnePone.git -b cm-11.0-ak ${basedir}/devices/kernels/oneplus11
+			cp -rf ${basepwd}/devices/kernels/oneplus11 ${basedir}/kernel
 		fi
 		cd ${basedir}/kernel
 		chmod +x scripts/* ramdisk/4/mkbootimg ramdisk/4/dtbToolCM
@@ -69,11 +71,12 @@ f_oneplus_kernel(){
 #####################################################
 f_oneplus_kernel5(){
 	echo "Downloading Android Toolchian"
-	if [[ $LOCALGIT == 1 ]]; then
+	if [[ -d ${basepwd}/toolchains/toolchain32 ]]; then
 		echo "Copying toolchain to rootfs"
-    cp -rf ${basepwd}/arm-eabi-4.7 ${basedir}/toolchain
+    cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	else
-		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basedir}/toolchain
+		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basepwd}/toolchains/toolchain32
+		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	fi
 	echo "Setting export paths"
 	# Set path for Kernel building
@@ -98,11 +101,12 @@ f_oneplus_kernel5(){
 		f_kernel_build_init
 		cd ${basedir}
 		echo "Downloading Kernel"
-		if [[ $LOCALGIT == 1 ]]; then
+		if [[ -d ${basepwd}/devices/kernels/oneplus12 ]]; then
   		echo "Copying kernel to rootfs"
-  		cp -rf ${basepwd}/oneplus12 ${basedir}/kernel
+  		cp -rf ${basepwd}/devices/kernels/oneplus12 ${basedir}/kernel
 		else
-  		git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.0-ak ${basedir}/kernel
+  		git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.0-ak ${basepwd}/devices/kernels/oneplus12
+			cp -rf ${basepwd}/devices/kernels/oneplus12 ${basedir}/kernel
 		fi
 		cd ${basedir}/kernel
 		chmod +x scripts/* ramdisk/5/mkbootimg ramdisk/5/dtbToolCM

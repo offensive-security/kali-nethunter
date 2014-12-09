@@ -3,12 +3,13 @@
 # Create Nexus 10 Kernel (4.4+)
 #####################################################
 f_nexus10_kernel(){
-	echo "Downloading Android Toolchian"
-	if [[ $LOCALGIT == 1 ]]; then
+	eecho "Downloading Android Toolchian"
+	if [[ -d ${basepwd}/toolchains/toolchain32 ]]; then
 		echo "Copying toolchain to rootfs"
-    cp -rf ${basepwd}/arm-eabi-4.7 ${basedir}/toolchain
+		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	else
-		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basedir}/toolchain
+		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basepwd}/toolchains/toolchain32
+		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	fi
 	echo "Setting export paths"
 	# Set path for Kernel building
@@ -32,11 +33,12 @@ f_nexus10_kernel(){
 	else
 		f_kernel_build_init
 		echo "Downloading Kernel"
-		if [[ $LOCALGIT == 1 ]]; then
+		if [[ -d ${basepwd}/devices/kernels/manta-4 ]]; then
   		echo "Copying kernel to rootfs"
-  		cp -rf ${basepwd}/kernel_samsung_manta ${basedir}/kernel
+  		cp -rf ${basepwd}/devices/kernels/manta-4 ${basedir}/kernel
 		else
-  		git clone https://github.com/binkybear/kernel_samsung_manta.git -b thunderkat ${basedir}/kernel
+  		git clone https://github.com/binkybear/kernel_samsung_manta.git -b thunderkat ${basepwd}/devices/kernels/manta-4
+			cp -rf ${basepwd}/devices/kernels/manta-4 ${basedir}/kernel
 		fi
 		cd ${basedir}/kernel
 		make clean
@@ -53,11 +55,12 @@ f_nexus10_kernel(){
 #####################################################
 f_nexus10_kernel5(){
 	echo "Downloading Android Toolchian"
-	if [[ $LOCALGIT == 1 ]]; then
+	if [[ -d ${basepwd}/toolchains/toolchain32 ]]; then
 		echo "Copying toolchain to rootfs"
-    cp -rf ${basepwd}/arm-eabi-4.7 ${basedir}/toolchain
+		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	else
-		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basedir}/toolchain
+		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basepwd}/toolchains/toolchain32
+		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	fi
 	echo "Setting export paths"
 	# Set path for Kernel building
@@ -81,11 +84,12 @@ f_nexus10_kernel5(){
 	else
 	f_kernel_build_init
 	echo "Downloading Kernel"
-	if [[ $LOCALGIT == 1 ]]; then
+	if [[ -d ${basepwd}/devices/kernels/manta-5 ]]; then
   	echo "Copying kernel to rootfs"
-  	cp -rf ${basepwd}/nexus10-5 ${basedir}/kernel
+  	cp -rf ${basepwd}/devices/kernels/manta-5 ${basedir}/kernel
 	else
-  	git clone https://github.com/binkybear/nexus10-5.git -b android-exynos-manta-3.4-lollipop-release ${basedir}/kernel
+  	git clone https://github.com/binkybear/nexus10-5.git -b android-exynos-manta-3.4-lollipop-release ${basepwd}/devices/kernels/manta-5
+		cp -rf ${basepwd}/devices/kernels/manta-5 ${basedir}/kernel
 	fi
 	cd ${basedir}/kernel
 	make clean

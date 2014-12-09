@@ -1,10 +1,11 @@
 f_nexus6_kernel5(){
 	echo "Downloading Android Toolchian"
-	if [[ $LOCALGIT == 1 ]]; then
+	if [[ -d ${basepwd}/toolchains/toolchain32 ]]; then
 		echo "Copying toolchain to rootfs"
-    cp -rf ${basepwd}/arm-eabi-4.7 ${basedir}/toolchain
+		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	else
-		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basedir}/toolchain
+		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basepwd}/toolchains/toolchain32
+		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	fi
 	echo "Setting export paths"
 	# Set path for Kernel building
@@ -29,11 +30,12 @@ f_nexus6_kernel5(){
 		f_kernel_build_init
 		cd ${basedir}
 		echo "Downloading Kernel"
-		if [[ $LOCALGIT == 1 ]]; then
+		if [[ -d ${basepwd}/devices/kernels/shamu-5 ]]; then
   		echo "Copying kernel to rootfs"
-  		cp -rf ${basepwd}/nexus6-5 ${basedir}/kernel
+  		cp -rf ${basepwd}/devices/kernels/shamu-5 ${basedir}/kernel
 		else
-  		git clone https://github.com/binkybear/kernel_msm.git -b android-msm-shamu-3.10-lollipop-release ${basedir}/kernel
+  		git clone https://github.com/binkybear/kernel_msm.git -b android-msm-shamu-3.10-lollipop-release ${basepwd}/devices/kernels/shamu-5
+			cp -rf ${basepwd}/devices/kernels/shamu-5 ${basedir}/kernel
 		fi
 		cd ${basedir}/kernel
 		chmod +x scripts/*

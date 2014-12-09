@@ -3,11 +3,12 @@
 #####################################################
 f_mako_stock_kernel(){
 	echo "Downloading Android Toolchian"
-	if [[ $LOCALGIT == 1 ]]; then
+	if [[ -d ${basepwd}/toolchains/toolchain32 ]]; then
 		echo "Copying toolchain to rootfs"
-    cp -rf ${basepwd}/arm-eabi-4.7 ${basedir}/toolchain
+    cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	else
-		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basedir}/toolchain
+		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basepwd}/toolchains/toolchain32
+		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	fi
 	echo "Setting export paths"
 	# Set path for Kernel building
@@ -32,11 +33,12 @@ f_mako_stock_kernel(){
 		f_kernel_build_init
 		cd ${basedir}
 		echo "Downloading Kernel"
-		if [[ $LOCALGIT == 1 ]]; then
+		if [[ -d ${basepwd}/devices/kernels/mako-4 ]]; then
   		echo "Copying kernel to rootfs"
-  		cp -rf ${basepwd}/mako ${basedir}/kernel
+  		cp -rf ${basepwd}/devices/kernels/mako-4 ${basedir}/kernel
 		else
-  		git clone https://github.com/binkybear/kernel_msm.git -b android-msm-mako-3.4-kitkat-mr2 ${basedir}/kernel
+  		git clone https://github.com/binkybear/kernel_msm.git -b android-msm-mako-3.4-kitkat-mr2 ${basepwd}/devices/kernels/mako-4
+			cp -rf ${basepwd}/devices/kernels/mako-4 ${basedir}/kernel
 		fi
 		cd ${basedir}/kernel
 		unzip ramdisk/4.4.4/ramdisk_kitkat.zip -d ${basedir}/flashkernel/kernel/
@@ -60,11 +62,12 @@ f_mako_stock_kernel(){
 #####################################################
 f_mako_cm_kernel(){
 	echo "Downloading Android Toolchian"
-	if [[ $LOCALGIT == 1 ]]; then
+	if [[ -d ${basepwd}/toolchains/toolchain32 ]]; then
 		echo "Copying toolchain to rootfs"
-    cp -rf ${basepwd}/arm-eabi-4.7 ${basedir}/toolchain
+		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	else
-		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basedir}/toolchain
+		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basepwd}/toolchains/toolchain32
+		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	fi
 	echo "Setting export paths"
 	# Set path for Kernel building

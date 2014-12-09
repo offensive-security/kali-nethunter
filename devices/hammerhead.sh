@@ -3,11 +3,12 @@
 #####################################################
 f_hammerhead_stock_kernel(){
 	echo "Downloading Android Toolchian"
-	if [[ $LOCALGIT == 1 ]]; then
+	if [[ -d ${basepwd}/toolchains/toolchain32 ]]; then
 		echo "Copying toolchain to rootfs"
-    cp -rf ${basepwd}/arm-eabi-4.7 ${basedir}/toolchain
+    cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	else
-		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basedir}/toolchain
+		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basepwd}/toolchains/toolchain32
+		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	fi
 	echo "Setting export paths"
 	# Set path for Kernel building
@@ -32,11 +33,12 @@ f_hammerhead_stock_kernel(){
 		f_kernel_build_init
 		cd ${basedir}
 		echo "Downloading Kernel"
-		if [[ $LOCALGIT == 1 ]]; then
+		if [[ -d ${basepwd}/devices/kernels/hammerhead-4 ]]; then
   		echo "Copying kernel to rootfs"
-  		cp -rf ${basepwd}/furnace_kernel_lge_hammerhead ${basedir}/kernel
+  		cp -rf ${basepwd}/devices/kernels/hammerhead-4 ${basedir}/kernel
 		else
-  		git clone https://github.com/binkybear/furnace_kernel_lge_hammerhead.git -b android-4.4 ${basedir}/kernel
+  		git clone https://github.com/binkybear/furnace_kernel_lge_hammerhead.git -b android-4.4 ${basepwd}/devices/kernels/hammerhead-4
+			cp -rf ${basepwd}/devices/kernels/hammerhead-4 ${basedir}/kernel
 		fi
 		cd ${basedir}/kernel
 		make clean
@@ -54,11 +56,12 @@ f_hammerhead_stock_kernel(){
 #####################################################
 f_hammerhead_stock_kernel5(){
 	echo "Downloading Android Toolchian"
-	if [[ $LOCALGIT == 1 ]]; then
+	if [[ -d cp -rf ${basepwd}/toolchains/toolchain32 ${basedir} ]]; then
 		echo "Copying toolchain to rootfs"
-  	cp -rf ${basepwd}/arm-eabi-4.7 ${basedir}/toolchain
+  	cp -rf cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	else
-		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basedir}/toolchain
+		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 cp -rf ${basepwd}/toolchains/toolchain32
+		cp -rf cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	fi
 	echo "Setting export paths"
 	# Set path for Kernel building
@@ -83,11 +86,12 @@ f_hammerhead_stock_kernel5(){
 		f_kernel_build_init
 		cd ${basedir}
 		echo "Downloading Kernel"
-		if [[ $LOCALGIT == 1 ]]; then
+		if [[ -d ${basepwd}/devices/kernels/hammerhead-5 ]]; then
   		echo "Copying kernel to rootfs"
-  		cp -rf ${basepwd}/nexus5-5 ${basedir}/kernel
+  		cp -rf ${basepwd}/devices/kernels/hammerhead-5 ${basedir}/kernel
 		else
-  		git clone https://github.com/binkybear/kernel_msm.git -b android-msm-hammerhead-3.4-lollipop-release ${basedir}/kernel
+  		git clone https://github.com/binkybear/kernel_msm.git -b android-msm-hammerhead-3.4-lollipop-release ${basepwd}/devices/kernels/hammerhead-5
+			cp -rf ${basepwd}/devices/kernels/hammerhead-5 ${basedir}/kernel
 		fi
 		cd ${basedir}/kernel
 		chmod +x scripts/*

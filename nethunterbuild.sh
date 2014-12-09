@@ -72,8 +72,7 @@ f_setup(){
   printf '\033[8;40;90t'
 
   ######### Set paths and permissions  #######
-  export builddir=~/arm-stuff
-  export basepwd=$builddir/kali-nethunter
+  export basepwd=~/NetHunter
   export rootfs=$basepwd/rootfs
   export bt=$basepwd/utils/boottools
   export architecture="armhf"
@@ -84,10 +83,10 @@ f_setup(){
     cd $basepwd
   else
     ### Make Directories and Prepare to build
-    mkdir $builddir
-    cd $builddir
-    git clone https://github.com/offensive-security/gcc-arm-linux-gnueabihf-4.7
-    export PATH=${PATH}:$builddir/gcc-arm-linux-gnueabihf-4.7/bin
+    mkdir -p $basepwd
+    cd $basepwd
+    git clone https://github.com/offensive-security/gcc-arm-linux-gnueabihf-4.7 $basepwd/toolchains/gcc-arm-linux-gnueabihf-4.7
+    export PATH=${PATH}:$basepwd/toolchains/gcc-arm-linux-gnueabihf-4.7/bin
     git clone -b development https://github.com/offensive-security/kali-nethunter
     cd $basepwd
 
@@ -121,6 +120,49 @@ f_setup(){
     fi
   fi
 
+  case $deletefiles in
+    1)
+      if [[ $buildtype == "rootfs" ]]||[[ $buildtype == "all" ]]; then
+        rm -rf $basepwd/rootfs/*
+        rm -rf $basepwd/toolchains/gcc-arm-linux-gnueabihf-4.7
+      fi
+      if [[ $selecteddevice == "flodeb" ]]; then
+        rm -rf ${basepwd}/devices/kernels/flodeb-4
+        rm -rf ${basepwd}/devices/kernels/flodeb-5
+        rm -rf ${basepwd}/toolchains/toolchain32
+      fi
+      if [[ $selecteddevice == "flounder" ]]; then
+        rm -rf ${basepwd}/devices/kernels/flounder-5
+        rm -rf ${basepwd}/toolchains/toolchain64s
+      fi
+      if [[ $selecteddevice == "groupertilapia" ]]; then
+        rm -rf ${basepwd}/devices/kernels/groupertilapia-4
+        rm -rf ${basepwd}/toolchains/toolchain32
+      fi
+      if [[ $selecteddevice == "hammerhead" ]]; then
+        rm -rf ${basepwd}/devices/kernels/hammerhead-4
+        rm -rf ${basepwd}/devices/kernels/hammerhead-5
+        rm -rf ${basepwd}/toolchains/toolchain32
+      fi
+      if [[ $selecteddevice == "mako" ]]; then
+        rm -rf ${basepwd}/devices/kernels/mako-4
+        rm -rf ${basepwd}/toolchains/toolchain32
+      fi
+      if [[ $selecteddevice == "manta" ]]; then
+        rm -rf ${basepwd}/devices/kernels/manta-4
+        rm -rf ${basepwd}/devices/kernels/manta-5
+        rm -rf ${basepwd}/toolchains/toolchain32
+      fi
+      if [[ $selecteddevice == "shamu" ]]; then
+        rm -rf ${basepwd}/devices/kernels/shamu-5
+        rm -rf ${basepwd}/toolchains/toolchain32
+      fi
+      if [[ $selecteddevice == "bacon" ]]; then
+        rm -rf ${basepwd}/devices/kernels/oneplus11
+        rm -rf ${basepwd}/devices/kernels/oneplus12
+        rm -rf ${basepwd}/toolchains/toolchain32
+      fi;;
+  esac
   #########  Devices  ##########
   # Build scripts for each kernel is located under devices/devicename
   source $basepwd/devices/manta.sh
@@ -254,8 +296,13 @@ f_rootfs(){
     ###################
     ### BUILD SETUP ###
     ###################
-    rm -rf ${rootfs}/*
-    export PATH=${PATH}:/root/gcc-arm-linux-gnueabihf-4.7/bin
+    if [[ -d git clone https://github.com/offensive-security/gcc-arm-linux-gnueabihf-4.7 ]]; then
+      echo "Using existing toolchain"
+    else
+      echo "Cloning toolchain"
+      git clone https://github.com/offensive-security/gcc-arm-linux-gnueabihf-4.7 $basepwd/toolchains/gcc-arm-linux-gnueabihf-4.7
+    fi
+    export PATH=${PATH}:$basepwd/toolchains/gcc-arm-linux-gnueabihf-4.7/bin
     unset CROSS_COMPILE
     # Set working folder to rootfs
     cd ${rootfs}
@@ -466,6 +513,7 @@ f_rootfs(){
     #  /system/xbin/nano - Nano binary
     #  /system/xbin/busybox - Busybox binary
     #####################################################
+    cd ${basepwd}
 
     # Create base flashable zip
 
@@ -509,26 +557,31 @@ f_rootfs(){
     echo "Compressing kali rootfs, please wait"
     tar jcf kalifs.tar.bz2 kali-$architecture
     mv kalifs.tar.bz2 ${basedir}/flash/data/local/
-
     #tar jcvf ${basedir}/flash/data/local/kalifs.tar.bz2 ${basedir}/kali-$architecture
     echo "Structure for flashable zip file is complete."
+
     cd ${basedir}/flash/
-    zip -r6 update-kali-$builddate.zip *
-    mv update-kali-$builddate.zip ${basedir}
+    zip -r6 NetHunter-$builddate.zip *
+    mv NetHunter-$builddate.zip ${basedir}
     cd ${basedir}
     # Generate sha1sum
     echo "Generating sha1sum for update-kali-$builddate.zip"
-    sha1sum update-kali-$builddate.zip > ${basedir}/update-kali-$builddate.sha1sum
+    sha1sum NetHunter-$builddate.zip > ${basedir}/NetHunter-$builddate.sha1sum
     sleep 5
   }
 
-  f_rootfs_setup
-  f_rootfs_stage_one
-  f_rootfs_stage_two
-  f_rootfs_stage_three
-  f_rootfs_stage_four
-  f_rootfs_cleanup
-  f_rootfs_create_zip
+  if [[ -d ${rootfs}/kali-$architecture ]]; then
+    echo "Reusing existing RootFS"
+    f_rootfs_create_zip
+  else
+    f_rootfs_setup
+    f_rootfs_stage_one
+    f_rootfs_stage_two
+    f_rootfs_stage_three
+    f_rootfs_stage_four
+    f_rootfs_cleanup
+    f_rootfs_create_zip
+  fi
 }
 
 ### Zip up the kernel
@@ -663,9 +716,10 @@ d_clear(){
 ######################### The commands below this line execute first #########################
 ### Use these variables to set the defaults if no argument was set
 outputdir=~/NetHunter-Builds
+deletefiles=0
 
 ### Arguments ###
-while getopts "b:a:t:o:dh" flag; do
+while getopts "b:a:t:o:dlh" flag; do
   case "$flag" in
     b)
       case $OPTARG in
@@ -721,6 +775,9 @@ while getopts "b:a:t:o:dh" flag; do
     d)
       echo "Debugging Mode On"
       DEBUG=1;;
+    r)
+      echo "Deleting files"
+      deletefiles=1;;
     h)
       clear
       echo -e "\e[31m##################################\e[37m NetHunter Help Menu \e[31m###################################\e[0m"
@@ -731,6 +788,7 @@ while getopts "b:a:t:o:dh" flag; do
       echo -e  "-t [device]      \e[31m||\e[0m Android device to build for (Kernel buids only)"
       echo -e  "-a [Version]     \e[31m||\e[0m Android version to build for (Kernel buids only)"
       echo -e  "-o [directory]   \e[31m||\e[0m Where the files are output (Defaults to ~/NetHunter-Builds)"
+      echo -e  "-r               \e[31m||\e[0m Removes files and re-downloads kernels/toolchains/rootfs from source"
       echo -e  "-d               \e[31m||\e[0m Turn debug mode on"
       echo -e "\e[31m###\e[37m Devices \e[31m##############################################################################\e[0m"
       echo -e  "manta            \e[31m||\e[0m Nexus 10"

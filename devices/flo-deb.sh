@@ -3,11 +3,12 @@
 #####################################################
 f_deb_stock_kernel(){
 	echo "Downloading Android Toolchian"
-	if [[ $LOCALGIT == 1 ]]; then
+	if [[ -d ${basepwd}/toolchains/toolchain32 ]]; then
 		echo "Copying toolchain to rootfs"
-    cp -rf ${basepwd}/arm-eabi-4.7 ${basedir}/toolchain
+    cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	else
-		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basedir}/toolchain
+		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basepwd}/toolchains/toolchain32
+		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	fi
 	echo "Setting export paths"
 	# Set path for Kernel building
@@ -36,11 +37,12 @@ f_deb_stock_kernel(){
 		f_kernel_build_init
 		echo "Downloading Kernel"
 		cd ${basedir}
-		if [[ $LOCALGIT == 1 ]]; then
+		if [[ - d ${basepwd}/devices/kernels/flodeb-4 ]]; then
   		echo "Copying kernel to rootfs"
-  		cp -rf ${basepwd}/flodeb ${basedir}/kernel
+  		cp -rf ${basepwd}/devices/kernels/flodeb-4 ${basedir}/kernel
 		else
-  		git clone https://github.com/binkybear/kernel_msm.git -b android-msm-flo-3.4-kitkat-mr2 ${basedir}/kernel
+  		git clone https://github.com/binkybear/kernel_msm.git -b android-msm-flo-3.4-kitkat-mr2 ${basepwd}/devices/kernels/flodeb-4
+			cp -rf ${basepwd}/devices/kernels/flodeb-4 ${basedir}/kernel
 		fi
 		cd ${basedir}/kernel
 		make clean
@@ -102,11 +104,12 @@ f_deb_cyanogen_kernel(){
 
 f_deb_stock_kernel5(){
 	echo "Downloading Android Toolchian"
-	if [[ $LOCALGIT == 1 ]]; then
+	if [[ -d ${basepwd}/toolchains/toolchain32 ]]; then
 		echo "Copying toolchain to rootfs"
-    cp -rf ${basepwd}/arm-eabi-4.7 ${basedir}/toolchain
+    cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	else
-		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basedir}/toolchain
+		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basepwd}/toolchains/toolchain32
+		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	fi
 	echo "Setting export paths"
 	# Set path for Kernel building
@@ -135,11 +138,12 @@ f_deb_stock_kernel5(){
 		f_kernel_build_init
 		echo "Downloading Kernel"
 		cd ${basedir}
-		if [[ $LOCALGIT == 1 ]]; then
+		if [[ -d ${basepwd}/devices/kernels/flodeb-5 ]]; then
   		echo "Copying kernel to rootfs"
-  		cp -rf ${basepwd}/nexus7_2013-5 ${basedir}/kernel
+  		cp -rf ${basepwd}/devices/kernels/flodeb-5 ${basedir}/kernel
 		else
-			git clone https://github.com/binkybear/kernel_msm.git -b android-msm-flo-3.4-lollipop-release ${basedir}/kernel
+			git clone https://github.com/binkybear/kernel_msm.git -b android-msm-flo-3.4-lollipop-release ${basepwd}/devices/kernels/flodeb-5
+			cp -rf ${basepwd}/devices/kernels/flodeb-5 ${basedir}/kernel
 		fi
 		cd ${basedir}/kernel
 		chmod +x scripts/*
