@@ -72,19 +72,18 @@ f_setup(){
   printf '\033[8;40;90t'
 
   ######### Set paths and permissions  #######
-  export basepwd=~/arm-stuff
+  # set badpwd to working folder
+  export basepwd=`pwd`
   export rootfs=$basepwd/rootfs
   export bt=$basepwd/utils/boottools
   export architecture="armhf"
 
   ### Tests if kali-nethunter build directory exists
-  if [ -d $basepwd ]; then
-    cd $basepwd
+  if [ -d "${basepwd}/toolchains/gcc-arm-linux-gnueabihf-4.7" ]; then
+    echo "Toolchain detected."
   else
+    echo "Toolchain not detected. Assuming this is the first install"
     ### Make Directories and Prepare to build
-    mkdir -p $basepwd
-    cd $basepwd
-    git clone -b development https://github.com/offensive-security/kali-nethunter $basepwd
     git clone https://github.com/offensive-security/gcc-arm-linux-gnueabihf-4.7 $basepwd/toolchains/gcc-arm-linux-gnueabihf-4.7
     export PATH=${PATH}:$basepwd/toolchains/gcc-arm-linux-gnueabihf-4.7/bin
     ### Build Dependencies for script
@@ -117,7 +116,7 @@ f_setup(){
     fi
   fi
 
-  export PATH=${PATH}:/root/NetHunter/toolchains/rootfs/bin
+  export PATH=${PATH}:`pwd`/rootfs/bin
   chmod +x $bt/*
 
   case $keepfiles in
