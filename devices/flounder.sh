@@ -1,8 +1,8 @@
 f_nexus9_kernel5(){
-	echo "Downloading Android Toolchian"
+	echo "Downloading Android Toolchain"
 	if [[ -d ${basepwd}/toolchains/toolchain64 ]]; then
 		echo "Copying toolchain to rootfs"
-    cp -rf ${basepwd}/toolchains/toolchain64 ${basedir}/toolchain64
+		cp -rf ${basepwd}/toolchains/toolchain64 ${basedir}/toolchain64
 	else
 		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 -b lollipop-release ${basepwd}/toolchains/toolchain64
 		cp -rf ${basepwd}/toolchains/toolchain64 ${basedir}/toolchain64

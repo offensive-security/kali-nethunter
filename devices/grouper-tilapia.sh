@@ -2,10 +2,10 @@
 # Create Nexus 7 Grouper Kernel (4.4+)
 #####################################################
 f_nexus7_grouper_kernel(){
-	echo "Downloading Android Toolchian"
+	echo "Downloading Android Toolchain"
 	if [[ -d ${basepwd}/toolchains/toolchain32 ]]; then
 		echo "Copying toolchain to rootfs"
-    cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
+		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	else
 		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basepwd}/toolchains/toolchain32
 		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
