@@ -3,7 +3,7 @@
 # Create Nexus 10 Kernel (4.4+)
 #####################################################
 f_nexus10_kernel(){
-	eecho "Downloading Android Toolchian"
+	eecho "Downloading Android Toolchain"
 	if [[ -d ${basepwd}/toolchains/toolchain32 ]]; then
 		echo "Copying toolchain to rootfs"
 		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain

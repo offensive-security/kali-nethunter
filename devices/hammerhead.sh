@@ -2,10 +2,10 @@
 # Create Nexus 5 Stock Kernel (4.4+)
 #####################################################
 f_hammerhead_stock_kernel(){
-	echo "Downloading Android Toolchian"
+	echo "Downloading Android Toolchain"
 	if [[ -d ${basepwd}/toolchains/toolchain32 ]]; then
 		echo "Copying toolchain to rootfs"
-    cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
+    		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	else
 		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basepwd}/toolchains/toolchain32
 		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
@@ -55,12 +55,12 @@ f_hammerhead_stock_kernel(){
 # Create Nexus 5 Stock Kernel (5)
 #####################################################
 f_hammerhead_stock_kernel5(){
-	echo "Downloading Android Toolchian"
+	echo "Downloading Android Toolchain"
 	if [[ -d ${basepwd}/toolchains/toolchain32 ]]; then
 		echo "Copying toolchain to rootfs"
-  	cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
+		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	else
-		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 cp -rf ${basepwd}/toolchains/toolchain32
+		git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basepwd}/toolchains/toolchain32
 		cp -rf ${basepwd}/toolchains/toolchain32 ${basedir}/toolchain
 	fi
 	echo "Setting export paths"
