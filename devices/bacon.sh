@@ -102,10 +102,10 @@ f_oneplus_kernel5(){
 		cd ${basedir}
 		echo "Downloading Kernel"
 		if [[ -d ${basepwd}/devices/kernels/oneplus12 ]]; then
-  		echo "Copying kernel to rootfs"
-  		cp -rf ${basepwd}/devices/kernels/oneplus12 ${basedir}/kernel
+  			echo "Copying kernel to rootfs"
+  			cp -rf ${basepwd}/devices/kernels/oneplus12 ${basedir}/kernel
 		else
-  		git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.0-ak ${basepwd}/devices/kernels/oneplus12
+  			git clone https://github.com/binkybear/furnace-bacon.git -b cm-12.0 ${basepwd}/devices/kernels/oneplus12
 			cp -rf ${basepwd}/devices/kernels/oneplus12 ${basedir}/kernel
 		fi
 		cd ${basedir}/kernel
@@ -123,7 +123,7 @@ f_oneplus_kernel5(){
 		${basedir}/kernel/ramdisk/5/dtbToolCM -2 -o ${basedir}/flashkernel/kernel/dt.img -s 2048 -p ${basedir}/kernel/scripts/dtc/ ${basedir}/kernel/arch/arm/boot/
 		sleep 3
 		echo "Creating boot.img"
-		${basedir}/kernel/ramdisk/5/mkbootimg --kernel arch/arm/boot/zImage --ramdisk ramdisk/5/initrd.img --cmdline "console=ttyHSL0,115200,n8 androidboot.hardware=bacon user_debug=31 msm_rtb.filter=0x3F ehci-hcd.park=3" --dt ../flashkernel/kernel/dt.img --output ../flashkernel/boot.img
+		${basedir}/kernel/ramdisk/5/mkbootimg --kernel arch/arm/boot/zImage --ramdisk ramdisk/5/initrd.img --cmdline "console=ttyHSL0,115200,n8 androidboot.hardware=bacon user_debug=31 msm_rtb.filter=0x3F ehci-hcd.park=3 androidboot.selinux=permissive" --dt ../flashkernel/kernel/dt.img --output ../flashkernel/boot.img
 		# Copy boot.img to flash folder if it exists
 		if [ -d "${basedir}/flash/" ]; then
 			cp ${basedir}/flashkernel/boot.img ${basedir}/flash/boot.img
