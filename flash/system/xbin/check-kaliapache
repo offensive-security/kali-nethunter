@@ -1,3 +1,4 @@
+unset LD_PRELOAD
 if [[ -n $(ps |grep '/usr/sbin/apache2') ]]; then
     echo "1"
 else

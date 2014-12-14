@@ -1,4 +1,5 @@
 #!/system/bin/sh
+unset LD_PRELOAD
 
 TMPDIR=/data/local/tmp
 mkdir -p $TMPDIR

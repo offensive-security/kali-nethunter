@@ -1,3 +1,4 @@
+unset LD_PRELOAD
 killall hostapd 2> /dev/null
 killall hostapd 2> /dev/null
 

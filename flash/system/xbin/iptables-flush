@@ -1,3 +1,4 @@
+unset LD_PRELOAD
 iptables -F
 iptables -X
 iptables -t nat -F

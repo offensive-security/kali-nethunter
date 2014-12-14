@@ -1,3 +1,4 @@
+unset LD_PRELOAD
 /system/xbin/chroot /data/local/kali-armhf /bin/bash -c "chmod 777 /dev/null"
 ifconfig wlan1 up
 sleep 3
