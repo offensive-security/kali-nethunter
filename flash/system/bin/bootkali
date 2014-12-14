@@ -18,6 +18,25 @@ export HOME=/root
 export LOGNAME=root
 unset LD_PRELOAD
 
+######### SET DNS ########
+
+rm -f /data/local/kali-armhf/etc/resolv.conf # remove dns entries
+touch /data/local/kali-armhf/etc/resolv.conf # create empty resolv.conf
+
+for i in 1 2 3 4; do
+   if [[  -z $(getprop net.dns${i}) ]]; then
+      # we go through 1-4 dns servers and break out of loop on empty
+      break
+   else
+      # add local/device dns server first
+      echo "nameserver $(getprop net.dns${i})" >> /data/local/kali-armhf/etc/resolv.conf
+   fi
+done
+
+# lastly add two default dns entries
+echo "nameserver 208.67.222.222" >> /data/local/kali-armhf/etc/resolv.conf
+echo "nameserver 208.67.220.220" >> /data/local/kali-armhf/etc/resolv.conf
+
 #########  MOUNT #########
 
 if [ "$($busybox mountpoint $mnt/dev)" == "$mnt/dev is a mountpoint" ]; then
