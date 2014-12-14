@@ -42,7 +42,7 @@ f_check(){
   fi
   # If Lollipop kernel is selected for an unsupported device, display error and set $error var to 1
   if [[ $buildtype == "kernel" ]]&&[[ $targetver == "lollipop" ]]; then
-    if [[ $selecteddevice == "manta" ]]||[[ $selecteddevice == "groupertilapia" ]]||[[ $selecteddevice == "mako" ]]||[[ $selecteddevice == "gs5" ]]||[[ $selecteddevice == "gs4" ]]||[[ $selecteddevice == "bacon" ]]; then
+    if [[ $selecteddevice == "manta" ]]||[[ $selecteddevice == "groupertilapia" ]]||[[ $selecteddevice == "mako" ]]||[[ $selecteddevice == "gs5" ]]||[[ $selecteddevice == "gs4" ]]; then
       echo "Lollipop isn't currently supported by your device."
       error=1
     fi
@@ -187,7 +187,7 @@ f_setup(){
   if [ -d "${basedir}" ]; then
     rm -rf ${basedir}
   fi
-  mkdir -p ${basedir}
+  mkdir -p ${basedir
   cd ${basedir}
 }
 
