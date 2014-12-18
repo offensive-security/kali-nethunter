@@ -452,19 +452,21 @@ def win7cmd_elevated(locale):
 	print '''sleep 1'''
 	findinlist("\x64", locale) #d
 	if (locale=="us") | (locale=="fr"):
-                print '''echo --left-ctrl --left-shift --return | hid-keyboard /dev/hidg0 keyboard'''
-                print '''sleep 1'''
-                if locale=="us" : print '''echo --left-alt y | hid-keyboard /dev/hidg0 keyboard'''
-                elif locale=="fr": print '''echo --left-alt o | hid-keyboard /dev/hidg0 keyboard'''
-				elif locale=="de" : print '''echo --left-alt y | hid-keyboard /dev/hidg0 keyboard'''  #to be confirmed
-        elif (locale=="es"):
-                print '''echo -ne "\\x17\\x20\\x00\\x00\\x28\\x00\\x00\\x00" > /dev/hidg0'''
-                print '''sleep 1'''
-                print '''echo -ne "\\xA4\\x00\\x00\\x00\\x16\\x00\\x00\\x00" > /dev/hidg0'''
-                print '''sleep 1'''
-                print '''echo -ne "\\x10\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
-	print '''sleep 3'''
-	
+    		print '''echo --left-ctrl --left-shift --return | hid-keyboard /dev/hidg0 keyboard'''
+        	print '''sleep 1'''
+	    	if (locale=="us"): 
+	    		print '''echo --left-alt y | hid-keyboard /dev/hidg0 keyboard'''
+	        elif (locale=="fr"): 
+	        	print '''echo --left-alt o | hid-keyboard /dev/hidg0 keyboard'''
+	        elif (locale=="de"): 
+				print '''echo --left-alt y | hid-keyboard /dev/hidg0 keyboard'''
+	        elif (locale=="es"):
+		    	print '''echo -ne "\\x17\\x20\\x00\\x00\\x28\\x00\\x00\\x00" > /dev/hidg0'''
+		        print '''sleep 1'''
+		        print '''echo -ne "\\xA4\\x00\\x00\\x00\\x16\\x00\\x00\\x00" > /dev/hidg0'''
+		        print '''sleep 1'''
+		        print '''echo -ne "\\x10\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
+			print '''sleep 3'''
 
 def win8cmd_elevated(locale):
 	print '''sleep 1'''
