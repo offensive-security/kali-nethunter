@@ -118,24 +118,6 @@ else
    		$busybox chroot $mnt service dnsmasq stop
    	fi
 
-   	#HID-CMD
-
-   	if [ "$1" == "hid-cmd" ]; then
-   		$busybox chroot $mnt /usr/bin/hid-cmd.py |/system/bin/sh
-   	fi
-
-   	#HID-CMD-ELEVATED-WIN7
-
-   	if [ "$1" == "hid-cmd-elevated-win7" ]; then
-   		$busybox chroot $mnt /usr/bin/hid-cmd-elevated-win7.py |/system/bin/sh
-   	fi
-
-   	#HID-CMD-ELEVATED-WIN8
-
-   	if [ "$1" == "hid-cmd-elevated-win8" ]; then
-   		$busybox chroot $mnt /usr/bin/hid-cmd-elevated-win8.py |/system/bin/sh
-   	fi
-
    	#HOSTAPD
 
    	if [ "$1" == "hostapd" ] && [ "$2" == "start" ]; then
@@ -190,26 +172,38 @@ else
    		$busybox chroot $mnt service openvpn stop
    	fi
 
-   	#REVERSE-MET
+   	# HID Keyboard Command a.k.a Teensy style
+      # Supported keyboard layouts: US, FR, EN, ES
+      # We can pass language options to bootkali like: 
+      # bootkali start-rev-met --us | --fr | --de | --es
 
    	if [ "$1" == "start-rev-met" ]; then
-   		$busybox chroot $mnt /usr/bin/rev-met.sh |/system/bin/sh
+         $busybox chroot $mnt /usr/bin/hid-all.sh start-rev-met "$2" |/system/bin/sh
    	fi
    	if [ "$1" == "start-rev-met-elevated-win7" ]; then
-   		$busybox chroot $mnt /usr/bin/rev-met-elevated-win7.sh |/system/bin/sh
+         $busybox chroot $mnt /usr/bin/hid-all.sh start-rev-met-elevated-win7 $2 |/system/bin/sh
    	fi
    	if [ "$1" == "start-rev-met-elevated-win8" ]; then
-   		$busybox chroot $mnt /usr/bin/rev-met-elevated-win8.sh |/system/bin/sh
+         $busybox chroot $mnt /usr/bin/hid-all.sh start-rev-met-elevated-win8 $2 |/system/bin/sh
    	fi
    	if [ "$1" == "start-rev-tcp" ]; then
-   		$busybox chroot $mnt /usr/bin/rev-tcp.py |/system/bin/sh
+         $busybox chroot $mnt /usr/bin/hid-all.sh start-rev-tcp $2 |/system/bin/sh
    	fi
    	if [ "$1" == "start-rev-tcp-elevated-win7" ]; then
-   		$busybox chroot $mnt /usr/bin/rev-tcp-elevated-win7.py |/system/bin/sh
+         $busybox chroot $mnt /usr/bin/hid-all.sh start-rev-tcp-elevated-win7 "$2" |/system/bin/sh
    	fi
    	if [ "$1" == "start-rev-tcp-elevated-win8" ]; then
-   		$busybox chroot $mnt /usr/bin/rev-tcp-elevated-win8.py |/system/bin/sh
+         $busybox chroot $mnt /usr/bin/hid-all.sh start-rev-tcp-elevated-win8 "$2" |/system/bin/sh
    	fi
+      if [ "$1" == "hid-cmd-elevated-win8" ]; then
+         $busybox chroot $mnt /usr/bin/hid-all.sh hid-cmd-elevated-win8 "$2" |/system/bin/sh
+      fi
+      if [ "$1" == "hid-cmd-elevated-win7" ]; then
+         $busybox chroot $mnt /usr/bin/hid-all.sh hid-cmd-elevated-win7 "$2" |/system/bin/sh
+      fi
+      if [ "$1" == "hid-cmd" ]; then
+         $busybox chroot $mnt /usr/bin/hid-all.sh hid-cmd "$2" |/system/bin/sh
+      fi
 
    	#SSH
 
