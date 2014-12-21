@@ -842,10 +842,9 @@ cp -rf ${basepwd}/utils/files ${basedir}/flash/sdcard
 
 # Download/add Android applications that are useful to our chroot enviornment
 
-rm ${basedir}/flash/data/app/*
-
 # Required: Terminal application is required
 wget -P ${basedir}/flash/data/app/ http://jackpal.github.com/Android-Terminal-Emulator/downloads/Term.apk
+
 # Suggested: BlueNMEA to enable GPS logging in Kismet
 wget -P ${basedir}/flash/data/app/ http://max.kellermann.name/download/blue-nmea/BlueNMEA-2.1.3.apk
 # Suggested: Hackers Keyboard for easier typing in the terminal
