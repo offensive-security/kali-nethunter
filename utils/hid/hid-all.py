@@ -9,6 +9,7 @@ parser.add_argument('--us', help='Select US keyboard mapping', action='store_tru
 parser.add_argument('--fr', help='Select FR keyboard mapping', action='store_true')
 parser.add_argument('--es', help='Select ES keyboard mapping', action='store_true')
 parser.add_argument('--de', help='Select DE keyboard mapping', action='store_true')
+parser.add_argument('--sv', help='Select SV keyboard mapping', action='store_true')
 parser.add_argument('--wincmd', '-w', help='Windows CMD', action='store_true')
 parser.add_argument('--win7cmd', '-w7', help='Windows 7 CMD elevated', action='store_true')
 parser.add_argument('--win8cmd','-w8', help='Windows 8 CMD elevated', action='store_true')
@@ -29,6 +30,8 @@ elif (args.de):
 	locale='de'
 elif (args.es):
 	locale='es'
+elif (args.es):
+	locale='sv'
 
 # HID Command Options
 
