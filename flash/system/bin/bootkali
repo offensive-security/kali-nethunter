@@ -70,7 +70,7 @@ fi
 # ---------------  START / STOP ARGUMENTS  ----------------- #
 # apache, beef-xss, dhcp, dnsmasq, hid-cmd, openvpn, ssh,
 # mana {stop}, mana-full, mana-noup, mana-noupeap, mana-simple
-# msf,
+# msf, fruitywifi
 # ---------------  SINGLE ARGUMENT ------------------------- #
 # hid-cmd, hid-cmd-elevated-win7, hid-cmd-elevated-win8, wifite
 # iptables, update
@@ -225,6 +225,17 @@ else
 		if [ "$1" == "wifite" ]; then
         $busybox chroot $mnt wifite
    	fi
+
+      #FRUITYWIFI
+
+      if [ "$1" == "fruitywifi" ] && [ "$2" == "start" ]; then
+         $busybox chroot $mnt /etc/init.d/php5-fpm start
+         $busybox chroot $mnt /etc/init.d/fruitywifi start   
+      fi
+      if [ "$1" == "fruitywifi" ] && [ "$2" == "stop" ]; then
+         $busybox chroot $mnt /etc/init.d/fruitywifi stop
+         $busybox chroot $mnt /etc/init.d/php5-fpm stop
+      fi
 
 		#KALIMENU
 
