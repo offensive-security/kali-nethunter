@@ -147,6 +147,9 @@ else
    	if [ "$1" == "mana-simple" ] && [ "$2" == "start" ]; then
    		$busybox chroot $mnt /usr/bin/start-mana-simple
    	fi
+      if [ "$1" == "mana-bdf" ] && [ "$2" == "start" ]; then
+         $busybox chroot $mnt /usr/bin/start-mana-bdf
+      fi
    	if [ "$1" == "mana" ] && [ "$2" == "stop" ]; then
    		$busybox chroot $mnt /usr/bin/stop-mana
    	fi
