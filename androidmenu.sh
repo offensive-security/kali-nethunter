@@ -561,10 +561,11 @@ wireless="wifite iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq dsn
 services="autossh openssh-server tightvncserver apache2 postgresql openvpn php5"
 extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools python-pip hostapd ptunnel tcptrace dnsutils p0f mitmf"
 mana="python-twisted python-dnspython libnl1 libnl-dev libssl-dev sslsplit python-pcapy tinyproxy isc-dhcp-server rfkill mana-toolkit"
+bdf="backdoor-factory bdfproxy"
 spiderfoot="python-lxml python-m2crypto python-netaddr python-mako"
 sdr="sox librtlsdr"
 
-export packages="${arm} ${base} ${desktop} ${tools} ${wireless} ${services} ${extras} ${mana} ${spiderfoot} ${sdr}"
+export packages="${arm} ${base} ${desktop} ${tools} ${wireless} ${services} ${extras} ${mana} ${spiderfoot} ${sdr} ${bdf}"
 export architecture="armhf"
 
 # create the rootfs - not much to modify here, except maybe the hostname.
