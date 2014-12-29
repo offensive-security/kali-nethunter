@@ -37,7 +37,7 @@ elif (args.es):
 
 if (args.wincmd):
 	f = open("/sdcard/files/hid-cmd.conf", "rb")
-    wincmd(locale)
+	wincmd(locale)
 elif (args.win7cmd):
 	f = open("/sdcard/files/hid-cmd.conf", "rb")
 	win7cmd_elevated(byte, locale)
@@ -58,13 +58,13 @@ elif (args.revtcpwin8):
 	win8cmd_elevated(byte, locale)
 
 try:
-    byte = f.read(1)
-    while byte != "":
-        byte = f.read(1)
-	findinlist(byte, locale)
+	byte = f.read(1)
+	while byte != "":
+		byte = f.read(1)
+		findinlist(byte, locale)
 
 finally:
-    f.close()
+	f.close()
 
 #Hit enter
 enterb()
