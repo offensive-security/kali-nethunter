@@ -3,6 +3,7 @@
 TMPDIR=/data/local/tmp
 mkdir -p $TMPDIR
 UPSTREAM_NS=8.8.8.8
+INTERFACE=rndis0
 
 # Check required tools
 if ! busybox ls > /dev/null;then
@@ -33,7 +34,6 @@ echo 1 > /sys/devices/virtual/android_usb/android0/enable
 # Check whether it has applied the changes
 cat /sys/devices/virtual/android_usb/android0/functions
 cat /sys/devices/virtual/android_usb/android0/enable
-INTERFACE=rndis0
 
 # Wait until the interface actually exists
 while ! busybox ifconfig $INTERFACE > /dev/null 2>&1;do
