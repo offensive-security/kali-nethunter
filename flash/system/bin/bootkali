@@ -69,11 +69,10 @@ fi
 #
 # ---------------  START / STOP ARGUMENTS  ----------------- #
 # apache, beef-xss, dhcp, dnsmasq, hid-cmd, openvpn, ssh,
-# mana {stop}, mana-full, mana-noup, mana-noupeap, mana-simple
-# msf, fruitywifi
+# mana {stop}, mana-full, mana-noup, mana-noupeap, mana-simple,
+# mana-bdf, msf, fruitywifi
 # ---------------  SINGLE ARGUMENT ------------------------- #
-# hid-cmd, hid-cmd-elevated-win7, hid-cmd-elevated-win8, wifite
-# iptables, update
+# hid-cmd, hid-cmd-elevated-win[7-8], wifite, iptables, update
 # start-rev-met, start-rev-tcp, start-rev-met-elevated-win[8-7]
 # start-rev-tcp-elevated-win[8-7]
 
@@ -121,10 +120,13 @@ else
    	#HOSTAPD
 
    	if [ "$1" == "hostapd" ] && [ "$2" == "start" ]; then
-   		$busybox chroot $mnt /usr/sbin/hostapd /etc/hostapd/hostapd.conf >/dev/null 2>&1 </dev/null &
+# 		$busybox chroot $mnt /usr/sbin/hostapd /etc/hostapd/hostapd.conf >/dev/null 2>&1 </dev/null &
+   		$busybox chroot $mnt service hostapd start
+
    	fi
    	if [ "$1" == "hostapd" ] && [ "$2" == "stop" ]; then
-   		killall hostapd 2> /dev/null
+#   		killall hostapd 2> /dev/null
+   		$busybox chroot $mnt service hostapd stop
    	fi
 
    	#IPTABLES
@@ -147,9 +149,9 @@ else
    	if [ "$1" == "mana-simple" ] && [ "$2" == "start" ]; then
    		$busybox chroot $mnt /usr/bin/start-mana-simple
    	fi
-      if [ "$1" == "mana-bdf" ] && [ "$2" == "start" ]; then
-         $busybox chroot $mnt /usr/bin/start-mana-bdf
-      fi
+      	if [ "$1" == "mana-bdf" ] && [ "$2" == "start" ]; then
+         	$busybox chroot $mnt /usr/bin/start-mana-bdf
+      	fi
    	if [ "$1" == "mana" ] && [ "$2" == "stop" ]; then
    		$busybox chroot $mnt /usr/bin/stop-mana
    	fi
