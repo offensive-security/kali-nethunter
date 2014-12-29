@@ -757,8 +757,9 @@ LANG=C chroot kali-$architecture chmod 755 /usr/bin/hid-dic
 # Set permissions to executable on newly added scripts
 LANG=C chroot kali-$architecture chmod 755 /usr/bin/kalimenu
 
-# Sets the default for hostapd.conf but not really needed as evilap will create it's own now
-#sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/etc/hostapd/hostapd.conf#' kali-$architecture/etc/init.d/hostapd
+# Sets the default for hostapd.conf to the mana karma version
+sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/etc/mana-toolkit/hostapd-karma.conf#' kali-$architecture/etc/init.d/hostapd
+sed -i 's/wlan0/wlan1/g' kali-$architecture/etc/mana-toolkit/hostapd-karma.conf
 
 # DNSMASQ Configuration options for optional access point
 cat <<EOF > kali-$architecture/etc/dnsmasq.conf
