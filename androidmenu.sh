@@ -554,7 +554,7 @@ cd ${rootfs}
 # Package installations for various sections.
 
 arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils uboot-mkimage"
-base="kali-menu kali-defaults initramfs-tools usbutils openjdk-7-jre mlocate"
+base="kali-menu kali-defaults initramfs-tools usbutils openjdk-7-jre mlocate google-nexus-tools"
 desktop="kali-defaults kali-root-login desktop-base xfce4 xfce4-places-plugin xfce4-goodies"
 tools="nmap metasploit tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set device-pharmer nishang"
 wireless="wifite iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq dsniff sslstrip mdk3 mitmproxy"
@@ -725,14 +725,6 @@ sed -i 's/hs/\/captures/g' ${rootfs}/kali-$architecture/etc/kismet/kismet.conf
 # Kali Menu (bash script) to quickly launch common Android Programs
 cp -rf ${basepwd}/menu/kalimenu ${rootfs}/kali-$architecture/usr/bin/kalimenu
 sleep 5
-
-#Installs ADB and fastboot compiled for ARM
-git clone git://git.kali.org/packages/google-nexus-tools
-cp ./google-nexus-tools/bin/linux-arm-adb ${rootfs}/kali-$architecture/usr/bin/adb
-cp ./google-nexus-tools/bin/linux-arm-fastboot ${rootfs}/kali-$architecture/usr/bin/fastboot
-rm -rf ./google-nexus-tools
-LANG=C chroot kali-$architecture chmod 755 /usr/bin/fastboot
-LANG=C chroot kali-$architecture chmod 755 /usr/bin/adb
 
 #Installs deADBolt
 curl -o deadbolt https://raw.githubusercontent.com/photonicgeek/deADBolt/master/main.sh
