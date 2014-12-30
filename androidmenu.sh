@@ -625,6 +625,10 @@ cp -rf ${basepwd}/utils/msf/*.sh kali-$architecture/usr/bin/
 chmod 755 kali-$architecture/usr/bin/*.sh
 chmod 755 kali-$architecture/usr/bin/*.py
 
+# Set up HID powersploit hostped payload
+cp -rf ${basepwd}/utils/files/powersploit-payload kali-$architecture/var/www/payload
+chmod 644 kali-$architecture/var/www/payload
+
 cat << EOF > kali-$architecture/etc/network/interfaces
 auto lo
 iface lo inet loopback
