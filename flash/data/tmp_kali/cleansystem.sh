@@ -22,9 +22,9 @@ rm -f $SA/GoogleEars.apk
 rm -f $SA/Keep.apk
 rm -f $SA/FaceLock.apk
 
-# * Fix for Cyanogenmod 11 *
+# * Fix for Cyanogenmod *
 # Busybox or selinux does not like the resize command when launching
-# the terminal with Kali Launcher.  Removing resize allows commands
-# to be sent and will hopefully be fixed in a later update.
+# the terminal with Kali Launcher.  Comment out of mkshrc
 
-rm -f /system/xbin/resize
+sed -i 's/resize/#resize/g' /system/etc/mkshrc
+#rm -f /system/xbin/resize
