@@ -36,12 +36,13 @@ elif (args.es):
 def read_file(filename):
 	try:
 		f = open(filename, "rb")
-    		byte = f.read(1)
-    		while byte != "":
-        		byte = f.read(1)
-			findinlist(byte, locale)
+		byte = f.read(1)
+		while byte != "":
+			byte = f.read(1)
+			if byte:
+				findinlist(byte, locale)
 	finally:
-    		f.close()
+		f.close()
 
 # HID Command Options
 if (args.wincmd):
