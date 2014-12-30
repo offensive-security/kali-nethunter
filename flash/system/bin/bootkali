@@ -227,8 +227,11 @@ else
 
    	#WIFITE
 
-		if [ "$1" == "wifite" ]; then
-        $busybox chroot $mnt wifite
+	if [ "$1" == "wifite" ]; then
+		$busybox chroot $mnt /bin/bash -c "chmod 777 /dev/null"        
+		ifconfig wlan1 up
+		sleep 3
+		LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/python /usr/bin/wifite
    	fi
 
       #FRUITYWIFI
