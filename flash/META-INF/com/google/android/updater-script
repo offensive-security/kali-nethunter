@@ -51,11 +51,11 @@ set_perm(0, 0, 0755, "/tmp/extractkali.sh");
 set_perm(0, 0, 0755, "/tmp/cleansystem.sh");
 set_perm(0, 0, 0755, "/tmp/setwallpaper.sh");
 
-ui_print("* Cleaning /system/app...                   *");
-run_program("/tmp/cleansystem.sh");
-
 ui_print("* Installing BusyBox...                     *");
 run_program("/data/local/bin/busybox", "--install", "-s", "/system/xbin/");
+
+ui_print("* Cleaning /system/app...                   *");
+run_program("/tmp/cleansystem.sh");
 
 ui_print("* Extracting Kali chroot...                 *");
 ui_print("* ...This will take ~30 minutes.            *");
