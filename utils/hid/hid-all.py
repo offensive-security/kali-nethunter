@@ -14,9 +14,6 @@ parser.add_argument('--wincmd', '-w', help='Windows CMD', action='store_true')
 parser.add_argument('--win7cmd', '-w7', help='Windows 7 CMD elevated', action='store_true')
 parser.add_argument('--win8cmd','-w8', help='Windows 8 CMD elevated', action='store_true')
 parser.add_argument('--win8_met','-w8met', help='Reverse Windows 8 CMD', action='store_true')
-parser.add_argument('--revtcp','-rtcp', help='Reverse TCP Windows 8 CMD', action='store_true')
-parser.add_argument('--revtcpwin7','-w7tcp', help='Reverse TCP Windows 7 CMD', action='store_true')
-parser.add_argument('--revtcpwin8','-w8tcp', help='Reverse TCP Windows 8 CMD', action='store_true')
 
 args = parser.parse_args()
 
@@ -57,15 +54,6 @@ elif (args.win8cmd):
 elif (args.win8_met):
 	win8cmd_elevated(locale)
 	read_file(filename = "/sdcard/files/rev-met")
-elif (args.revtcp):
-	wincmd(locale)
-	read_file(filename = "/sdcard/files/rev-tcp")
-elif (args.revtcpwin7):
-	win7cmd_elevated(locale)
-	read_file(filename = "/sdcard/files/rev-tcp")
-elif (args.revtcpwin8):
-	win8cmd_elevated(locale)
-	read_file(filename = "/sdcard/files/rev-tcp")
 
 # All finished - Hit enter
 enterb()

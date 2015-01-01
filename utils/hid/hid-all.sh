@@ -32,15 +32,3 @@ if [ "$1" == "start-rev-met-elevated-win8" ]; then
 	f_reverse
 	LANG=$LANG /usr/bin/hid-all.py --win8cmd $2
 fi
-if [ "$1" == "start-rev-tcp-elevated-win7" ]; then
-	f_reverse
-	LANG=$LANG /usr/bin/hid-all.py --revtcpwin7 $2
-fi
-if [ "$1" == "start-rev-tcp-elevated-win8" ]; then
-	f_reverse
-	LANG=$LANG /usr/bin/hid-all.py --revtcpwin8 $2
-fi
-if [ "$1" == "start-rev-tcp" ]; then
-	f_reverse
-	LANG=$LANG /usr/bin/hid-all.py --revtcp $2
-fi
