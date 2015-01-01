@@ -53,11 +53,11 @@ elif (args.win7cmd):
 elif (args.win8cmd):
 	win8cmd_elevated(locale)
 	read_file(filename = "/sdcard/files/hid-cmd.conf")
-elif (args.win8_met):
-	win8cmd_elevated(locale)
-	read_file(filename = "/sdcard/files/rev-met")
 elif (args.win7_met):
 	win7cmd_elevated(locale)
+	read_file(filename = "/sdcard/files/rev-met")
+elif (args.win8_met):
+	win8cmd_elevated(locale)
 	read_file(filename = "/sdcard/files/rev-met")
 
 # All finished - Hit enter
