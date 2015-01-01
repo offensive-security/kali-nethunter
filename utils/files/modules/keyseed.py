@@ -556,7 +556,7 @@ def win7cmd_elevated(locale):
 	        elif (locale=="fr"): 
 	        	print '''echo left-alt o | hid-keyboard /dev/hidg0 keyboard'''
 	        elif (locale=="de"): 
-				print '''echo left-alt y | hid-keyboard /dev/hidg0 keyboard'''
+				print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
 		elif (locale=="sv"): 
 				print '''echo left-alt y | hid-keyboard /dev/hidg0 keyboard'''
 	        elif (locale=="es"):
