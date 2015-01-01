@@ -222,7 +222,7 @@ else
    	#UPDATE
 
    	if [ "$1" == "update" ]; then
-   		$busybox chroot $mnt /usr/bin/start-update.sh
+   		LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/start-update.sh
    	fi
 
    	#WIFITE
