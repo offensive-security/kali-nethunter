@@ -13,7 +13,6 @@ parser.add_argument('--sv', help='Select SV keyboard mapping', action='store_tru
 parser.add_argument('--wincmd', '-w', help='Windows CMD', action='store_true')
 parser.add_argument('--win7cmd', '-w7', help='Windows 7 CMD elevated', action='store_true')
 parser.add_argument('--win8cmd','-w8', help='Windows 8 CMD elevated', action='store_true')
-parser.add_argument('--win_met','-w7met', help='Reverse Windows 7 CMD', action='store_true')
 parser.add_argument('--win8_met','-w8met', help='Reverse Windows 8 CMD', action='store_true')
 parser.add_argument('--win7_met','-w7met', help='Reverse Windows 7 CMD', action='store_true')
 
