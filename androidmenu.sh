@@ -622,8 +622,6 @@ fi
 cp -rf ${basepwd}/utils/{s,start-*} kali-$architecture/usr/bin/
 cp -rf ${basepwd}/utils/hid/* kali-$architecture/usr/bin/
 cp -rf ${basepwd}/utils/msf/*.sh kali-$architecture/usr/bin/
-chmod 755 kali-$architecture/usr/bin/*.sh
-chmod 755 kali-$architecture/usr/bin/*.py
 
 # Set up HID powersploit hostped payload
 cp -rf ${basepwd}/utils/files/powersploit-payload kali-$architecture/var/www/payload
