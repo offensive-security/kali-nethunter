@@ -45,23 +45,23 @@ def read_file(filename):
 # HID Command Options
 if (args.wincmd):
 	wincmd(locale)
-	print "slow down"
+	print "sleep 2"
 	read_file(filename = "/sdcard/files/hid-cmd.conf")
 elif (args.win7cmd):
 	win7cmd_elevated(locale)
-	print "slow down"
+	print "sleep 2"
 	read_file(filename = "/sdcard/files/hid-cmd.conf")
 elif (args.win8cmd):
 	win8cmd_elevated(locale)
-	print "slow down"
+	print "sleep 2"
 	read_file(filename = "/sdcard/files/hid-cmd.conf")
 elif (args.win7_met):
 	win7cmd_elevated(locale)
-	print "slow down"
+	print "sleep 2"
 	read_file(filename = "/sdcard/files/rev-met")
 elif (args.win8_met):
 	win8cmd_elevated(locale)
-	print "slow down"
+	print "sleep 2"
 	read_file(filename = "/sdcard/files/rev-met")
 
 # All finished - Hit enter
