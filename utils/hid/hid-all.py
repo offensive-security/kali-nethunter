@@ -1,7 +1,6 @@
 #!/usr/bin/python
 import argparse
 import sys
-import time
 sys.path.append("/sdcard/files/modules/")
 from keyseed import *
 
@@ -46,23 +45,23 @@ def read_file(filename):
 # HID Command Options
 if (args.wincmd):
 	wincmd(locale)
-	time.sleep(5)
+	print "slow down"
 	read_file(filename = "/sdcard/files/hid-cmd.conf")
 elif (args.win7cmd):
 	win7cmd_elevated(locale)
-	time.sleep(5)
+	print "slow down"
 	read_file(filename = "/sdcard/files/hid-cmd.conf")
 elif (args.win8cmd):
 	win8cmd_elevated(locale)
-	time.sleep(5)
+	print "slow down"
 	read_file(filename = "/sdcard/files/hid-cmd.conf")
 elif (args.win7_met):
 	win7cmd_elevated(locale)
-	time.sleep(5)
+	print "slow down"
 	read_file(filename = "/sdcard/files/rev-met")
 elif (args.win8_met):
 	win8cmd_elevated(locale)
-	time.sleep(5)
+	print "slow down"
 	read_file(filename = "/sdcard/files/rev-met")
 
 # All finished - Hit enter
