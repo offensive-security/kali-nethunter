@@ -22,7 +22,7 @@ echo " $command" >/sdcard/files/rev-met
 
 if [ "$1" == "start-rev-met" ]; then
 	f_reverse
-	LANG=$LANG /usr/bin/hid-all.py --win7_met $2
+	LANG=$LANG /usr/bin/hid-all.py --win_met $2
 fi
 if [ "$1" == "start-rev-met-elevated-win7" ]; then
 	f_reverse
