@@ -548,6 +548,7 @@ def win7cmd_elevated(locale):
 	findinlist("\x6d", locale) #m
 	print '''sleep 1'''
 	findinlist("\x64", locale) #d
+	print '''sleep 1'''
 	if (locale=="us") | (locale=="fr"):
     		print '''echo left-ctrl left-shift return | hid-keyboard /dev/hidg0 keyboard'''
         	print '''sleep 1'''
