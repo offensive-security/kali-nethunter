@@ -42,7 +42,7 @@ FROZENKERNEL=0
 # git clone https://github.com/binkybear/####################.git -b ########## nexus4-5
 # - OnePlus One
 # git clone https://github.com/binkybear/AK-OnePone.git -b cm-11.0-ak oneplus11
-# git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.0-ak oneplus12
+# git clone https://github.com/binkybear/furnace-bacon.git -b cm-12.0 oneplus12
 # - Galaxy S5
 # git clone https://github.com/binkybear/KTSGS5.git -b aosp4.4 galaxy_s5
 # git clone https://github.com/binkybear/KTSGS5.git -b tw4.4 galaxy_s5_tw
@@ -195,10 +195,10 @@ echo -e "\e[31m ---- NEXUS 5  (2013) - HAMMERHEAD ------------------------------
 echo "  [5] Build for Nexus 5 with wireless USB support (Android 4.4+)"
 echo ""
 echo -e "\e[31m ---- NEXUS 6  (2014) - SHAMU --------------------------------------------------------\e[0m"
-echo "  [6] Build for Nexus 6 with wireless USB support (Android 4.4+)"
+echo "  [6] Build for Nexus 6 with wireless USB support (Android 5)"
 echo ""
 echo -e "\e[31m ---- NEXUS 9 (2014) - VOLANTIS ------------------------------------------------------\e[0m"
-echo "  [7] Build for Nexus 9 with wireless USB support (Android 4.4+)"
+echo "  [7] Build for Nexus 9 with wireless USB support (Android 5)"
 echo ""
 echo "  [0] Exit to Main Menu"
 echo ""
