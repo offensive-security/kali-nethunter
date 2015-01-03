@@ -623,10 +623,6 @@ cp -rf ${basepwd}/utils/{s,start-*} kali-$architecture/usr/bin/
 cp -rf ${basepwd}/utils/hid/* kali-$architecture/usr/bin/
 cp -rf ${basepwd}/utils/msf/*.sh kali-$architecture/usr/bin/
 
-# Set up HID powersploit hostped payload
-cp -rf ${basepwd}/utils/files/powersploit-payload kali-$architecture/var/www/payload
-chmod 644 kali-$architecture/var/www/payload
-
 cat << EOF > kali-$architecture/etc/network/interfaces
 auto lo
 iface lo inet loopback
@@ -702,6 +698,10 @@ dos2unix ${rootfs}/kali-$architecture/usr/share/mana-toolkit/run-mana/*
 dos2unix ${rootfs}/kali-$architecture/etc/mana-toolkit/*
 chmod 755 ${rootfs}/kali-$architecture/usr/share/mana-toolkit/run-mana/*
 chmod 755 ${rootfs}/kali-$architecture/usr/bin/*.sh
+
+# Set up HID powersploit hosted payload
+cp -rf ${basepwd}/utils/files/powersploit-payload kali-$architecture/var/www/payload
+chmod 644 kali-$architecture/var/www/payload
 
 # Install Rawr (https://bitbucket.org/al14s/rawr/wiki/Usage)
 git clone https://bitbucket.org/al14s/rawr.git ${rootfs}/kali-$architecture/opt/rawr
