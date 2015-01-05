@@ -558,7 +558,7 @@ def win7cmd_elevated(locale):
 	elif (locale=="de"): 
 		print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
 	elif (locale=="sv"): 
-		print '''echo left-alt y | hid-keyboard /dev/hidg0 keyboard'''
+		print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
 	elif (locale=="es"):
 		print '''echo -ne "\\x17\\x20\\x00\\x00\\x28\\x00\\x00\\x00" > /dev/hidg0'''
 		print '''sleep 1'''
