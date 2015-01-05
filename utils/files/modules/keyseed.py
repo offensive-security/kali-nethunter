@@ -517,6 +517,7 @@ def findinlist(byte, locale):
 	elif locale=="fr" : print '''echo -ne "''' +dict_fr[byte]+ '''" > /dev/hidg0'''
 	elif locale=="de" : print '''echo -ne "''' +dict_de[byte]+ '''" > /dev/hidg0'''
 	elif locale=="es" : print '''echo -ne "''' +dict_es[byte]+ '''" > /dev/hidg0'''
+	elif locale=="sv" : print '''echo -ne "''' +dict_sv[byte]+ '''" > /dev/hidg0'''
 	#else: print "#crap, couldn't find ["+byte +"]. Perhaps try adding it to the list."
 	print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''	
 	
