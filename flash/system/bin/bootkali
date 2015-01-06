@@ -215,6 +215,13 @@ else
    		LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/start-update.sh
    	fi
 
+   	#Disable WLAN1
+
+   	if [ "$1" == "wifi-disable" ]; then
+   		LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/stop-wlan1.sh
+   	fi
+
+
    	#WIFITE
 
       if [ "$1" == "wifite" ]; then
