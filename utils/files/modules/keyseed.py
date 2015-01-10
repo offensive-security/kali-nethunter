@@ -1306,14 +1306,24 @@ def win7cmd_elevated(locale):
 	        print '''echo left-alt o | hid-keyboard /dev/hidg0 keyboard'''
 	elif (locale=="de"): 
 		print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
-	elif (locale=="sv"): 
-		print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
 	elif (locale=="es"):
-		print '''echo -ne "\\x17\\x20\\x00\\x00\\x28\\x00\\x00\\x00" > /dev/hidg0'''
-		print '''sleep 1'''
-		print '''echo -ne "\\xA4\\x00\\x00\\x00\\x16\\x00\\x00\\x00" > /dev/hidg0'''
-		print '''sleep 1'''
-		print '''echo -ne "\\x10\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
+		print '''echo left-alt s | hid-keyboard /dev/hidg0 keyboard'''
+	elif (locale=="sv"):
+		print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
+	elif (locale=="it"):
+		print '''echo left-alt s | hid-keyboard /dev/hidg0 keyboard'''
+	elif (locale=="uk"):
+		print '''echo left-alt y | hid-keyboard /dev/hidg0 keyboard'''
+	elif (locale=="ru"):
+		print '''echo left-alt d | hid-keyboard /dev/hidg0 keyboard'''
+	elif (locale=="dk"):
+		print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
+	elif (locale=="no"):
+		print '''echo left-alt j | hid-keyboard /dev/hidg0 keyboard'''
+	elif (locale=="pt"):
+		print '''echo left-alt s | hid-keyboard /dev/hidg0 keyboard'''
+	elif (locale=="be"):
+		print '''echo left-alt o | hid-keyboard /dev/hidg0 keyboard'''
 	print '''sleep 3'''
 
 def win8cmd_elevated(locale):
