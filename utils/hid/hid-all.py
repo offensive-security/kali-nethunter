@@ -7,9 +7,16 @@ from keyseed import *
 parser = argparse.ArgumentParser(description='Nethunter HID language/launcher')
 parser.add_argument('--us', help='Select US keyboard mapping', action='store_true')
 parser.add_argument('--fr', help='Select FR keyboard mapping', action='store_true')
-parser.add_argument('--es', help='Select ES keyboard mapping', action='store_true')
 parser.add_argument('--de', help='Select DE keyboard mapping', action='store_true')
+parser.add_argument('--es', help='Select ES keyboard mapping', action='store_true')
 parser.add_argument('--sv', help='Select SV keyboard mapping', action='store_true')
+parser.add_argument('--it', help='Select IT keyboard mapping', action='store_true')
+parser.add_argument('--uk', help='Select UK keyboard mapping', action='store_true')
+parser.add_argument('--ru', help='Select RU keyboard mapping', action='store_true')
+parser.add_argument('--dk', help='Select DK keyboard mapping', action='store_true')
+parser.add_argument('--no', help='Select NO keyboard mapping', action='store_true')
+parser.add_argument('--pt', help='Select PT keyboard mapping', action='store_true')
+parser.add_argument('--be', help='Select BE keyboard mapping', action='store_true')
 parser.add_argument('--wincmd', '-w', help='Windows CMD', action='store_true')
 parser.add_argument('--win7cmd', '-w7', help='Windows 7 CMD elevated', action='store_true')
 parser.add_argument('--win8cmd','-w8', help='Windows 8 CMD elevated', action='store_true')
@@ -31,6 +38,20 @@ elif (args.es):
 	locale='es'
 elif (args.es):
 	locale='sv'
+elif (args.es):
+	locale='it'
+elif (args.es):
+	locale='uk'
+elif (args.es):
+	locale='ru'
+elif (args.es):
+	locale='dk'
+elif (args.es):
+	locale='no'
+elif (args.es):
+	locale='pt'
+elif (args.es):
+	locale='be'
 
 def read_file(filename):
 	try:
