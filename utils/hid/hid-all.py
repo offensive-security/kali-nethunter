@@ -36,21 +36,21 @@ elif (args.de):
 	locale='de'
 elif (args.es):
 	locale='es'
-elif (args.es):
+elif (args.sv):
 	locale='sv'
-elif (args.es):
+elif (args.it):
 	locale='it'
-elif (args.es):
+elif (args.uk):
 	locale='uk'
-elif (args.es):
+elif (args.ru):
 	locale='ru'
-elif (args.es):
+elif (args.dk):
 	locale='dk'
-elif (args.es):
+elif (args.no):
 	locale='no'
-elif (args.es):
+elif (args.pt):
 	locale='pt'
-elif (args.es):
+elif (args.be):
 	locale='be'
 
 def read_file(filename):
