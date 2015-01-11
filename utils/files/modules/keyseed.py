@@ -1290,6 +1290,32 @@ iso_ru = {
 	"\x3A": "\xEC",
 	#"\x3B": "" # ;
 	"\x3D": "\xCA",
+	"\x41": "\xB0"
+	"\x42": "\xB1"
+	"\x43": "\xC6"
+	"\x44": "\xB4"
+	"\x45": "\xB5"
+	#"\x46": "\x" # F
+	"\x47": "\xB3"
+	#"\x48": "\x" # H
+	"\x49": "\xC3"
+	"\x4A": "\xB9"
+	"\x4B": "\xBA"
+	"\x4C": "\xBB"
+	"\x4D": "\xBC"
+	"\x4E": "\xBD"
+	"\x4F": "\xB8"
+	"\x50": "\xBE"
+	"\x51": "\xCF"
+	"\x52": "\xC0"
+	"\x53": "\xC1"
+	"\x54": "\xB3"
+	"\x55": "\xCB"
+	"\x56": "\xC8"
+	"\x58": "\xC5"
+	"\x59": "\xC2"
+	"\x5A": "\xB7"
+	#"\x5B": "" # [
 	"\x5C": "\x7E",
 	"\x61": "\xD0",
 	"\x62": "\xD1",
@@ -1345,20 +1371,11 @@ def wincmd(locale):
 	print '''echo -ne "\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
 	print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
 	print '''sleep 1'''
-
-	if locale is 'ru':
-		findinlist(str.encode("\xe6"), locale) #c
-		print '''sleep 1'''
-		findinlist(str.encode("\xdc"), locale) #m
-		print '''sleep 1'''
-		findinlist(str.encode("\xd4"), locale) #d
-	else:
-		findinlist(str.encode("\x63"), locale) #c
-		print '''sleep 1'''
-		findinlist(str.encode("\x6d"), locale) #m
-		print '''sleep 1'''
-		findinlist(str.encode("\x64"), locale) #d
-	
+	findinlist(str.encode("\x63"), locale) #c
+	print '''sleep 1'''
+	findinlist(str.encode("\x6d"), locale) #m
+	print '''sleep 1'''
+	findinlist(str.encode("\x64"), locale) #d
 	print '''sleep 1'''
 	print '''echo -ne "\\x10\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
 	print '''echo -ne "\\x20\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
@@ -1372,20 +1389,11 @@ def win7cmd_elevated(locale):
 	print '''echo -ne "\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0''' #windows key
 	print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
 	print '''sleep 1'''
-	
-	if locale is 'ru':
-		findinlist("\xe6", locale) #c
-		print '''sleep 1'''
-		findinlist("\xdc", locale) #m
-		print '''sleep 1'''
-		findinlist("\xd4", locale) #d
-	else:
-		findinlist("\x63", locale) #c
-		print '''sleep 1'''
-		findinlist("\x6d", locale) #m
-		print '''sleep 1'''
-		findinlist("\x64", locale) #d
-	
+	findinlist("\x63", locale) #c
+	print '''sleep 1'''
+	findinlist("\x6d", locale) #m
+	print '''sleep 1'''
+	findinlist("\x64", locale) #d
 	print '''sleep 1'''
     	print '''echo left-ctrl left-shift return | hid-keyboard /dev/hidg0 keyboard'''
         print '''sleep 3'''
@@ -1420,20 +1428,11 @@ def win8cmd_elevated(locale):
 	print '''echo -ne "\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
 	print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
 	print '''sleep 1'''
-
-	if locale is 'ru':
-		findinlist("\xe6", locale) #c
-		print '''sleep 1'''
-		findinlist("\xdc", locale) #m
-		print '''sleep 1'''
-		findinlist("\xd4", locale) #d
-	else:
-		findinlist("\x63", locale) #c
-		print '''sleep 1'''
-		findinlist("\x6d", locale) #m
-		print '''sleep 1'''
-		findinlist("\x64", locale) #d
-
+	findinlist("\x63", locale) #c
+	print '''sleep 1'''
+	findinlist("\x6d", locale) #m
+	print '''sleep 1'''
+	findinlist("\x64", locale) #d
 	print '''sleep 1'''
 	print '''echo -ne "\\x10\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
 	print '''echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0'''
