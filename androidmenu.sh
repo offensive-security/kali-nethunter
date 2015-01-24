@@ -736,15 +736,11 @@ cp -rf ${basepwd}/menu/kalimenu ${rootfs}/kali-$architecture/usr/bin/kalimenu
 sleep 5
 
 #Installs deADBolt
-curl -o deadbolt https://raw.githubusercontent.com/photonicgeek/deADBolt/master/main.sh
-cp ./deadbolt ${rootfs}/kali-$architecture/usr/bin/deadbolt
-rm -rf deadbolt
+curl -o ${rootfs}/kali-$architecture/usr/bin/deadbolt https://raw.githubusercontent.com/photonicgeek/deADBolt/master/main.sh
 LANG=C chroot kali-$architecture chmod 755 /usr/bin/deadbolt
 
 #Installs APFucker.py
-curl -o apfucker.py https://raw.githubusercontent.com/mattoufoutu/scripts/master/AP-Fucker.py
-cp ./apfucker.py ${rootfs}/kali-$architecture/usr/bin/apfucker.py
-rm -rf deadbolt
+curl -o ${rootfs}/kali-$architecture/usr/bin/apfucker.py https://raw.githubusercontent.com/mattoufoutu/scripts/master/AP-Fucker.py
 LANG=C chroot kali-$architecture chmod 755 /usr/bin/apfucker.py
 
 #Install HID attack script and dictionaries
