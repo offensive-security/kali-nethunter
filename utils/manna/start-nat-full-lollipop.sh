@@ -82,16 +82,17 @@ iptables -t nat -A PREROUTING -i $phy  -p tcp --destination-port 110 -j REDIRECT
 
 sleep 5
 
-#echo "Hit enter to kill me"
-#read
-#pkill dhcpd
-#pkill sslstrip
-#pkill sslsplit
-#pkill hostapd
-#pkill python
-## Restore
-#iptables-restore < /tmp/rules.txt
-#rm /tmp/rules.txt
-## Remove iface and routes
-#ip addr flush dev $phy
-#ip link set $phy down
+echo "Hit enter to kill me"
+read
+pkill dhcpd
+pkill sslstrip
+pkill sslsplit
+pkill hostapd
+pkill python
+# Restore
+iptables-restore < /tmp/rules.txt
+rm /tmp/rules.txt
+# Remove iface and routes
+ip addr flush dev $phy
+ip link set $phy down
+
