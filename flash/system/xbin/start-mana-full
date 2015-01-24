@@ -1,4 +1,0 @@
-unset LD_PRELOAD
-chroot /data/local/kali-armhf /bin/bash -c "chmod 777 /dev/null"
-LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin chroot /data/local/kali-armhf "/usr/bin/start-mana-full"
-

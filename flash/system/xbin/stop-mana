@@ -1,4 +1,0 @@
-unset LD_PRELOAD
-for process in $(ps |egrep "sslsplit|dhcpd|hostapd|python" |awk -F" " '{print $2}');do kill -9 $process;done
-LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin chroot /data/local/kali-armhf "/usr/bin/stop-mana"
-

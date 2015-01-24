@@ -623,6 +623,11 @@ cp -rf ${basepwd}/utils/{s,start-*} kali-$architecture/usr/bin/
 cp -rf ${basepwd}/utils/hid/* kali-$architecture/usr/bin/
 cp -rf ${basepwd}/utils/msf/*.sh kali-$architecture/usr/bin/
 
+
+# Copy all start/stop scripts to xbin
+cp ${basepwd}/flash/system/xbin/* ${rootfs}/kali-$architecture/usr/bin/
+
+
 cat << EOF > kali-$architecture/etc/network/interfaces
 auto lo
 iface lo inet loopback
@@ -692,7 +697,7 @@ sed -i 's/gpshost=localhost:2947/gpshost=127.0.0.1:2947/g' ${rootfs}/kali-$archi
 
 # Copy over our kali specific mana config files
 cp -rf ${basepwd}/utils/manna/start-mana* ${rootfs}/kali-$architecture/usr/bin/
-cp -rf ${basepwd}/utils/manna/stop-mana ${rootfs}/kali-$architecture/usr/bin/
+cp -rf ${basepwd}/utils/manna/stop-mana* ${rootfs}/kali-$architecture/usr/bin/
 cp -rf ${basepwd}/utils/manna/*.sh ${rootfs}/kali-$architecture/usr/share/mana-toolkit/run-mana/
 dos2unix ${rootfs}/kali-$architecture/usr/share/mana-toolkit/run-mana/*
 dos2unix ${rootfs}/kali-$architecture/etc/mana-toolkit/*

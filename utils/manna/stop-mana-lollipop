@@ -1,0 +1,3 @@
+#!/bin/bash
+# This is a quick helper script to kill mana in the Kali chroot for lollipop
+echo "This is not finished yet"
