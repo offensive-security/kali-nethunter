@@ -65,6 +65,22 @@ if [ $(getprop ro.product.device) == "tilapia" ]; then
 	chown system:system /data/system/users/0/wallpaper
 fi
 
+# NEXUS 9
+
+if [ $(getprop ro.product.device) == "flounder" ]; then
+	cp /tmp/flounderwallpaper /data/system/users/0/wallpaper
+	chmod 777 /data/system/users/0/wallpaper
+	chown system:system /data/system/users/0/wallpaper
+fi
+
+# NEXUS 6
+
+if [ $(getprop ro.product.device) == "shamu" ]; then
+	cp /tmp/shamuwallpaper /data/system/users/0/wallpaper
+	chmod 777 /data/system/users/0/wallpaper
+	chown system:system /data/system/users/0/wallpaper
+fi
+
 # ONE PLUS ONE - USES SAME SCREEN RESOLUTION AS NEXUS 5
 
 if [ $(getprop ro.product.device) == "bacon" ]; then
