@@ -6,14 +6,12 @@ gunzip -c /tmp/ramdisk/boot.img-ramdisk.gz | cpio -i
 rm /tmp/ramdisk/boot.img-ramdisk.gz
 rm /tmp/boot.img-ramdisk.gz
 
-# Enable root on lollipop
-if [ $(grep -c "seclabel u:r:install_recovery:s0" /tmp/ramdisk/init.rc) == 0 ]; then
-   sed -i "s/seclabel u:r:install_recovery:s0/#seclabel u:r:install_recovery:s0/" /tmp/ramdisk/init.rc
+#Don't force encryption on Nexus 9
+if  grep -qr forceencrypt /tmp/ramdisk/fstab.flounder; then
+   sed -i "s/forceencrypt/encryptable/" /tmp/ramdisk/fstab.flounder
 fi
-
-# Set selinux to permissive
-if [ $(grep -c "setenforce 0" /tmp/ramdisk/init.rc) == 0 ]; then
-   /tmp/busybox sed -i '/start ueventd/i \ \ \ \ setenforce 0' /tmp/ramdisk/init.rc
+if  grep -qr forceencrypt /tmp/ramdisk/fstab.flounder64; then
+   sed -i "s/forceencrypt/encryptable/" /tmp/ramdisk/fstab.flounder64
 fi
 
 # Enabled /etc/init.d

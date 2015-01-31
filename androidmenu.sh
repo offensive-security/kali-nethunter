@@ -1093,15 +1093,18 @@ fi
 # If this is not just a kernel build by itself it will copy modules and kernel to main flash (rootfs+kernel)
 if [ -d "${basedir}/flash/" ]; then
   echo "Detected exsisting /flash folder, copying kernel and modules"
-  if [ -f "${basedir}/kernel/arch/arm/boot/zImage-dtb" ]; then
+    if [ -f "${basedir}/kernel/arch/arm/boot/zImage-dtb" ]; then
       cp ${basedir}/kernel/arch/arm/boot/zImage-dtb ${basedir}/flash/kernel/kernel
       echo "zImage-dtb found at ${basedir}/kernel/arch/arm/boot/zImage-dtb"
-  else
-    if [ -f "${basedir}/kernel/arch/arm/boot/zImage" ]; then
+    elif [ -f "${basedir}/kernel/arch/arm64/boot/Image.gz-dtb" ]; then
+      cp ${basedir}/kernel/arch/arm64/boot/Image.gz-dtb ${basedir}/flash/kernel/kernel
+      echo "Image.gz-dtb found at ${basedir}/kernel/arch/arm64/boot/Image.gz-dtb"    
+    else
+      if [ -f "${basedir}/kernel/arch/arm/boot/zImage" ]; then
         cp ${basedir}/kernel/arch/arm/boot/zImage ${basedir}/flash/kernel/kernel
         echo "zImage found at ${basedir}/kernel/arch/arm/boot/zImage"
+      fi
     fi
-  fi
   cp ${basedir}/flashkernel/system/lib/modules/* ${basedir}/flash/system/lib/modules
   # Kali rootfs (chroot) looks for modules in a different folder then Android (/system/lib) when using modprobe
   rsync -HPavm --include='*.ko' -f 'hide,! */' ${basedir}/kernel/modules/lib/modules ${rootfs}/kali-armhf/lib/
@@ -1111,6 +1114,9 @@ fi
 if [ -f "${basedir}/kernel/arch/arm/boot/zImage-dtb" ]; then
   cp ${basedir}/kernel/arch/arm/boot/zImage-dtb ${basedir}/flashkernel/kernel/kernel
   echo "zImage-dtb found at ${basedir}/kernel/arch/arm/boot/zImage-dtb"
+elif [ -f "${basedir}/kernel/arch/arm64/boot/Image.gz-dtb" ]; then
+  cp ${basedir}/kernel/arch/arm64/boot/Image.gz-dtb ${basedir}/flashkernel/kernel/kernel
+  echo "Image.gz-dtb found at ${basedir}/kernel/arch/arm64/boot/Image.gz-dtb"    
 else
   if [ -f "${basedir}/kernel/arch/arm/boot/zImage" ]; then
     cp ${basedir}/kernel/arch/arm/boot/zImage ${basedir}/flashkernel/kernel/kernel
