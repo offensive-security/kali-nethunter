@@ -839,6 +839,9 @@ mkdir -p ${basedir}/flash/system/lib/modules
 mkdir -p ${basedir}/flash/sdcard
 cp -rf ${basepwd}/utils/files ${basedir}/flash/sdcard
 
+# Get latest Rubber Ducky conversion script
+wget https://raw.githubusercontent.com/byt3bl33d3r/duckhunter/master/duckhunter.py -O ${basedir}/flash/sdcard/utils/files/modules/duckhunter.py
+
 # Download/add Android applications that are useful to our chroot enviornment
 
 # Required: Terminal application is required
@@ -851,7 +854,7 @@ wget -P ${basedir}/flash/data/app/ https://hackerskeyboard.googlecode.com/files/
 # Suggested: Android VNC Viewer
 wget -P ${basedir}/flash/data/app/ https://android-vnc-viewer.googlecode.com/files/androidVNC_build20110327.apk
 # Suggested: DriveDroid for CDROM emulation
-wget -P ${basedir}/flash/data/app/ http://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.9.17.apk
+wget -P ${basedir}/flash/data/app/ http://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.9.20.apk
 # Keyboard HID app
 wget -P ${basedir}/flash/data/app/ https://github.com/pelya/android-keyboard-gadget/raw/master/USB-Keyboard.apk
 # Suggested: RFAnalyzer

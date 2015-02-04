@@ -214,6 +214,26 @@ else
          $busybox chroot $mnt /usr/bin/hid-all.sh hid-cmd "$2" |/system/bin/sh
       fi
 
+      # DUCK HUNT - Rubber Ducky conversion script to nethunter
+      # Requires argument to generate based on language. e.g.:
+      # bootkali duck-hunt-convert us /sdcard/files/modules/ducktest.txt /sdcard/files/modules/output.py
+      # Languages supported: us, fr, de, es,sv, it, uk, ru, dk, no, pt, be
+      #
+      # Run converted script with:
+      # bootkali duck-hunt-run {/sdcard/files/modules/output.py}
+
+      if [ "$1" == "duck-hunt-convert" ]; then
+         $busybox chroot $mnt python /sdcard/files/modules/duckhunter.py -l $2 $3 $4
+      fi
+      if [ "$1" == "duck-hunt-run" ]; then
+         if [ ! -f $2 ]; then
+            echo "File not found"
+         else
+            echo "File $2 found"
+            $busybox chroot $mnt python $2 |/system/bin/sh
+         fi
+      fi
+
    	#SSH
 
    	if [ "$1" == "ssh" ] && [ "$2" == "start" ]; then
