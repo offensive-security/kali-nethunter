@@ -216,21 +216,22 @@ else
 
       # DUCK HUNT - Rubber Ducky conversion script to nethunter
       # Requires argument to generate based on language. e.g.:
-      # bootkali duck-hunt-convert us /sdcard/files/modules/ducktest.txt /sdcard/files/modules/output.py
+      # bootkali duck-hunt-convert us /sdcard/files/modules/ducktest.txt /opt/duckout.sh
       # Languages supported: us, fr, de, es,sv, it, uk, ru, dk, no, pt, be
       #
       # Run converted script with:
-      # bootkali duck-hunt-run {/sdcard/files/modules/output.py}
+      # bootkali duck-hunt-run {/opt/duckout.sh}
 
       if [ "$1" == "duck-hunt-convert" ]; then
          $busybox chroot $mnt python /sdcard/files/modules/duckhunter.py -l $2 $3 $4
+         $busybox chroot $mnt chmod 755 $4
       fi
       if [ "$1" == "duck-hunt-run" ]; then
-         if [ ! -f $2 ]; then
+         if [ ! -f /data/local/kali-armhf$2 ]; then
             echo "File not found"
          else
-            echo "File $2 found"
-            $busybox chroot $mnt python $2 |/system/bin/sh
+            echo "File /data/local/kali-armhf$2 found"
+            $busybox chroot $mnt $2
          fi
       fi
 
