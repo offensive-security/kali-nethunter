@@ -160,7 +160,7 @@ set_perm(0, 0, 0755, "/tmp/cleansystem.sh");
 ui_print("* Cleaning /system/app...                   *");
 run_program("/tmp/cleansystem.sh");
 ui_print("* Installing Kernel...                      *");
-assert(package_extract_file("boot.img", "/dev/block/platform/sdhci-tegra.3/by-name/LNX"));
+package_extract_file("boot.img", "/dev/block/platform/sdhci-tegra.3/by-name/LNX"));
 ui_print("* Kernel installation completed...          *");
 EOF
 
