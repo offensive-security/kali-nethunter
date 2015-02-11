@@ -271,11 +271,11 @@ esac
 f_manta(){
 echo -e "\e[31m	------------------------- NEXUS 10 -----------------------\e[0m"
 echo ""
-echo "	[1] Build All - Kali rootfs and Kernel (Android 4.4+)"
-echo "	[2] Build Kernel Only (Android 4.4+)"
+echo "  [1] Build All - Kali rootfs and Kernel (Android 4.4+)"
+echo "  [2] Build Kernel Only (Android 4.4+)"
 echo "  [3] Build All - Kali rootfs and Kernel (Android 5)"
 echo "  [4] Build Kernel Only (Android 5)"
-echo "	[0] Exit to Main Menu"
+echo "  [0] Exit to Main Menu"
 echo ""
 echo ""
 # wait for character input
@@ -341,11 +341,11 @@ esac
 f_grouper(){
 echo -e "\e[31m	------------------------- NEXUS 7 (2012) -----------------------\e[0m"
 echo ""
-echo "	[1] Build All - Kali rootfs and Kernel (Android 4.4+)"
-echo "	[2] Build Kernel Only (Android 4.4+)"
+echo "  [1] Build All - Kali rootfs and Kernel (Android 4.4+)"
+echo "  [2] Build Kernel Only (Android 4.4+)"
 echo "  [3] Build All - Kali rootfs and Kernel (Android 5)"
 echo "  [4] Build Kernel Only (Android 5)"
-echo "	[0] Exit to Main Menu"
+echo "  [0] Exit to Main Menu"
 echo ""
 echo ""
 # wait for character input
