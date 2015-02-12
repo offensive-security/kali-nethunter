@@ -842,6 +842,7 @@ cp -rf ${basepwd}/utils/files ${basedir}/flash/sdcard
 # Get latest Rubber Ducky conversion script
 echo "Downloading latest Ducky conversion script"
 mkdir -p  ${basedir}/flash/sdcard/files/modules
+wget https://raw.githubusercontent.com/offensive-security/kali-nethunter/master/utils/files/modules/duckconvert.txt -O ${basedir}/flash/sdcard/files/modules/duckconvert.txt
 wget https://raw.githubusercontent.com/byt3bl33d3r/duckhunter/master/duckhunter.py -O ${basedir}/flash/sdcard/files/modules/duckhunter.py
 
 # Download/add Android applications that are useful to our chroot enviornment
