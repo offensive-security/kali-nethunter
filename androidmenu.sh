@@ -836,11 +836,12 @@ mkdir -p ${basedir}/flash/system/lib/modules
 
 # Copy configuration files needed by nethunter app (we could also move this folder to flash/sdcard/files)
 
-mkdir -p ${basedir}/flash/sdcard
+mkdir -p ${basedir}/flash/sdcard/files/modules
 cp -rf ${basepwd}/utils/files ${basedir}/flash/sdcard
 
 # Get latest Rubber Ducky conversion script
-wget https://raw.githubusercontent.com/byt3bl33d3r/duckhunter/master/duckhunter.py -O ${basedir}/flash/sdcard/utils/files/modules/duckhunter.py
+echo "Downloading latest Ducky conversion script"
+wget https://raw.githubusercontent.com/byt3bl33d3r/duckhunter/master/duckhunter.py -O ${basedir}/flash/sdcard/files/modules/duckhunter.py
 
 # Download/add Android applications that are useful to our chroot enviornment
 
