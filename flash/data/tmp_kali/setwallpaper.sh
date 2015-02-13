@@ -83,7 +83,7 @@ fi
 
 # ONE PLUS ONE - USES SAME SCREEN RESOLUTION AS NEXUS 5
 
-if [ $(getprop ro.product.device) == "A0001" ]; then
+if [ $(getprop ro.product.device) == "bacon" ] || [ $(getprop ro.product.device) == "A0001" ] || [ $(getprop ro.product.device) == "One" ] || [ $(getprop ro.product.device) == "OnePlus" ] || [ $(getprop ro.product.device) == "One A0001" ]; then
 	cp /tmp/hammerheadwallpaper /data/system/users/0/wallpaper
 	chmod 777 /data/system/users/0/wallpaper
 	chown system:system /data/system/users/0/wallpaper
