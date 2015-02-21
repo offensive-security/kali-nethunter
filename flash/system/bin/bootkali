@@ -277,6 +277,19 @@ else
          $busybox chroot $mnt /etc/init.d/php5-fpm stop
       fi
 
+      #MACCHANGER
+      # Usage: bootkali macchanger <mac address> <interface>
+      #
+      # Usage: bootkali macchanger random <interface>
+
+      if [ "$1" == "macchanger" ] && [ "$2" == "random" ]; then
+         $busybox chroot $mnt /usr/bin/macchanger --random $3
+      fi
+
+      if [ "$1" == "macchanger" ]; then
+         $busybox chroot $mnt /usr/bin/macchanger --mac=$2 $3
+      fi
+
 		#KALIMENU
 
 		if [ "$1" == "kalimenu" ]; then
