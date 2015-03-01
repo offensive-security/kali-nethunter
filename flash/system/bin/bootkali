@@ -286,7 +286,7 @@ else
          $busybox chroot $mnt /usr/bin/macchanger --random $3
       fi
 
-      if [ "$1" == "macchanger" ]; then
+      if [ "$1" == "macchanger_custom" ]; then
          $busybox chroot $mnt /usr/bin/macchanger --mac=$2 $3
       fi
 
