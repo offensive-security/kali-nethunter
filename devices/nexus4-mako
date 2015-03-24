@@ -93,7 +93,7 @@ fi
 #####################################################
 # Create Nexus 4 Kernel (5)
 #####################################################
-f_mako_cm_kernel(){
+f_mako_stock_kernel5(){
 
 echo "Downloading Android Toolchian"
 if [[ $LOCALGIT == 1 ]]; then
@@ -117,7 +117,7 @@ if [[ $LOCALGIT == 1 ]]; then
   echo "Copying kernel to rootfs"
   cp -rf ${basepwd}/nexus4-5 ${basedir}/kernel
 else
-  git clone  https://github.com/binkybear/kernel_msm.git -b android-msm-mako-3.4-lollipop-release ${basedir}/kernel
+  git clone https://github.com/binkybear/kernel_msm.git -b android-msm-mako-3.4-lollipop-release ${basedir}/kernel
 fi
 
 cd ${basedir}/kernel
