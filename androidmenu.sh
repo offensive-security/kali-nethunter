@@ -42,7 +42,7 @@ FROZENKERNEL=0
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-mako-3.4-lollipop-release nexus4-5
 # - OnePlus One
 # git clone https://github.com/binkybear/AK-OnePone.git -b cm-11.0-ak oneplus11
-# git clone https://github.com/binkybear/furnace-bacon.git -b cm-12.0 oneplus12
+# git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.1 oneplus12
 # - Galaxy S5
 # git clone https://github.com/binkybear/KTSGS5.git -b aosp4.4 galaxy_s5
 # git clone https://github.com/binkybear/KTSGS5.git -b tw4.4 galaxy_s5_tw
