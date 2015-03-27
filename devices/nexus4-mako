@@ -156,7 +156,8 @@ EOF
 # Start kernel build
 f_kernel_build
 abootimg --create ${basedir}/flashkernel/boot.img -f ramdisk/5/bootimg.cfg -k ${basedir}/kernel/arch/arm/boot/zImage -r ramdisk/5/initrd.img
-cd ${basedir}
+cd ${basedir
 f_zip_kernel_save
 fi
+}
 }
