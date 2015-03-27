@@ -160,4 +160,3 @@ cd ${basedir}
 f_zip_kernel_save
 fi
 }
-}
