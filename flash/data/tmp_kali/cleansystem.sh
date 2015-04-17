@@ -22,9 +22,7 @@ rm -f $SA/GoogleEars.apk
 rm -f $SA/Keep.apk
 rm -f $SA/FaceLock.apk
 
-# * Fix for Cyanogenmod *
-# Busybox or selinux does not like the resize command when launching
-# the terminal with Kali Launcher.  Comment out of mkshrc
+# * Fix for Cyanogenmod/terminal launching *
+# We can pass a no-op ":"  in case resize is in a function. (CM12+ adds it inside function)
 
-sed -i 's/resize/#resize/g' /system/etc/mkshrc
-#rm -f /system/xbin/resize
+sed -i 's/resize/:/g' /system/etc/mkshrc
