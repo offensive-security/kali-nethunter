@@ -133,7 +133,7 @@ if [[ $LOCALGIT == 1 ]]; then
   echo "Copying kernel to rootfs"
   cp -rf ${basepwd}/nexus7_2012-5 ${basedir}/kernel
 else
-  git clone https://github.com/binkybear/Grouper-3.1.10.git -b lollipop ${basedir}/kernel
+  git clone https://github.com/binkybear/android_kernel_grouper.git -b LP-monitor ${basedir}/kernel
 fi
 
 f_kernel_build_init
@@ -143,6 +143,10 @@ cd ${basedir}/kernel
 make clean
 sleep 3
 make kali_defconfig
+
+make modules SUBDIRS=drivers/net/wireless/bmdhd_mon
+cp -rf drivers/net/wireless/bmdhd_mon/dhd.ko ${basedir}/flashkernel/system/etc/lib/modules/
+cp -rf bcm4330_sta.bcmon.bin ${basedir}/flashkernel/system/etc/firmware/
 
 # Attach kernel builder to updater-script
 echo "#KERNEL_SCRIPT_START" >> ${basedir}/flashkernel/META-INF/com/google/android/updater-script
