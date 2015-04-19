@@ -143,10 +143,10 @@ cd ${basedir}/kernel
 make clean
 sleep 3
 make kali_defconfig
+make
+sleep 5
 
-make modules SUBDIRS=drivers/net/wireless/bmdhd_mon
-cp -rf drivers/net/wireless/bmdhd_mon/dhd.ko ${basedir}/flashkernel/system/etc/lib/modules/
-cp -rf bcm4330_sta.bcmon.bin ${basedir}/flashkernel/system/etc/firmware/
+# Needed for installer
 cp -rf installer/* cd ${basedir}/flashkernel/
 
 # Attach kernel builder to updater-script
@@ -200,10 +200,19 @@ EOF
 
 f_kernel_build
 
+sleep 10
+
 cd ${basedir}/flashkernel/kernel
 abootimg --create ${basedir}/flashkernel/boot.img -f ${basedir}/kernel/ramdisk/5/bootimg.cfg -k ${basedir}/kernel/arch/arm/boot/zImage -r ${basedir}/kernel/ramdisk/5/initrd.img
 cd ${basedir}
 
+# BCMON optional install
+cd cd ${basedir}/kernel
+make modules SUBDIRS=drivers/net/wireless/bmdhd_mon
+cp -rf ${basedir}/kernel/drivers/net/wireless/bmdhd_mon/dhd.ko ${basedir}/flashkernel/system/etc/lib/modules/
+cp -rf ${basedir}/kernel/bcm4330_sta.bcmon.bin ${basedir}/flashkernel/system/etc/firmware/
+
+cd ${basedir}
 if [ -d "${basedir}/flash/" ]; then
   cp ${basedir}/flashkernel/boot.img ${basedir}/flash/boot.img
 fi
