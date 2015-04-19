@@ -133,7 +133,7 @@ if [[ $LOCALGIT == 1 ]]; then
   echo "Copying kernel to rootfs"
   cp -rf ${basepwd}/nexus7_2012-5 ${basedir}/kernel
 else
-  git clone https://github.com/binkybear/android_kernel_grouper.git -b LP-monitor ${basedir}/kernel
+  git clone https://github.com/binkybear/android_kernel_asus_grouper.git -b android-tegra3-grouper-3.1-lollipop-release_tegra-l4t-r16-16.5 ${basedir}/kernel
 fi
 
 f_kernel_build_init
@@ -155,9 +155,6 @@ cat << EOF > ${basedir}/flashkernel/META-INF/com/google/android/updater-script
 assert(getprop("ro.product.device") == "grouper" || getprop("ro.build.product") == "grouper" || getprop("ro.product.device") == "tilapia" || getprop("ro.build.product") == "tilapia" || abort("This package is for \"grouper\" and \"tilapia\" devices; this is a \"" + getprop("ro.product.device") + "\"."););
 ui_print("Installer by Frantisek Nesveda");
 ui_print("");
-
-ui_print("Unpacking files...");
-
 package_extract_dir("system", "/system");
 set_perm_recursive(0, 0, 0644, 0644, "/system/lib/modules");
 set_perm_recursive(0, 2000, 0755, 0755, "/system/bin");
@@ -169,30 +166,26 @@ set_perm(0, 0, 0755, "/tmp/cleansystem.sh");
 ui_print("* Cleaning /system/app...                   *");
 run_program("/tmp/cleansystem.sh");
 unmount("/system");
-ui_print("* Installing Kernel...                      *");
-package_extract_dir("tools", "/tmp/nethunter/tools/");
-set_perm_recursive(0, 0, 0755, 0755, "/tmp/nethunter/tools/");
-package_extract_dir("fstab", "/tmp/nethunter/fstab/");
-package_extract_file("boot.img", "/tmp/nethunter/boot.img");
+ui_print("Unpacking files...");
+package_extract_dir("tools", "/tmp/agnostic-kernel/tools/");
+set_perm_recursive(0, 0, 0755, 0755, "/tmp/agnostic-kernel/tools/");
+package_extract_dir("fstab", "/tmp/agnostic-kernel/fstab/");
+package_extract_file("boot.img", "/tmp/agnostic-kernel/boot.img");
 set_progress(0.2);
 ui_print("Running script to modify and flash boot.img...");
-ifelse(run_program("/tmp/nethunter/tools/repack-and-flash.sh") == "0",
+ifelse(run_program("/tmp/agnostic-kernel/tools/repack-and-flash.sh") == "0",
 (
 	set_progress(0.9);
 
 	ui_print("Cleaning up...");
-	delete_recursive("/tmp/nethunter");
+	delete_recursive("/tmp/agnostic-kernel");
 	set_progress(1.0);
-
-	#
-	# Put your kernel modification script here, if you wish.
-	#
 
 	ui_print("Done, please reboot.");
 ),
 (
 	ui_print("Cleaning up...");
-	delete_recursive("/tmp/nethunter");
+	delete_recursive("/tmp/agnostic-kernel");
 	set_progress(1.0);
 	abort("There was an error while flashing the kernel.");
 ));
@@ -202,14 +195,14 @@ f_kernel_build
 
 sleep 10
 
-cd ${basedir}/flashkernel/kernel
 abootimg --create ${basedir}/flashkernel/boot.img -f ${basedir}/kernel/ramdisk/5/bootimg.cfg -k ${basedir}/kernel/arch/arm/boot/zImage -r ${basedir}/kernel/ramdisk/5/initrd.img
-cd ${basedir}
 
+sleep 3
+echo "Staring BCMON module build"
 # BCMON optional install
-cd cd ${basedir}/kernel
+cd ${basedir}/kernel
 make modules SUBDIRS=drivers/net/wireless/bmdhd_mon
-cp -rf ${basedir}/kernel/drivers/net/wireless/bmdhd_mon/dhd.ko ${basedir}/flashkernel/system/etc/lib/modules/
+cp -rf ${basedir}/kernel/drivers/net/wireless/bmdhd_mon/dhd.ko ${basedir}/flashkernel/system/lib/modules/
 cp -rf ${basedir}/kernel/bcm4330_sta.bcmon.bin ${basedir}/flashkernel/system/etc/firmware/
 
 cd ${basedir}
