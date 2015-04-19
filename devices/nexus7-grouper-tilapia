@@ -147,12 +147,17 @@ make kali_defconfig
 make modules SUBDIRS=drivers/net/wireless/bmdhd_mon
 cp -rf drivers/net/wireless/bmdhd_mon/dhd.ko ${basedir}/flashkernel/system/etc/lib/modules/
 cp -rf bcm4330_sta.bcmon.bin ${basedir}/flashkernel/system/etc/firmware/
+cp -rf installer/* cd ${basedir}/flashkernel/
 
 # Attach kernel builder to updater-script
 echo "#KERNEL_SCRIPT_START" >> ${basedir}/flashkernel/META-INF/com/google/android/updater-script
 cat << EOF > ${basedir}/flashkernel/META-INF/com/google/android/updater-script
-assert(getprop("ro.product.device") == "grouper" || getprop("ro.build.product") == "grouper" ||
-       getprop("ro.product.device") == "tilapia" || getprop("ro.build.product") == "tilapia");
+assert(getprop("ro.product.device") == "grouper" || getprop("ro.build.product") == "grouper" || getprop("ro.product.device") == "tilapia" || getprop("ro.build.product") == "tilapia" || abort("This package is for \"grouper\" and \"tilapia\" devices; this is a \"" + getprop("ro.product.device") + "\"."););
+ui_print("Installer by Frantisek Nesveda");
+ui_print("");
+
+ui_print("Unpacking files...");
+
 package_extract_dir("system", "/system");
 set_perm_recursive(0, 0, 0644, 0644, "/system/lib/modules");
 set_perm_recursive(0, 2000, 0755, 0755, "/system/bin");
@@ -163,9 +168,34 @@ package_extract_dir("kernel", "/tmp");
 set_perm(0, 0, 0755, "/tmp/cleansystem.sh");
 ui_print("* Cleaning /system/app...                   *");
 run_program("/tmp/cleansystem.sh");
+unmount("/system");
 ui_print("* Installing Kernel...                      *");
-package_extract_file("boot.img", "/dev/block/platform/sdhci-tegra.3/by-name/LNX"));
-ui_print("* Kernel installation completed...          *");
+package_extract_dir("tools", "/tmp/nethunter/tools/");
+set_perm_recursive(0, 0, 0755, 0755, "/tmp/nethunter/tools/");
+package_extract_dir("fstab", "/tmp/nethunter/fstab/");
+package_extract_file("boot.img", "/tmp/nethunter/boot.img");
+set_progress(0.2);
+ui_print("Running script to modify and flash boot.img...");
+ifelse(run_program("/tmp/nethunter/tools/repack-and-flash.sh") == "0",
+(
+	set_progress(0.9);
+
+	ui_print("Cleaning up...");
+	delete_recursive("/tmp/nethunter");
+	set_progress(1.0);
+
+	#
+	# Put your kernel modification script here, if you wish.
+	#
+
+	ui_print("Done, please reboot.");
+),
+(
+	ui_print("Cleaning up...");
+	delete_recursive("/tmp/nethunter");
+	set_progress(1.0);
+	abort("There was an error while flashing the kernel.");
+));
 EOF
 
 f_kernel_build
