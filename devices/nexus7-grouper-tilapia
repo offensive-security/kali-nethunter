@@ -147,7 +147,7 @@ make
 sleep 5
 
 # Needed for installer
-cp -rf installer/* cd ${basedir}/flashkernel/
+cp -rf installer/* ${basedir}/flashkernel/
 
 # Attach kernel builder to updater-script
 echo "#KERNEL_SCRIPT_START" >> ${basedir}/flashkernel/META-INF/com/google/android/updater-script
@@ -208,6 +208,9 @@ cp -rf ${basedir}/kernel/bcm4330_sta.bcmon.bin ${basedir}/flashkernel/system/etc
 cd ${basedir}
 if [ -d "${basedir}/flash/" ]; then
   cp ${basedir}/flashkernel/boot.img ${basedir}/flash/boot.img
+  cp -rf ${basedir}/kernel/drivers/net/wireless/bmdhd_mon/dhd.ko ${basedir}/flash/system/lib/modules/
+  cp -rf ${basedir}/kernel/bcm4330_sta.bcmon.bin ${basedir}/flash/system/etc/firmware/
+  cp -rf ${basedir}/kernel/installer/* ${basedir}/flash/
 fi
 
 f_zip_kernel_save
