@@ -153,7 +153,9 @@ cp -rf installer/* ${basedir}/flashkernel/
 echo "#KERNEL_SCRIPT_START" >> ${basedir}/flashkernel/META-INF/com/google/android/updater-script
 cat << EOF > ${basedir}/flashkernel/META-INF/com/google/android/updater-script
 assert(getprop("ro.product.device") == "grouper" || getprop("ro.build.product") == "grouper" || getprop("ro.product.device") == "tilapia" || getprop("ro.build.product") == "tilapia" || abort("This package is for \"grouper\" and \"tilapia\" devices; this is a \"" + getprop("ro.product.device") + "\"."););
-ui_print("Installer by Frantisek Nesveda");
+ui_print("* Starting Kernel install for Nexus 7 (2012)*");
+ui_print("* Mounting System...                        *");
+mount("ext4", "EMMC", "/dev/block/platform/sdhci-tegra.3/by-name/APP", "/system");
 ui_print("");
 package_extract_dir("system", "/system");
 set_perm_recursive(0, 0, 0644, 0644, "/system/lib/modules");
@@ -166,6 +168,7 @@ set_perm(0, 0, 0755, "/tmp/cleansystem.sh");
 ui_print("* Cleaning /system/app...                   *");
 run_program("/tmp/cleansystem.sh");
 unmount("/system");
+ui_print("Installer by Frantisek Nesveda");
 ui_print("Unpacking files...");
 package_extract_dir("tools", "/tmp/agnostic-kernel/tools/");
 set_perm_recursive(0, 0, 0755, 0755, "/tmp/agnostic-kernel/tools/");
