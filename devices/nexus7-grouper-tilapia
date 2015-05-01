@@ -133,7 +133,7 @@ if [[ $LOCALGIT == 1 ]]; then
   echo "Copying kernel to rootfs"
   cp -rf ${basepwd}/nexus7_2012-5 ${basedir}/kernel
 else
-  git clone https://github.com/binkybear/android_kernel_asus_grouper.git -b android-tegra3-grouper-3.1-lollipop-release_tegra-l4t-r16-16.5 ${basedir}/kernel
+  git clone https://github.com/binkybear/android_kernel_asus_grouper.git -b bricked ${basedir}/kernel
 fi
 
 f_kernel_build_init
@@ -162,60 +162,26 @@ set_perm_recursive(0, 0, 0644, 0644, "/system/lib/modules");
 set_perm_recursive(0, 2000, 0755, 0755, "/system/bin");
 set_perm_recursive(0, 2000, 0755, 0755, "/system/xbin");
 set_perm_recursive(0, 0, 0755, 0755, "/system/etc/init.d");
-unmount("/system");
 package_extract_dir("kernel", "/tmp");
+set_perm(0, 0, 0777, "/tmp/mkbootimg.sh");
+set_perm(0, 0, 0777, "/tmp/mkbootimg");
+set_perm(0, 0, 0777, "/tmp/unpackbootimg");
+set_perm(0, 0, 0777, "/tmp/busybox");
 set_perm(0, 0, 0755, "/tmp/cleansystem.sh");
+set_perm(0, 0, 0777, "/tmp/edit_ramdisk5.sh");
 ui_print("* Cleaning /system/app...                   *");
 run_program("/tmp/cleansystem.sh");
+run_program("/tmp/busybox", "dd", "if=/dev/block/platform/sdhci-tegra.3/by-name/LNX", "of=/tmp/boot.img");
+run_program("/tmp/unpackbootimg", "-i", "/tmp/boot.img", "-o", "/tmp/");
+run_program("/tmp/edit_ramdisk5.sh");
+run_program("/tmp/mkbootimg.sh");
+run_program("/tmp/busybox", "dd", "if=/tmp/newboot.img", "of=/dev/block/mmcblk0p2");
 unmount("/system");
-ui_print("Installer by Frantisek Nesveda");
-ui_print("Unpacking files...");
-package_extract_dir("tools", "/tmp/agnostic-kernel/tools/");
-set_perm_recursive(0, 0, 0755, 0755, "/tmp/agnostic-kernel/tools/");
-package_extract_dir("fstab", "/tmp/agnostic-kernel/fstab/");
-package_extract_file("boot.img", "/tmp/agnostic-kernel/boot.img");
-set_progress(0.2);
-ui_print("Running script to modify and flash boot.img...");
-ifelse(run_program("/tmp/agnostic-kernel/tools/repack-and-flash.sh") == "0",
-(
-	set_progress(0.9);
-
-	ui_print("Cleaning up...");
-	delete_recursive("/tmp/agnostic-kernel");
-	set_progress(1.0);
-
-	ui_print("Done, please reboot.");
-),
-(
-	ui_print("Cleaning up...");
-	delete_recursive("/tmp/agnostic-kernel");
-	set_progress(1.0);
-	abort("There was an error while flashing the kernel.");
-));
+ui_print("* Kernel installation completed...          *");
 EOF
 
 f_kernel_build
-
 sleep 10
-
-abootimg --create ${basedir}/flashkernel/boot.img -f ${basedir}/kernel/ramdisk/5/bootimg.cfg -k ${basedir}/kernel/arch/arm/boot/zImage -r ${basedir}/kernel/ramdisk/5/initrd.img
-
-sleep 3
-echo "Staring BCMON module build"
-# BCMON optional install
-cd ${basedir}/kernel
-make modules SUBDIRS=drivers/net/wireless/bmdhd_mon
-cp -rf ${basedir}/kernel/drivers/net/wireless/bmdhd_mon/dhd.ko ${basedir}/flashkernel/system/lib/modules/
-cp -rf ${basedir}/kernel/bcm4330_sta.bcmon.bin ${basedir}/flashkernel/system/etc/firmware/
-
-cd ${basedir}
-if [ -d "${basedir}/flash/" ]; then
-  cp ${basedir}/flashkernel/boot.img ${basedir}/flash/boot.img
-  cp -rf ${basedir}/kernel/drivers/net/wireless/bmdhd_mon/dhd.ko ${basedir}/flash/system/lib/modules/
-  cp -rf ${basedir}/kernel/bcm4330_sta.bcmon.bin ${basedir}/flash/system/etc/firmware/
-  cp -rf ${basedir}/kernel/installer/* ${basedir}/flash/
-fi
-
 f_zip_kernel_save
 fi
 }
