@@ -42,7 +42,7 @@ FROZENKERNEL=0
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-mako-3.4-lollipop-release nexus4-5
 # - OnePlus One
 # git clone https://github.com/binkybear/AK-OnePone.git -b cm-11.0-ak oneplus11
-# git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.1 oneplus12
+# git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.x_render_kernel
 # - Galaxy S5
 # git clone https://github.com/binkybear/KTSGS5.git -b aosp4.4 galaxy_s5
 # git clone https://github.com/binkybear/KTSGS5.git -b tw4.4 galaxy_s5_tw
@@ -553,17 +553,21 @@ cd ${rootfs}
 
 # Package installations for various sections.
 
-arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils uboot-mkimage"
+arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils u-boot-tools"
 base="kali-menu kali-defaults initramfs-tools usbutils openjdk-7-jre mlocate google-nexus-tools"
 desktop="kali-defaults kali-root-login desktop-base xfce4 xfce4-places-plugin xfce4-goodies"
 tools="nmap metasploit tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set device-pharmer nishang"
-wireless="wifite iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq dsniff sslstrip mdk3 mitmproxy"
+wireless="wifite pixiewps iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq dsniff sslstrip mdk3 mitmproxy"
 services="autossh openssh-server tightvncserver apache2 postgresql openvpn php5"
 extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools python-pip hostapd ptunnel tcptrace dnsutils p0f mitmf"
-mana="python-twisted python-dnspython libnl1 libnl-dev libssl-dev sslsplit python-pcapy tinyproxy isc-dhcp-server rfkill mana-toolkit"
+mana="python-twisted python-dnspython libssl-dev sslsplit python-pcapy tinyproxy isc-dhcp-server rfkill"
 bdf="backdoor-factory bdfproxy"
 spiderfoot="python-lxml python-m2crypto python-netaddr python-mako"
-sdr="sox librtlsdr"
+sdr="sox librtlsdr-dev "
+
+# Find replacement for these in Kali 2.0
+#E: Package 'libnl1' has no installation candidate
+#E: Package 'libnl-dev' has no installation candidate
 
 export packages="${arm} ${base} ${desktop} ${tools} ${wireless} ${services} ${extras} ${mana} ${spiderfoot} ${sdr} ${bdf}"
 export architecture="armhf"
@@ -578,8 +582,11 @@ cp /usr/bin/qemu-arm-static kali-$architecture/usr/bin/
 LANG=C chroot kali-$architecture /debootstrap/debootstrap --second-stage
 
 cat << EOF > kali-$architecture/etc/apt/sources.list
-deb http://http.kali.org/kali kali main contrib non-free
-deb http://security.kali.org/kali-security kali/updates main contrib non-free
+deb http://http.kali.org/kali sana main non-free contrib
+#deb-src http://http.kali.org/kali sana main non-free contrib
+
+deb http://security.kali.org/ sana/updates main contrib non-free
+#deb-src http://security.kali.org/ sana/updates main contrib non-free
 EOF
 
 #define hostname
@@ -678,6 +685,7 @@ echo "root:toor" | chpasswd
 sed -i -e 's/KERNEL\!=\"eth\*|/KERNEL\!=\"/' /lib/udev/rules.d/75-persistent-net-generator.rules
 rm -f /etc/udev/rules.d/70-persistent-net.rules
 safe-apt-get --yes --force-yes install $packages
+apt-get -y -o Dpkg::Options::="--force-confnew" install mana-toolkit # Otherwise conflict with Apache2 000-default.conf
 
 rm -f /usr/sbin/policy-rc.d
 rm -f /usr/sbin/invoke-rc.d
