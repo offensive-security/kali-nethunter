@@ -702,6 +702,10 @@ sed -i 's/\# logprefix=\/some\/path\/to\/logs/logprefix=\/captures\/kismet/g' ${
 sed -i 's/# ncsource=wlan0/ncsource=wlan1/g' ${rootfs}/kali-$architecture/etc/kismet/kismet.conf
 sed -i 's/gpshost=localhost:2947/gpshost=127.0.0.1:2947/g' ${rootfs}/kali-$architecture/etc/kismet/kismet.conf
 
+# Modify SSHD to allow password logins which is a security risk 
+# if the user doesn't change their password
+# or change their configuration for key based ssh
+sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/g' ${rootfs}/kali-$architecture/etc/ssh/sshd.conf
 
 # Copy over our kali specific mana config files
 cp -rf ${basepwd}/utils/manna/start-mana* ${rootfs}/kali-$architecture/usr/bin/
