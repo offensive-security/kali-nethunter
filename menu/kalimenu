@@ -51,7 +51,7 @@ esac
 ########################## WIRELESS MENU ###############################
 f_wireless_attacks(){
 clear
-f_wlan1check
+f_wlan1check=$(/usr/bin/start-wlan1.sh)
 echo "				WIRELESS ATTACKS MAIN MENU"
 echo ""
 echo ""
@@ -71,51 +71,12 @@ case $wirelesschoice in
 1) clear; f_wifite;;
 2) clear; f_kismet;;
 3) clear; f_apfucker;;
-4) clear; trap 'f_wireless_attacks' 2 ;f_monitor_check; wash -i mon0;;
-5) clear; trap 'f_wireless_attacks' 2 ;f_monitor_check; airodump-ng mon0;;
-6) clear; trap 'f_wireless_attacks' 2 ;f_pingen;;
+4) clear; trap 'f_wireless_attacks' 2 ; wash -i wlan1mon;;
+5) clear; trap 'f_wireless_attacks' 2 ; airodump-ng wlan1mon;;
+6) clear; trap 'f_wireless_attacks' 2 ; f_pingen;;
 0) clear; f_interface;;
 *) echo "Incorrect choice...";
 esac
-}
-
-f_wlan1check(){
-adaptor=`ip addr | grep wlan1`
-if [ -z "$adaptor" ]; then
-    ifconfig wlan1 up
-    sleep 2
-    echo "Attempting to bring wlan1 up"
-    if [ -z "$adaptor" ]; then
-    	echo "Still not detecting wlan1, please try plugging it in again."
-    	sleep 5
-    	clear
-    	echo -e "\e[31mWLAN1: NOT FOUND\e[0m"
-    	echo ""
-    fi
-else
-	echo -e "\e[92mWLAN1: FOUND\e[0m"
-	echo ""
-fi
-}
-
-f_monitor_check(){
-monstat='grep "mon0" /proc/net/dev'
-
-if [ -n "$monstat" ] ; then
-    clear
-else
-	ifconfig wlan1 up
-	wlanstat='grep "wlan1" /proc/net/dev'
-	    if  [ -n "$wlanstat" ] ; then
-	    	airmon-ng start wlan1
-	    else
-		    echo "You must plug in a compatible wifi card to use this feature."
-		    echo ""
-		    read -p "Press [Enter] to return to the main menu." null
-		    clear
-		    f_wireless_attacks
-		fi
-fi
 }
 
 f_wifite(){
@@ -229,7 +190,7 @@ read -p "Would you like to try pin in reaver against BSSID? (y/n) : " dlinkpinop
 if [ "$dlinkpot" == "y"]; then
 		read -p "Enter pin generated from pingen (above pin): " dlinkpin
 		f_monitor_check
-		reaver -i mon0 -b $DLINKMAC -p $dlinkpin
+		reaver -i wlan1mon -b $DLINKMAC -p $dlinkpin
 		read -p "Press [Enter] key to continue..."
 		f_wireless_attacks
 	else
@@ -1290,6 +1251,7 @@ echo "[3]	rmnet0 (3G)"
 echo "[4]	eth0 (Ethernet)"
 echo "[5]	rndis0 (USB > Ethernet)"
 echo "[6]	usb0 (USB > Ethernet)" # N7 2013 creates usb0 when tethering/badusb
+echo "[7]	wlan1mon"
 echo ""
 read -p "Choice: " sniffinterface
 
@@ -1300,6 +1262,7 @@ case $sniffinterface in
 4) clear; pickinterface=eth0 ;;
 5) clear; pickinterface=rndis0 ;;
 6) clear; pickinterface=usb0 ;;
+7) clear; pickinterface=wlan1mon ;;
 *) echo "Incorrect choice..." ;;
 esac
 }
