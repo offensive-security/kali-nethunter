@@ -295,4 +295,16 @@ else
 		if [ "$1" == "kalimenu" ]; then
 			$busybox chroot $mnt /usr/bin/kalimenu
 		fi
+
+      #CUSTOM BUTTONS
+      if [ "$1" == "custom_cmd" ]; then
+         commmand=""
+         LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
+         while test $# -gt 0
+         do
+            shift
+            commmand=${commmand}" "$1
+         done
+         $busybox chroot $mnt $commmand
+      fi      
 fi
