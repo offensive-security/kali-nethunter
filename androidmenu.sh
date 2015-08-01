@@ -873,11 +873,13 @@ wget -P ${basedir}/flash/data/app/ https://hackerskeyboard.googlecode.com/files/
 # Suggested: Android VNC Viewer
 wget -P ${basedir}/flash/data/app/ https://android-vnc-viewer.googlecode.com/files/androidVNC_build20110327.apk
 # Suggested: DriveDroid for CDROM emulation
-wget -P ${basedir}/flash/data/app/ http://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.9.20.apk
-# Keyboard HID app
+wget -P ${basedir}/flash/data/app/ http://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.9.19.apk
+# Suggested: Keyboard HID app
 wget -P ${basedir}/flash/data/app/ https://github.com/pelya/android-keyboard-gadget/raw/master/USB-Keyboard.apk
 # Suggested: RFAnalyzer
 wget -P ${basedir}/flash/data/app/ https://github.com/demantz/RFAnalyzer/raw/master/RFAnalyzer.apk
+# Suggested: Shodan App
+wget -P ${basedir}/flash/data/app/ https://github.com/PaulSec/Shodan.io-mobile-app/raw/master/io.shodan.app.apk
 }
 
 #####################################################
