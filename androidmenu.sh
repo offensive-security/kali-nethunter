@@ -31,7 +31,7 @@ FROZENKERNEL=0
 # git clone https://github.com/binkybear/android_kernel_asus_grouper.git -b android-tegra3-grouper-3.1-lollipop-release_tegra-l4t-r16-16.5 nexus7_2012-5
 # - Nexus 7 (2013)
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-flo-3.4-kitkat-mr2 flodeb
-# git clone https://github.com/binkybear/flo.git -b ElementalX-3.00 nexus7_2013-5
+# git clone https://github.com/binkybear/flo.git -b ElementalX-4.00 nexus7_2013-5
 # - Nexus 6
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-shamu-3.10-lollipop-release nexus6-5
 # - Nexus 5
