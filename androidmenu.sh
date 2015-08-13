@@ -553,7 +553,7 @@ cd ${rootfs}
 
 # Package installations for various sections.
 
-arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils u-boot-tools"
+arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils u-boot-tools pciutils apt-transport-https"
 base="kali-menu kali-defaults initramfs-tools usbutils openjdk-7-jre mlocate google-nexus-tools"
 desktop="kali-defaults kali-root-login desktop-base xfce4 xfce4-places-plugin xfce4-goodies"
 tools="nmap metasploit-framework tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set device-pharmer nishang"
