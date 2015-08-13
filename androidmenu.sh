@@ -705,7 +705,7 @@ sed -i 's/gpshost=localhost:2947/gpshost=127.0.0.1:2947/g' ${rootfs}/kali-$archi
 # Modify SSHD to allow password logins which is a security risk 
 # if the user doesn't change their password
 # or change their configuration for key based ssh
-sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/g' ${rootfs}/kali-$architecture/etc/ssh/sshd.conf
+sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/g' ${rootfs}/kali-$architecture/etc/ssh/sshd_config
 
 # Copy over our kali specific mana config files
 cp -rf ${basepwd}/utils/manna/start-mana* ${rootfs}/kali-$architecture/usr/bin/
