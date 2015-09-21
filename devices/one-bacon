@@ -73,9 +73,6 @@ set_perm(0, 0, 0755, "/tmp/cleansystem.sh");
 ui_print("* Cleaning /system/app...                   *");
 run_program("/tmp/cleansystem.sh");
 
-ui_print("* Cleaning /system/app...                   *");
-run_program("/tmp/cleansystem.sh");
-
 ui_print("* Installing Kernel...                      *");
 
 package_extract_file("boot.img", "/dev/block/platform/msm_sdcc.1/by-name/boot");
@@ -174,9 +171,6 @@ set_perm(0, 0, 0777, "/tmp/mkbootimg");
 set_perm(0, 0, 0777, "/tmp/unpackbootimg.sh");
 set_perm(0, 0, 0777, "/tmp/busybox");
 set_perm(0, 0, 0755, "/tmp/cleansystem.sh");
-ui_print("* Cleaning /system/app...                   *");
-run_program("/tmp/cleansystem.sh");
-
 ui_print("* Cleaning /system/app...                   *");
 run_program("/tmp/cleansystem.sh");
 
