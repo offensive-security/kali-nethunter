@@ -400,6 +400,7 @@ echo "  [1] Build All - Kali rootfs and Kernel (AOSP/STOCK) (Android 4.4+)"
 echo "  [2] Build Kernel (AOSP/STOCK) Only"
 echo "  [3] Build All - Kali rootfs and Kernel (AOSP/STOCK) (Android 5)"
 echo "  [4] Build Kernel (AOSP/STOCK) (Android 5) Only"
+echo "  [5] Build Kernel (CM12.1) Only"
 echo "  [0] Exit to Main Menu"
 echo ""
 echo ""
@@ -413,6 +414,7 @@ case $deb_menuchoice in
 2) d_clear; f_hammerhead_stock_kernel ; f_zip_kernel_save ;;
 3) d_clear; f_rootfs ; f_flashzip ; f_hammerhead_stock_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
 4) d_clear; f_hammerhead_stock_kernel5 ; f_zip_kernel_save ;;
+5) d_clear; f_hammerhead_cm121_kernel ; f_zip_kernel_save ;;
 0) d_clear; f_interface ;;
 *) echo "Incorrect choice... " ;
 esac

@@ -183,3 +183,68 @@ fi
 f_zip_kernel_save
 fi
 }
+
+#####################################################
+# Create Nexus 5 CM 12.1 Kernel
+#####################################################
+f_hammerhead_cm121_kernel(){
+
+echo "Downloading Android Toolchian"
+if [[ $LOCALGIT == 1 ]]; then
+	echo "Copying toolchain to rootfs"
+        cp -rf ${basepwd}/arm-eabi-4.7 ${basedir}/toolchain
+else
+	git clone --depth=1 https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7 ${basedir}/toolchain
+fi
+
+echo "Setting export paths"
+# Set path for Kernel building
+export ARCH=arm
+export SUBARCH=arm
+export CROSS_COMPILE=${basedir}/toolchain/bin/arm-eabi-
+
+f_kernel_build_init
+
+rm -rf ${basedir}/flashkernel/kernel
+
+cd ${basedir}
+echo "Downloading Kernel"
+if [[ $LOCALGIT == 1 ]]; then
+  echo "Copying kernel to rootfs"
+  cp -rf ${basepwd}/android_kernel_lge_hammerhead ${basedir}/kernel
+else
+  git clone --depth=1 https://github.com/zaventh/android_kernel_lge_hammerhead.git -b cm-12.1 ${basedir}/kernel
+fi
+
+cd ${basedir}/kernel
+
+chmod +x scripts/*
+
+make clean
+sleep 10
+make kali_defconfig
+
+# Attach kernel builder to updater-script
+echo "#KERNEL_SCRIPT_START" >> ${basedir}/flashkernel/META-INF/com/google/android/updater-script
+cat << EOF > ${basedir}/flashkernel/META-INF/com/google/android/updater-script
+getprop("ro.product.device") == "hammerhead" || abort("This package is for \"hammerhead\" devices; this is a \"" + getprop("ro.product.device") + "\".");
+
+ui_print("* Starting CM12.1 Kernel install for Nexus 5...    *");
+ui_print("* Mounting System...                        *");
+mount("ext4", "EMMC", "/dev/block/platform/msm_sdcc.1/by-name/system", "/system");
+package_extract_dir("system", "/system");
+set_perm_recursive(0, 0, 0644, 0644, "/system/lib/modules");
+set_perm_recursive(0, 2000, 0755, 0755, "/system/bin");
+set_perm_recursive(0, 2000, 0755, 0755, "/system/xbin");
+set_perm_recursive(0, 0, 0755, 0755, "/system/etc/init.d");
+unmount("/system");
+ui_print("* Installing Kernel...                      *");
+package_extract_file("boot.img", "/dev/block/platform/msm_sdcc.1/by-name/boot");
+ui_print("* Kernel installation completed...          *");
+EOF
+
+f_kernel_build
+
+abootimg --create ${basedir}/flashkernel/boot.img -f ${basedir}/kernel/ramdisk/5/bootimg.cfg -k ${basedir}/kernel/arch/arm/boot/zImage-dtb -r ${basedir}/kernel/ramdisk/5/initrd.img
+cd ${basedir}
+}
