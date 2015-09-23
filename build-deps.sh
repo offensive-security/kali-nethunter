@@ -13,7 +13,7 @@ MACHINE_TYPE=`uname -m`
 if [ ${MACHINE_TYPE} == 'x86_64' ]; then
     dpkg --add-architecture i386
     apt-get update
-    apt-get install -y ia32-libs
+    apt-get install -y lib32z1 lib32ncurses5
     # Required for kernel cross compiles
     apt-get install -y libncurses5:i386
 else
