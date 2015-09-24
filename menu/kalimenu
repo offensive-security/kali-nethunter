@@ -640,7 +640,7 @@ echo ""
 echo "[5] Start OpenVPN Server"
 echo "[6] Stop OpenVPN Server"
 echo ""
-echo "[7] Start XServer on localhost (Android Applicaiton XServer XSDL)"
+echo "[7] Start XServer on localhost (Android Application XServer XSDL)"
 echo ""
 echo "[0] Exit to main menu"
 echo ""
@@ -1169,7 +1169,7 @@ done
 f_mon(){
   clear
   echo "Enable or Disable Monitor Mode on wlan1"
-  echo "[1] Enable moitor mode"
+  echo "[1] Enable monitor mode"
   echo "[2] Disable monitor mode"
   echo ""
   echo "[0] Main Menu"
