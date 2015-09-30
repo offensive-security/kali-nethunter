@@ -146,7 +146,7 @@ if [[ $LOCALGIT == 1 ]]; then
   echo "Copying kernel to rootfs"
   cp -rf ${basepwd}/oneplus12 ${basedir}/kernel
 else
-  	git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.x_render_kernel ${basedir}/kernel
+  	git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.1 ${basedir}/kernel
 fi
 
 cd ${basedir}/kernel
@@ -155,7 +155,7 @@ chmod +x scripts/* ramdisk/5/mkbootimg ramdisk/5/dtbToolCM
 
 make clean
 sleep 10
-make kali_defconfig
+make cyanogenmod_bacon_defconfig
 
 # Attach kernel builder to updater-script
 echo "#KERNEL_SCRIPT_START" >> ${basedir}/flashkernel/META-INF/com/google/android/updater-script

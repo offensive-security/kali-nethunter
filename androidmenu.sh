@@ -31,7 +31,7 @@ FROZENKERNEL=0
 # git clone https://github.com/binkybear/android_kernel_asus_grouper.git -b android-tegra3-grouper-3.1-lollipop-release_tegra-l4t-r16-16.5 nexus7_2012-5
 # - Nexus 7 (2013)
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-flo-3.4-kitkat-mr2 flodeb
-# git clone https://github.com/binkybear/flo.git -b ElementalX-3.00 nexus7_2013-5
+# git clone https://github.com/binkybear/flo.git -b ElementalX-4.00 nexus7_2013-5
 # - Nexus 6
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-shamu-3.10-lollipop-release nexus6-5
 # - Nexus 5
@@ -42,7 +42,7 @@ FROZENKERNEL=0
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-mako-3.4-lollipop-release nexus4-5
 # - OnePlus One
 # git clone https://github.com/binkybear/AK-OnePone.git -b cm-11.0-ak oneplus11
-# git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.1 oneplus12
+# git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.x_render_kernel
 # - Galaxy S5
 # git clone https://github.com/binkybear/KTSGS5.git -b aosp4.4 galaxy_s5
 # git clone https://github.com/binkybear/KTSGS5.git -b tw4.4 galaxy_s5_tw
@@ -555,17 +555,21 @@ cd ${rootfs}
 
 # Package installations for various sections.
 
-arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils uboot-mkimage"
+arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils u-boot-tools pciutils apt-transport-https"
 base="kali-menu kali-defaults initramfs-tools usbutils openjdk-7-jre mlocate google-nexus-tools"
 desktop="kali-defaults kali-root-login desktop-base xfce4 xfce4-places-plugin xfce4-goodies"
-tools="nmap metasploit tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set device-pharmer nishang"
-wireless="wifite iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq dsniff sslstrip mdk3 mitmproxy"
+tools="nmap metasploit-framework tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set device-pharmer nishang"
+wireless="wifite pixiewps iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq dsniff sslstrip mdk3 mitmproxy"
 services="autossh openssh-server tightvncserver apache2 postgresql openvpn php5"
 extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools python-pip hostapd ptunnel tcptrace dnsutils p0f mitmf"
-mana="python-twisted python-dnspython libnl1 libnl-dev libssl-dev sslsplit python-pcapy tinyproxy isc-dhcp-server rfkill mana-toolkit"
+mana="python-twisted python-dnspython libssl-dev sslsplit python-pcapy tinyproxy isc-dhcp-server rfkill"
 bdf="backdoor-factory bdfproxy"
 spiderfoot="python-lxml python-m2crypto python-netaddr python-mako"
-sdr="sox librtlsdr"
+sdr="sox librtlsdr-dev "
+
+# Find replacement for these in Kali 2.0
+#E: Package 'libnl1' has no installation candidate
+#E: Package 'libnl-dev' has no installation candidate
 
 export packages="${arm} ${base} ${desktop} ${tools} ${wireless} ${services} ${extras} ${mana} ${spiderfoot} ${sdr} ${bdf}"
 export architecture="armhf"
@@ -580,8 +584,11 @@ cp /usr/bin/qemu-arm-static kali-$architecture/usr/bin/
 LANG=C chroot kali-$architecture /debootstrap/debootstrap --second-stage
 
 cat << EOF > kali-$architecture/etc/apt/sources.list
-deb http://http.kali.org/kali kali main contrib non-free
-deb http://security.kali.org/kali-security kali/updates main contrib non-free
+deb http://http.kali.org/kali sana main non-free contrib
+#deb-src http://http.kali.org/kali sana main non-free contrib
+
+deb http://security.kali.org/ sana/updates main contrib non-free
+#deb-src http://security.kali.org/ sana/updates main contrib non-free
 EOF
 
 #define hostname
@@ -674,12 +681,13 @@ safe-apt-get install locales-all
 debconf-set-selections /debconf.set
 rm -f /debconf.set
 safe-apt-get update
-safe-apt-get -y install git-core binutils ca-certificates initramfs-tools uboot-mkimage
+safe-apt-get -y install git-core binutils ca-certificates initramfs-tools
 safe-apt-get -y install locales console-common less nano git
 echo "root:toor" | chpasswd
 sed -i -e 's/KERNEL\!=\"eth\*|/KERNEL\!=\"/' /lib/udev/rules.d/75-persistent-net-generator.rules
 rm -f /etc/udev/rules.d/70-persistent-net.rules
 safe-apt-get --yes --force-yes install $packages
+apt-get -y -o Dpkg::Options::="--force-confnew" install mana-toolkit # Otherwise conflict with Apache2 000-default.conf
 
 rm -f /usr/sbin/policy-rc.d
 rm -f /usr/sbin/invoke-rc.d
@@ -696,6 +704,10 @@ sed -i 's/\# logprefix=\/some\/path\/to\/logs/logprefix=\/captures\/kismet/g' ${
 sed -i 's/# ncsource=wlan0/ncsource=wlan1/g' ${rootfs}/kali-$architecture/etc/kismet/kismet.conf
 sed -i 's/gpshost=localhost:2947/gpshost=127.0.0.1:2947/g' ${rootfs}/kali-$architecture/etc/kismet/kismet.conf
 
+# Modify SSHD to allow password logins which is a security risk 
+# if the user doesn't change their password
+# or change their configuration for key based ssh
+sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/g' ${rootfs}/kali-$architecture/etc/ssh/sshd_config
 
 # Copy over our kali specific mana config files
 cp -rf ${basepwd}/utils/manna/start-mana* ${rootfs}/kali-$architecture/usr/bin/
@@ -756,6 +768,10 @@ LANG=C chroot kali-$architecture chmod 755 /usr/bin/hid-dic
 # Set permissions to executable on newly added scripts
 LANG=C chroot kali-$architecture chmod 755 /usr/bin/kalimenu
 
+# Set permissions and copy wlan1/monitor mode start script
+cp ${basepwd}/utils/start-wlan1.sh ${rootfs}/kali-$architecture/usr/bin/start-wlan1.sh
+LANG=C chroot kali-$architecture chmod 755 /usr/bin/start-wlan1.sh
+
 # Sets the default for hostapd.conf to the mana karma version
 sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/etc/mana-toolkit/hostapd-karma.conf#' kali-$architecture/etc/init.d/hostapd
 sed -i 's/wlan0/wlan1/g' kali-$architecture/etc/mana-toolkit/hostapd-karma.conf
@@ -781,7 +797,7 @@ mkdir -p $cap/evilap $cap/ettercap $cap/kismet/db $cap/nmap $cap/sslstrip $cap/t
 
 # In order for metasploit to work daemon,nginx,postgres must all be added to inet
 # beef-xss creates user beef-xss. Openvpn server requires nobdy:nobody in order to work
-echo "inet:x:3004:postgres,root,beef-xss,daemon,nginx" >> kali-$architecture/etc/group
+echo "inet:x:3004:postgres,root,beef-xss,daemon,nginx,mysql" >> kali-$architecture/etc/group
 echo "nobody:x:3004:nobody" >> kali-$architecture/etc/group
 
 if [ ${DEBUG} == 0 ]; then
@@ -859,11 +875,13 @@ wget -P ${basedir}/flash/data/app/ https://hackerskeyboard.googlecode.com/files/
 # Suggested: Android VNC Viewer
 wget -P ${basedir}/flash/data/app/ https://android-vnc-viewer.googlecode.com/files/androidVNC_build20110327.apk
 # Suggested: DriveDroid for CDROM emulation
-wget -P ${basedir}/flash/data/app/ http://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.9.20.apk
-# Keyboard HID app
+wget -P ${basedir}/flash/data/app/ http://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.9.19.apk
+# Suggested: Keyboard HID app
 wget -P ${basedir}/flash/data/app/ https://github.com/pelya/android-keyboard-gadget/raw/master/USB-Keyboard.apk
 # Suggested: RFAnalyzer
 wget -P ${basedir}/flash/data/app/ https://github.com/demantz/RFAnalyzer/raw/master/RFAnalyzer.apk
+# Suggested: Shodan App
+wget -P ${basedir}/flash/data/app/ https://github.com/PaulSec/Shodan.io-mobile-app/raw/master/io.shodan.app.apk
 }
 
 #####################################################
