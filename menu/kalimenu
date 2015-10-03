@@ -44,7 +44,7 @@ case $menuchoice in
 14) clear; f_mon;;
 15) clear; f_safeeject;;
 q) clear; exit 1 ;;
-*) echo "Incorrect choice..." ;
+*) clear; echo "Invalid option. Please try again."; sleep 2; f_interface;;
 esac
 }
 
@@ -75,7 +75,7 @@ case $wirelesschoice in
 5) clear; trap 'f_wireless_attacks' 2 ; airodump-ng wlan1mon;;
 6) clear; trap 'f_wireless_attacks' 2 ; f_pingen;;
 0) clear; f_interface;;
-*) echo "Incorrect choice...";
+*) clear; echo "Invalid option. Please try again."; sleep 2; f_wireless_attacks;;
 esac
 }
 
@@ -104,7 +104,7 @@ case $yourch in
 4) clear; wifite -all -wpa -dict none ;;
 5) clear; wifite -p 40 -wps ;;
 0) clear; f_wireless_attacks ;;
-*) echo "Incorrect choice..." ;
+*) clear; echo "Invalid option. Please try again."; sleep 2; f_wifite;;
 echo "Press Enter to continue. . ." ; read ;; esac
 done
 }
@@ -222,7 +222,7 @@ case $sniffchoice in
 4) clear; trap 'f_sniffing' 2; f_dsniff ;;
 5) clear; trap 'f_sniffing' 2; f_mitmproxy ;;
 0) clear; f_interface ;;
-*) echo "Incorrect choice..." ;
+*) clear; echo "Invalid option. Please try again."; sleep 2; f_sniffing;;
 esac
 }
 
@@ -295,7 +295,7 @@ case $infochoice in
 2) clear; recon-ng; f_information_gathering;;
 3) clear; f_device_pharmer ;;
 0) clear; f_interface ;;
-*) echo "Incorrect choice..." ;
+*) clear; echo "Invalid option. Please try again."; sleep 2; f_information_gathering;;
 esac
 }
 
@@ -376,7 +376,7 @@ case $vulnchoice in
 2) clear; openvas-stop; f_vulnerability ;;
 3) clear; openvas-feedupdate; f_vulnerability ;;
 0) f_interface ;;
-*) echo "Incorrect choice..." ;
+*) clear; echo "Invalid option. Please try again."; sleep 2; f_vulnerability;;
 esac
 }
 ########################## EXPLOITATION MENU ############################
@@ -401,7 +401,7 @@ case $webchoice in
 3) clear; setoolkit ; f_exploitation ;;
 4) clear; trap 'f_exploitation' 2; f_mitmf ;;
 0) clear; f_interface ;;
-*) echo "Incorrect choice..." ;
+*) clear; echo "Invalid option. Please try again."; sleep 2; f_exploitation;;
 esac
 }
 
@@ -459,7 +459,7 @@ case $serviceschoice in
 4) clear; echo "Attempting to shutdown ptunnel" ; kill -KILL $(cat /opt/ptunnel.pid) ; sleep 5 ;;
 #5) clear; f_iodine ;;
 0) f_interface ;;
-*) echo "Incorrect choice..." ;
+*) clear; echo "Invalid option. Please try again."; sleep 2; f_reverse;;
 esac
 }
 
@@ -616,7 +616,7 @@ case $serviceschoice in
 6) clear; service openvpn stop ; iptables -F ; iptables -X ; echo "Stopping Openvpn" ;;
 7) clear; DISPLAY=127.0.0.1:0.0 startxfce4; echo "Server started on localhost to be used with Xserver XSDL application" ;;
 0) f_interface ;;
-*) echo "Incorrect choice..." ;
+*) clear; echo "Invalid option. Please try again."; sleep 2; f_services;;
 esac
 }
 
@@ -704,7 +704,7 @@ case $vpnkeychoice in
 2) f_domain_clientkey ;;
 3) f_exportkeys ;;
 0) f_interface ;;
-*) echo "Incorrect choice..." ;
+*) clear; echo "Invalid option. Please try again."; sleep 2; f_vpnmenu;;
 esac
 }
 
@@ -849,7 +849,7 @@ case $vncsettingschoice in
 1) clear; echo "Change your VNC password:"; vncpasswd; f_vncmenu ;;
 2) clear; f_vncres ;;
 0) f_interface ;;
-*) echo "Incorrect choice..." ;
++*) clear; echo "Invalid option. Please try again."; sleep 2; f_vncmenu;;
 esac
 }
 
@@ -911,7 +911,7 @@ case $logchoice in
 1) clear; f_sync_cap ;;
 2) clear; f_wipe_cap ;;
 0) f_interface ;;
-*) echo "Incorrect choice..." ;
+*) clear; echo "Invalid option. Please try again."; sleep 2; f_capture;;
 esac
 }
 
@@ -1181,7 +1181,7 @@ case $settingschoice in
 3) clear; f_macchanger ;;
 4) clear; f_nodejs ;;
 0) f_interface ;;
-*) echo "Incorrect choice..." ;
+*) clear; echo "Invalid option. Please try again."; sleep 2; f_settings;;
 esac
 }
 
@@ -1263,7 +1263,7 @@ case $sniffinterface in
 5) clear; pickinterface=rndis0 ;;
 6) clear; pickinterface=usb0 ;;
 7) clear; pickinterface=wlan1mon ;;
-*) echo "Incorrect choice..." ;;
+*) clear; echo "Invalid option. Please try again."; sleep 2; f_pick_interface;;
 esac
 }
 # **** START **** #
