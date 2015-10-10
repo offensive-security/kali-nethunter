@@ -105,7 +105,8 @@ case $yourch in
 5) clear; wifite -p 40 -wps ;;
 0) clear; f_wireless_attacks ;;
 *) clear; echo "Invalid option. Please try again."; sleep 2; f_wifite;;
-echo "Press Enter to continue. . ." ; read ;; esac
+esac
+echo "Press Enter to continue. . ." ; read
 done
 }
 
