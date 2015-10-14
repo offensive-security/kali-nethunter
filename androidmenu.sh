@@ -40,6 +40,8 @@ FROZENKERNEL=0
 # - Nexus 4
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-mako-3.4-kitkat-mr2 mako
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-mako-3.4-lollipop-release nexus4-5
+# - OnePlus Two
+#  git clone https://github.com/binkybear/android_kernel_oneplus_msm8994.git -b 5.1.1
 # - OnePlus One
 # git clone https://github.com/binkybear/AK-OnePone.git -b cm-11.0-ak oneplus11
 # git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.x_render_kernel
@@ -69,6 +71,7 @@ source devices/nexus7-flo-deb
 source devices/nexus5-hammerhead
 source devices/nexus4-mako
 source devices/one-bacon
+source devices/one-two
 
 ######### Set paths and permissions  #######
 
@@ -250,6 +253,11 @@ echo "  [1] Build All - Kali rootfs and Kernel (Android 4.4+)"
 echo "  [2] Build Kernel Only (Android 4.4+)"
 echo "  [3] Build All - Kali rootfs and Kernel (Android 5)"
 echo "  [4] Build Kernel Only (Android 5)"
+echo ""
+echo -e "\e[31m ------------------------- OnePlus Two --------------------\e[0m"
+echo ""
+echo "  [5] Build All - Kali rootfs and Kernel (Android 5)"
+echo "  [6] Build Kernel Only (Android 5)"
 echo "  [0] Exit to Main Menu"
 echo ""
 echo ""
@@ -263,6 +271,9 @@ case $grouper_menuchoice in
 2) d_clear; f_oneplus_kernel ; f_zip_kernel_save ;;
 3) d_clear; f_rootfs ; f_flashzip ; f_oneplus_kernel5 ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
 4) d_clear; f_oneplus_kernel5 ; f_zip_kernel_save ;;
+5) d_clear; f_rootfs ; f_flashzip ; f_oneplus_two ; f_zip_save ; f_zip_kernel_save ; f_rom_build ;;
+6) d_clear; f_oneplus_two ; f_zip_kernel_save ;;
+
 0) d_clear; f_interface ;;
 *) echo "Incorrect choice... " ;
 esac
@@ -556,7 +567,7 @@ cd ${rootfs}
 # Package installations for various sections.
 
 arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils u-boot-tools pciutils apt-transport-https"
-base="kali-menu kali-defaults initramfs-tools usbutils openjdk-7-jre mlocate google-nexus-tools"
+base="kali-menu kali-defaults initramfs-tools pciutils usbutils openjdk-7-jre mlocate google-nexus-tools"
 desktop="kali-defaults kali-root-login desktop-base xfce4 xfce4-places-plugin xfce4-goodies"
 tools="nmap metasploit-framework tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set device-pharmer nishang"
 wireless="wifite pixiewps iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq dsniff sslstrip mdk3 mitmproxy"
