@@ -81,6 +81,14 @@ if [ $(getprop ro.product.device) == "shamu" ]; then
 	chown system:system /data/system/users/0/wallpaper
 fi
 
+# ONE PLUS TWO
+
+if [ $(getprop ro.product.device) == "OnePlus2" ] || [ $(getprop ro.product.device) == "oneplus2" ] || [ $(getprop ro.product.device) == "A2001" ] || [ $(getprop ro.product.device) == "A2003" ] || [ $(getprop ro.product.device) == "A2005" ]; then
+	cp /tmp/hammerheadwallpaper /data/system/users/0/wallpaper
+	chmod 777 /data/system/users/0/wallpaper
+	chown system:system /data/system/users/0/wallpaper
+fi
+
 # ONE PLUS ONE - USES SAME SCREEN RESOLUTION AS NEXUS 5
 
 if [ $(getprop ro.product.device) == "bacon" ] || [ $(getprop ro.product.device) == "A0001" ] || [ $(getprop ro.product.device) == "One" ] || [ $(getprop ro.product.device) == "OnePlus" ] || [ $(getprop ro.product.device) == "One A0001" ]; then

@@ -4,14 +4,13 @@ if [[ $LOCALGIT == 1 ]]; then
 	echo "Copying toolchain to rootfs"
         cp -rf ${basepwd}/aarch64-linux-android-4.9 ${basedir}/toolchain64
 else
- git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 -b lollipop-release 
- ${basedir}/toolchain64
+ git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 -b lollipop-release ${basedir}/toolchain64
 fi
 
 echo "Setting export paths"
 # Set path for Kernel building
 export ARCH=arm64
-export SUBARCH=arm
+export SUBARCH=arm64
 export CROSS_COMPILE=${basedir}/toolchain64/bin/aarch64-linux-android-
 
 if [[ $FROZENKERNEL == 1 ]]; then
@@ -42,18 +41,18 @@ if [[ $FROZENKERNEL == 1 ]]; then
   cd ${basedir}
   if [[ $LOCALGIT == 1 ]]; then
     echo "Copying kernel to rootfs"
-    cp -rf ${basepwd}/nexus9-5 ${basedir}/kernel
+    cp -rf ${basepwd}/oneplus2-5 ${basedir}/kernel
   else
     git clone https://github.com/binkybear/android_kernel_oneplus_msm8994.git -b 5.1.1 ${basedir}/kernel
   fi
 
 cd ${basedir}/kernel
 
-chmod +x scripts/*
-chmod +x arch/arm64/kernel/vdso/*.sh
 make clean
 sleep 10
 make kali_defconfig
+
+f_kernel_build
 
 # Attach kernel builder to updater-script
 echo "#KERNEL_SCRIPT_START" >> ${basedir}/flashkernel/META-INF/com/google/android/updater-script
@@ -76,8 +75,6 @@ ui_print("* Installing Kernel...                      *");
 package_extract_file("boot.img", "/dev/block/bootdevice/by-name/boot");
 ui_print("* Kernel installation completed...          *");
 EOF
-
-f_kernel_build
 
 cd ${basedir}/flashkernel/kernel
 abootimg --create ${basedir}/flashkernel/boot.img -f ${basedir}/kernel/ramdisk/5/bootimg.cfg -k ${basedir}/kernel/arch/arm64/boot/Image.gz-dtb -r ${basedir}/kernel/ramdisk/5/initrd.img
