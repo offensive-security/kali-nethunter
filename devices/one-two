@@ -48,6 +48,7 @@ if [[ $FROZENKERNEL == 1 ]]; then
 
 cd ${basedir}/kernel
 
+chmod +x scripts/* ramdisk/5/mkbootimg ramdisk/5/dtbtool
 make clean
 sleep 10
 make kali_defconfig
@@ -76,13 +77,15 @@ package_extract_file("boot.img", "/dev/block/bootdevice/by-name/boot");
 ui_print("* Kernel installation completed...          *");
 EOF
 
-cd ${basedir}/flashkernel/kernel
-abootimg --create ${basedir}/flashkernel/boot.img -f ${basedir}/kernel/ramdisk/5/bootimg.cfg -k ${basedir}/kernel/arch/arm64/boot/Image.gz-dtb -r ${basedir}/kernel/ramdisk/5/initrd.img
-cd ${basedir}
+# Start boot.img creation
 
-if [ -d "${basedir}/flash/" ]; then
-  cp ${basedir}/flashkernel/boot.img ${basedir}/flash/boot.img
-fi
+cd ${basedir}/kernel
+
+echo "Creating dt.img"
+${basedir}/kernel/ramdisk/5/dtbtool -2 -o ${basedir}/flashkernel/kernel/dt.img -s 2048 -p ${basedir}/kernel/scripts/dtc/ ${basedir}/kernel/arch/arm64/boot/dts/
+sleep 3
+echo "Creating boot.img"
+${basedir}/kernel/ramdisk/5/mkbootimg --kernel arch/arm64/boot/Image --ramdisk ramdisk/5/initrd.img --cmdline "androidboot.hardware=qcom user_debug=31 msm_rtb.filter=0x37 ehci-hcd.park=3 lpm_levels.sleep_disabled=1 boot_cpus=0-3" --dt ../flashkernel/kernel/dt.img --output ../flashkernel/boot.img
 
 f_zip_kernel_save
 fi
