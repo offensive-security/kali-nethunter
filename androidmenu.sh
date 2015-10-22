@@ -41,7 +41,7 @@ FROZENKERNEL=0
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-mako-3.4-kitkat-mr2 mako
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-mako-3.4-lollipop-release nexus4-5
 # - OnePlus Two
-#  git clone https://github.com/binkybear/android_kernel_oneplus_msm8994.git -b 5.1.1
+#  git clone https://github.com/binkybear/android_kernel_oneplus_msm8994.git -b cm-12.1
 # - OnePlus One
 # git clone https://github.com/binkybear/AK-OnePone.git -b cm-11.0-ak oneplus11
 # git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.x_render_kernel
@@ -256,8 +256,8 @@ echo "  [4] Build Kernel Only (Android 5)"
 echo ""
 echo -e "\e[31m ------------------------- OnePlus Two --------------------\e[0m"
 echo ""
-echo "  [5] Build All - Kali rootfs and Kernel (Android 5)"
-echo "  [6] Build Kernel Only (Android 5)"
+echo "  [5] Build All - Kali rootfs and Kernel (Android 5) (CM Based)"
+echo "  [6] Build Kernel Only (Android 5) (CM Based)"
 echo "  [0] Exit to Main Menu"
 echo ""
 echo ""

@@ -43,7 +43,7 @@ if [[ $FROZENKERNEL == 1 ]]; then
     echo "Copying kernel to rootfs"
     cp -rf ${basepwd}/oneplus2-5 ${basedir}/kernel
   else
-    git clone https://github.com/binkybear/android_kernel_oneplus_msm8994.git -b OXYGEN ${basedir}/kernel
+    git clone https://github.com/binkybear/android_kernel_oneplus_msm8994.git -b cm-12.1 ${basedir}/kernel
   fi
 
 cd ${basedir}/kernel
