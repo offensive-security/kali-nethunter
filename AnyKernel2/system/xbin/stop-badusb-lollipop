@@ -1,0 +1,19 @@
+#!/system/bin/sh
+unset LD_PRELOAD
+
+INTERFACE=rndis0
+
+killall dnsmasq 2>/dev/null
+echo 0 > /sys/class/android_usb/android0/enable
+echo mtp,adb > /sys/class/android_usb/android0/functions
+echo 1 > /sys/class/android_usb/android0/enable
+
+# Restoring iptables rules
+iptables -D FORWARD -i $INTERFACE -j ACCEPT
+iptables -t nat -D POSTROUTING -j MASQUERADE
+iptables -A natctrl_FORWARD -j DROP
+# Remove iface and routes
+ip addr flush dev $INTERFACE
+ip link set $INTERFACE down
+
+

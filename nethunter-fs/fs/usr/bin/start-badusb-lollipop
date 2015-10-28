@@ -1,0 +1,4 @@
+#!/system/bin/sh
+unset LD_PRELOAD
+cd /sdcard/files/ && sh startbadusb-lollipop.sh
+

@@ -1,0 +1,20 @@
+#!/bin/bash
+# This is a quick helper script to kill mana in the Kali chroot for lollipop
+
+echo "This is not finished yet"
+
+upstream=wlan0
+phy=wlan1
+
+
+pkill dhcpd
+pkill sslstrip
+pkill sslsplit
+pkill hostapd
+pkill python
+# Restore
+iptables-restore < /tmp/rules.txt
+rm /tmp/rules.txt
+# Remove iface and routes
+ip addr flush dev $phy
+ip link set $phy down

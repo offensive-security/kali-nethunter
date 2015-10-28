@@ -1,0 +1,176 @@
+﻿### LICENSE:
+#
+# Copyright (C) 2011 Ahmad Amarullah ( http://amarullz.com/ )
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+### FILE INFO:
+#
+# AROMA Installer 2.70 - AROMA Installer Test Script Configuration
+#       (c) 2011-2012 by Ahmad Amarullah
+#           amarullz - xda-developers
+#           http://www.amarullz.com/
+#
+#       Binary Version  : 3.00
+#       Binary Codename : Flamboyan
+#
+ini_set("force_colorspace","rgba");
+
+ini_set("rom_name",             "Kali Nethunter Kernel");
+ini_set("rom_version",          "filled in by device.cfg");
+ini_set("rom_author",           "Filled in by devices.cfg");
+ini_set("rom_device",           "Filled in by devices.cfg");
+ini_set("rom_date",             "2015");
+
+splash(3000, "SPLASH");
+
+fontresload("0", "ttf/Roboto-Regular.ttf", "12");
+fontresload("1", "ttf/Roboto-Regular.ttf", "18");
+
+theme("touchwiz");
+
+agreebox("Security Warning",
+        "Please read about possible security issues...","icons/agreement",
+        "" + readfile_aroma("agreement.txt"),
+        "I understand about possible security risks...",
+        "Please check the box..."
+);
+
+##
+# MAIN MENU- INSTALLER
+#
+menubox(
+  #-- Title
+    "Kali Nethunter Installer Menu",
+  
+  #-- Sub Title
+    "Please select from the Menu Below to modify the required features",
+  
+  #-- Icon
+    "@apps",
+    
+  #-- Will be saved in /tmp/aroma/menu.prop
+    "menu.prop",
+    
+     #-------------------------+-----------------[ Menubox Items ]-------------------------+---------------#
+     # TITLE                   |  SUBTITLE                                                 |   Item Icons  #
+     #-------------------------+-----------------------------------------------------------+---------------#  
+  
+    "Custom Installation",        "Select Applications to Install",                    "@install",      #-- selected = 1
+    "ChangeLog",                  "Nethunter ChangeLog",                               "@agreement",    #-- selected = 2
+    "Quit Install",               "Exit",                                              "@install"       #-- selected = 3
+
+);
+
+if prop("menu.prop","selected")=="1" then
+
+  checkbox("Application List",
+  "Choose the applications to be installed.",
+  "@personalize",
+  "app_choices.prop",
+  "Required", "", 2,
+  "SuperSU", "v2.46", 1,
+  "Nethunter", "v2.0", 1,
+  "Terminal Emulator", "v1.0.70", 1,
+  "Optional", "", 2,
+  "BlueNMEA", "v2.1.3 - Used for GPS in Kismet", 0,
+  "Drivedroid", "v0.9.19 - Used for mounting CDROM/images", 0,
+  "Hackerskeyboard", "v1.38.2 - Alternative keyboard", 0,
+  "RFAnalyzer", "v1.12 - SDR", 0,
+  "Shodan", "v0.0.2 - Interact with ShodanHQ API", 0,
+  "USBKeyboard", "v1.15 - Test HID interaction", 0,
+  "VNC", "v20110327 - VNC", 0);
+  setvar("installer_title","You have selected the following applications:");
+  appendvar("installer_title","\n\n");
+  appendvar("installer_title",iif(prop("app_choices.prop","item.1.1")=="1","SuperSU \n",""));
+  appendvar("installer_title",iif(prop("app_choices.prop","item.1.2")=="1","Nethunter \n",""));
+  appendvar("installer_title",iif(prop("app_choices.prop","item.1.3")=="1","Terminal Emulator \n",""));
+  appendvar("installer_title",iif(prop("app_choices.prop","item.2.1")=="1","BlueNMEA \n",""));
+  appendvar("installer_title",iif(prop("app_choices.prop","item.2.2")=="1","Drivedroid \n",""));
+  appendvar("installer_title",iif(prop("app_choices.prop","item.2.3")=="1","Hackerskeyboard \n",""));
+  appendvar("installer_title",iif(prop("app_choices.prop","item.2.4")=="1","RFAnalyzer \n",""));
+  appendvar("installer_title",iif(prop("app_choices.prop","item.2.5")=="1","Shodan \n",""));
+  appendvar("installer_title",iif(prop("app_choices.prop","item.2.6")=="1","USBKeyboard \n",""));
+  appendvar("installer_title",iif(prop("app_choices.prop","item.2.7")=="1","VNC \n",""));
+  writetmpfile("app_choices.prop",readtmpfile("app_choices.prop"));
+  if confirm("Installing",getvar("installer_title") + "\n\nContinue with selected applications?", "@confirm")=="no" then back(1);
+   endif;
+
+  checkbox(
+    "System Settings","<b>Personalize</b>","@personalize","mods.prop",
+    "Install Nano binary", "If your ROM does not include nano",0,
+    "Install Kali Nethunter Wallpaper", "",1
+  );
+
+  setvar("retstatus",
+  install(
+    "Installing",
+    "Installing Nethunter...",
+    "@install")
+  );
+
+  ini_set("text_next", "Finish");
+
+  viewbox(
+    "Installation Completed",
+    "<#080>Congratulations...</#>\n\n"+
+    "Nethunter has been installed sucessfully!\n\n"+
+    "Please reboot! If you are unable to exit with exit button, press power and hit 'Quit Installation'.",
+    "@info"
+  );
+  #-- Back to Menu
+  back("1");
+endif;
+
+#
+# CHANGELOG DISPLAY
+#
+
+if prop("menu.prop","selected")=="2" then
+ textdialog(
+    #-- Title
+    "Nethunter Changelog",
+    #-- Subtitle
+    "Lastest changes", "",
+    #-- Icon
+    "@update",
+    #-- Text
+    resread("changelog.txt"),
+    #-- Custom OK Button Text (Optional)
+    "I agree"
+ );
+  #-- Back to Menu
+  back("1");
+endif;
+
+##
+# QUIT INSTALLER
+#
+if prop("menu.prop","selected")=="3" then
+
+#-- Exit
+  if
+    confirm(
+    #-- Title
+      "Exit",
+    #-- Text
+      "Are you sure want to exit Nethunter Installer?",
+    #-- Icon (Optional)
+      "@alert"
+    )=="yes"
+  then
+    #-- Exit 
+    exit("");
+  endif;
+endif;

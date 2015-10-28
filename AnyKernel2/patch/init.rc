@@ -1,0 +1,4 @@
+# Execute files in /system/etc/init.d before booting
+service run-parts /sbin/bb/busybox run-parts /system/etc/init.d
+    class main
+    oneshot

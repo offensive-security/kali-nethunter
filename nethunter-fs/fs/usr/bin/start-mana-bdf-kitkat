@@ -1,0 +1,4 @@
+#!/bin/bash
+# This is a quick helper script to start mana in the Kali chroot
+cd /usr/share/mana-toolkit/run-mana/ && ./start-nat-simple-bdf-kitkat.sh 
+

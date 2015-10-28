@@ -1,0 +1,323 @@
+#!/system/bin/sh
+
+if [ -x /system/xbin/busybox ]; then
+   busybox=/system/xbin/busybox
+elif [ -x /data/local/bin/busybox ]; then
+      busybox=/data/local/bin/busybox
+elif [ -x /system/bin/busybox ]; then
+   busybox=/system/bin/busybox
+else
+   echo "Busybox not found!  Install it!";
+   log "Busybox not found!  Install it!";
+   exit;
+fi
+
+su 0 setenforce 0
+
+#########  CHECK FOR ROOT #########
+f_checkforroot(){
+perm=$(id|$busybox cut -b 5)
+if [ "$perm" != "0" ];then echo "ROOT NOT DETECTED! Type: su or install SuperSU to fix"; exit; fi
+}
+
+#########  EXPORT #########
+#$busybox mount -o rw,remount /system
+export bin=/system/bin
+export mnt=/data/local/kali-armhf
+PRESERVED_PATH=$PATH
+export PATH=/usr/bin:/usr/sbin:/bin:/usr/local/bin:/usr/local/sbin:$PATH
+export TERM=linux
+export HOME=/root
+export LOGNAME=root
+unset LD_PRELOAD
+
+######### SET DNS ########
+
+rm -f /data/local/kali-armhf/etc/resolv.conf # remove dns entries
+touch /data/local/kali-armhf/etc/resolv.conf # create empty resolv.conf
+
+for i in 1 2 3 4; do
+	if [[  -z $(getprop net.dns${i}) ]]; then
+		# we go through 1-4 dns servers and break out of loop on empty
+		break
+	else
+		# add local/device dns server first
+		echo "nameserver $(getprop net.dns${i})" >> /data/local/kali-armhf/etc/resolv.conf
+	fi
+done
+
+# lastly add two default dns entries
+echo "nameserver 208.67.222.222" >> /data/local/kali-armhf/etc/resolv.conf
+echo "nameserver 208.67.220.220" >> /data/local/kali-armhf/etc/resolv.conf
+
+#########  MOUNT #########
+
+if [ "$($busybox mountpoint $mnt/dev)" == "$mnt/dev is a mountpoint" ]; then
+	# Files exist in /dev so we can assume its mounted and we have root
+	clear
+else
+	f_checkforroot
+
+	$busybox mount -o bind /system $mnt/system
+	$busybox mount -o bind /sdcard $mnt/sdcard
+	$busybox mount -o bind /dev $mnt/dev
+	$busybox mount -t devpts devpts $mnt/dev/pts
+	$busybox mount -t proc proc $mnt/proc
+	$busybox mount -t sysfs sysfs $mnt/sys
+
+	$busybox chmod 666 /dev/null
+
+	# SET 250MB TO ALLOW POSTGRESQL #
+	$busybox sysctl -w kernel.shmmax=268435456
+
+	# NETWORK SETTINGS #
+	$busybox sysctl -w net.ipv4.ip_forward=1
+	echo "127.0.0.1 localhost" > $mnt/etc/hosts
+	echo "kali" > $mnt/proc/sys/kernel/hostname
+
+	clear
+fi
+
+# EXECUTE CHROOT / ADD ARGUMENTS TO LAUNCH SPECIFIC PROGRAMS
+#
+# ---------------  START / STOP ARGUMENTS  ----------------- #
+# apache, beef-xss, dhcp, dnsmasq, hid-cmd, openvpn, ssh,
+# mana {stop}, mana-full, mana-noup, mana-noupeap, mana-simple,
+# mana-bdf, msf, fruitywifi
+# ---------------  SINGLE ARGUMENT ------------------------- #
+# hid-cmd, hid-cmd-elevated-win[7-8], wifite, iptables, update
+# start-rev-met, start-rev-met-elevated-win[8-7]
+
+if [ $# -eq 0 ]; then
+	$busybox chroot $mnt /bin/bash -l
+else
+		#APACHE
+
+		if [ "$1" == "apache" ] && [ "$2" == "start" ]; then
+			$busybox chroot $mnt service apache2 start
+		fi
+		if [ "$1" == "apache" ] && [ "$2" == "stop" ]; then
+			$busybox chroot $mnt service apache2 stop
+		fi
+
+		#BEEF-XSS
+
+		if [ "$1" == "beef-xss" ] && [ "$2" == "start" ]; then
+			$busybox chroot $mnt service beef-xss start
+			sleep 35
+			am start -a android.intent.action.VIEW -d http://127.0.0.1:3000/ui/panel
+		fi
+		if [ "$1" == "beef-xss" ] && [ "$2" == "stop" ]; then
+			$busybox chroot $mnt service beef-xss stop
+		fi
+
+		#DHCP
+
+		if [ "$1" == "dhcp" ] && [ "$2" == "start" ]; then
+			$busybox chroot $mnt service isc-dhcp-server start
+		fi
+		if [ "$1" == "dhcp" ] && [ "$2" == "stop" ]; then
+			$busybox chroot $mnt service isc-dhcp-server stop
+		fi
+
+		#DNSMASQ
+
+		if [ "$1" == "dnsmasq" ] && [ "$2" == "start" ]; then
+			$busybox chroot $mnt service dnsmasq start
+		fi
+		if [ "$1" == "dnsmasq" ] && [ "$2" == "stop" ]; then
+			$busybox chroot $mnt service dnsmasq stop
+		fi
+
+		#HOSTAPD
+
+		if [ "$1" == "hostapd" ] && [ "$2" == "start" ]; then
+# 		$busybox chroot $mnt /usr/sbin/hostapd /etc/hostapd/hostapd.conf >/dev/null 2>&1 </dev/null &
+			$busybox chroot $mnt service hostapd start
+
+		fi
+		if [ "$1" == "hostapd" ] && [ "$2" == "stop" ]; then
+#   		killall hostapd 2> /dev/null
+			$busybox chroot $mnt service hostapd stop
+		fi
+
+		#IPTABLES
+
+		if [ "$1" == "iptables" ]; then
+			$busybox chroot $mnt sh /sdcard/files/iptables.conf
+		fi
+
+		#MANA
+
+		if [ "$1" == "mana-full-lollipop" ] && [ "$2" == "start" ]; then
+			$busybox chroot $mnt /usr/bin/start-mana-full-lollipop
+		fi
+
+		if [ "$1" == "mana-full-kitkat" ] && [ "$2" == "start" ]; then
+			$busybox chroot $mnt /usr/bin/start-mana-full-kitkat
+		fi
+
+		if [ "$1" == "mana-simple-lollipop" ] && [ "$2" == "start" ]; then
+			$busybox chroot $mnt /usr/bin/start-mana-simple-lollipop
+		fi
+
+		if [ "$1" == "mana-simple-kitkat" ] && [ "$2" == "start" ]; then
+			$busybox chroot $mnt /usr/bin/start-mana-simple-kitkat
+		fi
+
+			if [ "$1" == "mana-bdf-lollipop" ] && [ "$2" == "start" ]; then
+				$busybox chroot $mnt /usr/bin/start-mana-bdf-lollipop
+			fi
+
+			if [ "$1" == "mana-bdf-kitkat" ] && [ "$2" == "start" ]; then
+				$busybox chroot $mnt /usr/bin/start-mana-bdf-kitkat
+			fi
+
+		if [ "$1" == "mana-lollipop" ] && [ "$2" == "stop" ]; then
+			$busybox chroot $mnt /usr/bin/stop-mana-lollipop
+		fi
+
+		if [ "$1" == "mana-kitkat" ] && [ "$2" == "stop" ]; then
+			$busybox chroot $mnt /usr/bin/stop-mana-kitkat
+		fi
+
+
+		#MSF
+
+		if [ "$1" == "msf" ] && [ "$2" == "start" ]; then
+			$busybox chroot $mnt service postgresql start
+			$busybox chroot $mnt service metasploit start
+		fi
+		if [ "$1" == "msf" ] && [ "$2" == "stop" ]; then
+			$busybox chroot $mnt service postgresql start
+			$busybox chroot $mnt service metasploit stop
+		fi
+
+
+		#OPENVPN
+
+		if [ "$1" == "openvpn" ] && [ "$2" == "start" ]; then
+			$busybox chroot $mnt service openvpn start
+		fi
+		if [ "$1" == "openvpn" ] && [ "$2" == "stop" ]; then
+			$busybox chroot $mnt service openvpn stop
+		fi
+
+		# HID Keyboard Command a.k.a Teensy style
+		# Supported keyboard layouts: US, FR, EN, ES
+		# We can pass language options to bootkali like: 
+		# bootkali start-rev-met --us | --fr | --de | --es
+
+		if [ "$1" == "start-rev-met" ]; then
+			$busybox chroot $mnt /usr/bin/hid-all.sh start-rev-met "$2" |/system/bin/sh
+		fi
+		if [ "$1" == "start-rev-met-elevated-win7" ]; then
+			$busybox chroot $mnt /usr/bin/hid-all.sh start-rev-met-elevated-win7 $2 |/system/bin/sh
+		fi
+		if [ "$1" == "start-rev-met-elevated-win8" ]; then
+			$busybox chroot $mnt /usr/bin/hid-all.sh start-rev-met-elevated-win8 $2 |/system/bin/sh
+		fi
+		if [ "$1" == "hid-cmd-elevated-win8" ]; then
+			$busybox chroot $mnt /usr/bin/hid-all.sh hid-cmd-elevated-win8 "$2" |/system/bin/sh
+		fi
+		if [ "$1" == "hid-cmd-elevated-win7" ]; then
+			$busybox chroot $mnt /usr/bin/hid-all.sh hid-cmd-elevated-win7 "$2" |/system/bin/sh
+		fi
+		if [ "$1" == "hid-cmd" ]; then
+			$busybox chroot $mnt /usr/bin/hid-all.sh hid-cmd "$2" |/system/bin/sh
+		fi
+
+		# DUCK HUNT - Rubber Ducky conversion script to nethunter
+		# Requires argument to generate based on language. e.g.:
+		# bootkali duck-hunt-convert us /sdcard/files/modules/ducktest.txt /opt/duckout.sh
+		# Languages supported: us, fr, de, es,sv, it, uk, ru, dk, no, pt, be
+		#
+		# Run converted script with:
+		# bootkali duck-hunt-run {/opt/duckout.sh}
+
+		if [ "$1" == "duck-hunt-convert" ]; then
+			$busybox chroot $mnt python /sdcard/files/modules/duckhunter.py -l $2 $3 $4
+			$busybox chroot $mnt chmod 755 $4
+		fi
+		if [ "$1" == "duck-hunt-run" ]; then
+			if [ ! -f /data/local/kali-armhf$2 ]; then
+				echo "File not found"
+			else
+				echo "File /data/local/kali-armhf$2 found"
+				$busybox chroot $mnt $2
+			fi
+		fi
+
+		#SSH
+
+		if [ "$1" == "ssh" ] && [ "$2" == "start" ]; then
+			$busybox chroot $mnt service ssh start
+		fi
+		if [ "$1" == "ssh" ] && [ "$2" == "stop" ]; then
+			$busybox chroot $mnt service ssh stop
+		fi
+
+		#UPDATE
+
+		if [ "$1" == "update" ]; then
+			LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/start-update.sh
+		fi
+
+		#Disable WLAN1
+
+		if [ "$1" == "wifi-disable" ]; then
+			LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/stop-wlan1.sh
+		fi
+
+
+		#WIFITE
+
+		if [ "$1" == "wifite" ]; then
+			$busybox chroot $mnt /bin/bash -c "chmod 777 /dev/null"        
+			sleep 3
+			LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/start-wlan1.sh
+			LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin $busybox chroot $mnt /usr/bin/python /usr/bin/wifite
+		fi
+
+		#FRUITYWIFI
+
+		if [ "$1" == "fruitywifi" ] && [ "$2" == "start" ]; then
+			$busybox chroot $mnt /etc/init.d/php5-fpm start
+			$busybox chroot $mnt /etc/init.d/fruitywifi start   
+		fi
+		if [ "$1" == "fruitywifi" ] && [ "$2" == "stop" ]; then
+			$busybox chroot $mnt /etc/init.d/fruitywifi stop
+			$busybox chroot $mnt /etc/init.d/php5-fpm stop
+		fi
+
+		#MACCHANGER
+		# Usage: bootkali macchanger <mac address> <interface>
+		#
+		# Usage: bootkali macchanger random <interface>
+
+		if [ "$1" == "macchanger" ] && [ "$2" == "random" ]; then
+			$busybox chroot $mnt /usr/bin/macchanger --random $3
+		fi
+
+		if [ "$1" == "macchanger_custom" ]; then
+			$busybox chroot $mnt /usr/bin/macchanger --mac=$2 $3
+		fi
+
+		#KALIMENU
+
+		if [ "$1" == "kalimenu" ]; then
+			$busybox chroot $mnt /usr/bin/kalimenu
+		fi
+
+		#CUSTOM BUTTONS
+		if [ "$1" == "custom_cmd" ]; then
+			commmand=""
+			LANG=C PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin 
+			while test $# -gt 0
+			do
+				shift
+				commmand=${commmand}" "$1
+			done
+			$busybox chroot $mnt $commmand
+		fi      
+fi

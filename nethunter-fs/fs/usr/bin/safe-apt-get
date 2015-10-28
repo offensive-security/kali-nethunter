@@ -1,0 +1,18 @@
+#!/bin/bash
+
+echo "Executing apt-get $*"
+apt-get $* 2>&1 | tee apt.log
+
+while [[ $(cat apt.log | grep "^Failed to fetch") || $(cat apt.log | grep "^Err") ]]
+do
+ echo "Restarting apt-get $*"
+ apt-get $* 2>&1 | tee apt.log
+done
+
+if [[ $(cat apt.log | grep "^E:") ]]; then
+ echo "There are fatal issues during the installation, the rest packages cannot be installed until you solve the errors."
+ rm apt.log
+ exit 001
+fi
+
+rm apt.log

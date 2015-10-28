@@ -1,0 +1,7 @@
+if [[ -n $(pstree -p |grep -i ruby |grep worker_ctl) ]]; then
+    echo "1"
+else
+    echo "0"
+fi
+
+

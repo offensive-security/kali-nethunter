@@ -1,0 +1,75 @@
+set_progress(0.0);
+ui_print("@Starting the install process");
+set_progress(0.1);
+ui_print("Copying tools to /tmp");
+package_extract_dir("tools", "/tmp");
+set_perm(0, 0, 0755, "/tmp/busybox");
+set_progress(0.2);
+ui_print("Mounting /data");
+run_program("/tmp/busybox", "mount", "/data");
+set_progress(0.3);
+ui_print("Mounting /system");
+run_program("/tmp/busybox", "mount", "/system");
+set_progress(0.4);
+ui_print("Mounting /sdcard");
+run_program("/tmp/busybox", "mount", "/sdcard");
+ui_print("@Copying config files to sdcard");
+ui_print("@Installing Apps");
+package_extract_dir("supersu", "/tmp/supersu");
+run_program("/tmp/busybox", "unzip", "-o", "/tmp/supersu/supersu.zip", "-d", "/tmp/supersu");
+run_program("/tmp/busybox", "ash", "/tmp/supersu/META-INF/com/google/android/update-binary", "dummy", "1", "/tmp/supersu/supersu.zip");
+run_program("/tmp/busybox", "mount", "/data");
+run_program("/tmp/busybox", "mount", "/system");
+ui_print("Installing Nethunter APK");
+package_extract_file("data/app/nethunter.apk", "/data/app/nethunter.apk");
+package_extract_file("data/app/Term.apk", "/data/app/Term.apk");
+ui_print("Installing BlueNMEA-2.1.3");
+package_extract_file("data/app/BlueNMEA-2.1.3.apk", "/data/app/BlueNMEA-2.1.3.apk");
+ui_print("Installing Drivedroid-0.9.19");
+package_extract_file("data/app/Drivedroid-0.9.19.apk", "/data/app/Drivedroid-0.9.19.apk");
+ui_print("Installing Hackerskeyboard-1.0.3.7");
+package_extract_file("data/app/Hackerskeyboard-1.38.2.apk", "/data/app/Hackerskeyboard-1.38.2.apk");
+ui_print("Installing RFAnalyzer");
+package_extract_file("data/app/RFAnalyzer.apk", "/data/app/RFAnalyzer.apk");
+ui_print("Installing Shodan");
+package_extract_file("data/app/Shodan.apk", "/data/app/Shodan.apk");
+ui_print("Installing USB Keyboard");
+package_extract_file("data/app/USBKeyboard.apk", "/data/app/USBKeyboard.apk");
+ui_print("Installing VNC");
+package_extract_file("data/app/VNC-20110327.apk", "/data/app/VNC-20110327.apk");
+
+set_progress(0.5);
+ui_print("@Freeing some space on /system");
+set_perm(0, 0, 0755, "/tmp/cleansystem.sh");
+run_program("/tmp/busybox", "ash", "/tmp/cleansystem.sh");
+
+ui_print("@Installing nano binary");
+set_perm(0, 0, 0755, "/tmp/installnano.sh");
+run_program("/tmp/installnano.sh");
+
+ui_print("@Installing Nethunter wallpapers");
+package_extract_dir("wallpaper", "/tmp/wallpaper");
+set_perm(0, 0, 0755, "/tmp/wallpaper/setwallpaper.sh");
+run_program("/tmp/wallpaper/setwallpaper.sh");
+
+set_progress(0.6);
+ui_print("@Checking for busybox");
+set_perm(0, 0, 0755, "/tmp/busyboxcheck.sh");
+run_program("/tmp/busyboxcheck.sh");
+
+
+set_progress(0.7);
+ui_print("@Installing Kali Chroot");
+set_perm(0, 0, 0755, "/tmp/extractchroot.sh");
+run_program("/tmp/extractchroot.sh");
+
+set_progress(0.9);
+ui_print("@Installing Kernel using AnyKernel2");
+package_extract_dir("anykernelzip", "/tmp/anykernel");
+run_program("/tmp/busybox", "unzip", "-o", "/tmp/anykernel/anykernel2.zip", "-d", "/tmp/anykernel");
+run_program("/tmp/busybox", "ash", "/tmp/anykernel/META-INF/com/google/android/update-binary", "dummy", "1", "/tmp/anykernel/anykernel2.zip");
+unmount("/data");
+unmount("/system");
+#delete_recursive("/tmp");
+ui_print("@Finished Install");
+set_progress(1);

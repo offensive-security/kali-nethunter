@@ -1,0 +1,67 @@
+img.background=bg
+img.titlebar=titlebar.9
+img.navbar=navbar
+img.dialog=dialog.9
+img.dialog.titlebar=dialog_titlebar.9
+img.progress=button.9
+img.prograss.fill=button_press.9
+img.selection=list.9
+img.selection.push=list.9
+img.button=button.9
+img.button.focus=button_focus.9
+img.button.push=button_press.9
+img.checkbox=cb
+img.checkbox.focus=cb_focus
+img.checkbox.push=cb_press
+img.checkbox.on=cb_on
+img.checkbox.on.focus=cb_on_focus
+img.checkbox.on.push=cb_on_press
+img.radio=radio
+img.radio.focus=radio_focus
+img.radio.push=radio_press
+img.radio.on=radio_on
+img.radio.on.focus=radio_on_focus
+img.radio.on.push=radio_on_press
+
+
+color.winbg           = #000
+color.winbg_g         = #444
+color.winfg           = #fff
+color.winfg_gray      = #666
+color.dialogbg        = #000
+color.dialogbg_g      = #444
+color.dialogfg        = #fff
+color.textbg          = #000
+color.textfg          = #fff
+color.textfg_gray     = #aaa
+color.controlbg       = #999
+color.controlbg_g     = #999
+color.controlfg       = #fff
+color.selectbg        = #33b5e5
+color.selectbg_g      = #33b5e5
+color.selectfg        = #fff
+color.titlebg         = #000
+color.titlebg_g       = #000
+color.titlefg         = #fff
+color.dlgtitlebg      = #fff
+color.dlgtitlebg_g    = #000
+color.dlgtitlefg      = #fff
+color.scrollbar       = #ccc
+color.navbg           = #000
+color.navbg_g         = #000
+color.border          = #666
+color.border_g        = #666
+color.progressglow    = #33b5e5
+
+config.roundsize             = 1
+config.button_roundsize      = 1
+config.window_roundsize      = 1
+config.transition_frame      = 5
+
+font.small                   = font.roboto.small
+font.big                     = font.roboto.big
+
+
+info.themename        = Touchwiz
+info.description      = Touchwiz Theme for AROMA Installer
+info.author           = titanic_fanatic

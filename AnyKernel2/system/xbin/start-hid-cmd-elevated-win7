@@ -1,0 +1,3 @@
+unset LD_PRELOAD
+PATH=$PATH:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin chroot /data/local/kali-armhf /usr/bin/hid-cmd-elevated-win7.py |/system/bin/sh
+

@@ -1,0 +1,4 @@
+unset LD_PRELOAD
+kill -9 `ps | $bb grep php | $bb grep -v grep | $bb awk '{print $2}'`  2>/dev/null
+kill -9 `ps | $bb grep lighttpd | $bb grep -v grep | $bb awk '{print $2}'`  2>/dev/null
+
