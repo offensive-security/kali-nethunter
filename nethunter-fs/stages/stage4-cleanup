@@ -11,7 +11,3 @@ EOF
 
 chmod +x kali-$architecture/cleanup
 LANG=C chroot kali-$architecture /cleanup
-
-umount kali-$architecture/dev/pts
-umount kali-$architecture/dev/
-umount kali-$architecture/proc

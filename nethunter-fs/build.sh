@@ -156,6 +156,11 @@ sha1sum output/${filename}.tar.xz > output/${filename}.sha1sum
 # Remove read only from nano
 chattr -i /bin/nano
 
+umount kali-$architecture/dev/pts
+umount kali-$architecture/dev/
+umount kali-$architecture/proc
+
 echo "[+] Finished!  Check output folder for chroot"
+
 # Extract on device
 # xz -d /sdcard/kalifs.tar.xz | tar xvf /sdcard/kalifs.tar -C /data/local/
