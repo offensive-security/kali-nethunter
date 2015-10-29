@@ -150,6 +150,7 @@ echo "[+] Starting stage 4 (cleanup)"
 source stages/stage4-cleanup 
 
 # Compress final file
+echo "[+] Compressing kalifs.  This can take a while...."
 tar -cf - kali-armhf/ | xz -9 -c - > output/${filename}.tar.xz
 sha1sum output/${filename}.tar.xz > output/${filename}.sha1sum
 

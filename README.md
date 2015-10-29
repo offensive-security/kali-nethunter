@@ -6,18 +6,20 @@ Kali Linux NetHunter is a Android penetration testing platform for Nexus and One
 
 Kali Linux Nethunter is not a ROM but is meant to be installed over an existing stock/factory image of Android.  It can be installed over some Cyanogenmod based ROMs.  It is heavily based on using custom kernels and only supports a select number of devices.
 
- ## Instructions
+## Instructions
 
- There are two seperate main parts Kali Linux Nethunter:
+There are two seperate main parts Kali Linux Nethunter:
 
+```bash
  |
  |- AnyKernel2 = This is where we build the update.zip installer
  |
  |- nethunter-fs = This is where we build the chroot
+```
 
- Each folder contains specific instructions on how to build for each device but here are the basic steps.
+Each folder contains specific instructions on how to build for each device but here are the basic steps.
 
- * Build a kalifs-full.tar.xz using nethunter-fs
- * Copy FS to Anykernel2/data/local/kalifs-full.tar.xz
- * Download 3rd party apps in AnyKernel2  folder (python build.py -f)
- * Follow build instructions in AnyKernel2 README.md
+* Build a kalifs-full.tar.xz using nethunter-fs
+* Copy FS to Anykernel2/data/local/kalifs-full.tar.xz
+* Download 3rd party apps in AnyKernel2  folder (python build.py -f)
+* Follow build instructions in AnyKernel2 README.md
