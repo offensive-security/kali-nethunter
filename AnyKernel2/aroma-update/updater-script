@@ -92,6 +92,7 @@ run_program("/tmp/busyboxcheck.sh");
 
 set_progress(0.7);
 ui_print("@Installing Kali Chroot");
+package_extract_dir("data/local", "/data/local");
 set_perm(0, 0, 0755, "/tmp/extractchroot.sh");
 run_program("/tmp/extractchroot.sh");
 
