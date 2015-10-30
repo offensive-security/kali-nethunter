@@ -5,7 +5,7 @@ if [ ! -f "/usr/share/debootstrap/scripts/sana" ]; then
 	# For those not building on Kali
 	echo "Missing sana from debootstrap"
 
-	cat << 'EOF' > /usr/share/debootstrap/scripts/sana
+	cat <<-EOF > /usr/share/debootstrap/scripts/sana
 	default_mirror http://http.kali.org/kali
 	mirror_style release
 	download_style apt
