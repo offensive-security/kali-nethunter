@@ -52,18 +52,19 @@ fi;
 # Free up space for kernel only install (otherwise nothing installs!)
 # It actually runs twice because sometimes it's installed when kernel
 # is by itself and other times Aroma/noaroma installs re
-ui_print "@Freeing some space on /system";
-chmod 755 /tmp/cleansystem.sh;
-/sbin/busybox ash /tmp/cleansystem.sh;
+ui_print "- Freeing some space on /system";
+chmod 755 /tmp/anykernel/tools/cleansystem.sh;
+/sbin/busybox ash /tmp/anykernel/tools/cleansystem.sh;
 
 # Firmware takes up to much space on system so we symlink it
-ui_print "@Symlink firmware from /data/local/nhsystem/firmware to /system/etc/firmware";
-chmod 755 /tmp/symlinkfirmware.sh;
-/sbin/busybox ash /tmp/symlinkfirmware.sh;
+ui_print "- Symlink firmware from /data/local/nhsystem/firmware to /system/etc/firmware";
+chmod 755 /tmp/anykernel/tools/symlinkfirmware.sh;
+/sbin/busybox ash /tmp/anykernel/tools/symlinkfirmware.sh;
 
-ui_print "@Symlink firmware from /data/local/nhsystem/xbin to /system/xbin";
-chmod 755 /tmp/symlinkxbin.sh;
-/sbin/busybox ash /tmp/symlinkxbin.sh;
+ui_print "- Symlink firmware from /data/local/nhsystem/xbin to /system/xbin";
+chmod 755 /tmp/anykernel/tools/symlinkxbin.sh;
+/sbin/busybox ash /tmp/anykernel/tools/symlinkxbin.sh;
+set_perm_recursive 0 0 0755 0755 /data/local/nhsystem/xbin;
 
 if [ "$(file_getprop /tmp/anykernel/anykernel.sh do.initd)" == 1 ]; then
   ui_print "- Creating init.d...";
