@@ -86,7 +86,7 @@ fi
 # mana-bdf, msf, fruitywifi
 # ---------------  SINGLE ARGUMENT ------------------------- #
 # hid-cmd, hid-cmd-elevated-win[7-8], wifite, iptables, update
-# start-rev-met, start-rev-met-elevated-win[8-7]
+# start-rev-met, start-rev-met-elevated-win[8-7], dumpmifare
 
 if [ $# -eq 0 ]; then
 	$busybox chroot $mnt /bin/bash -l
@@ -193,6 +193,12 @@ else
 			$busybox chroot $mnt service metasploit stop
 		fi
 
+
+		#MFOC MIFARE DUMP
+
+        if [ "$1" == "dumpmifare" ]; then
+			$busybox chroot $mnt /usr/bin/dumpmifare.sh
+        fi
 
 		#OPENVPN
 
