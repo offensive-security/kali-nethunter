@@ -266,6 +266,7 @@ def main():
     if args.forcedown:
         supersu()
         allapps()
+        exit(0) # https://github.com/offensive-security/kali-nethunter/issues/259 (unsure if I want to keep this)
 
     # Grab latestest SuperSU and all apps
     suzipfile = os.path.isfile('supersu/supersu.zip')
