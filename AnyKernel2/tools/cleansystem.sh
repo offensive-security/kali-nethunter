@@ -23,7 +23,7 @@ rm -f $SA/GoogleEars.apk
 rm -f $SA/Keep.apk
 rm -f $SA/FaceLock.apk
 
-# Apks are located in folders now
+# Apks are located in folders now...can we move to /data?
 rm -rf $SA/HoloSpiralWallpaper
 rm -rf $SA/BasicDreams
 rm -rf $SA/Drive
@@ -40,7 +40,8 @@ rm -rf $SA/PrintSpooler
 rm -rf $SA/GoogleHindiIME
 rm -rf $SA/GooglePinyinIME
 rm -rf $SA/KoreanIME
-rm -rf $SA/LatinImeGoogle
+#rm -rf $SA/LatinImeGoogle
+rm -rf $SA/Music2
 rm -rf $SA/iWnnIME
 rm -rf $SA/Photos
 rm -rf $SA/LiveWallpapersPicker
