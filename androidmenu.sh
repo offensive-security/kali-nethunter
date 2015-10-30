@@ -586,7 +586,7 @@ export packages="${arm} ${base} ${desktop} ${tools} ${wireless} ${services} ${ex
 export architecture="armhf"
 
 # create the rootfs - not much to modify here, except maybe the hostname.
-debootstrap --foreign --arch $architecture kali kali-$architecture http://http.kali.org/kali
+debootstrap --foreign --arch $architecture sana kali-$architecture http://http.kali.org/kali
 
 cp /usr/bin/qemu-arm-static kali-$architecture/usr/bin/
 
