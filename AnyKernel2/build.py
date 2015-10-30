@@ -64,7 +64,9 @@ def allapps():
             if not os.path.isfile(apkname): # Check for existing apk download
                 print('Downloading ' + value + 'to' + apkname)
                 urllib.urlretrieve (value, apkname)
-                print('Finished downloading all apps')
+                print(key + '.apk download OK')
+
+        print('Finished downloading all apps')
 
     except urllib.URLError, e:
         print('URLError = ' + str(e.reason))
