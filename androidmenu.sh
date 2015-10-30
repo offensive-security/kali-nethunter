@@ -639,10 +639,12 @@ fi
 # Copy over helper files to chroot /usr/bin
 
 # Install Local files
-cp -rf ${basepwd}/utils/{s,start-*} kali-$architecture/usr/bin/
+cp -rf ${basepwd}/utils/start-* kali-$architecture/usr/bin/
 cp -rf ${basepwd}/utils/hid/* kali-$architecture/usr/bin/
 cp -rf ${basepwd}/utils/msf/*.sh kali-$architecture/usr/bin/
 
+# Copy over mifare clone script to chroot /usr/bin
+cp -rf ${basepwd}/utils/mifare/dumpmifare.sh kali-$architecture/usr/bin/
 
 # Copy all start/stop scripts to xbin
 cp ${basepwd}/flash/system/xbin/* ${rootfs}/kali-$architecture/usr/bin/
@@ -721,9 +723,9 @@ sed -i 's/gpshost=localhost:2947/gpshost=127.0.0.1:2947/g' ${rootfs}/kali-$archi
 sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/g' ${rootfs}/kali-$architecture/etc/ssh/sshd_config
 
 # Copy over our kali specific mana config files
-cp -rf ${basepwd}/utils/manna/start-mana* ${rootfs}/kali-$architecture/usr/bin/
-cp -rf ${basepwd}/utils/manna/stop-mana* ${rootfs}/kali-$architecture/usr/bin/
-cp -rf ${basepwd}/utils/manna/*.sh ${rootfs}/kali-$architecture/usr/share/mana-toolkit/run-mana/
+cp -rf ${basepwd}/utils/mana/start-mana* ${rootfs}/kali-$architecture/usr/bin/
+cp -rf ${basepwd}/utils/mana/stop-mana* ${rootfs}/kali-$architecture/usr/bin/
+cp -rf ${basepwd}/utils/mana/*.sh ${rootfs}/kali-$architecture/usr/share/mana-toolkit/run-mana/
 dos2unix ${rootfs}/kali-$architecture/usr/share/mana-toolkit/run-mana/*
 dos2unix ${rootfs}/kali-$architecture/etc/mana-toolkit/*
 chmod 755 ${rootfs}/kali-$architecture/usr/share/mana-toolkit/run-mana/*
