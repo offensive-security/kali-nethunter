@@ -315,6 +315,26 @@ else
 			$busybox chroot $mnt /usr/bin/kalimenu
 		fi
 
+		#YCABLE ¯\_(ಠ_ಠ)_/¯
+
+		if [ "$1" == "ycable" ] && [ "$2" == "start" ]; then
+			if [ -f "/sys/module/msm_otg/parameters/usbhost_charge_mode" ]; then
+				echo "1" > /sys/module/msm_otg/parameters/usbhost_charge_mode
+			fi
+			if [ -f "/sys/module/tegra_otg/parameters/tegra_otg_on_charging" ]; then
+				echo "Y" > /sys/module/tegra_otg/parameters/tegra_otg_on_charging
+			fi
+		fi
+
+		if [ "$1" == "ycable" ] && [ "$2" == "stop" ]; then
+			if [ -f "/sys/module/msm_otg/parameters/usbhost_charge_mode" ]; then
+				echo "0" > /sys/module/msm_otg/parameters/usbhost_charge_mode
+			fi
+			if [ -f "/sys/module/tegra_otg/parameters/tegra_otg_on_charging" ]; then
+				echo "N" > /sys/module/tegra_otg/parameters/tegra_otg_on_charging
+			fi
+		fi
+
 		#CUSTOM BUTTONS
 		if [ "$1" == "custom_cmd" ]; then
 			commmand=""
