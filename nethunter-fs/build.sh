@@ -105,7 +105,7 @@ arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils"
 minimalnh="pciutils usbutils hostapd openssh-server kismet apt-transport-https dnsmasq"
 
 # DEFAULT PACKAGES
-base="kali-menu kali-defaults initramfs-tools usbutils openjdk-7-jre mlocate google-nexus-tools"
+base="kali-menu kali-defaults initramfs-tools usbutils pciutils openjdk-7-jre mlocate google-nexus-tools"
 desktop="kali-defaults kali-root-login desktop-base xfce4 xfce4-places-plugin xfce4-goodies"
 tools="nmap metasploit-framework tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set device-pharmer nishang"
 wireless="wifite pixiewps iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq dsniff sslstrip mdk3 mitmproxy"
