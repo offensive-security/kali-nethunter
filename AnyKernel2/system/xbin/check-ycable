@@ -1,9 +1,0 @@
-unset LD_PRELOAD
-CHECKMSM=$(cat /sys/module/msm_otg/parameters/usbhost_charge_mode)
-CHECKTEGRA=$(cat /sys/module/tegra_otg/parameters/tegra_otg_on_charging)
-
-if [[  $CHECKTEGRA == 'Y' ]] || [[ $CHEKMSM == "1" ]]; then
-	echo "1"
-else
-	echo "0"
-fi

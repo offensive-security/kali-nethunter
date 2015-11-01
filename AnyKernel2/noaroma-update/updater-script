@@ -58,10 +58,8 @@ set_perm(0, 0, 0755, "/tmp/busyboxcheck.sh");
 run_program("/tmp/busyboxcheck.sh");
 
 set_progress(0.7);
-ui_print("@Installing Kali Chroot");
-package_extract_dir("data/local", "/data/local");
-set_perm(0, 0, 0755, "/tmp/extractchroot.sh");
-run_program("/tmp/extractchroot.sh");
+ui_print("@Symlink bootkali");
+symlink("/data/data/com.offsec.nethunter/files/scripts/bootkali", "/system/bin/bootkali");
 
 set_progress(0.9);
 ui_print("@Installing Kernel using AnyKernel2");

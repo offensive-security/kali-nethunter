@@ -1,3 +1,0 @@
-unset LD_PRELOAD
-chroot /data/local/kali-armhf /bin/bash -c "chmod 777 /dev/null"
-chroot /data/local/kali-armhf /bin/bash -c "/etc/init.d/openvpn stop"

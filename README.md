@@ -12,14 +12,12 @@ There are two seperate main parts Kali Linux Nethunter:
 
 ```bash
  |
- |- AnyKernel2 = This is where we build the update.zip installer
+ |- AnyKernel2 = This is where we build the update.zip installer for recovery mode
  |
- |- nethunter-fs = This is where we build the chroot
+ |- nethunter-fs = This is where we build the chroot.  You do not need to build unless you want a custom version
 ```
 
 Each folder contains specific instructions on how to build for each device but here are the basic steps.
 
-* Build a kalifs-full.tar.xz using nethunter-fs
-* Copy FS to Anykernel2/data/local/kalifs-full.tar.xz
 * Download 3rd party apps in AnyKernel2  folder (python build.py -f)
 * Follow build instructions in AnyKernel2 README.md
