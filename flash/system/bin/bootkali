@@ -79,7 +79,7 @@ else
 fi
 
 # EXECUTE CHROOT / ADD ARGUMENTS TO LAUNCH SPECIFIC PROGRAMS
-#
+w#
 # ---------------  START / STOP ARGUMENTS  ----------------- #
 # apache, beef-xss, dhcp, dnsmasq, hid-cmd, openvpn, ssh,
 # mana {stop}, mana-full, mana-noup, mana-noupeap, mana-simple,
@@ -192,6 +192,12 @@ else
 			$busybox chroot $mnt service postgresql start
 			$busybox chroot $mnt service metasploit stop
 		fi
+
+		#MFOC MIFARE DUMP
+
+                if [ "$1" == "dumpmifare" ]; then
+			$busybox chroot $mnt /usr/bin/dumpmifare.sh
+                fi
 
 
 		#MFOC MIFARE DUMP
