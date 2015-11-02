@@ -1,4 +1,17 @@
-busybox=/data/local/bin/busybox
+#!/system/bin/sh
+
+if [ -x /system/xbin/busybox ]; then
+   busybox=/system/xbin/busybox
+elif [ -x /data/local/bin/busybox ]; then
+      busybox=/data/local/bin/busybox
+elif [ -x /system/bin/busybox ]; then
+   busybox=/system/bin/busybox
+else
+   echo "Busybox not found!  Install it!";
+   log "Busybox not found!  Install it!";
+   exit;
+fi
+
 su 0 setenforce 0
 
 #########  CHECK FOR ROOT #########
@@ -73,7 +86,7 @@ fi
 # mana-bdf, msf, fruitywifi
 # ---------------  SINGLE ARGUMENT ------------------------- #
 # hid-cmd, hid-cmd-elevated-win[7-8], wifite, iptables, update
-# start-rev-met, start-rev-met-elevated-win[8-7]
+# start-rev-met, start-rev-met-elevated-win[8-7], dumpmifare
 
 if [ $# -eq 0 ]; then
 	$busybox chroot $mnt /bin/bash -l
@@ -180,6 +193,12 @@ else
 			$busybox chroot $mnt service metasploit stop
 		fi
 
+
+		#MFOC MIFARE DUMP
+
+        if [ "$1" == "dumpmifare" ]; then
+			$busybox chroot $mnt /usr/bin/dumpmifare.sh
+        fi
 
 		#OPENVPN
 
@@ -294,6 +313,32 @@ else
 
 		if [ "$1" == "kalimenu" ]; then
 			$busybox chroot $mnt /usr/bin/kalimenu
+		fi
+
+		#YCABLE ¯\_(ಠ_ಠ)_/¯
+
+		if [ "$1" == "ycable" ] && [ "$2" == "start" ]; then
+			if [ -f "/sys/module/msm_otg/parameters/usbhost_charge_mode" ]; then
+				echo "1" > /sys/module/msm_otg/parameters/usbhost_charge_mode
+			fi
+			if [ -f "/sys/module/tegra_otg/parameters/tegra_otg_on_charging" ]; then
+				echo "Y" > /sys/module/tegra_otg/parameters/tegra_otg_on_charging
+			fi
+			if [ -f "/sys/module/dwc3/parameters/aca_enable" ]; then
+            			echo "Y" > /sys/module/dwc3/parameters/aca_enable
+            		fi
+		fi
+
+		if [ "$1" == "ycable" ] && [ "$2" == "stop" ]; then
+			if [ -f "/sys/module/msm_otg/parameters/usbhost_charge_mode" ]; then
+				echo "0" > /sys/module/msm_otg/parameters/usbhost_charge_mode
+			fi
+			if [ -f "/sys/module/tegra_otg/parameters/tegra_otg_on_charging" ]; then
+				echo "N" > /sys/module/tegra_otg/parameters/tegra_otg_on_charging
+			fi
+			if [ -f "/sys/module/dwc3/parameters/aca_enable" ]; then
+            			echo "N" > /sys/module/dwc3/parameters/aca_enable
+            		fi
 		fi
 
 		#CUSTOM BUTTONS
