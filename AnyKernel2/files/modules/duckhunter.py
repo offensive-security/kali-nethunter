@@ -132,65 +132,41 @@ if __name__ == "__main__":
 
 		# Shortcuts to Windows Command Line
 		elif line.startswith('WINCMD'):
-			dest.write('echo -ne "\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # Windows Key
-			dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n')
 			dest.write('sleep 1\n')
-			dest.write('echo -ne "\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x00" > /dev/hidg0\n') #C
-			dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n')
-			dest.write('sleep 0.1 \n')
-			dest.write('echo -ne "\\x00\\x00\\x00\\x10\\x00\\x00\\x00\\x00" > /dev/hidg0\n') #M
-			dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n')
-			dest.write('sleep 0.1 \n')
-			dest.write('echo -ne "\\x00\\x00\\x00\\x07\\x00\\x00\\x00\\x00" > /dev/hidg0\n') #D
-			dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n')
+			dest.write('echo left-meta | hid-keyboard /dev/hidg0 keyboard\n')
 			dest.write('sleep 1\n')
-			dest.write('echo -ne "\\x10\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n')
-			dest.write('echo -ne "\\x20\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n')
+			dest.write(findinlistduck("\x63", args.layout)) #c
 			dest.write('sleep 1\n')
-			dest.write('echo -ne "\\x00\\x00\\x00\\x28\\x00\\x00\\x00\\x00" > /dev/hidg0\n')
-			dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n')
+			dest.write(findinlistduck("\x6d", args.layout)) #m
+			dest.write('sleep 1\n')
+			dest.write(findinlistduck("\x64", args.layout)) #d
+			dest.write('sleep 1\n')
+			dest.write('echo enter | hid-keyboard /dev/hidg0 keyboard\n')
 			dest.write('sleep 3\n')
 
 		elif line.startswith('WIN7CMD'):
-			dest.write('echo -ne "\\x08\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # Windows Key
-			dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n')
 			dest.write('sleep 1\n')
-			dest.write('echo -ne "\\x00\\x00\\x00\\x06\\x00\\x00\\x00\\x00" > /dev/hidg0\n') #C
-			dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n')
-			dest.write('sleep 0.1 \n')
-			dest.write('echo -ne "\\x00\\x00\\x00\\x10\\x00\\x00\\x00\\x00" > /dev/hidg0\n') #M
-			dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n')
-			dest.write('sleep 0.1 \n')
-			dest.write('echo -ne "\\x00\\x00\\x00\\x07\\x00\\x00\\x00\\x00" > /dev/hidg0\n') #D
-			dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n')
+			dest.write('echo left-meta | hid-keyboard /dev/hidg0 keyboard\n')
+			dest.write('sleep 1\n')
+			dest.write(findinlistduck("\x63", args.layout)) #c
+			dest.write('sleep 1\n')
+			dest.write(findinlistduck("\x6d", args.layout)) #m
+			dest.write('sleep 1\n')
+			dest.write(findinlistduck("\x64", args.layout)) #d
 			dest.write('sleep 1\n')
 			dest.write('echo left-ctrl left-shift return | hid-keyboard /dev/hidg0 keyboard\n')
-			dest.write('sleep 2\n')
-			if (args.layout=="us"):
-				dest.write('echo left-alt y | hid-keyboard /dev/hidg0 keyboard\n')
-			elif (args.layout=="fr"):
-				dest.write('echo left-alt o | hid-keyboard /dev/hidg0 keyboard\n')
-			elif (args.layout=="de"):
-				dest.write('echo left-alt j | hid-keyboard /dev/hidg0 keyboard\n')
-			elif (args.layout=="es"):
-				dest.write('echo left-alt s | hid-keyboard /dev/hidg0 keyboard\n')
-			elif (args.layout=="sv"):
-				dest.write('echo left-alt j | hid-keyboard /dev/hidg0 keyboard\n')
-			elif (args.layout=="it"):
-				dest.write('echo left-alt s | hid-keyboard /dev/hidg0 keyboard\n')
-			elif (args.layout=="uk"):
-				dest.write('echo left-alt y | hid-keyboard /dev/hidg0 keyboard\n')
-			elif (args.layout=="ru"):
-				dest.write('echo left-alt d | hid-keyboard /dev/hidg0 keyboard\n')
-			elif (args.layout=="dk"):
-				dest.write('echo left-alt j | hid-keyboard /dev/hidg0 keyboard\n')
-			elif (args.layout=="no"):
-				dest.write('echo left-alt j | hid-keyboard /dev/hidg0 keyboard\n')
-			elif (args.layout=="pt"):
-				dest.write('echo left-alt s | hid-keyboard /dev/hidg0 keyboard\n')
-			elif (args.layout=="be"):
-				dest.write('echo left-alt o | hid-keyboard /dev/hidg0 keyboard\n')
-			dest.write('sleep 3\n')			
+			dest.write('sleep 3\n')
+			dest.write('echo left | hid-keyboard /dev/hidg0 keyboard\n')
+			dest.write('echo enter | hid-keyboard /dev/hidg0 keyboard\n')
+			dest.write('sleep 3\n')
+		
+		elif line.startswith('WIN7UAC'):
+			dest.write('sleep 1\n')
+			dest.write('echo "left-ctrl left-shift return" | hid-keyboard /dev/hidg0 keyboard\n')
+			dest.write('sleep 3\n')
+			dest.write('echo left | hid-keyboard /dev/hidg0 keyboard\n')
+			dest.write('echo enter | hid-keyboard /dev/hidg0 keyboard\n')
+			dest.write('sleep 3\n')
 
 		elif line.startswith('WIN8CMD'):
 			dest.write('sleep 1\n')
@@ -257,47 +233,15 @@ if __name__ == "__main__":
 		elif line.startswith('STRING'):
 			line = line.strip('STRING ')
 			for char in line:
-				
-				if args.layout=="us" : line = dict_us[char]
-				elif args.layout=="fr" : line = dict_fr[char]
-				elif args.layout=="de" : line = dict_de[char]
-				elif args.layout=="es" : line = dict_es[char]
-				elif args.layout=="sv" : line = dict_sv[char]
-				elif args.layout=="it" : line = dict_it[char]
-				elif args.layout=="uk" : line = dict_uk[char]
-				elif args.layout=="ru" : line = dict_ru[iso_ru[char]]
-				elif args.layout=="dk" : line = dict_dk[char]
-				elif args.layout=="no" : line = dict_no[char]
-				elif args.layout=="pt" : line = dict_pt[char]
-				elif args.layout=="be" : line = dict_be[char]
-				
-				dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
-				
-				dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
-				dest.write('sleep 0.1 \n') # Slow things down
+				dest.write('%s\n' % (findinlistduck(char,args.layout).rstrip('\n').strip()))
+				dest.write('sleep 0.05 \n') # Slow things down
 		
 		# TEXT to type and NOT pass \n as ENTER.  Allows text to stay put.
 		elif line.startswith('TEXT'):
 			line = line.rstrip('\n').strip('TEXT ')
 			for char in line:
-				
-				if args.layout=="us" : line = dict_us[char]
-				elif args.layout=="fr" : line = dict_fr[char]
-				elif args.layout=="de" : line = dict_de[char]
-				elif args.layout=="es" : line = dict_es[char]
-				elif args.layout=="sv" : line = dict_sv[char]
-				elif args.layout=="it" : line = dict_it[char]
-				elif args.layout=="uk" : line = dict_uk[char]
-				elif args.layout=="ru" : line = dict_ru[iso_ru[char]]
-				elif args.layout=="dk" : line = dict_dk[char]
-				elif args.layout=="no" : line = dict_no[char]
-				elif args.layout=="pt" : line = dict_pt[char]
-				elif args.layout=="be" : line = dict_be[char]
-
-				dest.write('%s%s%s\n' % (prefixinput, line.rstrip('\n').strip(), prefixoutput))
-				
-				dest.write('echo -ne "\\x00\\x00\\x00\\x00\\x00\\x00\\x00\\x00" > /dev/hidg0\n') # releases key
-				dest.write('sleep 0.1 \n') # Slow things down
+				dest.write('%s\n' % (findinlistduck(char,args.layout).rstrip('\n').strip()))
+				dest.write('sleep 0.05 \n') # Slow things down
 		else:
 			dest.write('%s%s%s\n' % (prefix, line.rstrip('\n').strip(), suffix))
 
