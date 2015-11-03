@@ -83,6 +83,15 @@ if
    run_program("/tmp/wallpaper/setwallpaper.sh");
    unmount("/data");
 endif;
+if
+   file_getprop("/tmp/aroma/mods.prop","item.0.3") == "1"
+     then
+   ui_print("@Installing Custom Boot Animation");
+   run_program("/tmp/busybox", "mount", "/system");
+   package_extract_file("system/media/bootanimation.zip", "/system/media/bootanimation.zip");
+   set_perm(0, 0, 0755, "/system/media/bootanimation.zip");
+   unmount("/system");
+endif;
 
 set_progress(0.6);
 ui_print("@Checking for busybox");

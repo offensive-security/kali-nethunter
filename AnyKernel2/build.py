@@ -88,7 +88,7 @@ def zip(src, dst, status):
     try:
         pwd = os.path.dirname(os.path.realpath(__file__))
         if status == "anykernel":
-            shutil.copytree(pwd, 'tmp_out', ignore=shutil.ignore_patterns('*.py', 'README*', 'placeholder','tmp_out', 'kernels', 'files',
+            shutil.copytree(pwd, 'tmp_out', ignore=shutil.ignore_patterns('*.py', 'README*', 'placeholder','tmp_out', 'kernels', 'files', 'media'
                                                                       'devices.cfg', '.DS_Store', '.git', '.idea', 'aroma-update', 'kernel-nethunter*',
                                                                       'aroma', 'data', 'anykernel', 'wallpaper', 'noaroma-update', 'nano', 'terminfo',
                                                                       'supersu', 'supersu', 'wallpaper', 'uninstaller', 'update-nethunter*'))
