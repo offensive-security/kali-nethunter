@@ -14,6 +14,7 @@ set_progress(0.4);
 ui_print("Mounting /sdcard");
 run_program("/tmp/busybox", "mount", "/sdcard");
 ui_print("@Copying config files to sdcard");
+package_extract_dir("files", "/sdcard/files");
 ui_print("@Installing Apps");
 package_extract_dir("supersu", "/tmp/supersu");
 run_program("/tmp/busybox", "unzip", "-o", "/tmp/supersu/supersu.zip", "-d", "/tmp/supersu");
