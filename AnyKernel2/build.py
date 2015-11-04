@@ -54,7 +54,8 @@ def allapps():
         'USBKeyboard':'https://github.com/pelya/android-keyboard-gadget/raw/master/USB-Keyboard.apk',
         'RFAnalyzer':'https://github.com/demantz/RFAnalyzer/raw/master/RFAnalyzer.apk',
         'Shodan':'https://github.com/PaulSec/Shodan.io-mobile-app/raw/master/io.shodan.app.apk',
-        'Term':'http://jackpal.github.com/Android-Terminal-Emulator/downloads/Term.apk'
+        'Term':'http://jackpal.github.com/Android-Terminal-Emulator/downloads/Term.apk',
+        'cSploit-nightly':'http://rootbitch.cc/csploit/cSploit-nightly.apk'
     }
 
     try:
