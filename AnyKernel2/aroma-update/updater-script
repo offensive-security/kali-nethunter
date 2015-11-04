@@ -59,7 +59,7 @@ package_extract_file("data/app/VNC-20110327.apk", "/data/app/VNC-20110327.apk");
 endif;
 if (file_getprop("/tmp/aroma/app_choices.prop", "item.2.8")=="1") then ui_print("Installing cSploit Nightly");
 run_program("/tmp/busybox", "mount", "/data");
-package_extract_file("data/app/cSploit.apk", "/data/app/cSploit.apk");
+package_extract_file("data/app/cSploit-nightly.apk", "/data/app/cSploit-nightly.apk");
 endif;
 
 set_progress(0.5);
