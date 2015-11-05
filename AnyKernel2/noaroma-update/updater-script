@@ -63,6 +63,9 @@ run_program("/tmp/busyboxcheck.sh");
 set_progress(0.7);
 ui_print("@Symlink bootkali");
 symlink("/data/data/com.offsec.nethunter/files/scripts/bootkali", "/system/bin/bootkali");
+ui_print("@Checking for previous versions of Nethunter");
+set_perm(0, 0, 0755, "/tmp/previnstall.sh");
+run_program("/tmp/previnstall.sh");
 
 set_progress(0.9);
 ui_print("@Installing Kernel using AnyKernel2");

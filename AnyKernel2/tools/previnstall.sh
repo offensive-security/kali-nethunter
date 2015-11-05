@@ -11,9 +11,4 @@ NH=/data/local/kali-armhf
 if [ -d "$NH" ]; then
 	echo "Detected previous version of Nethunter, moving chroot"
 	mv /data/local/kali-armhf /data/data/com.offsec.nethunter/files/chroot/kali-armhf
-
-	# Just to be safe lets remove old version of Nethunter app
-	rm -rf /data/app/com.offsec.Nethunter
-	rm -f /data/app/Nethunter.apk
-	rm -f /data/app/nethunter.apk
 fi
