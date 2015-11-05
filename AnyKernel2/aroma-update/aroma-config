@@ -112,9 +112,9 @@ if prop("menu.prop","selected")=="1" then
   checkbox(
     "System Settings","<b>Personalize</b>","@personalize","mods.prop",
     "Install Nano binary", "If your ROM does not include nano",0,
-    "Install Kali Nethunter Wallpaper", "",1
-    "Install Custom Boot Animation (credits: @viperblood)", "",2
-  );
+    "Install Kali Nethunter Wallpaper", "",1,
+    "Install Custom Boot Animation (credits: @viperblood)", "",0
+    );
 
   setvar("retstatus",
   install(
