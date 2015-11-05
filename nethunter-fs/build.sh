@@ -102,7 +102,7 @@ fi
 # pciutils is needed for wifite (unsure why) and apt-transport-https for updates
 
 arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils"
-minimalnh="pciutils usbutils hostapd openssh-server kismet apt-transport-https dnsmasq"
+minimalnh="pciutils usbutils kismet apt-transport-https dnsmasq wifite metasploit-framework hostapd iw pixiewps nmap"
 
 # DEFAULT PACKAGES
 base="kali-menu kali-defaults initramfs-tools usbutils pciutils openjdk-7-jre mlocate google-nexus-tools"
@@ -118,7 +118,7 @@ sdr="sox librtlsdr-dev "
 
 # If minimal, set only minimal packages
 if [ "$1" == "--minimal" ] || [ "$1" == "-m" ]; then
-	export packages="${arm} ${minimalnh}"
+	export packages="${arm} ${minimalnh} ${bdf} ${mana} ${services}"
   filename=kalifs-minimal
 fi
 
