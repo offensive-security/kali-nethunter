@@ -15,6 +15,8 @@ run_program("/tmp/busybox", "mount", "/sdcard");
 set_progress(0.4);
 ui_print("@Copying config files to sdcard");
 package_extract_dir("files", "/sdcard/files");
+set_perm(0, 0, 0755, "/tmp/previnstall.sh");
+run_program("/tmp/previnstall.sh");
 ui_print("@Installing Apps");
 if (file_getprop("/tmp/aroma/app_choices.prop", "item.1.1")=="1") then ui_print("Installing SuperSU");
 package_extract_dir("supersu", "/tmp/supersu");
@@ -106,8 +108,6 @@ run_program("/tmp/busyboxcheck.sh");
 set_progress(0.7);
 ui_print("@Symlink bootkali");
 symlink("/data/data/com.offsec.nethunter/files/scripts/bootkali", "/system/bin/bootkali");
-set_perm(0, 0, 0755, "/tmp/previnstall.sh");
-run_program("/tmp/previnstall.sh");
 
 set_progress(0.8);
 run_program("/tmp/busybox", "mount", "/data");
