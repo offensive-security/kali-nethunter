@@ -1,6 +1,0 @@
-REM This is a comment
-STRING Example of typing to computer. Nethunter is awesome!
-REM We can type commands also
-SPACE
-SPACE
-ENTER
