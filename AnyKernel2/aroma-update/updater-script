@@ -13,8 +13,6 @@ set_progress(0.3);
 ui_print("Mounting /sdcard");
 run_program("/tmp/busybox", "mount", "/sdcard");
 set_progress(0.4);
-ui_print("@Copying config files to sdcard");
-package_extract_dir("files", "/sdcard/files");
 set_perm(0, 0, 0755, "/tmp/previnstall.sh");
 run_program("/tmp/previnstall.sh");
 ui_print("@Installing Apps");
