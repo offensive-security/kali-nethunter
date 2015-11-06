@@ -69,14 +69,22 @@ tar xvf dictionary/89.tar.gz -C kali-$architecture/opt/dic
 cp dictionary/wordlist.txt kali-$architecture/opt/dic/wordlist.txt
 cp dictionary/pinlist.txt kali-$architecture/opt/dic/pinlist.txt
 
-#Installs deADBolt
-curl -o kali-$architecture/usr/bin/deadbolt https://raw.githubusercontent.com/photonicgeek/deADBolt/master/main.sh
-
 # Install Pingen which generates DLINK WPS pins for some routers
 wget https://raw.githubusercontent.com/devttys0/wps/master/pingens/dlink/pingen.py -O kali-$architecture/usr/bin/pingen
 
 #Installs APFucker.py
 curl -o kali-$architecture/usr/bin/apfucker.py https://raw.githubusercontent.com/mattoufoutu/scripts/master/AP-Fucker.py
+
+# Install MPC by g0tmilk
+wget https://raw.githubusercontent.com/g0tmi1k/mpc/master/mpc.sh -O kali-$architecture/usr/bin/mpc
+
+# Install Spiderfoot
+# Cherrypy is newer in pip then in repo so we need to use that instead.  All other depend are fine.
+LANG=C chroot kali-$architecture pip install cherrypy
+wget https://github.com/smicallef/spiderfoot/archive/v2.5.1-final.tar.gz -O kali-$architecture/opt/spiderfoot.tar.gz
+tar xvf kali-$architecture/opt/spiderfoot.tar.gz -C kali-$architecture/opt
+rm kali-$architecture/opt/spiderfoot.tar.gz
+mv kali-$architecture/opt/spiderfoot-* kali-$architecture/opt/spiderfoot
 
 # Sets the default for hostapd.conf to the mana karma version
 sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/etc/mana-toolkit/hostapd-karma.conf#' kali-$architecture/etc/init.d/hostapd
