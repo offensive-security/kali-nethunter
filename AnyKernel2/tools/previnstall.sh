@@ -2,8 +2,12 @@
 #
 # Check for previous installation of Nethunter
 #
+chmod 755 /tmp/busybox
 /tmp/busybox mount /data
 /tmp/busybox mount /system
+
+# Fix for TWRP chasing symbolic links (mentioned by triryland)
+rm -rf /data/data/com.offsec.nethunter/files/chroot/kali-armhf/dev/*
 
 NH=/data/local/kali-armhf
 
