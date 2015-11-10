@@ -55,6 +55,7 @@ def allapps():
         'RFAnalyzer':'https://github.com/demantz/RFAnalyzer/raw/master/RFAnalyzer.apk',
         'Shodan':'https://github.com/PaulSec/Shodan.io-mobile-app/raw/master/io.shodan.app.apk',
         'Term':'http://jackpal.github.com/Android-Terminal-Emulator/downloads/Term.apk',
+        'RouterKeygen':'https://github.com/routerkeygen/routerkeygenAndroid/releases/download/v3.15.0/routerkeygen-3-15-0.apk',
         'cSploit-nightly':'http://rootbitch.cc/csploit/cSploit-nightly.apk'
     }
 
