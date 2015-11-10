@@ -54,7 +54,7 @@ def allapps():
         'USBKeyboard':'https://github.com/pelya/android-keyboard-gadget/raw/master/USB-Keyboard.apk',
         'RFAnalyzer':'https://github.com/demantz/RFAnalyzer/raw/master/RFAnalyzer.apk',
         'Shodan':'https://github.com/PaulSec/Shodan.io-mobile-app/raw/master/io.shodan.app.apk',
-        'Term':'http://jackpal.github.com/Android-Terminal-Emulator/downloads/Term.apk',
+        'Term':'http://jackpal.github.io/Android-Terminal-Emulator/downloads/Term-1.0.65.apk',  # This version is earlier but does not have terminal bug forcing only certain amount of windows
         'RouterKeygen':'https://github.com/routerkeygen/routerkeygenAndroid/releases/download/v3.15.0/routerkeygen-3-15-0.apk',
         'cSploit-nightly':'http://rootbitch.cc/csploit/cSploit-nightly.apk'
     }
