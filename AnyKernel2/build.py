@@ -64,7 +64,7 @@ def allapps():
             apkname = 'data/app/' + key + '.apk'
 
             if not os.path.isfile(apkname): # Check for existing apk download
-                print('Downloading ' + value + 'to' + apkname)
+                print('Downloading ' + value + ' to ' + apkname)
                 urllib.urlretrieve (value, apkname)
                 print(key + '.apk download OK')
 

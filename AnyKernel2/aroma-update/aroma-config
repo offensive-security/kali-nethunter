@@ -91,7 +91,8 @@ if prop("menu.prop","selected")=="1" then
   "Shodan", "v0.0.2 - Interact with ShodanHQ API", 0,
   "USBKeyboard", "v1.15 - Test HID interaction", 0,
   "VNC", "v20110327 - VNC", 0,
-  "cSploit", "Nightly", 0);
+  "cSploit", "Nightly", 0,
+  "Router Keygen", "v3.15", 0));
   setvar("installer_title","You have selected the following applications:");
   appendvar("installer_title","\n\n");
   appendvar("installer_title",iif(prop("app_choices.prop","item.1.1")=="1","SuperSU \n",""));
@@ -105,6 +106,7 @@ if prop("menu.prop","selected")=="1" then
   appendvar("installer_title",iif(prop("app_choices.prop","item.2.6")=="1","USBKeyboard \n",""));
   appendvar("installer_title",iif(prop("app_choices.prop","item.2.7")=="1","VNC \n",""));
   appendvar("installer_title",iif(prop("app_choices.prop","item.2.8")=="1","cSploit \n",""));
+  appendvar("installer_title",iif(prop("app_choices.prop","item.2.8")=="1","RouterKeygen \n",""));
   writetmpfile("app_choices.prop",readtmpfile("app_choices.prop"));
   if confirm("Installing",getvar("installer_title") + "\n\nContinue with selected applications?", "@confirm")=="no" then back(1);
    endif;
