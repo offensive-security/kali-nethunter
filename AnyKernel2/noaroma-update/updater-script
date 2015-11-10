@@ -65,6 +65,10 @@ set_progress(0.7);
 ui_print("@Symlink bootkali");
 symlink("/data/data/com.offsec.nethunter/files/scripts/bootkali", "/system/bin/bootkali");
 
+ui_print("@Extracting Nethunter Boot Animation");
+package_extract_file("system/media/bootanimation.zip", "/system/media/bootanimation.zip");
+set_perm(0, 0, 0755, "/system/media/bootanimation.zip");
+
 set_progress(0.9);
 ui_print("@Installing Kernel using AnyKernel2");
 package_extract_dir("anykernelzip", "/tmp/anykernel");
