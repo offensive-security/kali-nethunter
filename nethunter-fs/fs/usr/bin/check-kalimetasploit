@@ -1,7 +1,8 @@
-if [[ -n $(pstree -p |grep -i ruby |grep worker_ctl) ]]; then
-    echo "1"
+unset LD_PRELOAD
+if [[ -n $(ps |grep postgres) ]]; then
+        echo "1"
 else
-    echo "0"
+        echo "0"
 fi
 
 
