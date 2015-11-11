@@ -92,7 +92,7 @@ if prop("menu.prop","selected")=="1" then
   "USBKeyboard", "v1.15 - Test HID interaction", 0,
   "VNC", "v20110327 - VNC", 0,
   "cSploit", "Nightly", 0,
-  "Router Keygen", "v3.15", 0));
+  "Router Keygen", "v3.15", 0);
   setvar("installer_title","You have selected the following applications:");
   appendvar("installer_title","\n\n");
   appendvar("installer_title",iif(prop("app_choices.prop","item.1.1")=="1","SuperSU \n",""));
