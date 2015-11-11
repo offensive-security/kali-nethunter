@@ -25,6 +25,6 @@ if [ -d $NHAPP ]; then
 fi
 
 # Just to be safe lets remove old version of Nethunter app
-rm -rf /data/app/com.offsec.Nethunter
+rm -rf /data/app/com.offsec.nethunter
 rm -f /data/app/Nethunter.apk
 rm -f /data/app/nethunter.apk
