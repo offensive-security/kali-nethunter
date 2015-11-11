@@ -1,7 +1,0 @@
-unset LD_PRELOAD
-if [[ -n $(ps |grep '/usr/sbin/sshd') ]]; then
-    echo "1"
-else
-    echo "0"
-fi
-
