@@ -54,7 +54,7 @@ def allapps():
         'USBKeyboard':'https://github.com/pelya/android-keyboard-gadget/raw/master/USB-Keyboard.apk',
         'RFAnalyzer':'https://github.com/demantz/RFAnalyzer/raw/master/RFAnalyzer.apk',
         'Shodan':'https://github.com/PaulSec/Shodan.io-mobile-app/raw/master/io.shodan.app.apk',
-        'Term':'http://jackpal.github.com/Android-Terminal-Emulator/downloads/Term.apk',
+        'Term':'http://jackpal.github.io/Android-Terminal-Emulator/downloads/Term-1.0.65.apk',  # This version is earlier but does not have terminal bug forcing only certain amount of windows
         'RouterKeygen':'https://github.com/routerkeygen/routerkeygenAndroid/releases/download/v3.15.0/routerkeygen-3-15-0.apk',
         'cSploit-nightly':'http://rootbitch.cc/csploit/cSploit-nightly.apk'
     }
@@ -64,7 +64,7 @@ def allapps():
             apkname = 'data/app/' + key + '.apk'
 
             if not os.path.isfile(apkname): # Check for existing apk download
-                print('Downloading ' + value + 'to' + apkname)
+                print('Downloading ' + value + ' to ' + apkname)
                 urllib.urlretrieve (value, apkname)
                 print(key + '.apk download OK')
 
@@ -90,9 +90,10 @@ def zip(src, dst, status):
     try:
         pwd = os.path.dirname(os.path.realpath(__file__))
         if status == "anykernel":
-            shutil.copytree(pwd, 'tmp_out', ignore=shutil.ignore_patterns('*.py', 'README*', 'placeholder','tmp_out', 'kernels', 'files', 'media'
+            shutil.copytree(pwd, 'tmp_out', ignore=shutil.ignore_patterns('*.py', 'README*', 'placeholder','tmp_out', 'kernels', 'files', 'media',
                                                                       'devices.cfg', '.DS_Store', '.git', '.idea', 'aroma-update', 'kernel-nethunter*',
                                                                       'aroma', 'data', 'anykernel', 'wallpaper', 'noaroma-update', 'nano', 'terminfo',
+                                                                      'lualibs', 'scripts', 'proxmark3', '*.so',
                                                                       'supersu', 'supersu', 'wallpaper', 'uninstaller', 'update-nethunter*'))
         elif status == "aroma":
             shutil.copytree(pwd, 'tmp_out', ignore=shutil.ignore_patterns('*.py', 'README*', 'placeholder','tmp_out', 'kernels',
