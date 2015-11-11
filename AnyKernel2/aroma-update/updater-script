@@ -100,6 +100,15 @@ if
    set_perm(0, 0, 0755, "/system/media/bootanimation.zip");
    unmount("/system");
 endif;
+if
+   file_getprop("/tmp/aroma/mods.prop","item.0.4") == "1"
+     then
+   ui_print("@Installing Proxdroid");
+   run_program("/tmp/busybox", "mount", "/system");
+   run_program("/tmp/busybox", "mount", "/data");
+   set_perm(0, 0, 0755, "/tmp/symlinkproxmark3.sh");
+   run_program("/tmp/symlinkproxmark3.sh");
+endif;
 
 set_progress(0.6);
 ui_print("@Checking for busybox");
