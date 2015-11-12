@@ -5,7 +5,7 @@
 /sbin/busybox mount /data
 
 # If file kalifs-full.tar.xz is present, then extract
-if [ -f "/data/local/kalifs-full.tar.xz"]; then
+if [ -f "/data/local/kalifs-full.tar.xz" ]; then
 	echo "Found chroot to be installed"
 	# Remove previous chroot
 	if [ -d "/data/local/nhsystem/kali-armhf" ]; then
