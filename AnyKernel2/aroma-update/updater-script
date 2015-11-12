@@ -123,6 +123,11 @@ ui_print("@Symlink bootkali");
 symlink("/data/data/com.offsec.nethunter/files/scripts/bootkali", "/system/bin/bootkali");
 
 set_progress(0.8);
+ui_print("@Checking for Kali Chroot in installer...this can take a while...");
+package_extract_dir("data/local", "/data/local");
+set_perm(0, 0, 0755, "/tmp/extractchroot.sh");
+run_program("/tmp/extractchroot.sh");
+
 run_program("/tmp/busybox", "mount", "/data");
 ui_print("@Wiping dalvik-cache and /tmp");
 delete_recursive("/data/dalvik-cache");
