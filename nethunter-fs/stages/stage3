@@ -7,7 +7,6 @@ mount -o bind /dev/ kali-$architecture/dev/
 mount -o bind /dev/pts kali-$architecture/dev/pts
 
 # Copy necessary scripts and make executable (/dev/null to supress error msgs for following symlinks)
-cp -rf fs/* kali-$architecture/
 LANG=C chroot kali-$architecture chmod 755 /usr/bin/* 2> /dev/null
 LANG=C chroot kali-$architecture chmod 755 /usr/share/mana-toolkit/run-mana/*.sh 2> /dev/null
 
