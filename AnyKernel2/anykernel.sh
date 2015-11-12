@@ -155,10 +155,18 @@ dump_boot;
 
 # begin ramdisk changes
 
-# adb secure
+# adb (un)secure
 backup_file default.prop;
 replace_string default.prop "ro.adb.secure=0" "ro.adb.secure=1" "ro.adb.secure=0";
 replace_string default.prop "ro.secure=0" "ro.secure=1" "ro.secure=0";
+
+# init.rc <-- Run busybox init.d
+backup_file init.rc;
+append_file init.rc "run-parts" init;
+
+# init.environ.rc
+backup_file init.environ.rc;
+append_file init.environ.rc "TERMINFO" init.environ;
 
 # end ramdisk changes
 

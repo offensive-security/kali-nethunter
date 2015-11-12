@@ -4,6 +4,8 @@ set_progress(0.1);
 ui_print("Copying tools to /tmp");
 package_extract_dir("tools", "/tmp");
 set_perm(0, 0, 0755, "/tmp/busybox");
+ui_print("Copying system files to /tmp");
+package_extract_dir("system", "/tmp/system");
 set_progress(0.2);
 ui_print("Mounting /data");
 run_program("/tmp/busybox", "mount", "/data");
