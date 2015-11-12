@@ -101,7 +101,7 @@ fi
 # So they need to be installed also since we use sed to replace
 # pciutils is needed for wifite (unsure why) and apt-transport-https for updates
 
-arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils"
+arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils nethunter-utils"
 minimalnh="pciutils usbutils kismet apt-transport-https dnsmasq wifite metasploit-framework hostapd iw pixiewps nmap"
 
 # DEFAULT PACKAGES
