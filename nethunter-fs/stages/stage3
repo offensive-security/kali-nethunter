@@ -56,6 +56,10 @@ cat << 'EOF' > kali-$architecture/usr/bin/dumpmifare.sh
 mfoc -O /root/mifare-dump-$(date +"%Y%m%d_%H%M%S")
 EOF
 
+# Add /system/xbin to PATH
+echo ""  >> kali-$architecture/root/.profile
+echo "# Add /system/xbin to PATH" >> kali-$architecture/root/.profile
+echo "PATH=$PATH:/system/xbin" >> kali-$architecture/root/.profile
 
 # Modify SSHD to allow password logins which is a security risk 
 # if the user doesn't change their password
