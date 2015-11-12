@@ -61,6 +61,11 @@ ui_print "- Symlink firmware from /data/local/nhsystem/firmware to /system/etc/f
 chmod 755 /tmp/anykernel/tools/symlinkfirmware.sh;
 /sbin/busybox ash /tmp/anykernel/tools/symlinkfirmware.sh;
 
+# Symlink anything in xbin
+ui_print "- Symlink xbin /data/local/nhsystem/xbin to /system/xbin";
+chmod 755 /tmp/anykernel/tools/symlinkxbin.sh;
+/sbin/busybox ash /tmp/anykernel/tools/symlinkxbin.sh;
+
 if [ "$(file_getprop /tmp/anykernel/anykernel.sh do.initd)" == 1 ]; then
   ui_print "- Creating init.d...";
   mkdir /system/etc/init.d;
