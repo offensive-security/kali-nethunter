@@ -9,10 +9,11 @@ SYSTEM="/system/etc/firmware/"
 /sbin/busybox mount /system
 
 # Make folder
-mkdir -p $DATA
+#mkdir -p $DATA
 
 # Copy firmware
-cp -rf /tmp/anykernel/system/etc/firmware/* $DATA
+cp -rf /tmp/anykernel/system/etc/firmware/* $SYSTEM
 
-# Create symbolic links
-ln -s $DATA/* $SYSTEM
+# Symbolic links aren't working, we have to copy firmware!
+#
+#ln -s $DATA/* $SYSTEM
