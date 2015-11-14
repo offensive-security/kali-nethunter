@@ -164,6 +164,10 @@ replace_string default.prop "ro.secure=0" "ro.secure=1" "ro.secure=0";
 backup_file init.rc;
 append_file init.rc "run-parts" init;
 
+# init.usb.rc <-- Add HID option to easily switch vendor with command: setprop sys.usb.state hid
+backup_file init.usb.rc;
+append_file init.usb.rc "property:sys.usb.config=hid" init.usb;
+
 # init.environ.rc
 backup_file init.environ.rc;
 append_file init.environ.rc "TERMINFO" init.environ;
