@@ -10,7 +10,7 @@ SYSTEM="/system/xbin"
 
 mkdir -p $DATA
 
-# HID-KEYBOARD
-cp -rf /tmp/anykernel/system/xbin/hid-keyboard $DATA/hid-keyboard
-chmod 755 $DATA/hid-keyboard
-ln -s $DATA/hid-keyboard $SYSTEM/hid-keyboard
+# HID-KEYBOARD (discovered symlinks don't work in chroot)
+cp -rf /tmp/anykernel/system/xbin/hid-keyboard $SYSTEM
+chmod 755 $SYSTEM/hid-keyboard
+#ln -s $DATA/hid-keyboard $SYSTEM/hid-keyboard
