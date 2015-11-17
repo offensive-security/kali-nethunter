@@ -234,9 +234,9 @@ def main():
     dir = 'META-INF/com/google/android/'
     i = datetime.datetime.now()
     current_time = "%s%s%s_%s%s%s" % (i.day, i.month, i.year, i.hour, i.minute, i.second)
-    firmware_list = False
-    initd_list = False
-    module_list = False
+    firmware_list = []
+    initd_list = []
+    module_list = []
 
     # Remove any existing builds that might be left
     cleanup()
