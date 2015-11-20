@@ -6,10 +6,6 @@ mount -t proc proc kali-$architecture/proc
 mount -o bind /dev/ kali-$architecture/dev/
 mount -o bind /dev/pts kali-$architecture/dev/pts
 
-# Copy necessary scripts and make executable (/dev/null to supress error msgs for following symlinks)
-LANG=C chroot kali-$architecture chmod 755 /usr/bin/* 2> /dev/null
-LANG=C chroot kali-$architecture chmod 755 /usr/share/mana-toolkit/run-mana/*.sh 2> /dev/null
-
 cat << EOF > kali-$architecture/debconf.set
 console-common console-data/keymap/policy select Select keymap from full list
 console-common console-data/keymap/full select en-latin1-nodeadkeys
@@ -110,3 +106,7 @@ EOF
 # beef-xss creates user beef-xss. Openvpn server requires nobdy:nobody in order to work
 echo "inet:x:3004:postgres,root,beef-xss,daemon,nginx,mysql" >> kali-$architecture/etc/group
 echo "nobody:x:3004:nobody" >> kali-$architecture/etc/group
+
+# Copy necessary scripts and make executable (/dev/null to supress error msgs for following symlinks)
+LANG=C chroot kali-$architecture chmod 755 /usr/bin/* 2> /dev/null
+LANG=C chroot kali-$architecture chmod 755 /usr/share/mana-toolkit/run-mana/*.sh 2> /dev/null
