@@ -27,9 +27,9 @@ if (file_getprop("/tmp/aroma/app_choices.prop", "item.1.2")=="1") then ui_print(
 run_program("/tmp/busybox", "mount", "/data");
 package_extract_file("data/app/nethunter.apk", "/data/app/nethunter.apk");
 endif;
-if (file_getprop("/tmp/aroma/app_choices.prop", "item.1.3")=="1") then ui_print("Installing Jackpal Terminal");
+if (file_getprop("/tmp/aroma/app_choices.prop", "item.1.3")=="1") then ui_print("Installing Custom Nethunter Jackpal Terminal");
 run_program("/tmp/busybox", "mount", "/data");
-package_extract_file("data/app/Term.apk", "/data/app/Term.apk");
+package_extract_file("data/app/Term-nh.apk", "/data/app/Term-nh.apk");
 endif;
 if (file_getprop("/tmp/aroma/app_choices.prop", "item.2.1")=="1") then ui_print("Installing BlueNMEA-2.1.3");
 run_program("/tmp/busybox", "mount", "/data");
