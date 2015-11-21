@@ -70,6 +70,7 @@ cp dictionary/pinlist.txt kali-$architecture/opt/dic/pinlist.txt
 # Install MPC by g0tmilk
 echo "[+] Downloading MPC to /usr/bin/mpc"
 wget https://raw.githubusercontent.com/g0tmi1k/mpc/master/mpc.sh -O kali-$architecture/usr/bin/mpc
+LANG=C chroot kali-$architecture chmod 755 kali-$architecture/usr/bin/mpc
 
 # Install Spiderfoot
 # Cherrypy is newer in pip then in repo so we need to use that instead.  All other depend are fine.
