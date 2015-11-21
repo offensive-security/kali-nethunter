@@ -21,18 +21,15 @@ chmod +x /usr/sbin/policy-rc.d
 apt-get clean
 rm -rf /var/lib/apt/lists/*  
 apt-get clean
-safe-apt-get update
-safe-apt-get install locales-all
+apt-get update
 
 debconf-set-selections /debconf.set
 rm -f /debconf.set
-safe-apt-get update
-safe-apt-get -y install git-core binutils ca-certificates initramfs-tools
-safe-apt-get -y install locales console-common less nano git
+apt-get -y install locales-all git-core binutils ca-certificates initramfs-tools locales console-common less nano git
 echo "root:toor" | chpasswd
 sed -i -e 's/KERNEL\!=\"eth\*|/KERNEL\!=\"/' /lib/udev/rules.d/75-persistent-net-generator.rules
 rm -f /etc/udev/rules.d/70-persistent-net.rules
-safe-apt-get --yes --force-yes install $packages
+apt-get --yes --force-yes install $packages
 
 rm -f /usr/sbin/policy-rc.d
 rm -f /usr/sbin/invoke-rc.d
@@ -44,22 +41,24 @@ EOF
 chmod +x kali-$architecture/third-stage
 LANG=C chroot kali-$architecture /third-stage
 
-# Modify Kismet log saving folder
-sed -i 's/hs/\/captures/g' kali-$architecture/etc/kismet/kismet.conf
-
 cat << 'EOF' > kali-$architecture/usr/bin/dumpmifare.sh
 #!/bin/bash
 mfoc -O /root/mifare-dump-$(date +"%Y%m%d_%H%M%S")
 EOF
 
 # Add /system/xbin to PATH
+echo "[+] Adding /system/xbin to path"
 echo ""  >> kali-$architecture/root/.profile
 echo "# Add /system/xbin to PATH" >> kali-$architecture/root/.profile
 echo "PATH=$PATH:/system/xbin" >> kali-$architecture/root/.profile
 
+# Modify Kismet log saving folder
+sed -i 's/hs/\/captures/g' kali-$architecture/etc/kismet/kismet.conf
+
 # Modify SSHD to allow password logins which is a security risk 
 # if the user doesn't change their password
 # or change their configuration for key based ssh
+echo "[+] Modifying SSH to allow root user"
 sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/g' kali-$architecture/etc/ssh/sshd_config
 
 # Install dictionary
@@ -68,13 +67,8 @@ tar xvf dictionary/89.tar.gz -C kali-$architecture/opt/dic
 cp dictionary/wordlist.txt kali-$architecture/opt/dic/wordlist.txt
 cp dictionary/pinlist.txt kali-$architecture/opt/dic/pinlist.txt
 
-# Install Pingen which generates DLINK WPS pins for some routers
-wget https://raw.githubusercontent.com/devttys0/wps/master/pingens/dlink/pingen.py -O kali-$architecture/usr/bin/pingen
-
-#Installs APFucker.py
-curl -o kali-$architecture/usr/bin/apfucker.py https://raw.githubusercontent.com/mattoufoutu/scripts/master/AP-Fucker.py
-
 # Install MPC by g0tmilk
+echo "[+] Downloading MPC to /usr/bin/mpc"
 wget https://raw.githubusercontent.com/g0tmi1k/mpc/master/mpc.sh -O kali-$architecture/usr/bin/mpc
 
 # Install Spiderfoot
