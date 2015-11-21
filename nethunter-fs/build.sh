@@ -102,7 +102,7 @@ fi
 # pciutils is needed for wifite (unsure why) and apt-transport-https for updates
 
 arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils nethunter-utils"
-minimalnh="pciutils usbutils kismet apt-transport-https dnsmasq wifite metasploit-framework hostapd iw pixiewps nmap"
+minimalnh="kali-defaults pciutils usbutils kismet apt-transport-https dnsmasq wifite metasploit-framework hostapd iw pixiewps nmap"
 
 # DEFAULT PACKAGES
 base="kali-menu kali-defaults initramfs-tools usbutils pciutils openjdk-7-jre mlocate google-nexus-tools"
@@ -110,7 +110,8 @@ desktop="kali-defaults kali-root-login desktop-base xfce4 xfce4-places-plugin xf
 tools="nmap metasploit-framework tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set device-pharmer nishang"
 wireless="wifite pixiewps iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq dsniff sslstrip mdk3 mitmproxy"
 services="autossh openssh-server tightvncserver apache2 postgresql openvpn php5"
-extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools python-pip hostapd ptunnel tcptrace dnsutils p0f mitmf"
+extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools python-pip hostapd ptunnel tcptrace dnsutils p0f"
+mtimf="python-dev python-setuptools libpcap0.8-dev libnetfilter-queue-dev libssl-dev libjpeg-dev libxml2-dev libxslt1-dev libcapstone3 libcapstone-dev"
 mana="python-twisted python-dnspython libssl-dev sslsplit python-pcapy tinyproxy isc-dhcp-server rfkill mana-toolkit"
 bdf="backdoor-factory bdfproxy"
 spiderfoot="python-lxml python-m2crypto python-netaddr python-mako"
