@@ -114,7 +114,6 @@ extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools p
 mtimf="python-dev python-setuptools libpcap0.8-dev libnetfilter-queue-dev libssl-dev libjpeg-dev libxml2-dev libxslt1-dev libcapstone3 libcapstone-dev"
 mana="python-twisted python-dnspython libssl-dev sslsplit python-pcapy tinyproxy isc-dhcp-server rfkill mana-toolkit"
 bdf="backdoor-factory bdfproxy"
-spiderfoot="python-lxml python-m2crypto python-netaddr python-mako"
 sdr="sox librtlsdr-dev "
 
 # If minimal, set only minimal packages
