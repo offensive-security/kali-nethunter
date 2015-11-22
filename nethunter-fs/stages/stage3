@@ -70,7 +70,7 @@ cp dictionary/pinlist.txt kali-$architecture/opt/dic/pinlist.txt
 # Install MPC by g0tmilk
 echo "[+] Downloading MPC to /usr/bin/mpc"
 wget https://raw.githubusercontent.com/g0tmi1k/mpc/master/mpc.sh -O kali-$architecture/usr/bin/mpc
-LANG=C chroot kali-$architecture chmod 755 kali-$architecture/usr/bin/mpc
+chmod 755 kali-$architecture/usr/bin/mpc
 
 # Sets the default for hostapd.conf to the mana karma version
 sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/etc/mana-toolkit/hostapd-karma.conf#' kali-$architecture/etc/init.d/hostapd
