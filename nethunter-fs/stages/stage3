@@ -52,6 +52,12 @@ echo ""  >> kali-$architecture/root/.profile
 echo "# Add /system/xbin to PATH" >> kali-$architecture/root/.profile
 echo "PATH=$PATH:/system/xbin" >> kali-$architecture/root/.profile
 
+# Source .bashrc and .profile at login
+echo "[+] Adding bashrc/profile sourcing to bash_profile"
+echo "" >> kali-$architecture/root/.bash_profile
+echo "source /root/.bashrc" >> kali-$architecture/root/.bash_profile
+echo "source /root/.profile" >> kali-$architecture/root/.bash_profile
+
 # Modify Kismet log saving folder
 sed -i 's/hs/\/captures/g' kali-$architecture/etc/kismet/kismet.conf
 
