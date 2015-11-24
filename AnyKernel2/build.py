@@ -49,7 +49,6 @@ def allapps():
     apps = {
         'BlueNMEA-2.1.3':'http://max.kellermann.name/download/blue-nmea/BlueNMEA-2.1.3.apk',
         'Hackerskeyboard-1.38.2':'https://f-droid.org/repo/org.pocketworkstation.pckeyboard_1038002.apk',
-        'VNC-20110327':'https://android-vnc-viewer.googlecode.com/files/androidVNC_build20110327.apk',
         'Drivedroid-0.9.19':'http://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.9.19.apk',
         'USBKeyboard':'https://github.com/pelya/android-keyboard-gadget/raw/master/USB-Keyboard.apk',
         'RFAnalyzer':'https://github.com/demantz/RFAnalyzer/raw/master/RFAnalyzer.apk',

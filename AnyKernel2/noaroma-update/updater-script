@@ -40,7 +40,7 @@ package_extract_file("data/app/Shodan.apk", "/data/app/Shodan.apk");
 ui_print("Installing USB Keyboard");
 package_extract_file("data/app/USBKeyboard.apk", "/data/app/USBKeyboard.apk");
 ui_print("Installing VNC");
-package_extract_file("data/app/VNC-20110327.apk", "/data/app/VNC-20110327.apk");
+package_extract_file("data/app/VNC-nh.apk", "/data/app/VNC-nh.apk");
 ui_print("Installing RouterKeygen");
 package_extract_file("data/app/RouterKeygen.apk", "/data/app/RouterKeygen.apk");
 ui_print("Installing cSploit Nightly");

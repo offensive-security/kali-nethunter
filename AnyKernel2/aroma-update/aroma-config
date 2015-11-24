@@ -81,8 +81,9 @@ if prop("menu.prop","selected")=="1" then
   "app_choices.prop",
   "Required", "", 2,
   "SuperSU", "v2.46", 1,
-  "Nethunter", "v2.0", 1,
+  "Nethunter", "v2.1", 1,
   "Custom Nethunter Terminal Emulator", "", 1,
+  "Custom Nethunter VNC", "", 1,
   "Optional", "", 2,
   "BlueNMEA", "v2.1.3 - Used for GPS in Kismet", 0,
   "Drivedroid", "v0.9.19 - Used for mounting CDROM/images", 0,
@@ -90,7 +91,6 @@ if prop("menu.prop","selected")=="1" then
   "RFAnalyzer", "v1.12 - SDR", 0,
   "Shodan", "v0.0.2 - Interact with ShodanHQ API", 0,
   "USBKeyboard", "v1.15 - Test HID interaction", 0,
-  "VNC", "v20110327 - VNC", 0,
   "cSploit", "Nightly", 0,
   "Router Keygen", "v3.15", 0);
   setvar("installer_title","You have selected the following applications:");
@@ -98,14 +98,14 @@ if prop("menu.prop","selected")=="1" then
   appendvar("installer_title",iif(prop("app_choices.prop","item.1.1")=="1","SuperSU \n",""));
   appendvar("installer_title",iif(prop("app_choices.prop","item.1.2")=="1","Nethunter \n",""));
   appendvar("installer_title",iif(prop("app_choices.prop","item.1.3")=="1","Terminal Emulator \n",""));
+  appendvar("installer_title",iif(prop("app_choices.prop","item.1.4")=="1","VNC \n",""));
   appendvar("installer_title",iif(prop("app_choices.prop","item.2.1")=="1","BlueNMEA \n",""));
   appendvar("installer_title",iif(prop("app_choices.prop","item.2.2")=="1","Drivedroid \n",""));
   appendvar("installer_title",iif(prop("app_choices.prop","item.2.3")=="1","Hackerskeyboard \n",""));
   appendvar("installer_title",iif(prop("app_choices.prop","item.2.4")=="1","RFAnalyzer \n",""));
   appendvar("installer_title",iif(prop("app_choices.prop","item.2.5")=="1","Shodan \n",""));
   appendvar("installer_title",iif(prop("app_choices.prop","item.2.6")=="1","USBKeyboard \n",""));
-  appendvar("installer_title",iif(prop("app_choices.prop","item.2.7")=="1","VNC \n",""));
-  appendvar("installer_title",iif(prop("app_choices.prop","item.2.8")=="1","cSploit \n",""));
+  appendvar("installer_title",iif(prop("app_choices.prop","item.2.7")=="1","cSploit \n",""));
   appendvar("installer_title",iif(prop("app_choices.prop","item.2.8")=="1","RouterKeygen \n",""));
   writetmpfile("app_choices.prop",readtmpfile("app_choices.prop"));
   if confirm("Installing",getvar("installer_title") + "\n\nContinue with selected applications?", "@confirm")=="no" then back(1);
