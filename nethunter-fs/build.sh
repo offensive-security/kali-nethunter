@@ -101,12 +101,12 @@ fi
 # So they need to be installed also since we use sed to replace
 # pciutils is needed for wifite (unsure why) and apt-transport-https for updates
 
-arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils nethunter-utils"
-minimalnh="kali-defaults pciutils usbutils kismet apt-transport-https dnsmasq wifite metasploit-framework hostapd iw pixiewps nmap"
+arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils nethunter-utils kali-defaults"
+minimalnh="pciutils usbutils kismet apt-transport-https dnsmasq wifite metasploit-framework hostapd iw pixiewps nmap exploitdb"
 
 # DEFAULT PACKAGES
-base="kali-menu kali-defaults initramfs-tools usbutils pciutils openjdk-7-jre mlocate google-nexus-tools"
-desktop="kali-defaults kali-root-login desktop-base xfce4 xfce4-places-plugin xfce4-goodies"
+base="kali-menu initramfs-tools usbutils pciutils openjdk-7-jre mlocate google-nexus-tools"
+desktop="kali-root-login desktop-base xfce4 xfce4-places-plugin xfce4-goodies"
 tools="nmap metasploit-framework tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set device-pharmer nishang"
 wireless="wifite pixiewps iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq dsniff sslstrip mdk3 mitmproxy"
 services="autossh openssh-server tightvncserver apache2 postgresql openvpn php5"
