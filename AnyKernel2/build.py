@@ -29,8 +29,10 @@ class LatestSU:
             print('URLError = ' + str(e.reason))
 
     def dlsupersu(self):
-
-        getUrl = self.__getPage('http://download.chainfire.eu/supersu', True)
+        # Beta
+        getUrl = self.__getPage('http://download.chainfire.eu/743/SuperSU/BETA-SuperSU-v2.52.zip', True)
+        # Stable
+        #getUrl = self.__getPage('http://download.chainfire.eu/supersu', True)
         latestUrl = getUrl + '?retrieve_file=1'
 
         return latestUrl
