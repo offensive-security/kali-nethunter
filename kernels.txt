@@ -7,6 +7,7 @@ If you wish to add a kernel/new device, leave a link to source here and feel fre
 # git clone https://github.com/binkybear/nexus10-5.git -b android-exynos-manta-3.4-lollipop-release
 
 # - Nexus 9
+# git clone https://github.com/binkybear/flounder.git -b android-tegra-flounder-3.10-marshmallow-release nexus 9-6
 # git clone https://github.com/binkybear/flounder.git -b android-tegra-flounder-3.10-lollipop-release  nexus9-5
 
 # - Nexus 7 (2012)
@@ -14,10 +15,12 @@ If you wish to add a kernel/new device, leave a link to source here and feel fre
 # git clone https://github.com/binkybear/android_kernel_asus_grouper.git -b android-tegra3-grouper-3.1-lollipop-release_tegra-l4t-r16-16.5 nexus7_2012-5
 
 # - Nexus 7 (2013)
+# git clone https://github.com/binkybear/flo.git -b ElementalX-5.00 nexus7_2013-6
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-flo-3.4-kitkat-mr2 flodeb
 # git clone https://github.com/binkybear/flo.git -b ElementalX-4.00 nexus7_2013-5
 
 # - Nexus 6
+# git clone https://github.com/binkybear/kernel_msm.git -b android-msm-shamu-3.10-marshmallow-release nexus6-6
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-shamu-3.10-lollipop-release nexus6-5
 
 # - Nexus 5
@@ -33,7 +36,8 @@ If you wish to add a kernel/new device, leave a link to source here and feel fre
 
 # - OnePlus One
 # git clone https://github.com/binkybear/AK-OnePone.git -b cm-11.0-ak oneplus11
-# git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.x_render_kernel
+# git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.0 oneplus12
+# git clone https://github.com/binkybear/AK-OnePone.git -b cm-13.0 oneplus13
 
 # - Toolchain
 # git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7
