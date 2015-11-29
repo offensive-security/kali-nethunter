@@ -121,6 +121,8 @@ run_program("/tmp/busyboxcheck.sh");
 set_progress(0.7);
 ui_print("@Symlink bootkali");
 symlink("/data/data/com.offsec.nethunter/files/scripts/bootkali", "/system/bin/bootkali");
+symlink("/data/data/com.offsec.nethunter/files/scripts/bootkali_login", "/system/bin/bootkali_login");
+symlink("/data/data/com.offsec.nethunter/files/scripts/bootkali_bash", "/system/bin/bootkali_bash");
 
 set_progress(0.8);
 ui_print("@Checking for Kali Chroot in installer...this can take a while...");

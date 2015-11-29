@@ -72,6 +72,8 @@ run_program("/tmp/symlinkproxmark3.sh");
 set_progress(0.7);
 ui_print("@Symlink bootkali");
 symlink("/data/data/com.offsec.nethunter/files/scripts/bootkali", "/system/bin/bootkali");
+symlink("/data/data/com.offsec.nethunter/files/scripts/bootkali_login", "/system/bin/bootkali_login");
+symlink("/data/data/com.offsec.nethunter/files/scripts/bootkali_bash", "/system/bin/bootkali_bash");
 
 ui_print("@Extracting Nethunter Boot Animation");
 package_extract_file("system/media/bootanimation.zip", "/system/media/bootanimation.zip");
