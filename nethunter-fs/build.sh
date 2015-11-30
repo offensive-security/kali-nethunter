@@ -101,31 +101,21 @@ fi
 # So they need to be installed also since we use sed to replace
 # pciutils is needed for wifite (unsure why) and apt-transport-https for updates
 
-arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils nethunter-utils kali-defaults"
-minimalnh="pciutils usbutils kismet apt-transport-https dnsmasq wifite metasploit-framework hostapd iw pixiewps nmap exploitdb"
+arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils"
+minimalnh="pciutils usbutils apt-transport-https iw kismet openssh-server hostapd nethunter-utils kali-defaults"
 
-# DEFAULT PACKAGES
-base="kali-menu initramfs-tools usbutils pciutils openjdk-7-jre mlocate google-nexus-tools"
-desktop="kali-root-login desktop-base xfce4 xfce4-places-plugin xfce4-goodies"
-tools="nmap metasploit-framework tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set device-pharmer nishang"
-wireless="wifite pixiewps iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq dsniff sslstrip mdk3 mitmproxy"
-services="autossh openssh-server tightvncserver apache2 postgresql openvpn php5"
-extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools python-pip hostapd ptunnel tcptrace dnsutils p0f"
-mtimf="python-dev python-setuptools libpcap0.8-dev libnetfilter-queue-dev libssl-dev libjpeg-dev libxml2-dev libxslt1-dev libcapstone3 libcapstone-dev"
-mana="python-twisted python-dnspython libssl-dev sslsplit python-pcapy tinyproxy isc-dhcp-server rfkill mana-toolkit"
-bdf="backdoor-factory bdfproxy"
-sdr="sox librtlsdr-dev "
+# DEFAULT PACKAGES FULL INSTALL
+fullnh="kali-linux-nethunter"
 
 # If minimal, set only minimal packages
 if [ "$1" == "--minimal" ] || [ "$1" == "-m" ]; then
-	export packages="${arm} ${minimalnh} ${bdf} ${mana} ${services}"
+	export packages="${arm} ${minimalnh}"
   filename=kalifs-minimal
 fi
 
 # If full install, set all packages
 if [ "$1" == "--full" ] || [ "$1" == "-f" ]; then
-	export packages="${arm} ${base} ${desktop} ${tools} ${wireless} ${services} \
-                   ${extras} ${mana} ${spiderfoot} ${sdr} ${bdf}"
+	export packages="${arm} ${fullnh}"
   filename=kalifs-full
 fi
 
