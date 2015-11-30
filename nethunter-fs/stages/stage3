@@ -57,6 +57,7 @@ echo "[+] Adding bashrc/profile sourcing to bash_profile"
 echo "" >> kali-$architecture/root/.bash_profile
 echo "source /root/.bashrc" >> kali-$architecture/root/.bash_profile
 echo "source /root/.profile" >> kali-$architecture/root/.bash_profile
+echo "cd ~/" >> kali-$architecture/root/.bash_profile
 
 # Modify Kismet log saving folder
 sed -i 's/hs/\/captures/g' kali-$architecture/etc/kismet/kismet.conf
