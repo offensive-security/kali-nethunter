@@ -1,4 +1,4 @@
 {
-	"version_code": 3,
-	"content": "Version 2.0 <p>New features:</p><li>Fix hid payload</li><li>Duckhunter now working</li><li>Updated chroot</li>"
+	"version_code": 4,
+	"content": "Version 2.0 <p>New features:</p><li>Add login intent</li><li>BDFProxy/MSF launches in mana</li><li>Mana fixes</li>"
 }
