@@ -25,7 +25,7 @@ DEPS=(git-core gnupg flex bison gperf libesd0-dev build-essential \
 zip curl libncurses5-dev zlib1g-dev libncurses5-dev gcc-multilib g++-multilib \
 parted kpartx debootstrap pixz qemu-user-static abootimg cgpt vboot-kernel-utils \
 vboot-utils bc lzma lzop automake autoconf m4 dosfstools rsync u-boot-tools \
-schedtool git e2fsprogs device-tree-compiler ccache dos2unix debootstrap kali-nethunter)
+schedtool git e2fsprogs device-tree-compiler ccache dos2unix debootstrap)
 
 for i in "${DEPS[@]}"
 do
@@ -110,7 +110,7 @@ desktop="kali-root-login desktop-base xfce4 xfce4-places-plugin xfce4-goodies"
 tools="nmap metasploit-framework tcpdump tshark wireshark burpsuite armitage sqlmap recon-ng wipe socat ettercap-text-only beef-xss set device-pharmer nishang"
 wireless="wifite pixiewps iw aircrack-ng gpsd kismet kismet-plugins giskismet dnsmasq dsniff sslstrip mdk3 mitmproxy"
 services="autossh openssh-server tightvncserver apache2 postgresql openvpn php5"
-extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools python-pip hostapd ptunnel tcptrace dnsutils p0f"
+extras="wpasupplicant zip macchanger dbd florence libffi-dev python-setuptools python-pip hostapd ptunnel tcptrace dnsutils p0f kali-nethunter"
 mtimf="python-dev python-setuptools libpcap0.8-dev libnetfilter-queue-dev libssl-dev libjpeg-dev libxml2-dev libxslt1-dev libcapstone3 libcapstone-dev"
 mana="python-twisted python-dnspython libssl-dev sslsplit python-pcapy tinyproxy isc-dhcp-server rfkill mana-toolkit"
 bdf="backdoor-factory bdfproxy"
