@@ -1,4 +1,4 @@
 {
-	"version_code": 4,
-	"content": "Version 2.0 <p>New features:</p><li>Add login intent</li><li>BDFProxy/MSF launches in mana</li><li>Mana fixes</li>"
+	"version_code": 5,
+	"content": "Version 2.1 <p>New features:</p><li>HTTPS downloads</li><li>CERT pin</li><li>Select chroot build</li>"
 }
