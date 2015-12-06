@@ -299,7 +299,8 @@ def main():
 
     ######## FORCE DOWNLOAD ###########
     if args.forcedown:
-        supersuBeta()
+        supersu()
+        #supersuBeta()  # Enable this to downloaded latest supersu and comment above line
         allapps()
         exit(0) # https://github.com/offensive-security/kali-nethunter/issues/259 (unsure if I want to keep this)
 
