@@ -169,7 +169,7 @@ for capture in $(find . -iname '*.netxml'); do
 	giskismet -x "$capture" --database "/captures/kismet_db/wireless.dbl"
 done
 # export kml of all wireless data and copy files to sdcard
-giskismet --database "/captures/kismet_db/wireless.dbl" -q "select * from wireless" -o "/captures/kismet/kismet-$NOW.kml"
+giskismet --database "/captures/kismet_db/wireless.dbl" -q "select * from wireless" -o "/captures/kismet/Kismet-$NOW.kml"
 echo "Created kismet-$NOW.kml file for Google Earth"
 # save kismet files
 f_kismet_save
