@@ -7,10 +7,7 @@
 
 if [ ! -f /system/xbin/busybox ] || [ ! -f /system/bin/busybox ]; then
 	echo "@Missing busybox...installing"
-	mkdir -p /data/local/nhsystem/bin/
-	cp /tmp/busybox /data/local/nhsystem/bin/busybox
-	chmod 755 /data/local/nhsystem/bin/busybox
-	ln -s /data/local/nhsystem/bin/busybox /system/bin/busybox
-	ln -s /data/local/nhsystem/bin/busybox /system/xbin/busybox	
-	/data/local/nhsystem/bin/busybox --install -s /system/xbin
+	cp /tmp/busybox /system/xbin/busybox
+	chmod 755 /system/xbin/busybox
+	/system/xbin/busybox --install -s /system/xbin
 fi
