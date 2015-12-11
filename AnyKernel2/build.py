@@ -40,7 +40,8 @@ class LatestSU:
 def supersuBeta():
 
     # Progress bar http://stackoverflow.com/a/22776
-    url = "http://forum.xda-developers.com/attachment.php?attachmentid=3565977&d=1449330539"
+    # SuperSU v2.62
+    url = "http://forum.xda-developers.com/attachment.php?attachmentid=3571657&d=1449763480"
 
     file_name = os.path.join('supersu', 'supersu.zip')
     #file_name = url.split('/')[-1]
