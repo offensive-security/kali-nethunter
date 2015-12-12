@@ -102,7 +102,7 @@ fi
 # pciutils is needed for wifite (unsure why) and apt-transport-https for updates
 
 arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils pciutils usbutils apt-transport-https nethunter-utils"
-minimalnh="iw kismet openssh-server hostapd kali-defaults"
+minimalnh="openssh-server kali-defaults"
 
 # DEFAULT PACKAGES FULL INSTALL
 fullnh="kali-linux-nethunter"
