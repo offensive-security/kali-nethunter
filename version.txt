@@ -1,4 +1,4 @@
 {
-	"version_code": 5,
-	"content": "Version 2.1 <p>New features:</p><li>HTTPS downloads</li><li>CERT pin</li><li>Select chroot build</li>"
+	"version_code": 6,
+	"content": "Version 2.1 <p>New features:</p><li>Chroot sha512 updated; missing mana-toolkit</li>"
 }
