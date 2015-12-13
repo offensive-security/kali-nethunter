@@ -97,15 +97,13 @@ fi
 
 # Add packages you want installed here:
 # MINIMAL PACKAGES
-# Hostapd, openssh, and kismet have custom configuration files
-# So they need to be installed also since we use sed to replace
-# pciutils is needed for wifite (unsure why) and apt-transport-https for updates
+# usbutils and pciutils is needed for wifite (unsure why) and apt-transport-https for updates
 
 arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils pciutils usbutils apt-transport-https nethunter-utils"
 minimalnh="openssh-server kali-defaults"
 
 # DEFAULT PACKAGES FULL INSTALL
-fullnh="kali-linux-nethunter mana-toolkit"
+fullnh="kali-linux-nethunter mana-toolkit mpc exploitdb"
 
 # If minimal, set only minimal packages
 if [ "$1" == "--minimal" ] || [ "$1" == "-m" ]; then
