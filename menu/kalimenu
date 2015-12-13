@@ -138,7 +138,7 @@ echo "Make sure BlueNMEA is running before starting with GPS support"
 sleep 3
 read -p "Would you like to run Kismet with GPS enabled? (y/n)" CONT
 if [ "$CONT" == "y" ]; then
-	(socat TCP:127.0.0.1:4352 PTY,link=/tmp/gps & gpsd /tmp/gps) & kismet -g -t Kismet-$NOW;
+	(socat TCP:127.0.0.1:4352 PTY,link=/tmp/gps & gpsd -n /tmp/gps) & kismet -g -t Kismet-$NOW;
 	killall gpsd
 	f_giskismet;
 	wipe -f -P 5 /tmp/gps
@@ -169,7 +169,7 @@ for capture in $(find . -iname '*.netxml'); do
 	giskismet -x "$capture" --database "/captures/kismet_db/wireless.dbl"
 done
 # export kml of all wireless data and copy files to sdcard
-giskismet --database "/captures/kismet_db/wireless.dbl" -q "select * from wireless" -o "/captures/kismet/kismet-$NOW.kml"
+giskismet --database "/captures/kismet_db/wireless.dbl" -q "select * from wireless" -o "/captures/kismet/Kismet-$NOW.kml"
 echo "Created kismet-$NOW.kml file for Google Earth"
 # save kismet files
 f_kismet_save
