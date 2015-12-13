@@ -105,7 +105,7 @@ arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils pciutils 
 minimalnh="openssh-server kali-defaults"
 
 # DEFAULT PACKAGES FULL INSTALL
-fullnh="kali-linux-nethunter"
+fullnh="kali-linux-nethunter mana-toolkit"
 
 # If minimal, set only minimal packages
 if [ "$1" == "--minimal" ] || [ "$1" == "-m" ]; then
