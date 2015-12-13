@@ -50,7 +50,8 @@ EOF
 git clone https://github.com/Hypsurus/weeman.git kali-$architecture/opt/weeman
 
 # Add csv2sqlite.py for converting exploitdb
-wget https://raw.githubusercontent.com/rgrp/csv2sqlite/master/csv2sqlite.py -O /usr/bin/csv2sqlite.py
+wget https://raw.githubusercontent.com/rgrp/csv2sqlite/master/csv2sqlite.py -O kali-$architecture/usr/bin/csv2sqlite.py
+chmod 755 kali-$architecture/usr/bin/csv2sqlite.py
 
 # Add /system/xbin to PATH
 echo "[+] Adding /system/xbin to path"
