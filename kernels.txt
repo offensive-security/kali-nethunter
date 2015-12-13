@@ -35,8 +35,8 @@ If you wish to add a kernel/new device, leave a link to source here and feel fre
 #  git clone https://github.com/binkybear/android_kernel_oneplus_msm8994.git -b cm-12.1
 
 # - OnePlus One
-# git clone https://github.com/binkybear/AK-OnePone.git -b cm-11.0-ak oneplus11
-# git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.0 oneplus12
+# git clone https://github.com/binkybear/AK-OnePone.git -b cm-11.0 oneplus11
+# git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.1 oneplus12
 # git clone https://github.com/binkybear/AK-OnePone.git -b cm-13.0 oneplus13
 
 # - Toolchain
