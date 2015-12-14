@@ -1,4 +1,4 @@
 {
-	"version_code": 7,
-	"content": "Version 2.1 <p>New features:</p><li>Chroot sha512 updated</li><li>Add: MPC</li><li>Add: exploitdb</li><li>Add: weeman</li>"
+	"version_code": 8,
+	"content": "Version 2.1 <p>New features:</p><li>Chroot sha512 updated</li><li>Add searchsploit by @jmingov</li>"
 }
