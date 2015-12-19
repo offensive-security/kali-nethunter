@@ -40,8 +40,8 @@ class LatestSU:
 def supersuBeta():
 
     # Progress bar http://stackoverflow.com/a/22776
-    # SuperSU v2.62
-    url = "http://forum.xda-developers.com/attachment.php?attachmentid=3571657&d=1449763480"
+    # SuperSU v2.62-3
+    url = "http://forum.xda-developers.com/attachment.php?attachmentid=3572886&d=1449847783"
 
     file_name = os.path.join('supersu', 'supersu.zip')
     #file_name = url.split('/')[-1]
@@ -295,6 +295,7 @@ def main():
     parser.add_argument('--noaroma', '-n', action='store_true', help='Use a generic updater-script instead of Aroma')
     parser.add_argument('--uninstaller', '-u', action='store_true', help='Create an uninstaller')
     parser.add_argument('--kernel', '-k', action='store_true', help='Build kernel only')
+    parser.add_argument('--release', '-r', action='store', help='Specify Nethunter release version')
 
     args = parser.parse_args()
 
@@ -452,11 +453,15 @@ def main():
     ####### End AnyKernel2 installer ############
 
     ######## KERNEL ONLY ###########
-    kernelzip = 'kernel-nethunter-' + device + '-' + version + '-' + str(current_time) + '.zip'
+    if args.release:
+        kernelzip = 'kernel-nethunter-' + device + '-' + version + '-' + args.release + '.zip'
+    else:
+        kernelzip = 'kernel-nethunter-' + device + '-' + version + '-' + str(current_time) + '.zip'
 
     if args.kernel and args.device and version_picked:
         shutil.move('anykernel2.zip', kernelzip)  # Create kernel only here!
-        print('Created: %s.zip' % kernelzip)
+        print('Created: %s' % kernelzip)
+        cleanup()
         exit(0)
     elif args.kernel and not version_picked:
         print('Select a version: --kitkat, --lollipop, --marshmallow')
@@ -467,7 +472,6 @@ def main():
     else:
         os.makedirs('anykernelzip')
         shutil.move('anykernel2.zip', 'anykernelzip/anykernel2.zip')  # Continue with build!
-
 
     ####### Start No-Aroma Installer ############
     if args.noaroma:
@@ -484,7 +488,10 @@ def main():
     ###### End Aroma installer #########
 
     # Format for zip file is update-nethunter-devicename-version-DDMMYY_HHMMSS.zip
-    zipfilename = 'update-nethunter-' + device + '-' + version + '-' + str(current_time)
+    if args.release:
+        zipfilename = 'update-nethunter-' + device + '-' + version + '-' + args.release
+    else:
+        zipfilename = 'update-nethunter-' + device + '-' + version + '-' + str(current_time)
 
     zip('tmp_out', zipfilename, 'aroma')
 
