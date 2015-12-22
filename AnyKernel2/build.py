@@ -436,10 +436,10 @@ def main():
         exit(0)
 
     if os.path.isdir('supersu') and not suzipfile:
-        supersu()
+        supersu(True)
     elif not os.path.isdir('supersu') and not suzipfile:
         os.mkdir('supersu')
-        supersu()
+        supersu(True)
 
     if os.path.isdir('data/app'):
         allapps()
