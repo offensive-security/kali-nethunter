@@ -49,6 +49,11 @@ EOF
 # Add weeman for testing
 git clone https://github.com/Hypsurus/weeman.git kali-$architecture/opt/weeman
 
+# Install MPC by g0tmilk		
+echo "[+] Downloading MPC to /usr/bin/msfpc"		
+wget https://raw.githubusercontent.com/g0tmi1k/mpc/master/mpc.sh -O kali-$architecture/usr/bin/msfpc		
+chmod 755 kali-$architecture/usr/bin/msfpc
+
 # Add /system/xbin to PATH
 echo "[+] Adding /system/xbin to path"
 echo ""  >> kali-$architecture/root/.profile

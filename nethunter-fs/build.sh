@@ -103,7 +103,8 @@ arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils pciutils 
 minimalnh="openssh-server kali-defaults"
 
 # DEFAULT PACKAGES FULL INSTALL
-fullnh="kali-linux-nethunter mana-toolkit mpc exploitdb"
+# FUTURE: add msfpc (Metasploit Playload Creator)
+fullnh="kali-linux-nethunter mana-toolkit exploitdb python-pysqlite2"
 
 # If minimal, set only minimal packages
 if [ "$1" == "--minimal" ] || [ "$1" == "-m" ]; then
