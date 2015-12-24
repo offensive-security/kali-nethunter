@@ -80,7 +80,7 @@ if prop("menu.prop","selected")=="1" then
   "@personalize",
   "app_choices.prop",
   "Required", "", 2,
-  "SuperSU", "v2.46", 1,
+  "SuperSU", "v2.64", 0,
   "Nethunter", "v2.1", 1,
   "Custom Nethunter Terminal Emulator", "", 1,
   "Custom Nethunter VNC", "", 1,
