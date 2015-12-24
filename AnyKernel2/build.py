@@ -82,7 +82,7 @@ def supersu(beta):
     f.close()
     pass
 
-def allapps():
+def allapps(checkforce):
 
     apps = {
         'BlueNMEA':'http://max.kellermann.name/download/blue-nmea/BlueNMEA-2.1.3.apk',
@@ -100,8 +100,10 @@ def allapps():
             apkname = 'data/app/' + key + '.apk'
 
             # For force redownload, remove previous APK
-            if os.path.isfile(apkname):
-                os.remove(apkname)
+            if checkforce:
+                if os.path.isfile(apkname):
+                    print('Force redownloading all apps')
+                    os.remove(apkname)
 
             if not os.path.isfile(apkname): # Check for existing apk download
                 print('Downloading ' + value + ' to ' + apkname)
@@ -312,7 +314,7 @@ def main():
     if args.forcedown:
         #supersu(False)  # False = Release version of SuperSU
         supersu(True)  # True - Beta version of SuperSU
-        allapps()
+        allapps(True)
         exit(0) # https://github.com/offensive-security/kali-nethunter/issues/259 (unsure if I want to keep this)
 
     # Grab latestest SuperSU and all apps
@@ -442,10 +444,10 @@ def main():
         supersu(True)
 
     if os.path.isdir('data/app'):
-        allapps()
+        allapps(False)
     elif not os.path.isdir('data/app'):
         os.mkdir('data/app')
-        allapps()
+        allapps(False)
 
     ####### Start AnyKernel2 installer ############
     zipfilename = 'anykernel2'
