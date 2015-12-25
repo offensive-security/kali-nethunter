@@ -82,9 +82,11 @@ if [ "$(cat /tmp/anykernel/exitcode)" == 1 ]; then
 fi;
 
 if [ "$(file_getprop /tmp/anykernel/anykernel.sh do.modules)" == 1 ]; then
-  ui_print "@Symlink modules from /data/local/nhsystem/modules to /system/lib/modules";
-  chmod 755 "/tmp/symlinkmodules.sh";
-  /sbin/busybox ash /tmp/symlinkmodules.sh;
+  ui_print "- Pushing modules...";
+  /sbin/busybox mount -o remount,rw /system;
+  cp -rf /tmp/anykernel/system/lib/modules/* /system/lib/modules/;
+  set_perm_recursive 0 0 0755 0644 /system/lib/modules;
+  /sbin/busybox mount -o remount,ro /system;
 fi;
 
 ui_print "- Kernel installation completed";
