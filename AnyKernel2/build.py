@@ -385,7 +385,7 @@ def main():
                 shutil.copy2(sepolicy_location, 'ramdisk/sepolicy')
             else:
                 print('SEPOLICY not found at: %s' % sepolicy_location)
-                exit(0)
+                pass
 
         # Copy kernel from version/device to root folder
         kernel_location = 'kernels/' + version + '/' + device + '/zImage'
