@@ -1,0 +1,42 @@
+LANG=C chroot kali-$architecture /debootstrap/debootstrap --second-stage
+
+# Add our sources
+cat << EOF > kali-$architecture/etc/apt/sources.list
+deb http://http.kali.org/kali sana main non-free contrib
+#deb-src http://http.kali.org/kali sana main non-free contrib
+
+deb http://security.kali.org/ sana/updates main contrib non-free
+#deb-src http://security.kali.org/ sana/updates main contrib non-free
+EOF
+
+# fix for TUN symbolic link to enable programs like openvpn
+# set terminal length to 80 because root destroy terminal length
+# add fd to enable stdin/stdout/stderr
+cat << EOF > kali-$architecture/root/.bash_profile
+export TERM=xterm-256color
+stty columns 80
+cd /root/
+if [ ! -d "/dev/net/" ]; then
+  mkdir -p /dev/net
+  ln -sf /dev/tun /dev/net/tun
+fi
+
+if [ ! -d "/dev/fd/" ]; then
+  ln -sf /proc/self/fd /dev/fd
+  ln -sf /dev/fd/0 /dev/stdin
+  ln -sf /dev/fd/1 /dev/stdout
+  ln -sf /dev/fd/2 /dev/stderr
+fi
+EOF
+
+# Create hosts file
+cat << EOF > kali-$architecture/etc/hosts
+127.0.0.1       localhost kali
+::1             localhost ip6-localhost ip6-loopback
+EOF
+
+# Create default capture folders along with /sdcard and /system
+cap=kali-$architecture/captures
+mkdir -p kali-$architecture/root/.ssh/
+mkdir -p kali-$architecture/sdcard kali-$architecture/system
+mkdir -p $cap/evilap $cap/ettercap $cap/kismet/db $cap/nmap $cap/sslstrip $cap/tshark $cap/wifite $cap/tcpdump $cap/urlsnarf $cap/dsniff $cap/honeyproxy $cap/mana/sslsplit

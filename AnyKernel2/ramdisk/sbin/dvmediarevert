@@ -1,0 +1,17 @@
+#!/system/bin/sh
+# chmod -R 755 /system/etc/init.d
+# osm0sis @ xda-developers
+
+# restore media_profiles.xml, power.tuna.so and hostapd if switching to another kernel from DirtyV
+busybox mount -o rw,remount /system;
+case `uname -r` in
+  *DirtyV*|*SmittyV) ;;
+  *) [ -e /system/etc/media_profiles.xml.dvbak ] && mv /system/etc/media_profiles.xml.dvbak /system/etc/media_profiles.xml;
+     [ -e /system/lib/hw/power.tuna.so.dvbak ] && mv /system/lib/hw/power.tuna.so.dvbak /system/lib/hw/power.tuna.so;
+     [ -e /system/bin/hostapd.dvbak ] && mv /system/bin/hostapd.dvbak /system/bin/hostapd;
+     [ -e /system/etc/media_profiles.xml.dvbak -o -e /system/lib/hw/power.tuna.so.dvbak -o -e /system/bin/hostapd.dvbak ] || rm -f /system/etc/init.d/dvmediarevert;
+     chmod 644 /system/etc/media_profiles.xml /system/lib/hw/power.tuna.so;
+     chmod 755 /system/bin/hostapd;;
+esac;
+busybox mount -o ro,remount /system;
+

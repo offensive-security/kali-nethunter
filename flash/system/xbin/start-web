@@ -1,4 +1,0 @@
-unset LD_PRELOAD
-/system/xbin/reload_fcgi.sh &
-/system/xbin/reload_lighttpd.sh & 
-

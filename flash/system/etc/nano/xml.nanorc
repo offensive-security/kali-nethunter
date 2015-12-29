@@ -1,9 +1,0 @@
-## Here is an example for xml files.
-##
-syntax "xml" "\.([jrs]html?|sgml?|xml|xslt?)$"
-color green  start="<" end=">"
-color cyan   "<[^> ]+"
-color cyan   ">"
-color yellow start="<!DOCTYPE" end="[/]?>"
-color yellow start="<!--" end="-->"
-color red    "&[^;]*;"

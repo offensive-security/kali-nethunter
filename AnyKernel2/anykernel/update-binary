@@ -1,0 +1,92 @@
+#!/sbin/sh
+# AnyKernel2 Backend
+# osm0sis @ xda-developers
+
+OUTFD=/proc/self/fd/$2;
+ZIP="$3";
+DIR=`dirname "$ZIP"`;
+
+ui_print() {
+  until [ ! "$1" ]; do
+    echo -e "ui_print $1\nui_print" > $OUTFD;
+    shift;
+  done;
+}
+show_progress() { echo "progress $1 $2" > $OUTFD; }
+set_perm_recursive() {
+  dirs=$(echo $* | awk '{ print substr($0, index($0,$5)) }');
+  for i in $dirs; do
+    chown -R $1.$2 $i; chown -R $1:$2 $i;
+    find "$i" -type d -exec chmod $3 {} +;
+    find "$i" -type f -exec chmod $4 {} +;
+  done;
+}
+file_getprop() { grep "^$2" "$1" | cut -d= -f2; }
+getprop() { test -e /sbin/getprop && /sbin/getprop $1 || file_getprop /default.prop $1; }
+abort() { ui_print "$*"; exit 1; }
+
+mkdir -p /tmp/anykernel;
+cd /tmp/anykernel;
+unzip -o "$ZIP";
+
+ui_print "**********************";
+ui_print "$(file_getprop /tmp/anykernel/anykernel.sh kernel.string)";
+ui_print " AnyKernel2 by osm0sis @ xda-developers";
+ui_print "**********************";
+/sbin/busybox mount /system;
+
+if [ "$(file_getprop /tmp/anykernel/anykernel.sh do.devicecheck)" == 1 ]; then
+  ui_print "- Checking device...";
+  for i in 1 2 3 4 5; do
+    testname="$(file_getprop /tmp/anykernel/anykernel.sh device.name$i)";
+    if [ "$(getprop ro.product.device)" == "$testname" -o "$(getprop ro.build.product)" == "$testname" ]; then
+      match=1;
+    fi;
+  done;
+  if [ "$match" != 1 ]; then
+    umount /system;
+    abort "- Unsupported device. Aborting...";
+  fi;
+fi;
+
+# Free up space for kernel only install (otherwise nothing installs!)
+# It actually runs twice because sometimes it's installed when kernel
+# is by itself and other times Aroma/noaroma installs re
+ui_print "- Freeing some space on /system";
+chmod 755 /tmp/anykernel/tools/cleansystem.sh;
+/sbin/busybox ash /tmp/anykernel/tools/cleansystem.sh;
+
+# Firmware takes up to much space on system so we symlink it
+ui_print "- Symlink firmware from /data/local/nhsystem/firmware to /system/etc/firmware";
+chmod 755 /tmp/anykernel/tools/symlinkfirmware.sh;
+/sbin/busybox ash /tmp/anykernel/tools/symlinkfirmware.sh;
+
+# Symlink anything in xbin
+ui_print "- Symlink xbin /data/local/nhsystem/xbin to /system/xbin";
+chmod 755 /tmp/anykernel/tools/symlinkxbin.sh;
+/sbin/busybox ash /tmp/anykernel/tools/symlinkxbin.sh;
+
+if [ "$(file_getprop /tmp/anykernel/anykernel.sh do.initd)" == 1 ]; then
+  ui_print "- Creating init.d...";
+  mkdir /system/etc/init.d;
+  ui_print "- Copying files to init.d...";
+  cp -f /tmp/anykernel/system/etc/init.d/* /system/etc/init.d/;
+  set_perm_recursive 0 0 0755 0755 /system/etc/init.d;
+fi;
+
+ui_print "- Starting kernel installation...";
+/sbin/sh /tmp/anykernel/anykernel.sh;
+if [ "$(cat /tmp/anykernel/exitcode)" == 1 ]; then 
+  umount /system;
+  abort;
+fi;
+
+if [ "$(file_getprop /tmp/anykernel/anykernel.sh do.modules)" == 1 ]; then
+  ui_print "- Pushing modules...";
+  /sbin/busybox mount -o remount,rw /system;
+  cp -rf /tmp/anykernel/system/lib/modules/* /system/lib/modules/;
+  set_perm_recursive 0 0 0755 0644 /system/lib/modules;
+  /sbin/busybox mount -o remount,ro /system;
+fi;
+
+ui_print "- Kernel installation completed";
