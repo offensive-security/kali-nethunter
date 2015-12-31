@@ -25,3 +25,5 @@ Each folder contains specific instructions on how to build for each device but h
 
 * Download 3rd party apps in AnyKernel2  folder (python build.py -f)
 * Follow build instructions in AnyKernel2 README.md
+
+Thu Dec 31 09:07:15 EST 2015
