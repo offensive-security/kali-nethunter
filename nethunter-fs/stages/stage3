@@ -54,6 +54,10 @@ echo "[+] Downloading MPC to /usr/bin/msfpc"
 wget https://raw.githubusercontent.com/g0tmi1k/mpc/master/mpc.sh -O kali-$architecture/usr/bin/msfpc		
 chmod 755 kali-$architecture/usr/bin/msfpc
 
+# Nmap to sql output
+wget https://raw.githubusercontent.com/exitnode/nmap-sqlite-output/master/sqlite-output.nse -O kali-$architecture/usr/share/nmap/scripts/sqlite-output.nse
+chmod 755 kali-$architecture/usr/share/nmap/scripts/sqlite-output.nse
+
 # Add /system/xbin to PATH
 echo "[+] Adding /system/xbin to path"
 echo ""  >> kali-$architecture/root/.profile
