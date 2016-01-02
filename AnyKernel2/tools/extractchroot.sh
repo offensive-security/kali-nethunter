@@ -17,6 +17,6 @@ if [ -f "/data/local/kalifs-full.tar.xz" ]; then
 	echo "Extracting chroot..."
 	/sbin/busybox xz -df /data/local/kalifs-full.tar.xz
 	mkdir -p /data/local/nhsystem
-	/sbin/busybox tar xf /data/local/kalifs-full.tar -C /data/local/nhsystem
+	/tmp/busybox tar xf /data/local/kalifs-full.tar -C /data/local/nhsystem
 	rm -f /data/local/kalifs-full.tar
 fi
