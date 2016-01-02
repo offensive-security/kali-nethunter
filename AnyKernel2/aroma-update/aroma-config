@@ -27,11 +27,11 @@
 #
 ini_set("force_colorspace","rgba");
 
-ini_set("rom_name",             "Kali Nethunter Kernel");
+ini_set("rom_name",             "Kali Nethunter");
 ini_set("rom_version",          "filled in by device.cfg");
 ini_set("rom_author",           "Filled in by devices.cfg");
 ini_set("rom_device",           "Filled in by devices.cfg");
-ini_set("rom_date",             "2015");
+ini_set("rom_date",             "2016");
 
 splash(3000, "SPLASH");
 
@@ -81,7 +81,7 @@ if prop("menu.prop","selected")=="1" then
   "app_choices.prop",
   "Required", "", 2,
   "SuperSU", "v2.64", 0,
-  "Nethunter", "v2.1", 1,
+  "Nethunter", "v3", 1,
   "Custom Nethunter Terminal Emulator", "", 1,
   "Custom Nethunter VNC", "", 1,
   "Optional", "", 2,
