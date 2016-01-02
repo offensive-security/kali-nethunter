@@ -357,10 +357,10 @@ def main():
         device = args.device
         # Add developer information to Anykernel2
         regexanykernel(device)
-    elif not args.device:
+    elif not args.device and not args.uninstaller:
         print('No arguments supplied.  Try -h or --help')
         exit(0)
-    else:
+    elif args.device:
         print('Device %s not found devices.cfg' % args.device)
         exit(0)
 
@@ -435,7 +435,8 @@ def main():
         zipfilename = 'nethunter-uninstaller'
         zip('tmp_out', zipfilename, 'uninstaller')
         print('Created uninstaller: ', zipfilename + '.zip')
-        exit(0)
+        if not args.device:
+            exit(0)
 
     if os.path.isdir('supersu') and not suzipfile:
         supersu(True)
