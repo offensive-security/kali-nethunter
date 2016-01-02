@@ -17,7 +17,7 @@ python build.py -d hammerhead --marshmallow -k
 ```
 Force download all third party apps:
 ```sh
-python build.py --forcedownload
+python build.py --forcedown
 ```
 Building the uninstaller:
 ```sh
