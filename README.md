@@ -6,12 +6,13 @@ Of course, you have all the usual Kali tools in NetHunter as well as the ability
 We've incorporated some amazing features into the NetHunter OS which are both powerful and unique. From pre-programmed HID Keyboard (Teensy) attacks, to BadUSB Man In The Middle attacks, to one-click MANA Evil Access Point setups, access to the Offensive Security Exploit Database... 
 And yes, NetHunter natively supports wireless 802.11 frame injection with a variety of supported USB NICs.
 
+## Documentation and Attack Descriptions
+Attack descriptions as well as some documentation to get you started with the installation and setup of Kali NetHunter can be found at https://github.com/offensive-security/kali-nethunter/wiki.
+
 ## Is Kali NetHunter an Android ROM?
 
 Kali Linux Nethunter is **not** a ROM but is meant to be installed over an existing stock/factory image of Android.  It can be installed over some Cyanogenmod based ROMs.  It is heavily based on using custom kernels and only supports a select number of devices.
 
-## Documentation and Attack Descriptions
-Attack descriptions as well as some documentation to get you started with the installation and setup of Kali NetHunter can be found at https://github.com/offensive-security/kali-nethunter/wiki.
 
 
 Mon Jan  4 10:59:02 EST 2016
