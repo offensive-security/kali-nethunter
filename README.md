@@ -12,7 +12,7 @@ Kali Linux Nethunter is **not** a ROM but is meant to be installed over an exist
 ## Documentation and Attack Descriptions
 Attack descriptions as well as some documentation to get you started with the installation and setup of Kali NetHunter can be found at https://github.com/offensive-security/kali-nethunter/wiki.
 
-[[images/nethunter-git-logo.png]]
+![Kali NetHunter](https://raw.githubusercontent.com/offensive-security/kali-nethunter/master/images/nethunter-git-logo.png)
 
 Mon Jan  4 10:59:02 EST 2016
 
