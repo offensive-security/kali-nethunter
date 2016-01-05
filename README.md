@@ -23,6 +23,7 @@ Kali Linux Nethunter is **not** a ROM but is meant to be installed over an exist
 **A** - Yes, check our wiki for more information https://github.com/offensive-security/kali-nethunter/wiki
 <hr>
 **Q** - NetHunter is awesome! How do i install it?
+
 **A** - Yes, check our wiki for more information https://github.com/offensive-security/kali-nethunter/wiki
 <hr>
 **Q** - What is the best Wireless card for NetHunter?
