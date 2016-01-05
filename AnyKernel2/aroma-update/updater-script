@@ -119,22 +119,12 @@ symlink("/data/data/com.offsec.nethunter/files/scripts/bootkali", "/system/bin/b
 symlink("/data/data/com.offsec.nethunter/files/scripts/bootkali_login", "/system/bin/bootkali_login");
 symlink("/data/data/com.offsec.nethunter/files/scripts/bootkali_bash", "/system/bin/bootkali_bash");
 
-set_progress(0.8);
-ui_print("@Checking for Kali Chroot in installer...this can take a while...");
-package_extract_dir("data/local", "/data/local");
-set_perm(0, 0, 0755, "/tmp/extractchroot.sh");
-run_program("/tmp/extractchroot.sh");
-
-run_program("/tmp/busybox", "mount", "/data");
-ui_print("@Wiping dalvik-cache and /tmp");
-delete_recursive("/data/dalvik-cache");
-
 ui_print("@Installing Kernel using AnyKernel2");
 package_extract_dir("anykernelzip", "/tmp/anykernel");
 run_program("/tmp/busybox", "unzip", "-o", "/tmp/anykernel/anykernel2.zip", "-d", "/tmp/anykernel");
 run_program("/tmp/busybox", "ash", "/tmp/anykernel/META-INF/com/google/android/update-binary", "dummy", "1", "/tmp/anykernel/anykernel2.zip");
 
-set_progress(0.9);
+set_progress(0.8);
 if (file_getprop("/tmp/aroma/app_choices.prop", "item.1.1")=="1") then ui_print("Installing SuperSU");
 package_extract_dir("supersu", "/tmp/supersu");
 ui_print("SuperSU may lock Aroma installation display");
@@ -142,6 +132,12 @@ ui_print("Installation will still continue.  Turn off/on in a minute.");
 run_program("/tmp/busybox", "unzip", "-o", "/tmp/supersu/supersu.zip", "-d", "/tmp/supersu");
 run_program("/tmp/busybox", "ash", "/tmp/supersu/META-INF/com/google/android/update-binary", "dummy", "1", "/tmp/supersu/supersu.zip");
 endif;
+
+set_progress(0.9);
+ui_print("@Checking for Kali Chroot in installer...this can take a while...");
+package_extract_dir("data/local", "/data/local");
+set_perm(0, 0, 0755, "/tmp/extractchroot.sh");
+run_program("/tmp/extractchroot.sh");
 
 unmount("/data");
 unmount("/system");
