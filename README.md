@@ -13,7 +13,18 @@ Attack descriptions as well as some documentation to get you started with the in
 
 Kali Linux Nethunter is **not** a ROM but is meant to be installed over an existing stock/factory image of Android.  It can be installed over some Cyanogenmod based ROMs.  It is heavily based on using custom kernels and only supports a select number of devices.
 
-
+## Frequently Asked Questions
+**Q** - NetHunter is awesome! How do i install it?
+**A** - Yes, check our wiki for more information https://github.com/offensive-security/kali-nethunter/wiki
+<hr>
+**Q** - What kind of attacks does NetHunter support?
+**A** - Yes, check our wiki for more information https://github.com/offensive-security/kali-nethunter/wiki
+<hr>
+**Q** - Does NetHunter Support Marshmallow, or Nexus 9 devices?
+**A** - Yes, check our wiki for more information https://github.com/offensive-security/kali-nethunter/wiki
+<hr>
+**Q** - Wht is the best Wireless card for NetHunter?
+**A** - Yes, check our wiki for more information https://github.com/offensive-security/kali-nethunter/wiki
 
 Mon Jan  4 10:59:02 EST 2016
 
