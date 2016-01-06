@@ -1,8 +1,0 @@
-# HID USB property
-on property:sys.usb.config=hid
-    write /sys/class/android_usb/android0/enable 0
-    write /sys/class/android_usb/android0/idVendor 0461
-    write /sys/class/android_usb/android0/idProduct 0010
-    write /sys/class/android_usb/android0/functions ${sys.usb.config}
-    write /sys/class/android_usb/android0/enable 1
-    setprop sys.usb.state ${sys.usb.config}

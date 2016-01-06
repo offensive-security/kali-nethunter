@@ -102,12 +102,14 @@ ui_print("@Wiping dalvik-cache and /tmp");
 delete_recursive("/data/dalvik-cache");
 
 set_progress(0.9);
-ui_print("@Installing Kernel using AnyKernel2");
-package_extract_dir("anykernelzip", "/tmp/anykernel");
-run_program("/tmp/busybox", "unzip", "-o", "/tmp/anykernel/anykernel2.zip", "-d", "/tmp/anykernel");
-run_program("/tmp/busybox", "ash", "/tmp/anykernel/META-INF/com/google/android/update-binary", "dummy", "1", "/tmp/anykernel/anykernel2.zip");
+ui_print("@Patching boot image");
+package_extract_dir("boot-patcher-zip", "/tmp/boot-patcher");
+run_program("/tmp/busybox", "unzip", "-o", "/tmp/boot-patcher/boot-patcher.zip", "-d", "/tmp/boot-patcher");
+run_program("/tmp/busybox", "ash", "/tmp/boot-patcher/META-INF/com/google/android/update-binary", "dummy", "1", "/tmp/boot-patcher/boot-patcher.zip");
+
 unmount("/data");
 unmount("/system");
-#delete_recursive("/tmp");
-ui_print("@Finished Install");
+delete_recursive("/tmp/boot-patcher");
+
+ui_print("@Installation complete");
 set_progress(1);

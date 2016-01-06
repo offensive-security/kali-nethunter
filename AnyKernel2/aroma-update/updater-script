@@ -119,10 +119,10 @@ symlink("/data/data/com.offsec.nethunter/files/scripts/bootkali", "/system/bin/b
 symlink("/data/data/com.offsec.nethunter/files/scripts/bootkali_login", "/system/bin/bootkali_login");
 symlink("/data/data/com.offsec.nethunter/files/scripts/bootkali_bash", "/system/bin/bootkali_bash");
 
-ui_print("@Installing Kernel using AnyKernel2");
-package_extract_dir("anykernelzip", "/tmp/anykernel");
-run_program("/tmp/busybox", "unzip", "-o", "/tmp/anykernel/anykernel2.zip", "-d", "/tmp/anykernel");
-run_program("/tmp/busybox", "ash", "/tmp/anykernel/META-INF/com/google/android/update-binary", "dummy", "1", "/tmp/anykernel/anykernel2.zip");
+ui_print("@Patching boot image");
+package_extract_dir("boot-patcher-zip", "/tmp/boot-patcher");
+run_program("/tmp/busybox", "unzip", "-o", "/tmp/boot-patcher/boot-patcher.zip", "-d", "/tmp/boot-patcher");
+run_program("/tmp/busybox", "ash", "/tmp/boot-patcher/META-INF/com/google/android/update-binary", "dummy", "1", "/tmp/boot-patcher/boot-patcher.zip");
 
 set_progress(0.8);
 if (file_getprop("/tmp/aroma/app_choices.prop", "item.1.1")=="1") then ui_print("Installing SuperSU");
@@ -141,6 +141,7 @@ run_program("/tmp/extractchroot.sh");
 
 unmount("/data");
 unmount("/system");
-delete_recursive("/tmp");
-ui_print("@Finished Install");
+delete_recursive("/tmp/boot-patcher");
+
+ui_print("@Installation complete");
 set_progress(1);

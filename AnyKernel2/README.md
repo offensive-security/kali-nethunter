@@ -1,4 +1,5 @@
-AnyKernel 2.0 was written by osm0sis and this fork was heavily modified by Binkybear for building with Nethunter.
+Nethunter boot image patcher is based on AnyKernel 2.0 by osm0sis.
+It was modified heavily by Binkybear and jcadduono for better compatibility when installing Nethunter.
 
 This will generate an installer for Nethunter that can be flashed in TWRP.
 # Instructions
@@ -32,15 +33,18 @@ python build.py -h
 
 There are really two/three components here:
 
-* AnyKernel2 - What installs the kernel
+* Boot-Patcher - This script patches the boot image (replacing the kernel) to support Nethunter
 * Aroma - The GUI based installer
-* Edify - Scripting language for alternative to device that don't support Aroma
+* Edify - A scripting language alternative for devices that don't support Aroma
 
 All devices are contained in devices.cfg.  If you want to add your own device you would add something like:
 
 ```sh
 # Device Model for reference
 [codename]
+author = "Your Name"
+version = "1.0"
+kernelstring = "Name of your kernel"
 devicenames = codename codename2_if_it_has_one
 block = /dev/block/WHATEVER/boot
 aroma = True
@@ -53,4 +57,6 @@ kernels/[version]/[codename]/zImage
 
 If you have a zImage-dtb file from your finished kernel just rename it to zImage.
 
-So really all you need is a zImage to build for a new device and the name/location of where to install.
+Some devices might require a separate zImage from dtb. You can place a dtb.img file in the same location as the zImage, and it will be automatically added to the installer.
+
+So really all you need is a zImage and sometimes a dtb.img to build for a new device, as well as the name/location of where to install.

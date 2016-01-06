@@ -131,24 +131,24 @@ def zip(src, dst, status):
     # Copy all folders/files (except ignored) to tmp_out folder for zipping
     try:
         pwd = os.path.dirname(os.path.realpath(__file__))
-        if status == "anykernel":
+        if status == "boot-patcher":
             shutil.copytree(pwd, 'tmp_out', ignore=shutil.ignore_patterns('*.py', 'README*', 'placeholder','tmp_out', 'kernels', 'files', 'media',
                                                                       'devices.cfg', '.DS_Store', '.git', '.idea', 'aroma-update', 'kernel-nethunter*',
-                                                                      'aroma', 'data', 'anykernel', 'wallpaper', 'noaroma-update', 'nano', 'terminfo',
+                                                                      'aroma', 'data', 'boot-patcher', 'wallpaper', 'noaroma-update', 'nano', 'terminfo',
                                                                       'lualibs', 'scripts', 'proxmark3', '*.so',
                                                                       'supersu', 'supersu', 'wallpaper', 'uninstaller', 'update-nethunter*'))
         elif status == "aroma":
             shutil.copytree(pwd, 'tmp_out', ignore=shutil.ignore_patterns('*.py', 'README*', 'placeholder','tmp_out', 'kernels',
                                                                       'devices.cfg', '.DS_Store', '.git', '.idea', 'kernel-nethunter*',
-                                                                      'modules', 'anykernel.sh', 'dtb', 'uninstaller',
-                                                                      'ramdisk', 'patch', 'anykernel', 'noaroma-update',
+                                                                      'modules', 'boot-patcher.sh', 'dtb', 'uninstaller',
+                                                                      'ramdisk', 'ramdisk-patch', 'boot-patcher', 'noaroma-update',
                                                                       'zImage*', 'aroma-update', 'update-nethunter*'))
         elif status == "uninstaller":
             shutil.copytree(pwd, 'tmp_out', ignore=shutil.ignore_patterns('*.py', 'README*', 'placeholder','tmp_out', 'tools', 'kernels',
                                                                       'devices.cfg', '.DS_Store', '.git', '.idea', 'supersu', 'kernel-nethunter*',
-                                                                      'modules', 'anykernel.sh', 'dtb', 'uninstaller', 'files',
-                                                                      'ramdisk', 'patch', 'anykernel', 'aroma-update', 'noaroma-update',
-                                                                      'aroma', 'data', 'system', 'patch', 'ramdisk', 'wallpaper',
+                                                                      'modules', 'boot-patcher.sh', 'dtb', 'uninstaller', 'files',
+                                                                      'ramdisk', 'ramdisk-patch', 'boot-patcher', 'aroma-update', 'noaroma-update',
+                                                                      'aroma', 'data', 'system', 'wallpaper',
                                                                       'zImage*', 'aroma-update', 'update-nethunter*'))
 
     except OSError as e:
@@ -177,8 +177,8 @@ def regexaroma(device):
     Config.read('devices.cfg')
 
     file = 'META-INF/com/google/android/aroma-config'
-    author = Config.get('DEVELOPER', 'author')
-    version = Config.get('DEVELOPER', 'version')
+    author = Config.get(device, 'author')
+    version = Config.get(device, 'version')
 
     file_handle = open(file, 'r')
     file_string = file_handle.read()
@@ -201,55 +201,55 @@ def regexaroma(device):
     file_handle.write(file_string)
     file_handle.close()
 
-def regexanykernel(device):
-
-    i = 0
-
+def configupdatebinary(device):
     Config = ConfigParser.ConfigParser()
     Config.read('devices.cfg')
 
-    file = 'anykernel.sh'
-    developer = Config.get('DEVELOPER', 'kernelstring')
-    developer = 'kernel.string=' + developer
-
-    # Get device names, convert to list, and get size
-    devicestrings = Config.get(device, 'devicenames')
-    devicestrings = devicestrings.split()
-    size = len(devicestrings)
-
-    # Get name of block to extract kernel to
-    block = Config.get(device, 'block')
-    block = 'block=' + block + ';'
+    file = 'boot-patcher/update-binary'
 
     # Open file as read only and copy to string
     file_handle = open(file, 'r')
     file_string = file_handle.read()
     file_handle.close()
 
-    # Replace kernel.string=name of developer in file_string
-    file_string = (re.sub(ur'''kernel\.string=.*''', developer, file_string))
-    file_string = (re.sub(ur'''block=.*''', block, file_string))
+    # Replace kernel string
+    kernelstring = Config.get(device, 'kernelstring')
+    file_string = (re.sub('^kernel_string=.*$', 'kernel_string=' + kernelstring, file_string, flags=re.M))
+
+    # Replace kernel author
+    kernelauthor = Config.get(device, 'author')
+    file_string = (re.sub('^kernel_author=.*$', 'kernel_author=' + kernelauthor, file_string, flags=re.M))
+
+    # Replace kernel version
+    kernelversion = Config.get(device, 'version')
+    file_string = (re.sub('^kernel_version=.*$', 'kernel_version=' + kernelversion, file_string, flags=re.M))
 
     # Replace device names
-    for device in devicestrings:
-        i += 1
-        devicecode = 'device.name' + str(i) + '=' + device
-        deviceregex = 'device\.name' + str(i) + '=.*'
-        file_string = (re.sub(deviceregex, devicecode, file_string))
-
-    if size < 5:
-        for extranumbers in range(size, 5):
-            # Else make device string empty
-            extranumbers += 1
-            devicecode = 'device.name' + str(extranumbers) + '=' + ""
-            deviceregex = 'device\.name' + str(extranumbers) + '=.*'
-            file_string = (re.sub(deviceregex, devicecode, file_string))
-
+    devicenames = Config.get(device, 'devicenames')
+    file_string = (re.sub('^device_names=.*$', 'device_names="' + devicenames + '"', file_string, flags=re.M))
 
     file_handle = open(file, 'w')
     file_handle.write(file_string)
     file_handle.close()
 
+def configbootpatcher(device):
+    Config = ConfigParser.ConfigParser()
+    Config.read('devices.cfg')
+
+    file = 'boot-patcher.sh'
+
+    # Open file as read only and copy to string
+    file_handle = open(file, 'r')
+    file_string = file_handle.read()
+    file_handle.close()
+
+    # Replace boot block
+    bootblock = Config.get(device, 'block')
+    file_string = (re.sub('^boot_block=.*$', 'boot_block=' + bootblock, file_string, flags=re.M))
+
+    file_handle = open(file, 'w')
+    file_handle.write(file_string)
+    file_handle.close()
 
 def cleanup():
     # Remove any existing zImage
@@ -258,11 +258,11 @@ def cleanup():
         os.remove('zImage')
 
     # Clean up
-    if os.path.exists('anykernelzip'):
-        shutil.rmtree('anykernelzip')
+    if os.path.exists('boot-patcher-zip'):
+        shutil.rmtree('boot-patcher-zip')
 
     # Check to see if an sepolicy exists in ramdisk, remove if it does
-    if os.path.exists('ramdisk/sepolicy'):
+    if os.path.exists('ramdisk-patch/sepolicy'):
         print('Removing previous sepolicy')
         os.remove('ramdisk/sepolicy')
 
@@ -294,12 +294,11 @@ def main():
     help_device = 'Device names: \n'
 
     for device in devicenames:
-        if device != 'DEVELOPER':
-            help_device += device + '\n'
+        help_device += device + '\n'
 
     parser = argparse.ArgumentParser(description='Nethunter zip builder')
     parser.add_argument('--device', '-d', action='store', help=help_device)
-    parser.add_argument('--kitkat', '-kk', action='store_true', help='Android.4.4.4')
+    parser.add_argument('--kitkat', '-kk', action='store_true', help='Android 4.4.4')
     parser.add_argument('--lollipop', '-l', action='store_true', help='Android 5')
     parser.add_argument('--marshmallow', '-m', action='store_true', help='Android 6')
     parser.add_argument('--forcedown', '-f', action='store_true', help='Force redownloading')
@@ -355,8 +354,10 @@ def main():
     ####### BUILD DEVICE CONFIG #######
     if args.device in devicenames:
         device = args.device
-        # Add developer information to Anykernel2
-        regexanykernel(device)
+        # set up variables in boot-patcher/update-binary
+        configupdatebinary(device)
+        # set up variables in boot-patcher.sh
+        configbootpatcher(device)
     elif not args.device and not args.uninstaller:
         print('No arguments supplied.  Try -h or --help')
         exit(0)
@@ -450,19 +451,19 @@ def main():
         os.mkdir('data/app')
         allapps(False)
 
-    ####### Start AnyKernel2 installer ############
-    zipfilename = 'anykernel2'
+    ####### End Nethunter boot image patcher ############
+    zipfilename = 'boot-patcher'
 
     if os.path.exists(dir):
         shutil.rmtree(dir)
-    shutil.copytree('anykernel', dir)
+    shutil.copytree('boot-patcher', dir)
 
     # Finished--copy files to tmp folder and zip
-    zip('tmp_out', zipfilename, 'anykernel')
-    if os.path.exists('anykernelzip'):
-        shutil.rmtree('anykernelzip')
+    zip('tmp_out', zipfilename, 'boot-patcher')
+    if os.path.exists('boot-patcher-zip'):
+        shutil.rmtree('boot-patcher-zip')
 
-    ####### End AnyKernel2 installer ############
+    ####### End Nethunter boot image patcher ############
 
     ######## KERNEL ONLY ###########
     if args.release:
@@ -471,7 +472,7 @@ def main():
         kernelzip = 'kernel-nethunter-' + device + '-' + version + '-' + str(current_time) + '.zip'
 
     if args.kernel and args.device and version_picked:
-        shutil.move('anykernel2.zip', kernelzip)  # Create kernel only here!
+        shutil.move('boot-patcher.zip', kernelzip)  # Create kernel only here!
         print('Created: %s' % kernelzip)
         cleanup()
         exit(0)
@@ -482,8 +483,8 @@ def main():
         print('Missing device name!  Please use --device or -d')
         exit(0)
     else:
-        os.makedirs('anykernelzip')
-        shutil.move('anykernel2.zip', 'anykernelzip/anykernel2.zip')  # Continue with build!
+        os.makedirs('boot-patcher-zip')
+        shutil.move('boot-patcher.zip', 'boot-patcher-zip/boot-patcher.zip')  # Continue with build!
 
     ####### Start No-Aroma Installer ############
     if args.noaroma:
