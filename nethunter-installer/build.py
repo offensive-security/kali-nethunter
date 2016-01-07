@@ -264,7 +264,7 @@ def cleanup():
     # Check to see if an sepolicy exists in ramdisk, remove if it does
     if os.path.exists('ramdisk-patch/sepolicy'):
         print('Removing previous sepolicy')
-        os.remove('ramdisk/sepolicy')
+        os.remove('ramdisk-patch/sepolicy')
 
     # Check to see if an dtb image exists, remove if it does
     if os.path.exists('dtb'):
@@ -383,7 +383,7 @@ def main():
         if version is 'marshmallow':
             sepolicy_location = 'kernels/marshmallow/' + device + '/sepolicy'
             if os.path.exists(sepolicy_location):
-                shutil.copy2(sepolicy_location, 'ramdisk/sepolicy')
+                shutil.copy2(sepolicy_location, 'ramdisk-patch/sepolicy')
             else:
                 print('SEPOLICY not found at: %s' % sepolicy_location)
                 pass
