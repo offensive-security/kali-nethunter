@@ -18,6 +18,8 @@ set_perm(0, 0, 0755, "/tmp/previnstall.sh");
 run_program("/tmp/previnstall.sh");
 ui_print("@Installing Apps");
 package_extract_dir("supersu", "/tmp/supersu");
+package_extract_file("supersu/vars", "/system/.supersu");
+ui_print("Installing SuperSU in system mode");
 run_program("/tmp/busybox", "unzip", "-o", "/tmp/supersu/supersu.zip", "-d", "/tmp/supersu");
 run_program("/tmp/busybox", "ash", "/tmp/supersu/META-INF/com/google/android/update-binary", "dummy", "1", "/tmp/supersu/supersu.zip");
 run_program("/tmp/busybox", "mount", "/data");
