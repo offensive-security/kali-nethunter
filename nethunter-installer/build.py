@@ -379,15 +379,6 @@ def main():
         for f in module_list:
             os.remove('system/lib/modules/' + f)
 
-        # Marshmallow requires a modified sepolicy to work with SuperSU
-        if version is 'marshmallow':
-            sepolicy_location = 'kernels/marshmallow/' + device + '/sepolicy'
-            if os.path.exists(sepolicy_location):
-                shutil.copy2(sepolicy_location, 'ramdisk-patch/sepolicy')
-            else:
-                print('SEPOLICY not found at: %s' % sepolicy_location)
-                pass
-
         # Copy kernel from version/device to root folder
         kernel_location = 'kernels/' + version + '/' + device + '/zImage'
         if os.path.exists(kernel_location):
