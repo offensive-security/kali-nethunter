@@ -30,7 +30,7 @@ class LatestSU:
 
     def dlsupersu(self):
 
-        getUrl = self.__getPage('http://download.chainfire.eu/750/SuperSU/BETA-SuperSU-v2.64-20151220185127.zip', True)
+        getUrl = self.__getPage('http://download.chainfire.eu/896/SuperSU/BETA-SuperSU-v2.66-20160103015024.zip', True)
         # Stable (release verison)
         # getUrl = self.__getPage('http://download.chainfire.eu/supersu', True)
         latestUrl = getUrl + '?retrieve_file=1'
@@ -39,7 +39,7 @@ class LatestSU:
 
     def dlsupersubeta(self):
         # Get download URL
-        getUrl = self.__getPage('http://download.chainfire.eu/750/SuperSU/BETA-SuperSU-v2.64-20151220185127.zip', True)        
+        getUrl = self.__getPage('http://download.chainfire.eu/896/SuperSU/BETA-SuperSU-v2.66-20160103015024.zip', True)        
         latestUrl = getUrl + '?retrieve_file=1'
 
         return latestUrl
