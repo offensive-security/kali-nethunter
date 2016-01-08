@@ -80,7 +80,11 @@ def supersu(beta):
         print status,
 
     f.close()
-    pass
+    print('')
+    print('Extracting supolicy from SuperSU zip to tools')
+    with zipfile.ZipFile('supersu/supersu.zip', 'r') as zf:
+        with zf.open('armv7/supolicy') as zp, open('tools/supolicy', 'wb') as supolicy:
+            shutil.copyfileobj(zp, supolicy)
 
 def allapps(checkforce):
 

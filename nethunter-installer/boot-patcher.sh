@@ -97,17 +97,28 @@ patch_ramdisk() {
 	ui_print "Patching the ramdisk..."
 	cd $ramdisk
 	# fix permissions of patch files
-	chmod -R 755 $ramdisk_patch
-	chmod 644 $ramdisk_patch/sbin/media_profiles.xml
+	chmod -R 0755 $ramdisk_patch
+	chmod 0644 $ramdisk_patch/sbin/media_profiles.xml
 	# move the patch files into the ramdisk
 	cp -af $ramdisk_patch/* ./
 	# make sure adb is not secure
 	backup_file default.prop
 	replace_line default.prop "ro.adb.secure=1" "ro.adb.secure=0"
 	replace_line default.prop "ro.secure=1" "ro.secure=0"
-	# import nethunter init to init.rc
+	# import nethunter and superuser init to init.rc
 	backup_file init.rc
 	insert_after_last init.rc "import /init\\..*\\.rc" "import /init.nethunter.rc"
+	insert_after_last init.rc "import /init\\..*\\.rc" "import /init.superuser.rc"
+	# patch sepolicy for SuperSU
+	ui_print "Patching the sepolicy for SuperSU..."
+	$bin/supolicy --file $ramdisk/sepolicy $ramdisk/sepolicy_new
+	[ -f $ramdisk/sepolicy_new ] && {
+		rm $ramdisk/sepolicy
+		mv $ramdisk/sepolicy_new $ramdisk/sepolicy
+		chmod 0644 $ramdisk/sepolicy
+	} || {
+		ui_print "Unable to patch the sepolicy, continuing..."
+	}
 }
 
 # build the new ramdisk
