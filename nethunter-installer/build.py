@@ -384,11 +384,13 @@ def main():
             os.remove('system/lib/modules/' + f)
 
         # Copy kernel from version/device to root folder
-        kernel_location = 'kernels/' + version + '/' + device + '/zImage'
-        if os.path.exists(kernel_location):
-            shutil.copy2(kernel_location, 'zImage')
+        kernel_location = 'kernels/' + version + '/' + device + '/'
+        if os.path.exists(kernel_location + 'zImage'):
+            shutil.copy2(kernel_location + 'zImage', 'zImage')
+        elif os.path.exists(kernel_location + 'zImage-dtb'):
+            shutil.copy2(kernel_location + 'zImage-dtb', 'zImage')
         else:
-            print('Kernel not found at: %s' % kernel_location)
+            print('Kernel zImage or zImage-dtb not found at: %s' % kernel_location)
             exit(0)
 
         # Copy any init.d scripts
