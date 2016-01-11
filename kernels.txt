@@ -13,6 +13,8 @@ If you wish to add a kernel/new device, leave a link to source here and feel fre
 # - Nexus 7 (2012)
 # git clone https://github.com/binkybear/kangaroo.git -b kangaroo
 # git clone https://github.com/binkybear/android_kernel_asus_grouper.git -b android-tegra3-grouper-3.1-lollipop-release_tegra-l4t-r16-16.5 nexus7_2012-5
+# CM
+# git clone https://github.com/jcadduono/nethunter_kernel_grouper_tilapia.git nexus7-cm
 
 # - Nexus 7 (2013)
 # git clone https://github.com/binkybear/flo.git -b ElementalX-5.00 nexus7_2013-6
