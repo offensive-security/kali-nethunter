@@ -261,9 +261,10 @@ def cleanup():
         print('Removing previous zImage')
         os.remove('zImage')
 
-    # Clean up
-    if os.path.exists('boot-patcher-zip'):
-        shutil.rmtree('boot-patcher-zip')
+    # Remove any existing boot patcher zip
+    if os.path.exists('boot-patcher.zip'):
+        print('Removing previous boot patcher zip')
+        os.remove('boot-patcher.zip')
 
     # Check to see if an sepolicy exists in ramdisk, remove if it does
     if os.path.exists('ramdisk-patch/sepolicy'):
@@ -384,11 +385,13 @@ def main():
             os.remove('system/lib/modules/' + f)
 
         # Copy kernel from version/device to root folder
-        kernel_location = 'kernels/' + version + '/' + device + '/zImage'
-        if os.path.exists(kernel_location):
-            shutil.copy2(kernel_location, 'zImage')
+        kernel_location = 'kernels/' + version + '/' + device + '/'
+        if os.path.exists(kernel_location + 'zImage'):
+            shutil.copy2(kernel_location + 'zImage', 'zImage')
+        elif os.path.exists(kernel_location + 'zImage-dtb'):
+            shutil.copy2(kernel_location + 'zImage-dtb', 'zImage')
         else:
-            print('Kernel not found at: %s' % kernel_location)
+            print('Kernel zImage or zImage-dtb not found at: %s' % kernel_location)
             exit(0)
 
         # Copy any init.d scripts
@@ -455,8 +458,6 @@ def main():
 
     # Finished--copy files to tmp folder and zip
     zip('tmp_out', zipfilename, 'boot-patcher')
-    if os.path.exists('boot-patcher-zip'):
-        shutil.rmtree('boot-patcher-zip')
 
     ####### End Nethunter boot image patcher ############
 
@@ -477,9 +478,6 @@ def main():
     elif args.kernel and not device:
         print('Missing device name!  Please use --device or -d')
         exit(0)
-    else:
-        os.makedirs('boot-patcher-zip')
-        shutil.move('boot-patcher.zip', 'boot-patcher-zip/boot-patcher.zip')  # Continue with build!
 
     ####### Start No-Aroma Installer ############
     if args.noaroma:
