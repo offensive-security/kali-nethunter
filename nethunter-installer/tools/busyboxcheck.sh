@@ -1,8 +1,7 @@
 #!/sbin/sh
-#
-# Check for install of BB
-#
-/sbin/busybox mount /data
+# Check for install of busybox
+
+# Make sure we are mounted
 /sbin/busybox mount /system
 
 if [ ! -f /system/xbin/busybox ] || [ ! -f /system/bin/busybox ]; then

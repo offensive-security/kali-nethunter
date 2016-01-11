@@ -17,7 +17,8 @@ chmod -R 755 $bin
 rm -rf $ramdisk $split_img
 mkdir $ramdisk $split_img
 
-console=`ps | awk '$5~/update/{print "/proc/"$1"/fd/"$(NF-1)}'`
+console="$(cat /tmp/console)"
+[ -z "$console" ] && console=/dev/null
 
 ui_print() {
 	echo "ui_print - $1" > $console

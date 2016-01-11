@@ -1,7 +1,5 @@
 #!/sbin/sh
 # Nethunter boot image patcher backend
-# Based on AnyKernel2 by osm0sis
-# Modified by jcadduono
 
 ## start of user editable options
 do_devicecheck=1
@@ -16,18 +14,23 @@ kernel_version=
 device_names=
 ## end build generated variables
 
-console=/proc/self/fd/$2
-zip="$3"
-tmpdir=/tmp/boot-patcher
+[ -e /tmp/console ] && {
+	console="$(cat /tmp/console)"
+} || {
+	console=/proc/self/fd/$2
+	zip="$3"
+}
 
-ui_print() {
+tmp=/tmp/boot-patcher
+
+print() {
 	echo "ui_print $1" > $console
 }
 
 abort() {
 	[ -n "$1" ] && {
-		ui_print "Error: $1"
-		ui_print "Aborting..."
+		print "Error: $1"
+		print "Aborting..."
 	}
 	/sbin/busybox unmount /system
 	exit 1
@@ -42,15 +45,15 @@ set_perm_recursive() {
 	done
 }
 
-ui_print "**********************"
-ui_print " $kernel_string by $kernel_author (version: $kernel_version)"
-ui_print " Nethunter boot image patcher by osm0sis & jcadduono"
-ui_print "**********************"
+print "#####################################################"
+print " $kernel_string by $kernel_author (version: $kernel_version)"
+print " Nethunter boot image patcher by osm0sis & jcadduono "
+print "#####################################################"
 
 /sbin/busybox mount /system
 
 [ "$do_devicecheck" == 1 ] && {
-	ui_print "Checking device..."
+	print "Checking device..."
 	match=0
 	ro_product_device="$(getprop ro.product.device)"
 	ro_build_product="$(getprop ro.build.product)"
@@ -60,45 +63,40 @@ ui_print "**********************"
 	[ "$match" != 1 ] && abort "Unsupported device"
 }
 
-mkdir -p $tmpdir
-cd $tmpdir
-unzip -o "$zip"
+mkdir -p $tmp
+cd $tmp
+[ -e /tmp/console ] || unzip -o "$zip"
 
 # Free up space for kernel only install (otherwise nothing installs!)
-# It actually runs twice because sometimes it's installed when kernel
-# is by itself and other times Aroma/noaroma installs re
-ui_print "Freeing some space on /system"
-chmod 755 $tmpdir/tools/cleansystem.sh
-/sbin/busybox ash $tmpdir/tools/cleansystem.sh
+# It actually runs twice when part of the Nethunter updater zip
+print "Freeing some space on /system"
+sh $tmp/tools/cleansystem.sh
 
-# Firmware takes up to much space on system so we symlink it
-ui_print "Symlink firmware from /data/local/nhsystem/firmware to /system/etc/firmware"
-chmod 755 $tmpdir/tools/symlinkfirmware.sh
-/sbin/busybox ash $tmpdir/tools/symlinkfirmware.sh
+# Firmware takes up to much space on system so we (might) symlink it
+print "Installing firmware to /system..."
+sh $tmp/tools/symlinkfirmware.sh
 
 # Symlink anything in xbin
-ui_print "Symlink xbin /data/local/nhsystem/xbin to /system/xbin"
-chmod 755 $tmpdir/tools/symlinkxbin.sh
-/sbin/busybox ash $tmpdir/tools/symlinkxbin.sh
+print "Symlinking /data/local/nhsystem/xbin to /system/xbin"
+sh $tmp/tools/symlinkxbin.sh
 
 [ "$do_initd" == 1 ] && {
-	ui_print "Creating init.d..."
+	print "Installing init.d scripts..."
 	mkdir -p /system/etc/init.d
-	ui_print "Copying files to init.d..."
-	cp -f $tmpdir/system/etc/init.d/* /system/etc/init.d/
+	cp -f $tmp/system/etc/init.d/* /system/etc/init.d/
 	set_perm_recursive 0 0 0755 0755 /system/etc/init.d
 }
 
-ui_print "Starting boot image patcher..."
-$tmpdir/boot-patcher.sh
-[ "$(cat $tmpdir/exitcode)" == 1 ] && abort
+print "Patching boot image..."
+$tmp/boot-patcher.sh
+[ "$(cat $tmp/exitcode)" == 1 ] && abort
 
-[ "$do_modules" == 1 ] && [ "$(ls $tmpdir/system/lib/modules)" ] && {
-	ui_print "Pushing modules..."
+[ "$do_modules" == 1 ] && [ "$(ls $tmp/system/lib/modules)" ] && {
+	print "Installing kernel modules..."
 	/sbin/busybox mount -o remount,rw /system
-	cp -rf $tmpdir/system/lib/modules/* /system/lib/modules/
+	cp -rf $tmp/system/lib/modules/* /system/lib/modules/
 	set_perm_recursive 0 0 0755 0644 /system/lib/modules
 	/sbin/busybox mount -o remount,ro /system
 }
 
-ui_print "Boot image patching complete"
+print "Boot image patching complete"

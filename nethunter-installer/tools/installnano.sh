@@ -1,21 +1,22 @@
 #!/sbin/sh
+# Install nano text editor
 
-# Mount system
+ETC=/system/etc
+TMP=/tmp/nethunter
+
+# Make sure we are mounted
 /sbin/busybox mount /system
-/sbin/busybox mount /data
-
-SYSTEM="/system/etc"
 
 # Check for previous installation of nano
-if [ ! -d "$NANODIR" ] || [ ! -f "$NANOBIN"] ; then
+if [ ! -d "$NANODIR" ] || [ ! -f "$NANOBIN"]; then
 	echo "@Installing nano"
-	mkdir -p $SYSTEM/terminfo
-	mkdir -p $SYSTEM/nano
+	mkdir -p $ETC/terminfo
+	mkdir -p $ETC/nano
 
-	cp -f /tmp/system/lib/libncurses.so /system/lib/libncurses.so
-	cp -rf /tmp/system/etc/terminfo $SYSTEM/terminfo
-	cp -rf /tmp/system/etc/nano $SYSTEM/nano
-	cp -rf /tmp/system/xbin/nano /system/xbin/nano
+	cp -f $TMP/system/lib/libncurses.so /system/lib/libncurses.so
+	cp -rf $TMP$ETC/terminfo $ETC/terminfo
+	cp -rf $TMP$ETC/nano $ETC/nano
+	cp -rf $TMP/system/xbin/nano /system/xbin/nano
 
 	chmod 755 /system/xbin/nano
 else

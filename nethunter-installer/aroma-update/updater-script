@@ -118,7 +118,7 @@ symlink("/data/data/com.offsec.nethunter/files/scripts/bootkali_login", "/system
 symlink("/data/data/com.offsec.nethunter/files/scripts/bootkali_bash", "/system/bin/bootkali_bash");
 
 ui_print("@Patching boot image");
-package_extract_dir("boot-patcher-zip", "/tmp/boot-patcher");
+package_extract_file("boot-patcher.zip", "/tmp/boot-patcher/boot-patcher.zip");
 run_program("/tmp/busybox", "unzip", "-o", "/tmp/boot-patcher/boot-patcher.zip", "-d", "/tmp/boot-patcher");
 run_program("/tmp/busybox", "ash", "/tmp/boot-patcher/META-INF/com/google/android/update-binary", "dummy", "1", "/tmp/boot-patcher/boot-patcher.zip");
 
