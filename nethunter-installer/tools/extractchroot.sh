@@ -1,22 +1,25 @@
 #!/sbin/sh
 # Install Kali chroot
 
+NHSYS=/data/local/nhsystem
+KALIFS=/data/local/kalifs-full.tar
+
 # Make sure we are mounted
 /sbin/busybox mount /data
 
 # If file kalifs-full.tar.xz is present, then extract
-if [ -f "/data/local/kalifs-full.tar.xz" ]; then
+if [ -f "$KALIFS.xz" ]; then
 	echo "Found chroot to be installed"
 	# Remove previous chroot
-	if [ -d "/data/local/nhsystem/kali-armhf" ]; then
+	if [ -d "$NHSYS/kali-armhf" ]; then
 		echo "Removing previous chroot"
-		rm -rf /data/local/nhsystem/kali-armhf
+		rm -rf $NHSYS/kali-armhf
 	fi
 
 	# Extract new chroot
 	echo "Extracting chroot..."
-	/sbin/busybox xz -df /data/local/kalifs-full.tar.xz
-	mkdir -p /data/local/nhsystem
-	/tmp/busybox tar xf /data/local/kalifs-full.tar -C /data/local/nhsystem
-	rm -f /data/local/kalifs-full.tar
+	mkdir -p $NHSYS
+	/sbin/busybox xz -df $KALIFS.xz
+	/tmp/busybox tar xf  -C $NHSYS
+	rm -f $KALIFS
 fi
