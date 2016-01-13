@@ -137,23 +137,23 @@ def zip(src, dst, status):
         pwd = os.path.dirname(os.path.realpath(__file__))
         if status == "boot-patcher":
             shutil.copytree(pwd, 'tmp_out', ignore=shutil.ignore_patterns('*.py', 'README*', 'placeholder','tmp_out', 'kernels', 'files', 'media',
-                                                                      'devices.cfg', '.DS_Store', '.git', '.idea', 'aroma-update', 'kernel-nethunter*',
-                                                                      'aroma', 'data', 'boot-patcher', 'wallpaper', 'noaroma-update', 'nano', 'terminfo',
-                                                                      'lualibs', 'scripts', 'proxmark3', '*.so',
-                                                                      'supersu', 'supersu', 'wallpaper', 'uninstaller', 'update-nethunter*'))
-        elif status == "aroma":
-            shutil.copytree(pwd, 'tmp_out', ignore=shutil.ignore_patterns('*.py', 'README*', 'placeholder','tmp_out', 'kernels',
                                                                       'devices.cfg', '.DS_Store', '.git', '.idea', 'kernel-nethunter*',
-                                                                      'modules', 'boot-patcher.sh', 'dtb', 'uninstaller',
-                                                                      'ramdisk', 'ramdisk-patch', 'boot-patcher', 'noaroma-update',
-                                                                      'zImage*', 'aroma-update', 'update-nethunter*'))
+                                                                      'data', 'boot-patcher', 'wallpaper', 'nano', 'terminfo',
+                                                                      'lualibs', 'scripts', 'proxmark3', '*.so', 'noaroma-update',
+                                                                      'supersu', 'supersu', 'wallpaper', 'uninstaller', 'update-nethunter*'))
         elif status == "uninstaller":
             shutil.copytree(pwd, 'tmp_out', ignore=shutil.ignore_patterns('*.py', 'README*', 'placeholder','tmp_out', 'tools', 'kernels',
                                                                       'devices.cfg', '.DS_Store', '.git', '.idea', 'supersu', 'kernel-nethunter*',
                                                                       'modules', 'boot-patcher.sh', 'dtb', 'uninstaller', 'files',
-                                                                      'ramdisk', 'ramdisk-patch', 'boot-patcher', 'aroma-update', 'noaroma-update',
-                                                                      'aroma', 'data', 'system', 'wallpaper',
-                                                                      'zImage*', 'aroma-update', 'update-nethunter*'))
+                                                                      'ramdisk', 'ramdisk-patch', 'boot-patcher', 'noaroma-update',
+                                                                      'data', 'system', 'wallpaper',
+                                                                      'zImage*', 'update-nethunter*'))
+        elif status == "noaroma":
+            shutil.copytree(pwd, 'tmp_out', ignore=shutil.ignore_patterns('*.py', 'README*', 'placeholder','tmp_out', 'kernels',
+                                                                      'devices.cfg', '.DS_Store', '.git', '.idea', 'kernel-nethunter*',
+                                                                      'modules', 'anykernel.sh', 'dtb', 'uninstaller',
+                                                                      'ramdisk', 'patch', 'anykernel', 'noaroma-update',
+                                                                      'zImage*', 'update-nethunter*'))
 
     except OSError as e:
         if e.errno == errno.ENOTDIR:
@@ -175,35 +175,6 @@ def zip(src, dst, status):
     except IOError, e:
         print('Error' + str(e.reason))
 
-def regexaroma(device):
-
-    Config = ConfigParser.ConfigParser()
-    Config.read('devices.cfg')
-
-    file = 'META-INF/com/google/android/aroma-config'
-    author = Config.get(device, 'author')
-    version = Config.get(device, 'version')
-
-    file_handle = open(file, 'r')
-    file_string = file_handle.read()
-    file_handle.close()
-
-    d = datetime.datetime.now()
-    date = "%s/%s/%s" % (d.day, d.month, d.year)
-
-    author = 'ini_set("rom_author",          ' + str(author) + ');'
-    version = 'ini_set("rom_version",          ' + str(version) + ');'
-    device = 'ini_set("rom_device",          "' + str(device) + '");'
-    date = 'ini_set("rom_date",          "' + str(date) + '");'
-
-    file_string = (re.sub(ur'''ini_set\(\"rom_version\".*''', version, file_string))
-    file_string = (re.sub(ur'''ini_set\(\"rom_author\".*''', author, file_string))
-    file_string = (re.sub(ur'''ini_set\(\"rom_device\".*''', device, file_string))
-    file_string = (re.sub(ur'''ini_set\(\"rom_date\".*''', date, file_string))
-
-    file_handle = open(file, 'w')
-    file_handle.write(file_string)
-    file_handle.close()
 
 def configupdatebinary(device):
     Config = ConfigParser.ConfigParser()
@@ -307,7 +278,6 @@ def main():
     parser.add_argument('--lollipop', '-l', action='store_true', help='Android 5')
     parser.add_argument('--marshmallow', '-m', action='store_true', help='Android 6')
     parser.add_argument('--forcedown', '-f', action='store_true', help='Force redownloading')
-    parser.add_argument('--noaroma', '-n', action='store_true', help='Use a generic updater-script instead of Aroma')
     parser.add_argument('--uninstaller', '-u', action='store_true', help='Create an uninstaller')
     parser.add_argument('--kernel', '-k', action='store_true', help='Build kernel only')
     parser.add_argument('--release', '-r', action='store', help='Specify Nethunter release version')
@@ -324,18 +294,6 @@ def main():
     # Grab latestest SuperSU and all apps
     suzipfile = os.path.isfile('supersu/supersu.zip')
 
-    # Check if device supports aroma in config file
-    if args.device:
-        aroma_enabled = Config.get(args.device, 'aroma')
-        # Check for aroma
-        if aroma_enabled == "True":
-            aroma_enabled = True
-        else:
-            aroma_enabled = False
-        # If Aroma set to false the set noaroma argument
-        if not aroma_enabled and not args.noaroma and not args.kernel:
-            print('Automatically setting to noaroma!')
-            args.noaroma = True
 
     # Check to make sure we didn't go crazy selecting version numbers
     if args.kitkat or args.lollipop or args.marshmallow:
@@ -479,19 +437,11 @@ def main():
         print('Missing device name!  Please use --device or -d')
         exit(0)
 
-    ####### Start No-Aroma Installer ############
-    if args.noaroma:
-        if os.path.exists(dir):
-            shutil.rmtree(dir)
-        shutil.copytree('noaroma-update', dir)
-    ####### End No-Aroma Installer ############
-    else:
-    ####### Start Aroma installer ###############
-        if os.path.exists(dir):
-            shutil.rmtree(dir)
-        shutil.copytree('aroma-update', dir)
-        regexaroma(device) # Add version/author to Aroma installer
-    ###### End Aroma installer #########
+    ####### Copy Installer ############
+    if os.path.exists(dir):
+        shutil.rmtree(dir)
+    shutil.copytree('noaroma-update', dir)
+    ####### End Installer ############
 
     # Format for zip file is update-nethunter-devicename-version-DDMMYY_HHMMSS.zip
     if args.release:
@@ -499,7 +449,7 @@ def main():
     else:
         zipfilename = 'update-nethunter-' + device + '-' + version + '-' + str(current_time)
 
-    zip('tmp_out', zipfilename, 'aroma')
+    zip('tmp_out', zipfilename, 'noaroma')
 
     print('Created: %s.zip' % zipfilename)
 
