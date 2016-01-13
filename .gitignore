@@ -3,9 +3,7 @@ nethunter-installer/data/app/Drivedroid-*.apk
 nethunter-installer/data/app/Hackerskeyboard-*.apk
 nethunter-installer/data/app/RFAnalyzer.apk
 nethunter-installer/data/app/Shodan.apk
-nethunter-installer/data/app/Term.apk
 nethunter-installer/data/app/USBKeyboard.apk
-nethunter-installer/data/app/VNC-*.apk
 nethunter-installer/supersu/supersu.zip
 nethunter-installer/zImage
 nethunter-installer/META-INF/*
