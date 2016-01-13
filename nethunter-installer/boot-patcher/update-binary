@@ -88,7 +88,7 @@ sh $tmp/tools/symlinkxbin.sh
 }
 
 print "Patching boot image..."
-$tmp/boot-patcher.sh
+sh $tmp/boot-patcher.sh
 [ "$(cat $tmp/exitcode)" == 1 ] && abort
 
 [ "$do_modules" == 1 ] && [ "$(ls $tmp/system/lib/modules)" ] && {
