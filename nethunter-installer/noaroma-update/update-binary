@@ -42,6 +42,8 @@ symlink() {
 }
 
 tmp=/tmp/nethunter
+patchtmp=/tmp/boot-patcher
+sutmp=/tmp/supersu
 
 print "#######################################################"
 print "##                                                   ##"
@@ -56,6 +58,10 @@ print "##  88       Y8b  d8'          '8b  88888888888  88  ##"
 print "##                                                   ##"
 print "####  ############### Nethunter #######################"
 
+# Clean installer data from previous flashes
+rm -rf $tmp $patchtmp $sutmp
+
+# Unpack the installer
 extract "$3" $tmp
 cd $tmp
 
@@ -76,9 +82,9 @@ print "@Installing Apps"
 
 install "supersu/vars" "/system/.supersu"
 print "Installing SuperSU in system mode"
-extract "supersu/supersu.zip" "/tmp/supersu"
+extract "supersu/supersu.zip" "$sutmp"
 progress 0.3
-sh "/tmp/supersu/META-INF/com/google/android/update-binary" dummy 1 "/tmp/supersu/supersu.zip"
+sh "$sutmp/META-INF/com/google/android/update-binary" dummy 1 "$sutmp/supersu.zip"
 mount /data
 mount /system
 
@@ -139,8 +145,8 @@ symlink "/data/data/com.offsec.nethunter/files/scripts/bootkali_bash" "/system/b
 progress 0.8
 
 print "@Patching boot image"
-extract "boot-patcher.zip" "/tmp/boot-patcher"
-sh "/tmp/boot-patcher/META-INF/com/google/android/update-binary" dummy 1 "$tmp/boot-patcher.zip"
+extract "boot-patcher.zip" "$patchtmp"
+sh "$patchtmp/META-INF/com/google/android/update-binary" dummy 1 "$tmp/boot-patcher.zip"
 
 progress 0.9
 
@@ -150,8 +156,6 @@ sh tools/extractchroot.sh
 
 unmount /data
 unmount /system
-rm -rf /tmp/boot-patcher
-rm -rf $tmp
 
 print "@Installation complete"
 progress 1.0
