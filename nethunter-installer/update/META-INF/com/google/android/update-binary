@@ -1,0 +1,186 @@
+#!/sbin/sh
+# Kali Nethunter installer
+
+[ -z "$3" ] && {
+	console="$(cat /tmp/console)"
+} || {
+	console="/proc/$$/fd/$2"
+	# write the location of the console buffer to /tmp/console for other scripts to use
+	echo $console > /tmp/console
+	zip="$3"
+}
+
+progress() {
+	echo "set_progress $1" > $console
+}
+
+print() {
+	echo "ui_print $1" > $console
+}
+
+install() {
+	rm -f "$2"
+	mv "$1" "$2"
+}
+
+mount() {
+	/sbin/busybox mount $1
+}
+
+unmount() {
+	/sbin/busybox umount $1
+}
+
+extract() {
+	rm -rf "$2"
+	mkdir "$2"
+	unzip -o "$1" -d "$2"
+}
+
+symlink() {
+	rm "$2"
+	ln -s "$1" "$2"
+}
+
+set_perm_recursive() {
+	dirs="$(echo $* | awk '{ print substr($0, index($0,$5)) }')"
+	for i in $dirs; do
+		chown -R $1:$2 $i
+		find "$i" -type d -exec chmod $3 {} \;
+		find "$i" -type f -exec chmod $4 {} \;
+	done
+}
+
+tmp=/tmp/nethunter
+patchtmp=$tmp/boot-patcher
+sutmp=/tmp/supersu
+
+print "#######################################################"
+print "##                                                   ##"
+print "##  88      a8P          db         88           88  ##"
+print "##  88    .88'          d88b        88           88  ##"
+print "##  88   88'           d8''8b       88           88  ##"
+print "##  88 d88            d8'  '8b      88           88  ##"
+print "##  8888'88.         d8YaaaaY8b     88           88  ##"
+print "##  88P   Y8b       d8''''''''8b    88           88  ##"
+print "##  88     '88.    d8'        '8b   88           88  ##"
+print "##  88       Y8b  d8'          '8b  88888888888  88  ##"
+print "##                                                   ##"
+print "####  ############### Nethunter #######################"
+
+# Clean installer data from previous flashes
+rm -rf $tmp $patchtmp $sutmp
+
+# Unpack the installer
+extract "$3" $tmp
+cd $tmp
+
+progress 0.0
+print "@Starting the install process"
+mount /data
+mount /system
+progress 0.1
+
+print "@Checking for previous versions of Nethunter"
+sh tools/previnstall.sh
+
+progress 0.2
+
+print "@Installing Apps"
+
+install "supersu/vars" "/system/.supersu"
+print "Installing SuperSU in system mode"
+extract "supersu/supersu.zip" "$sutmp"
+progress 0.3
+sh "$sutmp/META-INF/com/google/android/update-binary" dummy 1 "$sutmp/supersu.zip"
+mount /data
+mount /system
+
+progress 0.4
+
+print "Installing Nethunter App"
+install "data/app/nethunter.apk" "/data/app/nethunter.apk"
+print "Installing Nethunter Terminal"
+install "data/app/Term-nh.apk" "/data/app/Term-nh.apk"
+print "Installing BlueNMEA"
+install "data/app/BlueNMEA.apk" "/data/app/BlueNMEA.apk"
+print "Installing Drivedroid Free"
+install "data/app/Drivedroid.apk" "/data/app/Drivedroid.apk"
+print "Installing Hacker's Keyboard"
+install "data/app/Hackerskeyboard.apk" "/data/app/Hackerskeyboard.apk"
+print "Installing RFAnalyzer"
+install "data/app/RFAnalyzer.apk" "/data/app/RFAnalyzer.apk"
+print "Installing Shodan"
+install "data/app/Shodan.apk" "/data/app/Shodan.apk"
+print "Installing USB Keyboard"
+install "data/app/USBKeyboard.apk" "/data/app/USBKeyboard.apk"
+print "Installing VNC"
+install "data/app/VNC-nh.apk" "/data/app/VNC-nh.apk"
+print "Installing RouterKeygen"
+install "data/app/RouterKeygen.apk" "/data/app/RouterKeygen.apk"
+print "Installing cSploit Nightly"
+install "data/app/cSploit-nightly.apk" "/data/app/cSploit-nightly.apk"
+
+progress 0.5
+
+print "@Freeing up some space on /system"
+sh tools/cleansystem.sh
+
+print "@Checking for busybox binary"
+sh tools/busyboxcheck.sh
+
+progress 0.6
+
+print "@Installing Nethunter wallpaper"
+sh wallpaper/setwallpaper.sh
+
+progress 0.7
+
+[ -e system/etc/init.d ] && {
+	print "Fixing execute permissions for init.d scripts"
+	set_perm_recursive 0 0 0755 0755 system/etc/init.d
+}
+
+[ -e system/bin ] && {
+	print "Fixing execute permissions for system/bin binaries"
+	set_perm_recursive 0 0 0755 0755 system/bin
+}
+
+[ -e system/xbin ] && {
+	print "Fixing execute permissions for system/xbin binaries"
+	set_perm_recursive 0 0 0755 0755 system/xbin
+}
+
+[ -e "$tmp$LIBDIR" ] && {
+	print "Fixing permissions for libraries"
+	set_perm_recursive 0 0 0755 0644 "$tmp$LIBDIR"
+}
+
+print "@Installing all binaries, libraries, and Nethunter boot animation to /system..."
+cp -rTd system /system
+
+print "@Symlinking Kali boot scripts"
+symlink "/data/data/com.offsec.nethunter/files/scripts/bootkali" "/system/bin/bootkali"
+symlink "/data/data/com.offsec.nethunter/files/scripts/bootkali_login" "/system/bin/bootkali_login"
+symlink "/data/data/com.offsec.nethunter/files/scripts/bootkali_bash" "/system/bin/bootkali_bash"
+
+progress 0.8
+
+[ -e "$patchtmp" ] && {
+	print "@Patching boot image"
+	sh "$patchtmp/META-INF/com/google/android/update-binary"
+	mount /system
+	mount /data
+}
+
+progress 0.9
+
+print "@Checking for Kali Chroot in installer...this may take a while..."
+cp -rTd data/local /data/local
+sh tools/extractchroot.sh
+
+unmount /data
+unmount /system
+
+print "@Installation complete"
+progress 1.0
