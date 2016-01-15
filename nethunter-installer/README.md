@@ -47,14 +47,20 @@ block = /dev/block/WHATEVER/boot
 ```
 Some devices have more then one codename like the OnePlus, or variants like the Nexus 7 2012/2013.  You should add multiple codenames to devicenames.  Getting the block location isn't too difficult, you can look at other kernels to see where they are installing their boot.img or you can also look at CyanogenMod device repo in the BoardConfig.mk file.
 
-Once you have a device added, you need to add a prebuilt kernel to the kernels folder.  It should be formatted as:
+A reliable way to get the codename for your device is to run a terminal emulator or boot into recovery and do:  
+`getprop ro.product.device`  
+I also recommend adding the model name to devicenames as well, which you can get from:  
+`getprop ro.product.model`  
 
-kernels/[androidversion]/[codename]/zImage
-`or`
-kernels/[androidversion]/[codename]/zImage-dtb
+If porting for CyanogenMod rather than stock, it's recommended to append cm to the codename in [], ex. `[codenamecm]`
+
+Once you have a device added, you need to add a prebuilt kernel to the kernels folder.  It should be formatted as:  
+`kernels/[androidversion]/[codename]/zImage` or `kernels/[androidversion]/[codename]/zImage-dtb`
 
 Some devices might require a separate dtb file. You can place a dtb.img file in the same location as the zImage, and it will be automatically added to the installer.
 
 So really all you need is a zImage and sometimes a dtb.img to build for a new device, as well as the name/location of where to install.
 
 Don't forget to add your newly supported device's kernel sources to the kernels.txt file!
+
+Fri Jan 15 11:36:18 EST 2016
