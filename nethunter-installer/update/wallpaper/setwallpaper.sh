@@ -23,7 +23,7 @@ res=`grep -o "<resolution.*/>" /twres/ui.xml`
 		cp "/tmp/nethunter/wallpaper/$res.png" $wp
 		chmod 777 $wp
 		chown system:system $wp
-		ui_print "Nethunter wallpaper applied successfully"
+		ui_print "NetHunter wallpaper applied successfully"
 	} || {
 		ui_print "No wallpaper found for your screen resolution! Skipping..."
 	}

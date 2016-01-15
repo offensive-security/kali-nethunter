@@ -1,5 +1,5 @@
 #!/sbin/sh
-# Nethunter kernel installer backend
+# NetHunter kernel installer backend
 
 ## start build generated variables
 kernel_string=
@@ -42,7 +42,7 @@ set_perm_recursive() {
 }
 
 print "######################################################"
-print "              Nethunter Kernel Installer"
+print "              NetHunter Kernel Installer"
 print " $kernel_string by $kernel_author (version: $kernel_version)"
 print "######################################################"
 
@@ -68,7 +68,7 @@ source env.sh
 /sbin/busybox mount /data
 
 # Free up space for kernel only install (otherwise nothing installs!)
-# It actually runs twice when part of the Nethunter updater zip
+# It actually runs twice when part of the NetHunter updater zip
 print "Freeing some space on /system"
 sh tools/cleansystem.sh
 

@@ -1,6 +1,6 @@
-# Nethunter chroot builder
+# NetHunter chroot builder
 
-Build a basic Nethunter chroot
+Build a basic NetHunter chroot
 
 ## Dependencies
 
@@ -16,11 +16,11 @@ schedtool git e2fsprogs device-tree-compiler ccache dos2unix debootstrap
 
 ## Running by itself
 
-To create a full Nethunter system:
+To create a full NetHunter system:
 ```bash
 ./build.sh -f
 ```
-To create a minimal Nethunter filesystem:
+To create a minimal NetHunter filesystem:
 ```bash
 ./build.sh -m
 ```

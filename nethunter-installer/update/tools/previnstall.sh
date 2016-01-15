@@ -1,5 +1,5 @@
 #!/sbin/sh
-# Check for previous installation of Nethunter
+# Check for previous installation of NetHunter
 
 TMP=/tmp/nethunter
 
@@ -23,9 +23,9 @@ rm -rf $NHSYS/dev/*
 rm -rf $NHAPP/dev/*
 rm -rf $NH/dev/*
 
-# Check for previous Nethunter chroot
+# Check for previous NetHunter chroot
 if [ -d $NH ]; then
-	print "Detected previous version of Nethunter, moving chroot"
+	print "Detected previous version of NetHunter, moving chroot"
 	mv $NH $NHSYS
 fi
 
@@ -33,10 +33,10 @@ if [ -d $NHAPP ]; then
 	mv $NHAPP $NHSYS
 fi
 
-# Just to be safe lets remove old version of Nethunter app
+# Just to be safe lets remove old version of NetHunter app
 rm -rf /data/data/com.offsec.nethunter
 rm -rf /data/app/com.offsec.nethunter
-rm -f /data/app/Nethunter.apk
+rm -f /data/app/NetHunter.apk
 rm -f /data/app/nethunter.apk
 
 sleep 3

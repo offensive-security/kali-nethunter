@@ -1,5 +1,5 @@
 #!/sbin/sh
-# Kali Nethunter installer
+# Kali NetHunter installer
 
 [ -z "$3" ] && {
 	console="$(cat /tmp/console)"
@@ -66,7 +66,7 @@ print "##  88P   Y8b       d8''''''''8b    88           88  ##"
 print "##  88     '88.    d8'        '8b   88           88  ##"
 print "##  88       Y8b  d8'          '8b  88888888888  88  ##"
 print "##                                                   ##"
-print "####  ############### Nethunter #######################"
+print "####  ############### NetHunter #######################"
 
 # Clean installer data from previous flashes
 rm -rf $tmp $patchtmp $sutmp
@@ -81,7 +81,7 @@ mount /data
 mount /system
 progress 0.1
 
-print "@Checking for previous versions of Nethunter"
+print "@Checking for previous versions of NetHunter"
 sh tools/previnstall.sh
 
 progress 0.2
@@ -98,9 +98,9 @@ mount /system
 
 progress 0.4
 
-print "Installing Nethunter App"
+print "Installing NetHunter App"
 install "data/app/nethunter.apk" "/data/app/nethunter.apk"
-print "Installing Nethunter Terminal"
+print "Installing NetHunter Terminal"
 install "data/app/Term-nh.apk" "/data/app/Term-nh.apk"
 print "Installing BlueNMEA"
 install "data/app/BlueNMEA.apk" "/data/app/BlueNMEA.apk"
@@ -131,7 +131,7 @@ sh tools/busyboxcheck.sh
 
 progress 0.6
 
-print "@Installing Nethunter wallpaper"
+print "@Installing NetHunter wallpaper"
 sh wallpaper/setwallpaper.sh
 
 progress 0.7
@@ -156,7 +156,7 @@ progress 0.7
 	set_perm_recursive 0 0 0755 0644 "$tmp$LIBDIR"
 }
 
-print "@Installing all binaries, libraries, and Nethunter boot animation to /system..."
+print "@Installing all binaries, libraries, and NetHunter boot animation to /system..."
 cp -rTd system /system
 
 print "@Symlinking Kali boot scripts"

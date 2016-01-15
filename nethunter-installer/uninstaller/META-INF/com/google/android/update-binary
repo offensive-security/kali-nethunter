@@ -1,5 +1,5 @@
 #!/sbin/sh
-# Kali Nethunter Uninstaller
+# Kali NetHunter Uninstaller
 
 console=/proc/self/fd/$2
 zip="$3"
@@ -14,13 +14,13 @@ cd $tmpdir
 unzip -o "$zip"
 
 ui_print "***********************"
-ui_print " Nethunter Uninstaller "
+ui_print " NetHunter Uninstaller "
 ui_print "***********************"
 
 /sbin/busybox mount /system
 /sbin/busybox mount /data
 
-# Remove added firmware (folder would only exist if you installed Nethunter)
+# Remove added firmware (folder would only exist if you installed NetHunter)
 [ -d "/system/etc/firmware/rtlwifi" ] && {
 	ui_print "@Removing Firmware";
 	rm -rf /system/etc/firmware/rtlwifi
@@ -36,13 +36,13 @@ ui_print "***********************"
 	rm -f /system/etc/firmware/rt3070.bin
 }
 
-[ -d "/system/priv-app/Nethunter" ] && {
-	ui_print "@Removing Nethunter.apk"
-	rm -rf /system/priv-app/Nethunter
+[ -d "/system/priv-app/NetHunter" ] && {
+	ui_print "@Removing NetHunter.apk"
+	rm -rf /system/priv-app/NetHunter
 }
 
 [ -d "/data/data/com.offsec.nethunter" ] && {
-	ui_print "@Removing Nethunter chroot/data"
+	ui_print "@Removing NetHunter chroot/data"
 	rm -rf /data/data/com.offsec.nethunter
 }
 

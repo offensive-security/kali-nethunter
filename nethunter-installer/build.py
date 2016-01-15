@@ -313,7 +313,7 @@ def main():
 	for device in devicenames:
 		help_device += '    %s\n' % device
 
-	parser = argparse.ArgumentParser(description='Kali Nethunter recovery flashable zip builder')
+	parser = argparse.ArgumentParser(description='Kali NetHunter recovery flashable zip builder')
 	parser.add_argument('--device', '-d', action='store', help=help_device)
 	parser.add_argument('--kitkat', '-kk', action='store_true', help='Android 4.4.4')
 	parser.add_argument('--lollipop', '-l', action='store_true', help='Android 5')
@@ -322,7 +322,7 @@ def main():
 	parser.add_argument('--uninstaller', '-u', action='store_true', help='Create an uninstaller')
 	parser.add_argument('--kernel', '-k', action='store_true', help='Build kernel only')
 	parser.add_argument('--nokernel', '-nk', action='store_true', help='Build without the kernel')
-	parser.add_argument('--release', '-r', action='store', help='Specify Nethunter release version')
+	parser.add_argument('--release', '-r', action='store', help='Specify NetHunter release version')
 
 	args = parser.parse_args()
 
