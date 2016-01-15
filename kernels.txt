@@ -1,4 +1,4 @@
-Locations of all kernels used in Kali Nethunter.  
+Locations of all kernels used in Kali NetHunter.  
 
 If you wish to add a kernel/new device, leave a link to source here and feel free to add your name if you wish:
 

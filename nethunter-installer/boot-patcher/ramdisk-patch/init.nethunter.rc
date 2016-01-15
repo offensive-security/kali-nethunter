@@ -1,4 +1,4 @@
-# Kali Nethunter init
+# Kali NetHunter init
 
 on init
     export TERMINFO /system/etc/terminfo

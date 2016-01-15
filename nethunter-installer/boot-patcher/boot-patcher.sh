@@ -1,5 +1,5 @@
 #!/sbin/sh
-# Kali Nethunter boot image patcher script by jcadduono
+# Kali NetHunter boot image patcher script by jcadduono
 # Based on AnyKernel2 by osm0sis
 
 ## start build generated variables
