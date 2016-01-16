@@ -8,13 +8,14 @@ kernel_version=
 device_names=
 ## end build generated variables
 
-[ -z "$3" ] && {
-	console="$(cat /tmp/console)"
-} || {
+[ "$3" ] && {
+	zip="$3"
 	console="/proc/$$/fd/$2"
 	# write the location of the console buffer to /tmp/console for other scripts to use
 	echo $console > /tmp/console
-	zip="$3"
+} || {
+	console="$(cat /tmp/console)"
+	[ "$console" ] || console=/proc/$$/fd/1
 }
 
 tmp=/tmp/nethunter/boot-patcher
@@ -24,7 +25,7 @@ print() {
 }
 
 abort() {
-	[ -n "$1" ] && {
+	[ "$1" ] && {
 		print "Error: $1"
 		print "Aborting..."
 	}
@@ -39,7 +40,7 @@ install() {
 
 extract() {
 	rm -rf "$2"
-	mkdir "$2"
+	mkdir -p "$2"
 	unzip -o "$1" -d "$2"
 }
 
@@ -66,7 +67,7 @@ print "######################################################"
 }
 
 # Unpack the installer
-[ -n "$zip" ] && extract "$zip" "$tmp"
+[ "$zip" ] && extract "$zip" "$tmp"
 cd "$tmp"
 
 source env.sh

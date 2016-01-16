@@ -1,28 +1,30 @@
 #!/sbin/sh
-# Kali NetHunter Uninstaller
+# Kali NetHunter Uninstaller (does not currently do anything useful, anyone wanna take it on?)
 
-console=/proc/self/fd/$2
-zip="$3"
-tmpdir=/tmp/nethunter-uninstall
+[ "$3" ] && {
+	zip="$3"
+	console="/proc/$$/fd/$2"
+	# write the location of the console buffer to /tmp/console for other scripts to use
+	echo $console > /tmp/console
+} || {
+	console="$(cat /tmp/console)"
+	[ "$console" ] || console=/proc/$$/fd/1
+}
 
-ui_print() {
+print() {
 	echo "ui_print $1" > $console
 }
 
-mkdir -p $tmpdir
-cd $tmpdir
-unzip -o "$zip"
-
-ui_print "***********************"
-ui_print " NetHunter Uninstaller "
-ui_print "***********************"
+print "***********************"
+print " NetHunter Uninstaller "
+print "***********************"
 
 mount /system
 mount /data
 
 # Remove added firmware (folder would only exist if you installed NetHunter)
 [ -d "/system/etc/firmware/rtlwifi" ] && {
-	ui_print "@Removing Firmware";
+	print "@Removing Firmware";
 	rm -rf /system/etc/firmware/rtlwifi
 	rm -rf /system/etc/firmware/zd1211
 	rm -f /system/etc/firmware/ar9170-1.fw
@@ -37,16 +39,16 @@ mount /data
 }
 
 [ -d "/system/priv-app/NetHunter" ] && {
-	ui_print "@Removing NetHunter.apk"
+	print "@Removing NetHunter.apk"
 	rm -rf /system/priv-app/NetHunter
 }
 
 [ -d "/data/data/com.offsec.nethunter" ] && {
-	ui_print "@Removing NetHunter chroot/data"
+	print "@Removing NetHunter chroot/data"
 	rm -rf /data/data/com.offsec.nethunter
 }
 
 umount /system
 umount /data
 
-ui_print "@Uninstall complete"
+print "@Uninstall complete"

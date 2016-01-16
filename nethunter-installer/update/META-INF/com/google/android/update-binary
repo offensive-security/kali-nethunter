@@ -1,13 +1,14 @@
 #!/sbin/sh
 # Kali NetHunter installer
 
-[ -z "$3" ] && {
-	console="$(cat /tmp/console)"
-} || {
+[ "$3" ] && {
+	zip="$3"
 	console="/proc/$$/fd/$2"
 	# write the location of the console buffer to /tmp/console for other scripts to use
 	echo $console > /tmp/console
-	zip="$3"
+} || {
+	console="$(cat /tmp/console)"
+	[ "$console" ] || console=/proc/$$/fd/1
 }
 
 tmp=/tmp/nethunter
@@ -28,18 +29,18 @@ install() {
 
 extract() {
 	rm -rf "$2"
-	mkdir "$2"
+	mkdir -p "$2"
 	unzip -o "$1" -d "$2"
-}
-
-symlink() {
-	rm "$2"
-	ln -s "$1" "$2"
 }
 
 setperm() {
 	find "$3" -type d -exec chmod $1 {} \;
 	find "$3" -type f -exec chmod $2 {} \;
+}
+
+symlink() {
+	rm "$2"
+	ln -s "$1" "$2"
 }
 
 print "#######################################################"
@@ -56,7 +57,7 @@ print "##                                                   ##"
 print "####  ############### NetHunter #######################"
 
 # Unpack the installer
-[ -n "$zip" ] && extract "$zip" "$tmp"
+[ "$zip" ] && extract "$zip" "$tmp"
 cd "$tmp"
 
 source env.sh
