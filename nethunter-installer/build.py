@@ -36,6 +36,7 @@ def copytree(src, dst):
 def download(url, file_name):
 	# Progress bar http://stackoverflow.com/a/22776
 	f = open(file_name, 'wb')
+	failed = False
 	try:
 		u = urllib2.urlopen(url)
 		meta = u.info()
@@ -52,13 +53,27 @@ def download(url, file_name):
 			status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
 			status = status + chr(8) * (len(status) + 1)
 			print status,
-		print('')
-		print('Download OK: ' + file_name)
 	except urllib2.HTTPError, e:
 		print('HTTPError = ' + str(e.code))
+		failed = True
 	except urllib2.URLError, e:
+		print('')
 		print('URLError = ' + str(e.reason))
+		failed = True
+	except:
+		print('')
+		failed = True
+	else:
+		print('')
+		print('Download OK: ' + file_name)
+
 	f.close()
+
+	if failed:
+		# We should delete partially downloaded file so the next try doesn't skip it!
+		if os.path.isfile(file_name):
+			os.remove(file_name)
+		abort('There was a problem downloading the file')
 
 def supersu(beta):
 	def getdlpage(url):
@@ -97,8 +112,7 @@ def supersu(beta):
 					print('Extracting ' + fin + ' to ' + fout)
 					shutil.copyfileobj(zf.open(fin), open(fout, 'wb'))
 		except:
-			print('Unable to extract sepolicy patch from SuperSU zip')
-			done()
+			abort('Unable to extract sepolicy patch from SuperSU zip')
 
 	suzip = os.path.join('update', 'supersu', 'supersu.zip')
 
@@ -114,7 +128,7 @@ def supersu(beta):
 	if surl:
 		download(surl + '?retrieve_file=1', suzip)
 	else:
-		done()
+		abort('Could not retrieve download URL for SuperSU')
 
 	# Extract supolicy and libsupol.so from SuperSU zip
 	extractsu(suzip)
@@ -136,39 +150,34 @@ def allapps(checkforce):
 	if checkforce:
 		print('Force redownloading all apps')
 
-	try:
-		for key, value in apps.iteritems():
-			apkname = os.path.join(app_path, key + '.apk')
+	for key, value in apps.iteritems():
+		apkname = os.path.join(app_path, key + '.apk')
 
-			# For force redownload, remove previous APK
-			if checkforce and os.path.isfile(apkname):
-				os.remove(apkname)
+		# For force redownload, remove previous APK
+		if checkforce and os.path.isfile(apkname):
+			os.remove(apkname)
 
-			# Only download apk if we don't have it already
-			if not os.path.isfile(apkname):
-				download(value, apkname)
+		# Only download apk if we don't have it already
+		if not os.path.isfile(apkname):
+			download(value, apkname)
 
-		print('Finished downloading all apps')
-
-	except:
-		print('There was a problem downloading the apps')
-		done()
-
+	print('Finished downloading all apps')
 
 def zip(src, dst):
 	try:
 		zf = zipfile.ZipFile(dst, 'w', zipfile.ZIP_DEFLATED)
+		print('Creating ZIP file: ' + dst)
 		abs_src = os.path.abspath(src)
 		for dirname, subdirs, files in os.walk(src):
 			for filename in files:
 				absname = os.path.abspath(os.path.join(dirname, filename))
 				arcname = absname[len(abs_src) + 1:]
-				print 'Zipping %s as %s' % (os.path.join(dirname, filename), arcname)
+				print('  Added: ' + arcname)
 				zf.write(absname, arcname)
 		zf.close()
 	except IOError, e:
-		print('Error: ' + str(e.reason))
-		done()
+		print('IOError = ' + e.reason)
+		abort('Unable to create the ZIP file')
 
 def configfile(file_name, values):
 	# Open file as read only and copy to string
@@ -198,19 +207,20 @@ def setupkernel():
 	out_path = os.path.join('tmp_out', 'boot-patcher')
 
 	# Blindly copy directories
-	print('Copying common files...')
+	print('Kernel: Copying common files...')
 	copytree('common', out_path)
 
-	print('Copying ' + Arch + ' arch specific common files...')
+	print('Kernel: Copying ' + Arch + ' arch specific common files...')
 	copytree(os.path.join('common', 'arch', Arch), out_path)
 
-	print('Copying boot-patcher files...')
+	print('Kernel: Copying boot-patcher files...')
 	copytree('boot-patcher', out_path)
 
-	print('Copying ' + Arch + ' arch specific boot-patcher files...')
+	print('Kernel: Copying ' + Arch + ' arch specific boot-patcher files...')
 	copytree(os.path.join('boot-patcher', 'arch', Arch), out_path)
 
 	# Set up variables in boot-patcher update-binary
+	print('Kernel: Configuring installer script')
 	configfile(os.path.join(out_path, 'META-INF', 'com', 'google', 'android', 'update-binary'), {
 		'kernel_string':Config.get(Device, 'kernelstring'),
 		'kernel_author':Config.get(Device, 'author'),
@@ -219,6 +229,7 @@ def setupkernel():
 	})
 
 	# Set up variables in boot-patcher.sh
+	print('Kernel: Configuring boot-patcher script')
 	configfile(os.path.join(out_path, 'boot-patcher.sh'), {
 		'boot_block':Config.get(Device, 'block')
 	})
@@ -226,12 +237,15 @@ def setupkernel():
 	# Copy zImage from version/device to boot-patcher folder
 	kernel_path = os.path.join('kernels', OS, Device)
 	if os.path.exists(os.path.join(kernel_path, 'zImage')):
-		shutil.copy(os.path.join(kernel_path, 'zImage'), os.path.join(out_path, 'zImage'))
+		zimage_location = os.path.join(kernel_path, 'zImage')
 	elif os.path.exists(os.path.join(kernel_path, 'zImage-dtb')):
-		shutil.copy(os.path.join(kernel_path, 'zImage-dtb'), os.path.join(out_path, 'zImage'))
+		zimage_location = os.path.join(kernel_path, 'zImage-dtb')
 	else:
-		print('Unable to find kernel zImage or zImage-dtb at: ' + kernel_path)
+		abort('Unable to find kernel zImage or zImage-dtb at: ' + kernel_path)
 		exit(0)
+
+	print('Found zImage at: ' + zimage_location)
+	shutil.copy(zimage_location, os.path.join(out_path, 'zImage'))
 
 	# Copy dtb.img if it exists
 	dtb_location = os.path.join(kernel_path, 'dtb.img')
@@ -263,26 +277,30 @@ def setupupdate():
 	out_path = 'tmp_out'
 
 	# Blindly copy directories
-	print('Copying common files...')
+	print('NetHunter: Copying common files...')
 	copytree('common', out_path)
 
-	print('Copying ' + Arch + ' arch specific common files...')
+	print('NetHunter: Copying ' + Arch + ' arch specific common files...')
 	copytree(os.path.join('common', 'arch', Arch), out_path)
 
-	print('Copying update files...')
+	print('NetHunter: Copying update files...')
 	copytree('update', out_path)
 
-	print('Copying ' + Arch + ' arch specific update files...')
+	print('NetHunter: Copying ' + Arch + ' arch specific update files...')
 	copytree(os.path.join('update', 'arch', Arch), out_path)
 
 def cleanup():
 	if os.path.exists('tmp_out'):
-		print('Removing temporary output directory')
+		print('Removing temporary build directory')
 		shutil.rmtree('tmp_out')
 
 def done():
 	cleanup()
 	exit(0)
+
+def abort(err):
+	print('Error: ' + err)
+	done()
 
 def main():
 	global Config
@@ -305,9 +323,8 @@ def main():
 		Config = ConfigParser.ConfigParser()
 		Config.read('devices.cfg')
 		devicenames = Config.sections()
-	except IOError:
-		print('Error opening devices.cfg')
-		exit(0)
+	except:
+		abort('Could not read devices.cfg')
 
 	help_device = 'Allowed device names: \n'
 	for device in devicenames:
@@ -327,8 +344,7 @@ def main():
 	args = parser.parse_args()
 
 	if args.kernel and args.nokernel:
-		print('You seem to be having trouble deciding whether you want the kernel installer or not')
-		done()
+		abort('You seem to be having trouble deciding whether you want the kernel installer or not')
 
 	if args.forcedown:
 		supersu(True) # True = SuperSU beta, False = SuperSU stable
@@ -339,11 +355,9 @@ def main():
 		if args.device in devicenames:
 			Device = args.device
 		else:
-			print('Device %s not found devices.cfg' % args.device)
-			done()
+			abort('Device %s not found devices.cfg' % args.device)
 	elif not (args.device or args.uninstaller):
-		print('No valid arguments supplied. Try -h or --help')
-		done()
+		abort('No valid arguments supplied. Try -h or --help')
 
 	# If we found a device, set architecture and parse android OS release
 	if Device:
@@ -354,8 +368,7 @@ def main():
 		elif Arch == 'arm64' or Arch == 'amd64':
 			LibDir = os.path.join('system', 'lib64')
 		else:
-			print('Unknown device architecture: ' + Arch)
-			done()
+			abort('Unknown device architecture: ' + Arch)
 
 		i = 0
 		if args.kitkat:
@@ -368,11 +381,9 @@ def main():
 			OS = 'marshmallow'
 			i += 1
 		if i == 0:
-			print('Select a version: --kitkat, --lollipop, --marshmallow')
-			done()
+			abort('Missing Android version. Available options: --kitkat, --lollipop, --marshmallow')
 		elif i > 1:
-			print('Select only one version: --kitkat, --lollipop, --marshmallow')
-			done()
+			abort('Select only one Android version: --kitkat, --lollipop, --marshmallow')
 
 	# Build an uninstaller zip if --uninstaller is specified
 	if args.uninstaller:
@@ -423,7 +434,7 @@ def main():
 
 	zip('tmp_out', file_name)
 
-	print('Created full installer: ' + file_name)
+	print('Created NetHunter installer: ' + file_name)
 	done()
 
 if __name__ == "__main__":
