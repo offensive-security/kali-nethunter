@@ -4,7 +4,7 @@
 wp=/data/system/users/0/wallpaper
 
 # Make sure we are mounted
-/sbin/busybox mount /data
+mount /data
 
 console="$(cat /tmp/console)"
 [ -z "$console" ] && console=/dev/null

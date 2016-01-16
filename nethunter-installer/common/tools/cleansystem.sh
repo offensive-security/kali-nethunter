@@ -4,7 +4,7 @@
 SA=/system/app
 
 # Make sure we are mounted
-/sbin/busybox mount /system
+mount /system
 
 # Apks were located in /system/app folder previously
 rm -f $SA/PrintSpooler.*

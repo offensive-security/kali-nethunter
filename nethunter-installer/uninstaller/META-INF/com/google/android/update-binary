@@ -17,8 +17,8 @@ ui_print "***********************"
 ui_print " NetHunter Uninstaller "
 ui_print "***********************"
 
-/sbin/busybox mount /system
-/sbin/busybox mount /data
+mount /system
+mount /data
 
 # Remove added firmware (folder would only exist if you installed NetHunter)
 [ -d "/system/etc/firmware/rtlwifi" ] && {
@@ -45,5 +45,8 @@ ui_print "***********************"
 	ui_print "@Removing NetHunter chroot/data"
 	rm -rf /data/data/com.offsec.nethunter
 }
+
+umount /system
+umount /data
 
 ui_print "@Uninstall complete"

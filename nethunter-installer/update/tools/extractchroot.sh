@@ -12,24 +12,23 @@ print() {
 }
 
 NHSYS=/data/local/nhsystem
-KALIFS=/data/local/kalifs-full.tar
+KALIFS=/data/local/kalifs-full.tar.xz
 
 # Make sure we are mounted
-/sbin/busybox mount /data
+mount /data
 
 # If file kalifs-full.tar.xz is present, then extract
-if [ -f "$KALIFS.xz" ]; then
+[ -f "$KALIFS" ] && {
 	print "Found chroot to be installed"
 	# Remove previous chroot
-	if [ -d "$NHSYS/kali-$ARCH" ]; then
+	[ -d "$NHSYS/kali-$ARCH" ] && {
 		print "Removing previous chroot..."
 		rm -rf $NHSYS/kali-armhf
-	fi
+	}
 
 	# Extract new chroot
 	print "Extracting chroot..."
 	mkdir -p $NHSYS
-	/sbin/busybox xz -df $KALIFS.xz
-	/tmp/busybox tar xf  -C $NHSYS
+	tar -C $NHSYS xJf $KALIFS
 	rm -f $KALIFS
-fi
+}

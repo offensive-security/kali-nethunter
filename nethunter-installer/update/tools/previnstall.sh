@@ -1,5 +1,5 @@
 #!/sbin/sh
-# Check for previous installation of NetHunter
+# Check for previous install of Kali Chroot
 
 TMP=/tmp/nethunter
 
@@ -23,15 +23,16 @@ rm -rf $NHSYS/dev/*
 rm -rf $NHAPP/dev/*
 rm -rf $NH/dev/*
 
-# Check for previous NetHunter chroot
-if [ -d $NH ]; then
-	print "Detected previous version of NetHunter, moving chroot"
+# We probably don't want two old chroots in the same folder, so pick newer location in /data/local first
+[ -d $NH ] && {
+	print "Detected previous install of Kali, moving chroot..."
 	mv $NH $NHSYS
-fi
-
-if [ -d $NHAPP ]; then
-	mv $NHAPP $NHSYS
-fi
+} || {
+	[ -d $NHAPP ] && {
+		print "Detected previous install of Kali, moving chroot..."
+		mv $NHAPP $NHSYS
+	}
+}
 
 # Just to be safe lets remove old version of NetHunter app
 rm -rf /data/data/com.offsec.nethunter
