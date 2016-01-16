@@ -97,7 +97,7 @@ patch_ramdisk() {
 	chmod -R 0755 $ramdisk_patch
 	chmod 0644 $ramdisk_patch/sbin/media_profiles.xml
 	# move the patch files into the ramdisk
-	cp -rTd $ramdisk_patch .
+	cp -rd $ramdisk_patch/. ./
 	# make sure adb is not secure
 	replace_line default.prop "ro.adb.secure=1" "ro.adb.secure=0"
 	replace_line default.prop "ro.secure=1" "ro.secure=0"
@@ -106,7 +106,7 @@ patch_ramdisk() {
 	insert_after_last init.rc "import /init\\..*\\.rc" "import /init.superuser.rc"
 	# patch sepolicy for SuperSU
 	print "Patching the sepolicy for SuperSU..."
-	LD_LIBRARY_PATH=$LIBDIR /system/bin/supolicy --file $ramdisk/sepolicy $ramdisk/sepolicy_new
+	LD_LIBRARY_PATH=$LIBDIR /system/xbin/supolicy --file $ramdisk/sepolicy $ramdisk/sepolicy_new
 	[ -f $ramdisk/sepolicy_new ] && {
 		rm $ramdisk/sepolicy
 		mv $ramdisk/sepolicy_new $ramdisk/sepolicy

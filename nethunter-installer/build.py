@@ -89,7 +89,7 @@ def supersu(beta):
 			with zipfile.ZipFile(suzip, 'r') as zf:
 				for key, value in arch.iteritems():
 					fin = key + '/supolicy'
-					fout = os.path.join(value, 'system', 'bin', 'supolicy')
+					fout = os.path.join(value, 'system', 'xbin', 'supolicy')
 					print('Extracting ' + fin + ' to ' + fout)
 					shutil.copyfileobj(zf.open(fin), open(fout, 'wb'))
 					fin = key + '/libsupol.so'

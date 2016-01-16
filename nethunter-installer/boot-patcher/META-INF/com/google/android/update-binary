@@ -28,17 +28,24 @@ abort() {
 		print "Error: $1"
 		print "Aborting..."
 	}
-	/sbin/busybox umount /system
+	umount /system
+	umount /data
 	exit 1
 }
 
-set_perm_recursive() {
-	dirs="$(echo $* | awk '{ print substr($0, index($0,$5)) }')"
-	for i in $dirs; do
-		chown -R $1:$2 $i
-		find "$i" -type d -exec chmod $3 {} \;
-		find "$i" -type f -exec chmod $4 {} \;
-	done
+install() {
+	cp -r "$tmp$1" "$(dirname $1)"
+}
+
+extract() {
+	rm -rf "$2"
+	mkdir "$2"
+	unzip -o "$1" -d "$2"
+}
+
+setperm() {
+	find "$3" -type d -exec chmod $1 {} \;
+	find "$3" -type f -exec chmod $2 {} \;
 }
 
 print "######################################################"
@@ -58,48 +65,49 @@ print "######################################################"
 	[ $match != 1 ] && abort "Unsupported device"
 }
 
-mkdir -p $tmp
-cd $tmp
-[ -n "$zip" ] && unzip -o "$zip"
+# Unpack the installer
+[ -n "$zip" ] && extract "$zip" "$tmp"
+cd "$tmp"
 
 source env.sh
 
-/sbin/busybox mount /system
-/sbin/busybox mount /data
+mount /system
+mount /data
 
 # Free up space for kernel only install (otherwise nothing installs!)
 # It actually runs twice when part of the NetHunter updater zip
 print "Freeing some space on /system"
 sh tools/cleansystem.sh
 
-[ -e system/etc/init.d ] && {
-	print "Fixing execute permissions for init.d scripts"
-	set_perm_recursive 0 0 0755 0755 system/etc/init.d
-}
-
-[ -e system/bin ] && {
-	print "Fixing execute permissions for system/bin binaries"
-	set_perm_recursive 0 0 0755 0755 system/bin
-}
-
-[ -e system/xbin ] && {
-	print "Fixing execute permissions for system/xbin binaries"
-	set_perm_recursive 0 0 0755 0755 system/xbin
+[ -e "$tmp/system/etc/nano" ] && {
+	print "Copying firmware to /system/etc/firmware"
+	setperm 0755 0644 "$tmp/system/etc/firmware"
+	install "/system/etc/firmware"
 }
 
 [ -e "$tmp$LIBDIR" ] && {
-	print "Fixing permissions for libraries and kernel modules"
-	set_perm_recursive 0 0 0755 0644 $tmp$LIBDIR
+	print "Copying shared libraries and kernel modules to $LIBDIR"
+	setperm 0755 0755 "$tmp$LIBDIR"
+	install "$LIBDIR"
 }
 
-print "Installing all firmware, binaries, libraries, and kernel modules to /system..."
-cp -rTd system /system
+[ -e "$tmp/system/bin" ] && {
+	print "Installing /system/bin binaries"
+	setperm 0755 0755 "$tmp/system/bin"
+	install "/system/bin"
+}
+
+[ -e "$tmp/system/xbin" ] && {
+	print "Installing /system/xbin binaries"
+	setperm 0755 0755 "$tmp/system/xbin"
+	install "/system/xbin"
+}
 
 print "Patching boot image..."
 sh boot-patcher.sh
 [ "$(cat $tmp/exitcode)" == 1 ] && abort
 
-/sbin/busybox umount /system
-/sbin/busybox umount /data
+umount /system
+umount /data
 
 print "Boot image patching complete"

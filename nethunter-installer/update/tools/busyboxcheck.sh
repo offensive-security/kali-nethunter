@@ -14,14 +14,14 @@ print() {
 XBIN=/system/xbin
 
 # Make sure we are mounted
-/sbin/busybox mount /system
+mount /system
 
-if [ ! -f $XBIN/busybox ] || [ ! -f /system/bin/busybox ]; then
+[ -f $XBIN/busybox -o -f /system/bin/busybox ] && {
+	print "Busybox binary detected. Skipping..."
+} || {
 	print "Installing busybox..."
 	cp $TMP/tools/busybox $XBIN/busybox
 	chmod 755 $XBIN/busybox
 	$XBIN/busybox --install -s $XBIN
-else
-	print "Busybox binary detected. Skipping..."
-fi
+}
 
