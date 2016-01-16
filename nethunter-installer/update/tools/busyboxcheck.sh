@@ -6,6 +6,7 @@ TMP=/tmp/nethunter
 source $TMP/env.sh
 
 console="$(cat /tmp/console)"
+[ "$console" ] || console=/proc/$$/fd/1
 
 print() {
 	echo "ui_print - $1" > $console

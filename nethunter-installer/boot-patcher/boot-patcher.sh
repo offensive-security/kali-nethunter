@@ -19,14 +19,14 @@ rm -rf $ramdisk $split_img
 mkdir $ramdisk $split_img
 
 console="$(cat /tmp/console)"
-[ -z "$console" ] && console=/dev/null
+[ "$console" ] || console=/proc/$$/fd/1
 
 print() {
 	echo "ui_print - $1" > $console
 }
 
 abort() {
-	[ -n "$1" ] && {
+	[ "$1" ] && {
 		print "Error: $1"
 		print "Aborting..."
 	}
