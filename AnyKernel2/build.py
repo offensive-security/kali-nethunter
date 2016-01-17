@@ -134,8 +134,8 @@ def zip(src, dst, status):
         if status == "anykernel":
             shutil.copytree(pwd, 'tmp_out', ignore=shutil.ignore_patterns('*.py', 'README*', 'placeholder','tmp_out', 'kernels', 'files', 'media',
                                                                       'devices.cfg', '.DS_Store', '.git', '.idea', 'aroma-update', 'kernel-nethunter*',
-                                                                      'aroma', 'data', 'anykernel', 'wallpaper', 'noaroma-update', 'nano', 'terminfo',
-                                                                      'lualibs', 'scripts', 'proxmark3', '*.so',
+                                                                      'aroma', 'kalifs-full.tar.xz', 'anykernel', 'wallpaper', 'noaroma-update', 'nano', 'terminfo',
+                                                                      'lualibs', 'scripts', 'proxmark3', '*.so', 'app',
                                                                       'supersu', 'supersu', 'wallpaper', 'uninstaller', 'update-nethunter*'))
         elif status == "aroma":
             shutil.copytree(pwd, 'tmp_out', ignore=shutil.ignore_patterns('*.py', 'README*', 'placeholder','tmp_out', 'kernels',
@@ -394,6 +394,23 @@ def main():
         else:
             print('Kernel not found at: %s' % kernel_location)
             exit(0)
+
+        # Check for Nexus 5 monitor mode kernel
+        if os.path.exists('data/local/nhsystem/nexus5'):
+            shutil.rmtree('data/local/nhsystem/nexus5')
+
+        # Nexus 5 monitor mode
+        if device =='hammerheadmon':
+            print('Device is hammerheadmon')
+            nexmon_location = 'kernels/' + version + '/hammerheadmon/nexmon'
+            if os.path.exists(nexmon_location):
+                os.mkdir('data/local/nhsystem/nexus5')
+                nexmon_list = [f for f in os.listdir(nexmon_location)]
+                for f in nexmon_list:
+                    file = nexmon_location + '/' + f
+                    shutil.copy2(file, 'data/local/nhsystem/nexus5/' + f)
+                print('Special Nexus 5 SUPER!')
+
 
         # Copy any init.d scripts
         initd_location = 'kernels/' + version + '/' + device + '/init.d'

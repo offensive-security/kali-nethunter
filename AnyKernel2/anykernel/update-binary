@@ -61,6 +61,12 @@ ui_print "- Symlink firmware from /data/local/nhsystem/firmware to /system/etc/f
 chmod 755 /tmp/anykernel/tools/symlinkfirmware.sh;
 /sbin/busybox ash /tmp/anykernel/tools/symlinkfirmware.sh;
 
+if [ -d "/tmp/anykernel/data/local/nhsystem/nexus5" ]; then
+  ui_print "- Nexus 5 monitor mode kernel found!"
+  mkdir -p /data/local/nhsystem/nexus5
+  cp -rf /tmp/anykernel/data/local/nhsystem/nexus5 /data/local/nhsystem/
+fi
+
 # Symlink anything in xbin
 ui_print "- Symlink xbin /data/local/nhsystem/xbin to /system/xbin";
 chmod 755 /tmp/anykernel/tools/symlinkxbin.sh;
@@ -84,6 +90,7 @@ fi;
 if [ "$(file_getprop /tmp/anykernel/anykernel.sh do.modules)" == 1 ]; then
   ui_print "- Pushing modules...";
   /sbin/busybox mount -o remount,rw /system;
+  mkdir -p /system/lib/modules/
   cp -rf /tmp/anykernel/system/lib/modules/* /system/lib/modules/;
   set_perm_recursive 0 0 0755 0644 /system/lib/modules;
   /sbin/busybox mount -o remount,ro /system;
