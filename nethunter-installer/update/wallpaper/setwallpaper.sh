@@ -11,6 +11,7 @@ console="$(cat /tmp/console)"
 
 print() {
 	echo "ui_print - $1" > $console
+	echo
 }
 
 res=`grep -o "<resolution.*/>" /twres/ui.xml`

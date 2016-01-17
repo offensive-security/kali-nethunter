@@ -13,6 +13,7 @@
 
 print() {
 	echo "ui_print $1" > $console
+	echo
 }
 
 print "***********************"

@@ -10,6 +10,7 @@ console="$(cat /tmp/console)"
 
 print() {
 	echo "ui_print - $1" > $console
+	echo
 }
 
 XBIN=/system/xbin
