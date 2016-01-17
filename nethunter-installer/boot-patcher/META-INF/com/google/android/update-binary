@@ -105,6 +105,12 @@ sh tools/cleansystem.sh
 	install "/system/xbin"
 }
 
+[ -e "$tmp/data/local" ] && {
+	print "Copying additional files to /data/local"
+	setperm 0755 0644 "$tmp/data/local"
+	install "/data/local"
+}
+
 print "Patching boot image..."
 sh boot-patcher.sh
 [ "$(cat $tmp/exitcode)" == 1 ] && abort
