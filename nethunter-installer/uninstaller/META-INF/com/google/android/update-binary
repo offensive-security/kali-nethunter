@@ -51,4 +51,6 @@ mount /data
 umount /system
 umount /data
 
+[ "$zip" ] && rm /tmp/console
+
 print "@Uninstall complete"

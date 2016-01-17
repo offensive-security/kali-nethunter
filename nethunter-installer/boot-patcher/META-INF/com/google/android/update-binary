@@ -111,4 +111,6 @@ sh boot-patcher.sh
 umount /system
 umount /data
 
+[ "$zip" ] && rm /tmp/console
+
 print "Boot image patching complete"

@@ -185,5 +185,7 @@ sh tools/extractchroot.sh
 umount /data
 umount /system
 
+[ "$zip" ] && rm /tmp/console
+
 print "@Installation complete"
 progress 1.0
