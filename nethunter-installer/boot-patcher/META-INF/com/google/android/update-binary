@@ -22,6 +22,7 @@ tmp=/tmp/nethunter/boot-patcher
 
 print() {
 	echo "ui_print $1" > $console
+	echo
 }
 
 abort() {
@@ -80,7 +81,7 @@ mount /data
 print "Freeing some space on /system"
 sh tools/cleansystem.sh
 
-[ -e "$tmp/system/etc/nano" ] && {
+[ -e "$tmp/system/etc/firmware" ] && {
 	print "Copying firmware to /system/etc/firmware"
 	setperm 0755 0644 "$tmp/system/etc/firmware"
 	install "/system/etc/firmware"
@@ -104,11 +105,19 @@ sh tools/cleansystem.sh
 	install "/system/xbin"
 }
 
+[ -e "$tmp/data/local" ] && {
+	print "Copying additional files to /data/local"
+	setperm 0755 0644 "$tmp/data/local"
+	install "/data/local"
+}
+
 print "Patching boot image..."
 sh boot-patcher.sh
 [ "$(cat $tmp/exitcode)" == 1 ] && abort
 
 umount /system
 umount /data
+
+[ "$zip" ] && rm /tmp/console
 
 print "Boot image patching complete"

@@ -23,6 +23,7 @@ console="$(cat /tmp/console)"
 
 print() {
 	echo "ui_print - $1" > $console
+	echo
 }
 
 abort() {

@@ -271,6 +271,12 @@ def setupkernel():
 		print('Found additional firmware binaries at: ' + firmware_path)
 		copytree(firmware_path, os.path.join(out_path, 'system', 'etc', 'firmware'))
 
+	# Copy any /data/local folder files
+	local_path = os.path.join(kernel_path, 'local')
+	if os.path.exists(local_path):
+		print('Found additional /data/local files at: ' + local_path)
+		copytree(local_path, os.path.join(out_path, 'data', 'local'))
+
 def setupupdate():
 	global Arch
 
