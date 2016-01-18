@@ -68,7 +68,7 @@ determine_ramdisk_format() {
 	case "$magicbytes" in
 		425a) rdformat="bzip2"; compress="bzip2 -9c"; decompress="bzip2 -dc" ;;
 		1f8b|1f9e) rdformat="gzip"; compress="gzip -9c"; decompress="gzip -dc" ;;
-		0221) rdformat="lz4"; compress="lz4 -9"; decompress="lz4 -d" ;;
+		0221) rdformat="lz4"; compress="$bin/lz4 -9"; decompress="$bin/lz4 -d" ;;
 		5d00) rdformat="lzma"; compress="lzma -c"; decompress="lzma -dc" ;;
 		894c) rdformat="lzo"; compress="lzop -9c"; decompress="lzop -dc" ;;
 		fd37)
