@@ -64,7 +64,7 @@ dump_boot() {
 
 # determine the format the ramdisk was compressed in
 determine_ramdisk_format() {
-	magicbytes="$(hexdump -vn2 -e '2/1 "%x"' $split_img/boot.img-ramdisk.gz)"
+	magicbytes="$(hexdump -vn2 -e '2/1 "%x"' $split_img/boot.img-ramdisk)"
 	case "$magicbytes" in
 		425a) rdformat="bzip2"; compress="bzip2 -9c"; decompress="bzip2 -dc" ;;
 		1f8b|1f9e) rdformat="gzip"; compress="gzip -9c"; decompress="gzip -dc" ;;
@@ -86,7 +86,7 @@ determine_ramdisk_format() {
 dump_ramdisk() {
 	determine_ramdisk_format
 	cd $ramdisk
-	$decompress < $split_img/boot.img-ramdisk.gz | cpio -i
+	$decompress < $split_img/boot.img-ramdisk | cpio -i
 	[ $? != 0 ] && abort "Dumping/unpacking ramdisk failed"
 }
 
@@ -121,7 +121,7 @@ patch_ramdisk() {
 build_ramdisk() {
 	print "Building new ramdisk..."
 	cd $ramdisk
-	find | cpio -o -H newc | $compress > $tmpdir/ramdisk-new.cpio.gz
+	find | cpio -o -H newc | $compress > $tmpdir/ramdisk-new
 }
 
 # backup old boot image
@@ -138,32 +138,30 @@ write_boot() {
 	board=`cat *-board`
 	base=`cat *-base`
 	pagesize=`cat *-pagesize`
-	kerneloff=`cat *-kerneloff`
-	ramdiskoff=`cat *-ramdiskoff`
-	tagsoff=`cat *-tagsoff`
+	kernel_offset=`cat *-kernel_offset`
+	ramdisk_offset=`cat *-ramdisk_offset`
+	tags_offset=`cat *-tags_offset`
 	[ -f *-second ] && {
 		second=`ls *-second`
 		second="--second $split_img/$second"
-		secondoff=`cat *-secondoff`
-		secondoff="--second_offset $secondoff"
+		second_offset=`cat *-second_offset`
+		second_offset="--second_offset $second_offset"
 	}
 	if [ -f $tmpdir/zImage ]; then
-		kernel=$tmpdir/zImage
+		kernel="$tmpdir/zImage"
 	else
-		kernel=`ls *-zImage`
-		kernel=$split_img/$kernel
+		kernel="$split_img/$(ls *-zImage)"
 	fi
 	if [ -f $tmpdir/dtb ]; then
 		dtb="--dt $tmpdir/dtb"
 	elif [ -f *-dtb ]; then
-		dtb=`ls *-dtb`
-		dtb="--dt $split_img/$dtb"
+		dtb="--dt $split_img/$(ls *-dtb)"
 	fi
-	$bin/mkbootimg --kernel $kernel --ramdisk $tmpdir/ramdisk-new.cpio.gz $second \
+	$bin/mkbootimg --kernel $kernel --ramdisk $tmpdir/ramdisk-new $second \
 		--cmdline "$cmdline" --board "$board" \
 		--base $base --pagesize $pagesize \
-		--kernel_offset $kerneloff --ramdisk_offset $ramdiskoff $secondoff \
-		--tags_offset $tagsoff $dtb --output $tmpdir/boot-new.img
+		--kernel_offset $kernel_offset --ramdisk_offset $ramdisk_offset $second_offset \
+		--tags_offset $tags_offset $dtb --output $tmpdir/boot-new.img
 	[ $? != 0 -o `wc -c < $tmpdir/boot-new.img` -gt `wc -c < $tmpdir/boot.img` ] && {
 		abort "Repacking image failed"
 	}
