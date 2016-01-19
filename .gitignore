@@ -13,5 +13,5 @@ nethunter-installer/tmp_out
 nethunter-installer/update-nethunter-*
 nethunter-installer/kernel-nethunter-*
 nethunter-installer/uninstaller-nethunter-*
-nethunter-installer/update/data/local/kalifs-full.tar.xz
+kalifs-*.tar.xz
 .DS_Store

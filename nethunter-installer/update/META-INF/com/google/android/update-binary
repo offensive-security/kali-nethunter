@@ -163,6 +163,12 @@ progress 0.7
 	install "/system/etc/init.d"
 }
 
+[ -e "$tmp/data/local" ] && {
+	print "Copying additional files to /data/local"
+	setperm 0755 0644 "$tmp/data/local"
+	install "/data/local"
+}
+
 print "@Symlinking Kali boot scripts"
 symlink "/data/data/com.offsec.nethunter/files/scripts/bootkali" "/system/bin/bootkali"
 symlink "/data/data/com.offsec.nethunter/files/scripts/bootkali_login" "/system/bin/bootkali_login"
@@ -171,22 +177,19 @@ symlink "/data/data/com.offsec.nethunter/files/scripts/bootkali_bash" "/system/b
 progress 0.8
 
 [ -e "$patchtmp" ] && {
-	print "@Patching boot image"
+	print "@Running kernel installer..."
 	sh "$patchtmp/META-INF/com/google/android/update-binary"
-	mount /system
-	mount /data
 }
 
 progress 0.9
 
-print "@Checking for Kali Chroot in installer...this may take a while..."
-install "/data/local"
-sh tools/extractchroot.sh
+print "@Running Kali chroot installer...this may take a while..."
+sh tools/installchroot.sh
 
 umount /data
 umount /system
 
 [ "$zip" ] && rm /tmp/console
 
-print "@Installation complete"
+print "@Kali NetHunter installation complete"
 progress 1.0

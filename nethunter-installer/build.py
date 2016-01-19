@@ -75,7 +75,7 @@ def download(url, file_name):
 			os.remove(file_name)
 		abort('There was a problem downloading the file')
 
-def supersu(beta):
+def supersu(forcedown, beta):
 	def getdlpage(url):
 		try:
 			bOpener = urllib2.build_opener()
@@ -116,24 +116,28 @@ def supersu(beta):
 
 	suzip = os.path.join('update', 'supersu', 'supersu.zip')
 
-	# Remove previous supersu.zip
+	# Remove previous supersu.zip if force redownloading
 	if os.path.isfile(suzip):
-		os.remove(suzip)
+		if forcedown:
+			os.remove(suzip)
+		else:
+			print('Found SuperSU zip at: ' + suzip)
 
-	if beta:
-		surl = getdlpage('http://download.chainfire.eu/896/SuperSU/BETA-SuperSU-v2.66-20160103015024.zip')
-	else:
-		surl = getdlpage('http://download.chainfire.eu/supersu')
+	if not os.path.isfile(suzip):
+		if beta:
+			surl = getdlpage('http://download.chainfire.eu/896/SuperSU/BETA-SuperSU-v2.66-20160103015024.zip')
+		else:
+			surl = getdlpage('http://download.chainfire.eu/supersu')
 
-	if surl:
-		download(surl + '?retrieve_file=1', suzip)
-	else:
-		abort('Could not retrieve download URL for SuperSU')
+		if surl:
+			download(surl + '?retrieve_file=1', suzip)
+		else:
+			abort('Could not retrieve download URL for SuperSU')
 
 	# Extract supolicy and libsupol.so from SuperSU zip
 	extractsu(suzip)
 
-def allapps(checkforce):
+def allapps(forcedown):
 	apps = {
 		'BlueNMEA':'http://max.kellermann.name/download/blue-nmea/BlueNMEA-2.1.3.apk',
 		'Hackerskeyboard':'https://f-droid.org/repo/org.pocketworkstation.pckeyboard_1038002.apk',
@@ -147,21 +151,67 @@ def allapps(checkforce):
 
 	app_path = os.path.join('update', 'data', 'app')
 
-	if checkforce:
+	if forcedown:
 		print('Force redownloading all apps')
 
 	for key, value in apps.iteritems():
-		apkname = os.path.join(app_path, key + '.apk')
+		apk_name = key + '.apk'
+		apk_path = os.path.join(app_path, apk_name)
 
 		# For force redownload, remove previous APK
-		if checkforce and os.path.isfile(apkname):
-			os.remove(apkname)
+		if os.path.isfile(apk_path):
+			if forcedown:
+				os.remove(apk_path)
+			else:
+				print('Found %s at: %s' % (apk_name, apk_path))
 
 		# Only download apk if we don't have it already
-		if not os.path.isfile(apkname):
-			download(value, apkname)
+		if not os.path.isfile(apk_path):
+			download(value, apk_path)
 
 	print('Finished downloading all apps')
+
+def rootfs(forcedown, fs_size):
+	global Arch
+
+	fs_file = 'kalifs-' + fs_size + '.tar.xz'
+	fs_path = os.path.join('rootfs', Arch, fs_file)
+	fs_host = 'https://images.offensive-security.com/'
+
+	if Arch == 'armhf':
+		fs_url = fs_host + fs_file
+	elif Arch == 'arm64':
+		fs_url = fs_host + 'arm64/' + fs_file
+	elif Arch == 'amd64':
+		fs_url = fs_host + 'arm64/' + fs_file
+	else:
+		abort('Unknown device architecture: ' + Arch)
+
+	if forcedown:
+		# For force redownload, remove previous rootfs
+		print('Force redownloading Kali %s %s rootfs' % (fs_size, Arch))
+		if os.path.isfile(fs_path):
+			os.remove(fs_path)
+
+	# Only download Kali rootfs if we don't have it already
+	if not os.path.isfile(fs_path):
+		download(fs_url, fs_path)
+
+def addrootfs(fs_size, dst):
+	global Arch
+
+	fs_file = 'kalifs-' + fs_size + '.tar.xz'
+	fs_path = os.path.join('rootfs', Arch, fs_file)
+
+	try:
+		zf = zipfile.ZipFile(dst, 'a', zipfile.ZIP_DEFLATED)
+		print('Adding Kali rootfs archive to the installer zip...')
+		zf.write(os.path.abspath(fs_path), fs_file)
+		print('  Added: ' + fs_file)
+		zf.close()
+	except IOError, e:
+		print('IOError = ' + e.reason)
+		abort('Unable to add to the zip file')
 
 def zip(src, dst):
 	try:
@@ -172,8 +222,8 @@ def zip(src, dst):
 			for filename in files:
 				absname = os.path.abspath(os.path.join(dirname, filename))
 				arcname = absname[len(abs_src) + 1:]
-				print('  Added: ' + arcname)
 				zf.write(absname, arcname)
+				print('  Added: ' + arcname)
 		zf.close()
 	except IOError, e:
 		print('IOError = ' + e.reason)
@@ -295,18 +345,20 @@ def setupupdate():
 	print('NetHunter: Copying ' + Arch + ' arch specific update files...')
 	copytree(os.path.join('update', 'arch', Arch), out_path)
 
-def cleanup():
+def cleanup(domsg):
 	if os.path.exists('tmp_out'):
-		print('Removing temporary build directory')
+		if domsg:
+			print('Removing temporary build directory')
 		shutil.rmtree('tmp_out')
 
 def done():
-	cleanup()
+	cleanup(False)
 	exit(0)
 
 def abort(err):
 	print('Error: ' + err)
-	done()
+	cleanup(True)
+	exit(0)
 
 def main():
 	global Config
@@ -317,12 +369,14 @@ def main():
 	global IgnoredFiles
 	global TimeStamp
 
+	supersu_beta = True
+
 	IgnoredFiles = ['arch', 'placeholder', '.DS_Store', '.git*', '.idea']
 	t = datetime.datetime.now()
 	TimeStamp = "%04d%02d%02d_%02d%02d%02d" % (t.year, t.month, t.day, t.hour, t.minute, t.second)
 
 	# Remove any existing builds that might be left
-	cleanup()
+	cleanup(True)
 
 	# Read devices.cfg, get device names
 	try:
@@ -345,6 +399,7 @@ def main():
 	parser.add_argument('--uninstaller', '-u', action='store_true', help='Create an uninstaller')
 	parser.add_argument('--kernel', '-k', action='store_true', help='Build kernel only')
 	parser.add_argument('--nokernel', '-nk', action='store_true', help='Build without the kernel')
+	parser.add_argument('--rootfs', '-fs', action='store', help='Build with Kali chroot rootfs (full or minimal)')
 	parser.add_argument('--release', '-r', action='store', help='Specify NetHunter release version')
 
 	args = parser.parse_args()
@@ -352,21 +407,20 @@ def main():
 	if args.kernel and args.nokernel:
 		abort('You seem to be having trouble deciding whether you want the kernel installer or not')
 
-	if args.forcedown:
-		supersu(True) # True = SuperSU beta, False = SuperSU stable
-		allapps(True)
-		done()
-
 	if args.device:
 		if args.device in devicenames:
 			Device = args.device
 		else:
 			abort('Device %s not found devices.cfg' % args.device)
-	elif not (args.device or args.uninstaller):
+	elif args.forcedown:
+		supersu(True, supersu_beta)
+		allapps(True)
+		done()
+	elif not args.uninstaller:
 		abort('No valid arguments supplied. Try -h or --help')
 
 	# If we found a device, set architecture and parse android OS release
-	if Device:
+	if args.device:
 		Arch = Config.get(Device, 'arch')
 
 		if Arch == 'armhf':
@@ -391,6 +445,9 @@ def main():
 		elif i > 1:
 			abort('Select only one Android version: --kitkat, --lollipop, --marshmallow')
 
+		if args.rootfs and not (args.rootfs == 'full' or args.rootfs == 'minimal'):
+			abort('Invalid Kali rootfs size. Available options: --rootfs full, --rootfs minimal')
+
 	# Build an uninstaller zip if --uninstaller is specified
 	if args.uninstaller:
 		if args.release:
@@ -403,16 +460,28 @@ def main():
 		print('Created uninstaller: ' + file_name)
 
 	# If no device is specified, we are done
-	if not Device:
+	if not args.device:
 		done()
 
-	# Download SuperSU if we can't find it
-	if not os.path.isfile(os.path.join('update', 'supersu', 'supersu.zip')):
-		supersu(True)
+	# Download SuperSU, we need it for both the kernel and update installer
+	supersu(args.forcedown, supersu_beta)
 
-	# We only need the apps if we are building the full update installer
+	# We don't need the apps if we are only building the kernel installer
 	if not args.kernel:
-		allapps(False)
+		allapps(args.forcedown)
+
+	# Download Kali rootfs if we are building a zip with the chroot environment included
+	if args.rootfs:
+		rootfs(args.forcedown, args.rootfs)
+
+	# Set file name tag depending on the options chosen	
+	file_tag = Device + '-' + OS
+	if args.rootfs:
+		file_tag += '-kalifs-' + args.rootfs
+	if args.release:
+		file_tag += '-' + args.release
+	else:
+		file_tag += '-' + TimeStamp
 
 	# Don't set up the kernel installer if --nokernel is specified
 	if not args.nokernel:
@@ -420,10 +489,7 @@ def main():
 
 		# Build a kernel installer zip and exit if --kernel is specified
 		if args.kernel:
-			if args.release:
-				file_name = 'kernel-nethunter-' + Device + '-' + OS + '-' + args.release + '.zip'
-			else:
-				file_name = 'kernel-nethunter-' + Device + '-' + OS + '-' + TimeStamp + '.zip'
+			file_name = 'kernel-nethunter-' + file_tag + '.zip'
 
 			zip(os.path.join('tmp_out', 'boot-patcher'), file_name)
 
@@ -433,12 +499,13 @@ def main():
 	# Set up the update zip
 	setupupdate()
 
-	if args.release:
-		file_name = 'update-nethunter-' + Device + '-' + OS + '-' + args.release + '.zip'
-	else:
-		file_name = 'update-nethunter-' + Device + '-' + OS + '-' + TimeStamp + '.zip'
+	file_name = 'update-nethunter-' + file_tag + '.zip'
 
 	zip('tmp_out', file_name)
+
+	# Add the Kali rootfs archive if --rootfs is specified
+	if args.rootfs:
+		addrootfs(args.rootfs, file_name)
 
 	print('Created NetHunter installer: ' + file_name)
 	done()
