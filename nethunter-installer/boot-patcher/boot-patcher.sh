@@ -12,7 +12,7 @@ ramdisk=$tmpdir/ramdisk
 ramdisk_patch=$ramdisk-patch
 split_img=$tmpdir/split-img
 bin=$tmpdir/tools
-boot_backup=/data/local/boot.img-backup
+boot_backup=/data/local/boot-backup.img
 
 chmod -R 755 $bin
 rm -rf $ramdisk $split_img
