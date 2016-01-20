@@ -7,11 +7,11 @@ boot_block=
 ## end build generated variables
 
 # set up extracted files and directories
-tmpdir=/tmp/nethunter/boot-patcher
-ramdisk=$tmpdir/ramdisk
+tmp=/tmp/nethunter/boot-patcher
+ramdisk=$tmp/ramdisk
 ramdisk_patch=$ramdisk-patch
-split_img=$tmpdir/split-img
-bin=$tmpdir/tools
+split_img=$tmp/split-img
+bin=$tmp/tools
 boot_backup=/data/local/boot-backup.img
 
 chmod -R 755 $bin
@@ -56,8 +56,8 @@ insert_after_last() {
 # dump boot and extract ramdisk
 dump_boot() {
 	print "Dumping & unpacking original boot image..."
-	dd if=$boot_block of=$tmpdir/boot.img
-	$bin/unpackbootimg -i $tmpdir/boot.img -o $split_img
+	dd if=$boot_block of=$tmp/boot.img
+	$bin/unpackbootimg -i $tmp/boot.img -o $split_img
 	[ $? != 0 ] && abort "Dumping/unpacking boot image failed"
 }
 
@@ -116,25 +116,25 @@ patch_ramdisk() {
 build_ramdisk() {
 	print "Building new ramdisk..."
 	cd $ramdisk
-	find | cpio -o -H newc | gzip -9c > $tmpdir/ramdisk-new
+	find | cpio -o -H newc | gzip -9c > $tmp/ramdisk-new
 }
 
 # build the new boot image
 build_boot() {
 	cd $split_img
-	[ -s $tmpdir/zImage -o -s $tmpdir/zImage-dtb ] && {
-		[ -s $tmpdir/zImage ] && {
-			kernel="--kernel $tmpdir/zImage"
+	[ -s $tmp/zImage -o -s $tmp/zImage-dtb ] && {
+		[ -s $tmp/zImage ] && {
+			kernel="--kernel $tmp/zImage"
 			print "Found replacement kernel zImage!"
 		} || {
-			kernel="--kernel $tmpdir/zImage-dtb"
+			kernel="--kernel $tmp/zImage-dtb"
 			print "Found replacement kernel zImage-dtb!"
 		}
 	} || {
 		abort "Unable to find kernel zImage!"
 	}
-	[ -s $tmpdir/ramdisk-new ] && {
-		rd="--ramdisk $tmpdir/ramdisk-new"
+	[ -s $tmp/ramdisk-new ] && {
+		rd="--ramdisk $tmp/ramdisk-new"
 		print "Found replacement ramdisk image!"
 	} || {
 		[ -s *-ramdisk ] && {
@@ -143,8 +143,8 @@ build_boot() {
 			abort "Unable to find ramdisk image!"
 		}
 	}
-	[ -s $tmpdir/dtb.img ] && {
-		dtb="--dt $tmpdir/dtb.img"
+	[ -s $tmp/dtb.img ] && {
+		dtb="--dt $tmp/dtb.img"
 		print "Found replacement device tree image!"
 	} || {
 		[ -s *-dt ] && dtb="--dt $(ls $split_img/*-dt)"
@@ -176,8 +176,8 @@ build_boot() {
 	[ -s *-tags_offset ] && tags_offset="--tags_offset $(cat *-tags_offset)"
 	$bin/mkbootimg $kernel $rd $second --cmdline "$cmdline" --board "$board" \
 		$base $pagesize $kernel_offset $ramdisk_offset $second_offset $tags_offset $dtb \
-		-o $tmpdir/boot-new.img
-	[ $? != 0 -o ! -s $tmpdir/boot-new.img ] && {
+		-o $tmp/boot-new.img
+	[ $? != 0 -o ! -s $tmp/boot-new.img ] && {
 		abort "Repacking boot image failed!"
 	}
 }
@@ -186,18 +186,18 @@ build_boot() {
 backup_boot() {
 	print "Backing up old boot image to $boot_backup..."
 	mkdir -p $(dirname $boot_backup)
-	cp -f $tmpdir/boot.img $boot_backup
+	cp -f $tmp/boot.img $boot_backup
 }
 
 # write the new boot image to boot block
 write_boot() {
 	print "Writing new boot image to memory..."
-	dd if=$tmpdir/boot-new.img of=$boot_block
+	dd if=$tmp/boot-new.img of=$boot_block
 }
 
 ## end install methods
 
-source $tmpdir/env.sh
+source $tmp/env.sh
 
 ## start boot image patching
 
