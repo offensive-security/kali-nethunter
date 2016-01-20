@@ -24,6 +24,16 @@ print() {
 	echo
 }
 
+abort() {
+	[ "$1" ] && {
+		print "Error: $1"
+		print "Aborting..."
+	}
+	umount /system
+	umount /data
+	exit 1
+}
+
 install() {
 	cp -r "$tmp$1" "$(dirname $1)"
 }
@@ -68,6 +78,10 @@ print "@Starting the install process"
 mount /data
 mount /system
 progress 0.1
+
+[ -e /data/data ] || {
+	abort "Your data partition appears to be empty. Please complete the Android setup wizard before installing Kali NetHunter!"
+}
 
 print "@Checking for previous versions of NetHunter"
 sh tools/previnstall.sh
