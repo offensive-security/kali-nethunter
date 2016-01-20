@@ -78,6 +78,8 @@ sed -i 's/hs/\/captures/g' kali-$architecture/etc/kismet/kismet.conf
 # if the user doesn't change their password
 # or change their configuration for key based ssh
 echo "[+] Modifying SSH to allow root user"
+
+sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g' kali-$architecture/etc/ssh/sshd_config
 sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/g' kali-$architecture/etc/ssh/sshd_config
 
 # Install dictionary
