@@ -30,9 +30,16 @@ abort() {
 		print "Error: $1"
 		print "Aborting..."
 	}
+	cleanup
+	print "Failed to patch boot image!"
+	exit 1
+}
+
+cleanup() {
 	umount /system
 	umount /data
-	exit 1
+
+	[ "$zip" ] && rm /tmp/console
 }
 
 install() {
@@ -111,13 +118,8 @@ sh tools/cleansystem.sh
 	install "/data/local"
 }
 
-print "Patching boot image..."
-sh boot-patcher.sh
-[ "$(cat $tmp/exitcode)" == 1 ] && abort
+print "Running boot image patcher..."
+sh boot-patcher.sh || abort
 
-umount /system
-umount /data
-
-[ "$zip" ] && rm /tmp/console
-
+cleanup
 print "Boot image patching complete"

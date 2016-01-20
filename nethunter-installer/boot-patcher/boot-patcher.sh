@@ -31,8 +31,7 @@ abort() {
 		print "Error: $1"
 		print "Aborting..."
 	}
-	echo 1 > $tmpdir/exitcode
-	exit
+	exit 1
 }
 
 ## start patch methods
@@ -120,15 +119,8 @@ build_ramdisk() {
 	find | cpio -o -H newc | gzip -9c > $tmpdir/ramdisk-new
 }
 
-# backup old boot image
-backup_boot() {
-	print "Backing up old boot image to $boot_backup..."
-	mkdir -p $(dirname $boot_backup)
-	cp -f $tmpdir/boot.img $boot_backup
-}
-
-# build and write the new boot image
-write_boot() {
+# build the new boot image
+build_boot() {
 	cd $split_img
 	[ -s $tmpdir/zImage ] && {
 		kernel="--kernel $tmpdir/zImage"
@@ -187,7 +179,17 @@ write_boot() {
 	[ $? != 0 -o ! -s $tmpdir/boot-new.img ] && {
 		abort "Repacking boot image failed!"
 	}
-	backup_boot
+}
+
+# backup old boot image
+backup_boot() {
+	print "Backing up old boot image to $boot_backup..."
+	mkdir -p $(dirname $boot_backup)
+	cp -f $tmpdir/boot.img $boot_backup
+}
+
+# write the new boot image to boot block
+write_boot() {
 	print "Writing new boot image to memory..."
 	dd if=$tmpdir/boot-new.img of=$boot_block
 }
@@ -205,6 +207,10 @@ dump_ramdisk
 patch_ramdisk
 
 build_ramdisk
+
+build_boot
+
+backup_boot
 
 write_boot
 
