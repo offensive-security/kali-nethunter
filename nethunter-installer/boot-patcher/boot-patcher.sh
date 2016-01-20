@@ -122,15 +122,16 @@ build_ramdisk() {
 # build the new boot image
 build_boot() {
 	cd $split_img
-	[ -s $tmpdir/zImage ] && {
-		kernel="--kernel $tmpdir/zImage"
-		print "Found replacement kernel zImage!"
-	} || {
-		[ -s *-zImage ] && {
-			kernel="--kernel $(ls $split_img/*-zImage)"
+	[ -s $tmpdir/zImage -o -s $tmpdir/zImage-dtb ] && {
+		[ -s $tmpdir/zImage ] && {
+			kernel="--kernel $tmpdir/zImage"
+			print "Found replacement kernel zImage!"
 		} || {
-			abort "Unable to find kernel zImage!"
+			kernel="--kernel $tmpdir/zImage-dtb"
+			print "Found replacement kernel zImage-dtb!"
 		}
+	} || {
+		abort "Unable to find kernel zImage!"
 	}
 	[ -s $tmpdir/ramdisk-new ] && {
 		rd="--ramdisk $tmpdir/ramdisk-new"
@@ -142,8 +143,8 @@ build_boot() {
 			abort "Unable to find ramdisk image!"
 		}
 	}
-	[ -s $tmpdir/dtb ] && {
-		dtb="--dt $tmpdir/dtb"
+	[ -s $tmpdir/dtb.img ] && {
+		dtb="--dt $tmpdir/dtb.img"
 		print "Found replacement device tree image!"
 	} || {
 		[ -s *-dt ] && dtb="--dt $(ls $split_img/*-dt)"

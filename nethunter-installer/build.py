@@ -284,24 +284,24 @@ def setupkernel():
 		'boot_block':Config.get(Device, 'block')
 	})
 
-	# Copy zImage from version/device to boot-patcher folder
+	# Copy zImage/zImage-dtb from version/device to boot-patcher folder
 	kernel_path = os.path.join('kernels', OS, Device)
-	if os.path.exists(os.path.join(kernel_path, 'zImage')):
-		zimage_location = os.path.join(kernel_path, 'zImage')
-	elif os.path.exists(os.path.join(kernel_path, 'zImage-dtb')):
-		zimage_location = os.path.join(kernel_path, 'zImage-dtb')
+	zimage_location = os.path.join(kernel_path, 'zImage')
+	if os.path.exists(zimage_location):
+		print('Found kernel zImage at: ' + zimage_location)
+		shutil.copy(zimage_location, os.path.join(out_path, 'zImage'))
+	elif os.path.exists(zimage_location + '-dtb'):
+		print('Found kernel zImage-dtb at: ' + zimage_location + '-dtb')
+		shutil.copy(zimage_location + '-dtb', os.path.join(out_path, 'zImage-dtb'))
 	else:
 		abort('Unable to find kernel zImage or zImage-dtb at: ' + kernel_path)
 		exit(0)
-
-	print('Found zImage at: ' + zimage_location)
-	shutil.copy(zimage_location, os.path.join(out_path, 'zImage'))
 
 	# Copy dtb.img if it exists
 	dtb_location = os.path.join(kernel_path, 'dtb.img')
 	if os.path.exists(dtb_location):
 		print('Found DTB image at: ' + dtb_location)
-		shutil.copy(dtb_location, os.path.join(out_path, 'dtb'))
+		shutil.copy(dtb_location, os.path.join(out_path, 'dtb.img'))
 
 	# Copy any init.d scripts
 	initd_path = os.path.join(kernel_path, 'init.d')
