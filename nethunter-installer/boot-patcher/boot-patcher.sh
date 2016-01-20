@@ -66,16 +66,12 @@ dump_boot() {
 determine_ramdisk_format() {
 	magicbytes="$(hexdump -vn2 -e '2/1 "%x"' $split_img/boot.img-ramdisk)"
 	case "$magicbytes" in
-		425a) rdformat="bzip2"; compress="bzip2 -9c"; decompress="bzip2 -dc" ;;
-		1f8b|1f9e) rdformat="gzip"; compress="gzip -9c"; decompress="gzip -dc" ;;
-		0221) rdformat="lz4"; compress="$bin/lz4 -9"; decompress="$bin/lz4 -d" ;;
-		5d00) rdformat="lzma"; compress="lzma -c"; decompress="lzma -dc" ;;
-		894c) rdformat="lzo"; compress="lzop -9c"; decompress="lzop -dc" ;;
-		fd37)
-			#compress="xz --check=crc32 --lzma2=dict=2MiB"
-			rdformat="xz"; compress="gzip -9c"; decompress="xz -d"
-			print "Warning: xz-crc compression isn't supported by busybox, using gzip instead!"
-			;;
+		425a) rdformat="bzip2"; decompress="bzip2 -dc" ;; #compress="bzip2 -9c" ;;
+		1f8b|1f9e) rdformat="gzip"; decompress="gzip -dc" ;; #compress="gzip -9c" ;;
+		0221) rdformat="lz4"; decompress="$bin/lz4 -d" ;; #compress="$bin/lz4 -9" ;;
+		5d00) rdformat="lzma"; decompress="lzma -dc" ;; #compress="lzma -c" ;;
+		894c) rdformat="lzo"; decompress="lzop -dc" ;; #compress="lzop -9c" ;;
+		fd37) rdformat="xz"; decompress="xz -d" ;; #compress="xz --check=crc32 --lzma2=dict=2MiB" ;;
 		*) abort "Unknown ramdisk compression format ($magicbytes)." ;;
 	esac
 	print "Detected ramdisk compression format: $rdformat"
@@ -121,7 +117,7 @@ patch_ramdisk() {
 build_ramdisk() {
 	print "Building new ramdisk..."
 	cd $ramdisk
-	find | cpio -o -H newc | $compress > $tmpdir/ramdisk-new
+	find | cpio -o -H newc | gzip -9c > $tmpdir/ramdisk-new
 }
 
 # backup old boot image
