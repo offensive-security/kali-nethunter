@@ -18,6 +18,14 @@ Building without the kernel (useful for just updating apps):
 ```sh
 python build.py -d hammerhead --marshmallow -nk
 ```
+Building with adding a full chroot (add kalifs-full.tar.xz to rootfs/[arch]/kalifs-full.tar.xz):
+```sh
+python build.py -d hammerhead --marshmallow --rootfs full
+```
+Create a release version:
+```sh
+python build.py -d hammerhead --marshmallow -rootfs full --release v3.0
+```
 Force download all third party apps:
 ```sh
 python build.py --forcedown
