@@ -130,36 +130,62 @@ backup_boot() {
 # build and write the new boot image
 write_boot() {
 	cd $split_img
-	cmdline=`cat *-cmdline`
-	board=`cat *-board`
-	base=`cat *-base`
-	pagesize=`cat *-pagesize`
-	kernel_offset=`cat *-kernel_offset`
-	ramdisk_offset=`cat *-ramdisk_offset`
-	tags_offset=`cat *-tags_offset`
-	[ -f *-second ] && {
-		second=`ls *-second`
-		second="--second $split_img/$second"
-		second_offset=`cat *-second_offset`
-		second_offset="--second_offset $second_offset"
+	[ -s $tmpdir/zImage ] && {
+		kernel="--kernel $tmpdir/zImage"
+		print "Found replacement kernel zImage!"
+	} || {
+		[ -s *-zImage ] && {
+			kernel="--kernel $(ls $split_img/*-zImage)"
+		} || {
+			abort "Unable to find kernel zImage!"
+		}
 	}
-	if [ -f $tmpdir/zImage ]; then
-		kernel="$tmpdir/zImage"
-	else
-		kernel="$split_img/$(ls *-zImage)"
-	fi
-	if [ -f $tmpdir/dtb ]; then
+	[ -s $tmpdir/ramdisk-new ] && {
+		rd="--ramdisk $tmpdir/ramdisk-new"
+		print "Found replacement ramdisk image!"
+	} || {
+		[ -s *-ramdisk ] && {
+			rd="--ramdisk $(ls $split_img/*-ramdisk)"
+		} || {
+			abort "Unable to find ramdisk image!"
+		}
+	}
+	[ -s $tmpdir/dtb ] && {
 		dtb="--dt $tmpdir/dtb"
-	elif [ -f *-dtb ]; then
-		dtb="--dt $split_img/$(ls *-dtb)"
-	fi
-	$bin/mkbootimg --kernel $kernel --ramdisk $tmpdir/ramdisk-new $second \
-		--cmdline "$cmdline" --board "$board" \
-		--base $base --pagesize $pagesize \
-		--kernel_offset $kernel_offset --ramdisk_offset $ramdisk_offset $second_offset \
-		--tags_offset $tags_offset $dtb --output $tmpdir/boot-new.img
-	[ $? != 0 -o `wc -c < $tmpdir/boot-new.img` -gt `wc -c < $tmpdir/boot.img` ] && {
-		abort "Repacking image failed"
+		print "Found replacement device tree image!"
+	} || {
+		[ -s *-dt ] && dtb="--dt $(ls $split_img/*-dt)"
+	}
+	[ -s *-second ] && second="--second $(ls $split_img/*-second)"
+	[ -s *-cmdline ] && cmdline="$(cat *-cmdline)"
+	[ -s *-board ] && board="$(cat *-board)"
+	[ -s *-base ] && {
+		base="--base $(cat *-base)"
+	} || {
+		abort "Unable to find boot base address!"
+	}
+	[ -s *-pagesize ] && {
+		pagesize="--pagesize $(cat *-pagesize)"
+	} || {
+		abort "Unable to find boot pagesize!"
+	}
+	[ -s *-kernel_offset ] && {
+		kernel_offset="--kernel_offset $(cat *-kernel_offset)"
+	} || {
+		abort "Unable to find kernel offset address!"
+	}
+	[ -s *-ramdisk_offset ] && {
+		ramdisk_offset="--ramdisk_offset $(cat *-ramdisk_offset)"
+	} || {
+		abort "Unable to find ramdisk offset address!"
+	}
+	[ -s *-second_offset ] && second_offset="--second_offset $(cat *-second_offset)"
+	[ -s *-tags_offset ] && tags_offset="--tags_offset $(cat *-tags_offset)"
+	$bin/mkbootimg $kernel $rd $second --cmdline "$cmdline" --board "$board" \
+		$base $pagesize $kernel_offset $ramdisk_offset $second_offset $tags_offset $dtb \
+		-o $tmpdir/boot-new.img
+	[ $? != 0 -o ! -s $tmpdir/boot-new.img ] && {
+		abort "Repacking boot image failed!"
 	}
 	backup_boot
 	print "Writing new boot image to memory..."
