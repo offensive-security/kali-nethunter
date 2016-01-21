@@ -269,8 +269,17 @@ def setupkernel():
 	print('Kernel: Copying ' + Arch + ' arch specific boot-patcher files...')
 	copytree(os.path.join('boot-patcher', 'arch', Arch), out_path)
 
-	# Set up variables in boot-patcher update-binary
-	print('Kernel: Configuring installer script')
+	if Device == 'generic':
+		# Set up variables in the kernel installer script
+		print('Kernel: Configuring installer script for generic %s devices' % Arch)
+		configfile(os.path.join(out_path, 'META-INF', 'com', 'google', 'android', 'update-binary'), {
+			'generic':Arch
+		})
+		# There's nothing left to configure
+		return
+
+	# Set up variables in the kernel installer script
+	print('Kernel: Configuring installer script for ' + Device)
 	configfile(os.path.join(out_path, 'META-INF', 'com', 'google', 'android', 'update-binary'), {
 		'kernel_string':Config.get(Device, 'kernelstring'),
 		'kernel_author':Config.get(Device, 'author'),
@@ -279,7 +288,7 @@ def setupkernel():
 	})
 
 	# Set up variables in boot-patcher.sh
-	print('Kernel: Configuring boot-patcher script')
+	print('Kernel: Configuring boot-patcher script for ' + Device)
 	configfile(os.path.join(out_path, 'boot-patcher.sh'), {
 		'boot_block':Config.get(Device, 'block')
 	})
@@ -360,6 +369,17 @@ def abort(err):
 	cleanup(True)
 	exit(0)
 
+def setuparch():
+	global Arch
+	global LibDir
+
+	if Arch == 'armhf':
+		LibDir = os.path.join('system', 'lib')
+	elif Arch == 'arm64' or Arch == 'amd64':
+		LibDir = os.path.join('system', 'lib64')
+	else:
+		abort('Unknown device architecture: ' + Arch)
+
 def main():
 	global Config
 	global Device
@@ -397,10 +417,11 @@ def main():
 	parser.add_argument('--marshmallow', '-m', action='store_true', help='Android 6')
 	parser.add_argument('--forcedown', '-f', action='store_true', help='Force redownloading')
 	parser.add_argument('--uninstaller', '-u', action='store_true', help='Create an uninstaller')
-	parser.add_argument('--kernel', '-k', action='store_true', help='Build kernel only')
-	parser.add_argument('--nokernel', '-nk', action='store_true', help='Build without the kernel')
-	parser.add_argument('--rootfs', '-fs', action='store', help='Build with Kali chroot rootfs (full or minimal)')
-	parser.add_argument('--release', '-r', action='store', help='Specify NetHunter release version')
+	parser.add_argument('--kernel', '-k', action='store_true', help='Build kernel installer only')
+	parser.add_argument('--nokernel', '-nk', action='store_true', help='Build without the kernel installer')
+	parser.add_argument('--generic', '-g', action='store', metavar='ARCH', help='Build a generic installer (modify ramdisk only)')
+	parser.add_argument('--rootfs', '-fs', action='store', metavar='SIZE', help='Build with Kali chroot rootfs (full or minimal)')
+	parser.add_argument('--release', '-r', action='store', metavar='VERSION', help='Specify NetHunter release version')
 
 	args = parser.parse_args()
 
@@ -412,6 +433,10 @@ def main():
 			Device = args.device
 		else:
 			abort('Device %s not found devices.cfg' % args.device)
+	elif args.generic:
+		Arch = args.generic
+		Device = 'generic'
+		setuparch()
 	elif args.forcedown:
 		supersu(True, supersu_beta)
 		allapps(True)
@@ -422,13 +447,7 @@ def main():
 	# If we found a device, set architecture and parse android OS release
 	if args.device:
 		Arch = Config.get(Device, 'arch')
-
-		if Arch == 'armhf':
-			LibDir = os.path.join('system', 'lib')
-		elif Arch == 'arm64' or Arch == 'amd64':
-			LibDir = os.path.join('system', 'lib64')
-		else:
-			abort('Unknown device architecture: ' + Arch)
+		setuparch()
 
 		i = 0
 		if args.kitkat:
@@ -459,8 +478,8 @@ def main():
 
 		print('Created uninstaller: ' + file_name)
 
-	# If no device is specified, we are done
-	if not args.device:
+	# If no device or generic arch is specified, we are done
+	if not (args.device or args.generic):
 		done()
 
 	# Download SuperSU, we need it for both the kernel and update installer
@@ -475,7 +494,11 @@ def main():
 		rootfs(args.forcedown, args.rootfs)
 
 	# Set file name tag depending on the options chosen	
-	file_tag = Device + '-' + OS
+	file_tag = Device
+	if args.device:
+		file_tag += '-' + OS
+	else:
+		file_tag += '-' + Arch
 	if args.rootfs:
 		file_tag += '-kalifs-' + args.rootfs
 	if args.release:

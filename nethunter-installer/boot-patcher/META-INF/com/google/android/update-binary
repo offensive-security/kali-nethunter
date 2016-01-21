@@ -6,6 +6,7 @@ kernel_string=
 kernel_author=
 kernel_version=
 device_names=
+generic=
 ## end build generated variables
 
 [ "$3" ] && {
@@ -59,10 +60,14 @@ setperm() {
 
 print "######################################################"
 print "              NetHunter Kernel Installer"
-print " $kernel_string by $kernel_author (version: $kernel_version)"
+[ "$generic" ] && {
+	print "    for $generic devices - ramdisk modifications only"
+} || {
+	print " $kernel_string by $kernel_author (version: $kernel_version)"
+}
 print "######################################################"
 
-{
+[ "$device_names" ] && {
 	print "Checking device compatibility..."
 	match=0
 	ro_product_device="$(getprop ro.product.device)"

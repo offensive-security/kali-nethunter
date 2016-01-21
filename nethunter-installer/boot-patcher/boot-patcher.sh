@@ -53,6 +53,46 @@ insert_after_last() {
 
 ## start install methods
 
+# find the location of the boot block
+find_boot() {
+	verify_block() {
+		[ -b "$boot_block" ] || return 1
+		print "Found boot partition at: $boot_block"
+	}
+	# if we already have boot block set then verify and use it
+	verify_block && return
+	# otherwise, time to go hunting!
+	[ -f /etc/recovery.fstab ] && {
+		# recovery fstab v1
+		boot_block=`awk '$1 == "/boot" {print $3}' /etc/recovery.fstab`
+		[ "$boot_block" ] && verify_block && return
+		# recovery fstab v2
+		boot_block=`awk '$2 == "/boot" {print $1}' /etc/recovery.fstab`
+		[ "$boot_block" ] && verify_block && return
+	}
+	[ -f /fstab.qcom ] && {
+		# qcom fstab
+		boot_block=`awk '$2 == "/boot" {print $1}' /fstab.qcom`
+		[ "$boot_block" ] && verify_block && return
+	}
+	[ -f /proc/emmc ] && {
+		# emmc layout
+		boot_block=`awk '$4 == "\"boot\"" {print $1}' /proc/emmc`
+		[ "$boot_block" ] && boot_block=/dev/block/`echo $boot_block | cut -f1 -d:` && verify_block && return
+	}
+	[ -f /proc/mtd ] && {
+		# mtd layout
+		boot_block=`awk '$4 == "\"boot\"" {print $1}' /proc/mtd`
+		[ "$boot_block" ] && boot_block=/dev/block/`echo $boot_block | cut -f1 -d:` && verify_block && return
+	}
+	[ -f /proc/dumchar_info ] && {
+		# mtk layout
+		boot_block=`awk '$1 == "/boot" {print $5}' /proc/dumchar_info`
+		[ "$boot_block" ] && verify_block && return
+	}
+	abort "Unable to find boot block location!"
+}
+
 # dump boot and extract ramdisk
 dump_boot() {
 	print "Dumping & unpacking original boot image..."
@@ -79,7 +119,6 @@ determine_ramdisk_format() {
 
 # extract the old ramdisk contents
 dump_ramdisk() {
-	determine_ramdisk_format
 	cd $ramdisk
 	$decompress < $split_img/boot.img-ramdisk | cpio -i
 	[ $? != 0 ] && abort "Dumping/unpacking ramdisk failed"
@@ -205,7 +244,11 @@ source $tmp/env.sh
 
 ## start boot image patching
 
+find_boot
+
 dump_boot
+
+determine_ramdisk_format
 
 dump_ramdisk
 
