@@ -80,7 +80,10 @@ print "######################################################"
 }
 
 # Unpack the installer
-[ "$zip" ] && extract "$zip" "$tmp"
+[ "$zip" ] && {
+	print "Unpacking the installer, this may take a while..."
+	extract "$zip" "$tmp"
+}
 cd "$tmp"
 
 source env.sh

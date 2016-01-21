@@ -68,7 +68,10 @@ print "##                                                   ##"
 print "####  ############### NetHunter #######################"
 
 # Unpack the installer
-[ "$zip" ] && extract "$zip" "$tmp"
+[ "$zip" ] && {
+	print "@Unpacking the installer, this may take a while..."
+	extract "$zip" "$tmp"
+}
 cd "$tmp"
 
 source env.sh
@@ -197,7 +200,7 @@ progress 0.8
 
 progress 0.9
 
-print "@Running Kali chroot installer...this may take a while..."
+print "@Running Kali chroot installer..."
 sh tools/installchroot.sh
 
 umount /data

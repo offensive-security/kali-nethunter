@@ -31,7 +31,7 @@ KALIFS="$(ls -1 $TMP/kalifs-*.tar.xz | head -1)"
 	}
 
 	# Extract new chroot
-	print "Extracting Kali rootfs..."
+	print "Extracting Kali rootfs, this may take a while..."
 	tar -xJ -f "$KALIFS" -C "$NHSYS"
 	print "Kali chroot installed"
 
