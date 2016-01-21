@@ -14,11 +14,11 @@ print() {
 	echo
 }
 
-res=`grep -o "<resolution.*/>" /twres/ui.xml`
+res=$(grep -o "<resolution.*/>" /twres/ui.xml)
 [ "$res" ] && {
-	res=`echo $res | awk -F'"' '{print $2"x"$4}'`
+	res=$(echo "$res" | awk -F'"' '{print $2"x"$4}')
 	print "Found screen resolution: $res"
-	[ -e "/tmp/nethunter/wallpaper/$res.png" ] && {
+	[ -f "/tmp/nethunter/wallpaper/$res.png" ] && {
 		chmod 777 $wp
 		rm $wp
 		cp "/tmp/nethunter/wallpaper/$res.png" $wp

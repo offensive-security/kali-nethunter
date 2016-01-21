@@ -3,9 +3,9 @@
 
 TMP=/tmp/nethunter
 
-source $TMP/env.sh
+. $TMP/env.sh
 
-console="$(cat /tmp/console)"
+console=$(cat /tmp/console)
 [ "$console" ] || console=/proc/$$/fd/1
 
 print() {
@@ -17,11 +17,11 @@ print() {
 mount /data
 
 NHSYS=/data/local/nhsystem
-KALIFS="$(ls -1 $TMP/kalifs-*.tar.xz | head -1)"
+KALIFS="$(ls $TMP/kalifs-*.tar.xz)"
 
 # If kalifs-*.tar.xz is present, then extract
 [ -f "$KALIFS" ] && {
-	print "Found Kali chroot to be installed: $(basename $KALIFS)"
+	print "Found Kali chroot to be installed: $(basename "$KALIFS")"
 	mkdir -p "$NHSYS"
 
 	# Remove previous chroot
@@ -36,7 +36,7 @@ KALIFS="$(ls -1 $TMP/kalifs-*.tar.xz | head -1)"
 	print "Kali chroot installed"
 
 	# We should remove the rootfs archive from /tmp to free up device memory
-	rm -f $KALIFS
+	rm -f "$KALIFS"
 } || {
 	print "No Kali rootfs archive found. Skipping..."
 }

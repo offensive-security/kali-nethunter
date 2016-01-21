@@ -3,9 +3,9 @@
 
 TMP=/tmp/nethunter
 
-source $TMP/env.sh
+. $TMP/env.sh
 
-console="$(cat /tmp/console)"
+console=$(cat /tmp/console)
 [ "$console" ] || console=/proc/$$/fd/1
 
 print() {

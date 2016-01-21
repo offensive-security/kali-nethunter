@@ -10,12 +10,12 @@ generic=
 ## end build generated variables
 
 [ "$3" ] && {
-	zip="$3"
-	console="/proc/$$/fd/$2"
+	zip=$3
+	console=/proc/$$/fd/$2
 	# write the location of the console buffer to /tmp/console for other scripts to use
-	echo $console > /tmp/console
+	echo "$console" > /tmp/console
 } || {
-	console="$(cat /tmp/console)"
+	console=$(cat /tmp/console)
 	[ "$console" ] || console=/proc/$$/fd/1
 }
 
@@ -44,7 +44,7 @@ cleanup() {
 }
 
 install() {
-	cp -r "$tmp$1" "$(dirname $1)"
+	cp -r "$tmp$1" "$(dirname "$1")"
 }
 
 extract() {
@@ -54,8 +54,8 @@ extract() {
 }
 
 setperm() {
-	find "$3" -type d -exec chmod $1 {} \;
-	find "$3" -type f -exec chmod $2 {} \;
+	find "$3" -type d -exec chmod "$1" {} \;
+	find "$3" -type f -exec chmod "$2" {} \;
 }
 
 print "######################################################"
@@ -74,7 +74,7 @@ print "######################################################"
 	ro_product_model="$(getprop ro.product.model)"
 	ro_build_product="$(getprop ro.build.product)"
 	for i in $device_names; do
-		[ "$ro_product_device" == "$i" -o "$ro_product_model" == "$i" -o "$ro_build_product" == "$i" ] && match=1
+		[ "$ro_product_device" = "$i" -o "$ro_product_model" = "$i" -o "$ro_build_product" = "$i" ] && match=1
 	done
 	[ $match != 1 ] && abort "Unsupported device"
 }
@@ -86,7 +86,7 @@ print "######################################################"
 }
 cd "$tmp"
 
-source env.sh
+. env.sh
 
 mount /system
 mount /data
@@ -96,31 +96,31 @@ mount /data
 print "Freeing some space on /system"
 sh tools/cleansystem.sh
 
-[ -e "$tmp/system/etc/firmware" ] && {
+[ -d "$tmp/system/etc/firmware" ] && {
 	print "Copying firmware to /system/etc/firmware"
 	setperm 0755 0644 "$tmp/system/etc/firmware"
 	install "/system/etc/firmware"
 }
 
-[ -e "$tmp$LIBDIR" ] && {
+[ -d "$tmp$LIBDIR" ] && {
 	print "Copying shared libraries and kernel modules to $LIBDIR"
 	setperm 0755 0755 "$tmp$LIBDIR"
 	install "$LIBDIR"
 }
 
-[ -e "$tmp/system/bin" ] && {
+[ -d "$tmp/system/bin" ] && {
 	print "Installing /system/bin binaries"
 	setperm 0755 0755 "$tmp/system/bin"
 	install "/system/bin"
 }
 
-[ -e "$tmp/system/xbin" ] && {
+[ -d "$tmp/system/xbin" ] && {
 	print "Installing /system/xbin binaries"
 	setperm 0755 0755 "$tmp/system/xbin"
 	install "/system/xbin"
 }
 
-[ -e "$tmp/data/local" ] && {
+[ -d "$tmp/data/local" ] && {
 	print "Copying additional files to /data/local"
 	setperm 0755 0644 "$tmp/data/local"
 	install "/data/local"

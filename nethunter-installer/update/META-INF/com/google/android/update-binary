@@ -2,12 +2,12 @@
 # Kali NetHunter installer
 
 [ "$3" ] && {
-	zip="$3"
-	console="/proc/$$/fd/$2"
+	zip=$3
+	console=/proc/$$/fd/$2
 	# write the location of the console buffer to /tmp/console for other scripts to use
-	echo $console > /tmp/console
+	echo "$console" > /tmp/console
 } || {
-	console="$(cat /tmp/console)"
+	console=$(cat /tmp/console)
 	[ "$console" ] || console=/proc/$$/fd/1
 }
 
@@ -35,7 +35,7 @@ abort() {
 }
 
 install() {
-	cp -r "$tmp$1" "$(dirname $1)"
+	cp -r "$tmp$1" "$(dirname "$1")"
 }
 
 extract() {
@@ -45,8 +45,8 @@ extract() {
 }
 
 setperm() {
-	find "$3" -type d -exec chmod $1 {} \;
-	find "$3" -type f -exec chmod $2 {} \;
+	find "$3" -type d -exec chmod "$1" {} \;
+	find "$3" -type f -exec chmod "$2" {} \;
 }
 
 symlink() {
@@ -74,7 +74,7 @@ print "####  ############### NetHunter #######################"
 }
 cd "$tmp"
 
-source env.sh
+. env.sh
 
 progress 0.0
 print "@Starting the install process"
@@ -144,43 +144,43 @@ install "/system/media/bootanimation.zip"
 
 progress 0.7
 
-[ -e "$tmp/system/etc/nano" ] && {
+[ -d "$tmp/system/etc/nano" ] && {
 	print "Copying nano highlights to /system/etc/nano"
 	setperm 0755 0644 "$tmp/system/etc/nano"
 	install "/system/etc/nano"
 }
 
-[ -e "$tmp/system/etc/terminfo" ] && {
+[ -d "$tmp/system/etc/terminfo" ] && {
 	print "Copying terminfo files to /system/etc/terminfo"
 	setperm 0755 0644 "$tmp/system/etc/terminfo"
 	install "/system/etc/terminfo"
 }
 
-[ -e "$tmp$LIBDIR" ] && {
+[ -d "$tmp$LIBDIR" ] && {
 	print "Copying shared libraries to $LIBDIR"
 	setperm 0755 0755 "$tmp$LIBDIR"
 	install "$LIBDIR"
 }
 
-[ -e "$tmp/system/bin" ] && {
+[ -d "$tmp/system/bin" ] && {
 	print "Installing /system/bin binaries"
 	setperm 0755 0755 "$tmp/system/bin"
 	install "/system/bin"
 }
 
-[ -e "$tmp/system/xbin" ] && {
+[ -d "$tmp/system/xbin" ] && {
 	print "Installing /system/xbin binaries"
 	setperm 0755 0755 "$tmp/system/xbin"
 	install "/system/xbin"
 }
 
-[ -e "$tmp/system/etc/init.d" ] && {
+[ -d "$tmp/system/etc/init.d" ] && {
 	print "Installing init.d scripts"
 	setperm 0755 0755 "$tmp/system/etc/init.d"
 	install "/system/etc/init.d"
 }
 
-[ -e "$tmp/data/local" ] && {
+[ -d "$tmp/data/local" ] && {
 	print "Copying additional files to /data/local"
 	setperm 0755 0644 "$tmp/data/local"
 	install "/data/local"

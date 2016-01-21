@@ -18,7 +18,7 @@ chmod -R 755 $bin
 rm -rf $ramdisk $split_img
 mkdir $ramdisk $split_img
 
-console="$(cat /tmp/console)"
+console=$(cat /tmp/console)
 [ "$console" ] || console=/proc/$$/fd/1
 
 print() {
@@ -38,14 +38,14 @@ abort() {
 
 # replace_line <file> <line match pattern> <replacement line>
 replace_line() {
-	sed -i "s/\s*$2\s*$/$3/" $1
+	sed -i "s/\s*$2\s*$/$3/" "$1"
 }
 
 # insert_after_last <file> <line match pattern> <inserted line>
 insert_after_last() {
-	[ -z "$(grep "^$3$" $1)" ] && {
-		line=$(($(grep -n "^\s*$2\s*$" $1 | tail -1 | cut -d: -f1) + 1))
-		sed -i "${line}i$3" $1
+	grep -q "^$3$" "$1" || {
+		line=$(($(grep -n "^\s*$2\s*$" "$1" | tail -1 | cut -d: -f1) + 1))
+		sed -i "${line}i$3" "$1"
 	}
 }
 
@@ -64,30 +64,30 @@ find_boot() {
 	# otherwise, time to go hunting!
 	[ -f /etc/recovery.fstab ] && {
 		# recovery fstab v1
-		boot_block=`awk '$1 == "/boot" {print $3}' /etc/recovery.fstab`
+		boot_block=$(awk '$1 == "/boot" {print $3}' /etc/recovery.fstab)
 		[ "$boot_block" ] && verify_block && return
 		# recovery fstab v2
-		boot_block=`awk '$2 == "/boot" {print $1}' /etc/recovery.fstab`
+		boot_block=$(awk '$2 == "/boot" {print $1}' /etc/recovery.fstab)
 		[ "$boot_block" ] && verify_block && return
 	}
 	[ -f /fstab.qcom ] && {
 		# qcom fstab
-		boot_block=`awk '$2 == "/boot" {print $1}' /fstab.qcom`
+		boot_block=$(awk '$2 == "/boot" {print $1}' /fstab.qcom)
 		[ "$boot_block" ] && verify_block && return
 	}
 	[ -f /proc/emmc ] && {
 		# emmc layout
-		boot_block=`awk '$4 == "\"boot\"" {print $1}' /proc/emmc`
-		[ "$boot_block" ] && boot_block=/dev/block/`echo $boot_block | cut -f1 -d:` && verify_block && return
+		boot_block=$(awk '$4 == "\"boot\"" {print $1}' /proc/emmc)
+		[ "$boot_block" ] && boot_block=/dev/block/$(echo "$boot_block" | cut -f1 -d:) && verify_block && return
 	}
 	[ -f /proc/mtd ] && {
 		# mtd layout
-		boot_block=`awk '$4 == "\"boot\"" {print $1}' /proc/mtd`
-		[ "$boot_block" ] && boot_block=/dev/block/`echo $boot_block | cut -f1 -d:` && verify_block && return
+		boot_block=$(awk '$4 == "\"boot\"" {print $1}' /proc/mtd)
+		[ "$boot_block" ] && boot_block=/dev/block/$(echo "$boot_block" | cut -f1 -d:) && verify_block && return
 	}
 	[ -f /proc/dumchar_info ] && {
 		# mtk layout
-		boot_block=`awk '$1 == "/boot" {print $5}' /proc/dumchar_info`
+		boot_block=$(awk '$1 == "/boot" {print $5}' /proc/dumchar_info)
 		[ "$boot_block" ] && verify_block && return
 	}
 	abort "Unable to find boot block location!"
@@ -96,31 +96,31 @@ find_boot() {
 # dump boot and extract ramdisk
 dump_boot() {
 	print "Dumping & unpacking original boot image..."
-	dd if=$boot_block of=$tmp/boot.img
-	$bin/unpackbootimg -i $tmp/boot.img -o $split_img
+	dd if="$boot_block" of="$tmp/boot.img"
+	$bin/unpackbootimg -i "$tmp/boot.img" -o "$split_img"
 	[ $? != 0 ] && abort "Dumping/unpacking boot image failed"
 }
 
 # determine the format the ramdisk was compressed in
 determine_ramdisk_format() {
-	magicbytes="$(hexdump -vn2 -e '2/1 "%x"' $split_img/boot.img-ramdisk)"
+	magicbytes=$(hexdump -vn2 -e '2/1 "%x"' $split_img/boot.img-ramdisk)
 	case "$magicbytes" in
-		425a) rdformat="bzip2"; decompress="bzip2 -dc" ;; #compress="bzip2 -9c" ;;
-		1f8b|1f9e) rdformat="gzip"; decompress="gzip -dc" ;; #compress="gzip -9c" ;;
-		0221) rdformat="lz4"; decompress="$bin/lz4 -d" ;; #compress="$bin/lz4 -9" ;;
-		5d00) rdformat="lzma"; decompress="lzma -dc" ;; #compress="lzma -c" ;;
-		894c) rdformat="lzo"; decompress="lzop -dc" ;; #compress="lzop -9c" ;;
-		fd37) rdformat="xz"; decompress="xz -d" ;; #compress="xz --check=crc32 --lzma2=dict=2MiB" ;;
+		425a) rdformat=bzip2; decompress=bzip2 ;; #compress="bzip2 -9c" ;;
+		1f8b|1f9e) rdformat=gzip; decompress=gzip ;; #compress="gzip -9c" ;;
+		0221) rdformat=lz4; decompress=$bin/lz4 ;; #compress="$bin/lz4 -9" ;;
+		5d00) rdformat=lzma; decompress=lzma ;; #compress="lzma -c" ;;
+		894c) rdformat=lzo; decompress=lzop ;; #compress="lzop -9c" ;;
+		fd37) rdformat=xz; decompress=xz ;; #compress="xz --check=crc32 --lzma2=dict=2MiB" ;;
 		*) abort "Unknown ramdisk compression format ($magicbytes)." ;;
 	esac
 	print "Detected ramdisk compression format: $rdformat"
-	command -v $decompress >/dev/null 2>&1 || abort "Unable to find archiver for $rdformat"
+	command -v "$decompress" || abort "Unable to find archiver for $rdformat"
 }
 
 # extract the old ramdisk contents
 dump_ramdisk() {
 	cd $ramdisk
-	$decompress < $split_img/boot.img-ramdisk | cpio -i
+	$decompress -d < $split_img/boot.img-ramdisk | cpio -i
 	[ $? != 0 ] && abort "Dumping/unpacking ramdisk failed"
 }
 
@@ -193,30 +193,30 @@ build_boot() {
 		[ -s *-dt ] && dtb="--dt $(ls $split_img/*-dt)"
 	}
 	[ -s *-second ] && second="--second $(ls $split_img/*-second)"
-	[ -s *-cmdline ] && cmdline="$(cat *-cmdline)"
-	[ -s *-board ] && board="$(cat *-board)"
+	[ -s *-cmdline ] && cmdline="$(cat ./*-cmdline)"
+	[ -s *-board ] && board="$(cat ./*-board)"
 	[ -s *-base ] && {
-		base="--base $(cat *-base)"
+		base="--base $(cat ./*-base)"
 	} || {
 		abort "Unable to find boot base address!"
 	}
 	[ -s *-pagesize ] && {
-		pagesize="--pagesize $(cat *-pagesize)"
+		pagesize="--pagesize $(cat ./*-pagesize)"
 	} || {
 		abort "Unable to find boot pagesize!"
 	}
 	[ -s *-kernel_offset ] && {
-		kernel_offset="--kernel_offset $(cat *-kernel_offset)"
+		kernel_offset="--kernel_offset $(cat ./*-kernel_offset)"
 	} || {
 		abort "Unable to find kernel offset address!"
 	}
 	[ -s *-ramdisk_offset ] && {
-		ramdisk_offset="--ramdisk_offset $(cat *-ramdisk_offset)"
+		ramdisk_offset="--ramdisk_offset $(cat ./*-ramdisk_offset)"
 	} || {
 		abort "Unable to find ramdisk offset address!"
 	}
-	[ -s *-second_offset ] && second_offset="--second_offset $(cat *-second_offset)"
-	[ -s *-tags_offset ] && tags_offset="--tags_offset $(cat *-tags_offset)"
+	[ -s *-second_offset ] && second_offset="--second_offset $(cat ./*-second_offset)"
+	[ -s *-tags_offset ] && tags_offset="--tags_offset $(cat ./*-tags_offset)"
 	$bin/mkbootimg $kernel $rd $second --cmdline "$cmdline" --board "$board" \
 		$base $pagesize $kernel_offset $ramdisk_offset $second_offset $tags_offset $dtb \
 		-o $tmp/boot-new.img
@@ -228,19 +228,19 @@ build_boot() {
 # backup old boot image
 backup_boot() {
 	print "Backing up old boot image to $boot_backup..."
-	mkdir -p $(dirname $boot_backup)
+	mkdir -p "$(dirname $boot_backup)"
 	cp -f $tmp/boot.img $boot_backup
 }
 
 # write the new boot image to boot block
 write_boot() {
 	print "Writing new boot image to memory..."
-	dd if=$tmp/boot-new.img of=$boot_block
+	dd if="$tmp/boot-new.img" of="$boot_block"
 }
 
 ## end install methods
 
-source $tmp/env.sh
+. $tmp/env.sh
 
 ## start boot image patching
 

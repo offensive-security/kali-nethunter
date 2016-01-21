@@ -3,9 +3,9 @@
 
 TMP=/tmp/nethunter
 
-source $TMP/env.sh
+. $TMP/env.sh
 
-console="$(cat /tmp/console)"
+console=$(cat /tmp/console)
 [ "$console" ] || console=/proc/$$/fd/1
 
 print() {
@@ -21,18 +21,18 @@ NHSYS=/data/local/nhsystem/kali-$ARCH
 /tmp/busybox mount /data
 
 # Fix for TWRP chasing symbolic links (mentioned by triryland)
-rm -rf $NHSYS/dev/*
-rm -rf $NHAPP/dev/*
-rm -rf $NH/dev/*
+rm -rf "$NHSYS/dev/*"
+rm -rf "$NHAPP/dev/*"
+rm -rf "$NH/dev/*"
 
 # We probably don't want two old chroots in the same folder, so pick newer location in /data/local first
-[ -d $NH ] && {
+[ -d "$NH" ] && {
 	print "Detected previous install of Kali, moving chroot..."
-	mv $NH $NHSYS
+	mv "$NH" "$NHSYS"
 } || {
-	[ -d $NHAPP ] && {
+	[ -d "$NHAPP" ] && {
 		print "Detected previous install of Kali, moving chroot..."
-		mv $NHAPP $NHSYS
+		mv "$NHAPP" "$NHSYS"
 	}
 }
 
