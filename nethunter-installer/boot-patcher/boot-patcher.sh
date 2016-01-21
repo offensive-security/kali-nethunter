@@ -131,7 +131,11 @@ build_boot() {
 			print "Found replacement kernel zImage-dtb!"
 		}
 	} || {
-		abort "Unable to find kernel zImage!"
+		[ -s *-zImage ] && {
+			kernel="--kernel $(ls $split_img/*-zImage)"
+		} || {
+			abort "Unable to find kernel zImage!"
+		}
 	}
 	[ -s $tmp/ramdisk-new ] && {
 		rd="--ramdisk $tmp/ramdisk-new"
