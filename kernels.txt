@@ -62,6 +62,13 @@ If you wish to add a kernel/new device, leave a link to source here and feel fre
 # git clone https://github.com/jcadduono/idleKernel-note3.git -b ik-cm12.1-kali
 # git clone https://github.com/jcadduono/idleKernel-note3.git -b ik-cm13.0-kali
 
+# - Samsung Galaxy S5
+# TouchWiz
+# git clone https://github.com/jcadduono/nethunter_kernel_klte.git -b touchwiz-5.0
+# CM
+# git clone https://github.com/jcadduono/nethunter_kernel_klte.git -b cm-12.1
+# git clone https://github.com/jcadduono/nethunter_kernel_klte.git -b cm-13.0
+
 # - Toolchain
 # git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7
 # git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9 -b lollipop-release
