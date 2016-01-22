@@ -5,6 +5,7 @@ bin=/tmp/nethunter/tools
 wp=/data/system/users/0/wallpaper
 
 # Make sure we are mounted
+mount /system
 mount /data
 
 console="$(cat /tmp/console)"

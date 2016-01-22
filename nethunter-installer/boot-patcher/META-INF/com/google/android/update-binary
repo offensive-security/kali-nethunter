@@ -91,6 +91,8 @@ cd "$tmp"
 mount /system
 mount /data
 
+setperm 0755 0755 "$tmp/tools"
+
 # Free up space for kernel only install (otherwise nothing installs!)
 # It actually runs twice when part of the NetHunter updater zip
 print "Freeing some space on /system"

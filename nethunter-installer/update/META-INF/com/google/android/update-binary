@@ -86,6 +86,8 @@ progress 0.1
 	abort "Your data partition appears to be empty. Please complete the Android setup wizard before installing Kali NetHunter!"
 }
 
+setperm 0755 0755 "$tmp/tools"
+
 print "@Checking for previous versions of NetHunter"
 sh tools/previnstall.sh
 
