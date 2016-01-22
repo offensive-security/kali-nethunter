@@ -1,6 +1,7 @@
 #!/sbin/sh
 # Set the wallpaper based on device screen resolution
 
+bin=/tmp/nethunter/tools
 wp=/data/system/users/0/wallpaper
 
 # Make sure we are mounted
@@ -14,9 +15,8 @@ print() {
 	echo
 }
 
-res=$(grep -o "<resolution.*/>" /twres/ui.xml)
+res=$($bin/screenres)
 [ "$res" ] && {
-	res=$(echo "$res" | awk -F'"' '{print $2"x"$4}')
 	print "Found screen resolution: $res"
 	[ -f "/tmp/nethunter/wallpaper/$res.png" ] && {
 		chmod 777 $wp
@@ -26,6 +26,8 @@ res=$(grep -o "<resolution.*/>" /twres/ui.xml)
 		chown system:system $wp
 		print "NetHunter wallpaper applied successfully"
 	} || {
-		print "No wallpaper found for your screen resolution! Skipping..."
+		print "No wallpaper found for your screen resolution. Skipping..."
 	}
+} || {
+	print "Can't get screen resolution from kernel! Skipping..."
 }
