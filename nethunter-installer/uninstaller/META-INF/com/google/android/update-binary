@@ -1,19 +1,45 @@
 #!/sbin/sh
-# Kali NetHunter Uninstaller (does not currently do anything useful, anyone wanna take it on?)
+# Kali NetHunter uninstaller (does not currently do anything useful, anyone wanna take it on?)
 
 [ "$3" ] && {
-	zip="$3"
-	console="/proc/$$/fd/$2"
+	zip=$3
+	console=/proc/$$/fd/$2
 	# write the location of the console buffer to /tmp/console for other scripts to use
 	echo "$console" > /tmp/console
 } || {
-	console="$(cat /tmp/console)"
+	console=$(cat /tmp/console)
 	[ "$console" ] || console=/proc/$$/fd/1
 }
 
 print() {
 	echo "ui_print $1" > $console
 	echo
+}
+
+abort() {
+	[ "$1" ] && {
+		print "Error: $1"
+		print "Aborting..."
+	}
+	cleanup
+	print "Failed to uninstall!"
+	exit 1
+}
+
+cleanup() {
+	rm /system/.rw
+	rm /data/.rw
+
+	umount /system
+	umount /data
+
+	[ "$zip" ] && rm /tmp/console
+}
+
+mount() {
+	mountpoint -q "$1" || /sbin/busybox mount -o rw "$1" || abort "Unable to mount $1 as rw!"
+	>> "$1/.rw" && return || /sbin/busybox mount -o remount,rw "$1"
+	>> "$1/.rw" && return || abort "Unable to write to $1!"
 }
 
 print "***********************"
@@ -49,9 +75,5 @@ mount /data
 	rm -rf /data/data/com.offsec.nethunter
 }
 
-umount /system
-umount /data
-
-[ "$zip" ] && rm /tmp/console
-
+cleanup
 print "@Uninstall complete"

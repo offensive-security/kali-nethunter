@@ -29,9 +29,19 @@ abort() {
 		print "Error: $1"
 		print "Aborting..."
 	}
+	cleanup
+	print "Failed to install Kali NetHunter!"
+	exit 1
+}
+
+cleanup() {
+	rm /system/.rw
+	rm /data/.rw
+
 	umount /system
 	umount /data
-	exit 1
+
+	[ "$zip" ] && rm /tmp/console
 }
 
 install() {
@@ -52,6 +62,12 @@ setperm() {
 symlink() {
 	rm "$2"
 	ln -s "$1" "$2"
+}
+
+mount() {
+	mountpoint -q "$1" || /sbin/busybox mount -o rw "$1" || abort "Unable to mount $1 as rw!"
+	>> "$1/.rw" && return || /sbin/busybox mount -o remount,rw "$1"
+	>> "$1/.rw" && return || abort "Unable to write to $1!"
 }
 
 print "#######################################################"
@@ -78,8 +94,10 @@ cd "$tmp"
 
 progress 0.0
 print "@Starting the install process"
+
 mount /data
 mount /system
+
 progress 0.1
 
 [ -e /data/data ] || {
@@ -100,6 +118,7 @@ print "Installing SuperSU in system mode"
 extract "$tmp/supersu/supersu.zip" "$sutmp"
 progress 0.3
 sh "$sutmp/META-INF/com/google/android/update-binary" dummy 1 "$sutmp/supersu.zip"
+
 mount /data
 mount /system
 
@@ -198,6 +217,8 @@ progress 0.8
 [ -e "$patchtmp" ] && {
 	print "@Running kernel installer..."
 	sh "$patchtmp/META-INF/com/google/android/update-binary"
+	mount /system
+	mount /data
 }
 
 progress 0.9
@@ -205,10 +226,6 @@ progress 0.9
 print "@Running Kali chroot installer..."
 sh tools/installchroot.sh
 
-umount /data
-umount /system
-
-[ "$zip" ] && rm /tmp/console
-
+cleanup
 print "@Kali NetHunter installation complete"
 progress 1.0

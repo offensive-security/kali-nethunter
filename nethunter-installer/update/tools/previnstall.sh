@@ -17,9 +17,6 @@ NH=/data/local/kali-$ARCH
 NHAPP=/data/data/com.offsec.nethunter/files/chroot/kali-$ARCH
 NHSYS=/data/local/nhsystem/kali-$ARCH
 
-# Make sure we are mounted
-/tmp/busybox mount /data
-
 # Fix for TWRP chasing symbolic links (mentioned by triryland)
 rm -rf "$NHSYS/dev/*"
 rm -rf "$NHAPP/dev/*"

@@ -13,9 +13,6 @@ print() {
 	echo
 }
 
-# Make sure we are mounted
-mount /data
-
 NHSYS=/data/local/nhsystem
 KALIFS="$(ls $TMP/kalifs-*.tar.xz)"
 

@@ -3,9 +3,6 @@
 
 SA=/system/app
 
-# Make sure we are mounted
-mount /system
-
 # Apks were located in /system/app folder previously
 rm -f $SA/PrintSpooler.*
 rm -f $SA/QuickOffice.apk

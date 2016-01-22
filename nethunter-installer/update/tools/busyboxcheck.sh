@@ -15,9 +15,6 @@ print() {
 
 XBIN=/system/xbin
 
-# Make sure we are mounted
-mount /system
-
 [ -f $XBIN/busybox -o -f /system/bin/busybox ] && {
 	print "Busybox binary detected. Skipping..."
 } || {
