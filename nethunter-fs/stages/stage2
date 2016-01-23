@@ -2,11 +2,9 @@ LANG=C chroot kali-$architecture /debootstrap/debootstrap --second-stage
 
 # Add our sources
 cat << EOF > kali-$architecture/etc/apt/sources.list
-deb http://http.kali.org/kali sana main non-free contrib
-#deb-src http://http.kali.org/kali sana main non-free contrib
-
-deb http://security.kali.org/ sana/updates main contrib non-free
-#deb-src http://security.kali.org/ sana/updates main contrib non-free
+deb http://http.kali.org/kali kali-rolling main contrib non-free
+# For source package access, uncomment the following line
+# deb-src http://http.kali.org/kali kali-rolling main contrib non-free
 EOF
 
 # fix for TUN symbolic link to enable programs like openvpn
