@@ -89,9 +89,13 @@ log-queries
 EOF
 
 # In order for metasploit to work daemon,nginx,postgres must all be added to inet
-# beef-xss creates user beef-xss. Openvpn server requires nobdy:nobody in order to work
+# beef-xss creates user beef-xss. Openvpn server requires nobdy:nobody in order to work.
 echo "inet:x:3004:postgres,root,beef-xss,daemon,nginx,mysql" >> kali-$architecture/etc/group
 echo "nobody:x:3004:nobody" >> kali-$architecture/etc/group
+
+# Apt now adds a new user to "nobody" but the _apt user can't access updates
+# because of inet.  Modify passwd to put them in inet group for android
+sed -i 's/_apt:x:104:65534/_apt:x:104:3004/g' kali-$architecture/etc/passwd
 
 # Insert correct .bashrc file from kali-defaults
 LANG=C chroot kali-$architecture cp /etc/skel/.bashrc /root/.bashrc
