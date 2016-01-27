@@ -69,27 +69,32 @@ find_boot() {
 		# recovery fstab v2
 		boot_block=$(awk '$2 == "/boot" {print $1}' /etc/recovery.fstab)
 		[ "$boot_block" ] && verify_block && return
-	}
+		return 1
+	} && return
 	[ -f /fstab.qcom ] && {
 		# qcom fstab
 		boot_block=$(awk '$2 == "/boot" {print $1}' /fstab.qcom)
 		[ "$boot_block" ] && verify_block && return
-	}
+		return 1
+	} && return
 	[ -f /proc/emmc ] && {
 		# emmc layout
 		boot_block=$(awk '$4 == "\"boot\"" {print $1}' /proc/emmc)
 		[ "$boot_block" ] && boot_block=/dev/block/$(echo "$boot_block" | cut -f1 -d:) && verify_block && return
-	}
+		return 1
+	} && return
 	[ -f /proc/mtd ] && {
 		# mtd layout
 		boot_block=$(awk '$4 == "\"boot\"" {print $1}' /proc/mtd)
 		[ "$boot_block" ] && boot_block=/dev/block/$(echo "$boot_block" | cut -f1 -d:) && verify_block && return
-	}
+		return 1
+	} && return
 	[ -f /proc/dumchar_info ] && {
 		# mtk layout
 		boot_block=$(awk '$1 == "/boot" {print $5}' /proc/dumchar_info)
 		[ "$boot_block" ] && verify_block && return
-	}
+		return 1
+	} && return
 	abort "Unable to find boot block location!"
 }
 
