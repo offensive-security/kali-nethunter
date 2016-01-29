@@ -1,7 +1,7 @@
 {
-	"version_code": 16,
+	"version_code": 17,
 	"chroot_version": 2,
 	"chroot_sha512_full": "45af3ed319e520b85693edb2058a82b942f875a0c7f4729dd3e3eae6f110c7d106a7423639a58c53247be3e95bf977b2107877fdb0a77b6f7b06286e73e75151",
 	"chroot_sha512_min": "2d087f12d40ff28e9c475492f87841a7be5c1657edbadab1e90d9f9691c0baca66d1b5be283c778bb18b4dd2ff3dbf66d44aa3376aed7493b68e6e4993e7dc17",
-	"content": "Version 3.0.3 <p>New Features</P><li>Initial pineapple nano connection helper</li><p>Fixes</P><li>HID generates shellcode branch fully merged</li>"
+	"content": "Version 3.0.4 <p>New Features</P><li>Add Belgium language (@Moonboxstudio)</li><li>Pineapple nano now gets upstream from wlan0</li><p>Fixes</P><li>Revert HID changes</li><li>Resolv.conf chmod fixes for kali-rolling</li>"
 }
