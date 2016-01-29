@@ -92,12 +92,14 @@ def supersu(forcedown, beta):
 		arch = {
 			'armv7':os.path.join('boot-patcher', 'arch', 'armhf'),
 			'arm64':os.path.join('boot-patcher', 'arch', 'arm64'),
-			'x64':os.path.join('boot-patcher', 'arch', 'amd64')
+			'x64':os.path.join('boot-patcher', 'arch', 'amd64'),
+			'x86':os.path.join('boot-patcher', 'arch', 'i386')
 		}
 		libdir = {
 			'armv7':'lib',
 			'arm64':'lib64',
-			'x64':'lib64'
+			'x64':'lib64',
+			'x86':'lib'
 		}
 
 		try:
@@ -184,6 +186,8 @@ def rootfs(forcedown, fs_size):
 		fs_url = fs_host + 'arm64/' + fs_file
 	elif Arch == 'amd64':
 		fs_url = fs_host + 'arm64/' + fs_file
+	elif Arch == 'i386':
+		fs_url = fs_host + 'i386/' + fs_file
 	else:
 		abort('Unknown device architecture: ' + Arch)
 
@@ -373,7 +377,7 @@ def setuparch():
 	global Arch
 	global LibDir
 
-	if Arch == 'armhf':
+	if Arch == 'armhf' or Arch == 'i386':
 		LibDir = os.path.join('system', 'lib')
 	elif Arch == 'arm64' or Arch == 'amd64':
 		LibDir = os.path.join('system', 'lib64')
