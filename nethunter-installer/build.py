@@ -233,6 +233,14 @@ def zip(src, dst):
 		print('IOError = ' + e.reason)
 		abort('Unable to create the ZIP file')
 
+def readkey(key, default=''):
+	global Config
+	global Device
+	try:
+		return Config.get(Device, key)
+	except:
+		return default
+
 def configfile(file_name, values):
 	# Open file as read only and copy to string
 	file_handle = open(file_name, 'r')
@@ -242,7 +250,7 @@ def configfile(file_name, values):
 	# Replace values of variables
 	for key, value in values.iteritems():
 		# Quote value if not already quoted
-		if not (value[0] == value[-1] and (value[0] == '"' or value[0] == "'")):
+		if value and not (value[0] == value[-1] and (value[0] == '"' or value[0] == "'")):
 			value = '"%s"' % value
 
 		file_string = (re.sub('^' + re.escape(key) + '=.*$', key + '=' + value, file_string, flags=re.M))
@@ -285,16 +293,16 @@ def setupkernel():
 	# Set up variables in the kernel installer script
 	print('Kernel: Configuring installer script for ' + Device)
 	configfile(os.path.join(out_path, 'META-INF', 'com', 'google', 'android', 'update-binary'), {
-		'kernel_string':Config.get(Device, 'kernelstring'),
-		'kernel_author':Config.get(Device, 'author'),
-		'kernel_version':Config.get(Device, 'version'),
-		'device_names':Config.get(Device, 'devicenames')
+		'kernel_string':readkey('kernelstring', 'NetHunter kernel'),
+		'kernel_author':readkey('author', 'Unknown'),
+		'kernel_version':readkey('version', '1.0'),
+		'device_names':readkey('devicenames')
 	})
 
 	# Set up variables in boot-patcher.sh
 	print('Kernel: Configuring boot-patcher script for ' + Device)
 	configfile(os.path.join(out_path, 'boot-patcher.sh'), {
-		'boot_block':Config.get(Device, 'block')
+		'boot_block':readkey('block')
 	})
 
 	# Copy zImage/zImage-dtb from version/device to boot-patcher folder
@@ -450,7 +458,7 @@ def main():
 
 	# If we found a device, set architecture and parse android OS release
 	if args.device:
-		Arch = Config.get(Device, 'arch')
+		Arch = readkey('arch', 'armhf')
 		setuparch()
 
 		i = 0
