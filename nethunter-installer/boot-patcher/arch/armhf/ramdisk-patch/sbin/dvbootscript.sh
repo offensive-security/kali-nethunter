@@ -2,7 +2,7 @@
 # portions from franciscofranco, ak, boype & osm0sis + Franco's Dev Team
 
 # custom busybox installation shortcut
-bb=/sbin/bb/busybox
+bb=/sbin/busybox_nh
 
 # disable sysctl.conf to prevent ROM interference with tunables
 $bb mount -o rw,remount /system

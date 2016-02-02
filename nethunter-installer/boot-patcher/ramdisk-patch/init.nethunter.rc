@@ -5,7 +5,7 @@ on init
     export TERM linux
 
 # Execute files in /system/etc/init.d before booting
-service run-parts /sbin/bb/busybox run-parts /system/etc/init.d
+service run-parts /sbin/busybox_nh run-parts /system/etc/init.d
     class main
     oneshot
 
