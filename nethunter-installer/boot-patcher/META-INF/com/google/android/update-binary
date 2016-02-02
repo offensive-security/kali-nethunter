@@ -76,6 +76,11 @@ print "              NetHunter Kernel Installer"
 }
 print "######################################################"
 
+command -v getprop || {
+	print "Warning: getprop not found! Skipping device check!"
+	unset device_names
+}
+
 [ "$device_names" ] && {
 	print "Checking device compatibility..."
 	match=0
