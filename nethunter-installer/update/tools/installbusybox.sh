@@ -20,3 +20,8 @@ rm -f $XBIN/busybox_nh
 cp $TMP/tools/busybox $XBIN/busybox_nh
 chmod 755 $XBIN/busybox_nh
 $XBIN/busybox_nh --install -s $XBIN
+
+[ -e "$XBIN/busybox" ] || {
+	print "$XBIN/busybox not found! Symlinking..."
+	ln -s $XBIN/busybox_nh $XBIN/busybox
+}
