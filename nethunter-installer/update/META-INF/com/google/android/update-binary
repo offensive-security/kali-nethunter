@@ -152,8 +152,8 @@ progress 0.5
 print "@Freeing up some space on /system"
 sh tools/cleansystem.sh
 
-print "@Checking for busybox binary"
-sh tools/busyboxcheck.sh
+print "@Running busybox installer..."
+sh tools/installbusybox.sh
 
 progress 0.6
 
