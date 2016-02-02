@@ -106,6 +106,11 @@ progress 0.1
 
 setperm 0755 0755 "$tmp/tools"
 
+# Install additional busybox applets to /sbin in case something is missing during installation
+print "@Installing busybox applets to /sbin"
+cp tools/busybox /sbin/busybox_nh
+/sbin/busybox_nh --install /sbin
+
 print "@Checking for previous versions of NetHunter"
 sh tools/previnstall.sh
 
