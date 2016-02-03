@@ -135,8 +135,6 @@ print "Installing NetHunter Terminal"
 install "/data/app/Term-nh.apk"
 print "Installing BlueNMEA"
 install "/data/app/BlueNMEA.apk"
-print "Installing Drivedroid Free"
-install "/data/app/Drivedroid.apk"
 print "Installing Hacker's Keyboard"
 install "/data/app/Hackerskeyboard.apk"
 print "Installing RFAnalyzer"
@@ -151,6 +149,12 @@ print "Installing RouterKeygen"
 install "/data/app/RouterKeygen.apk"
 print "Installing cSploit Nightly"
 install "/data/app/cSploit-nightly.apk"
+
+# skip installing DriveDroid if it's already installed from the play store
+[ -d "/data/app/com.softwarebakery.drivedroid"* ] || {
+	print "Installing DriveDroid Free"
+	install "/data/app/Drivedroid.apk"
+}
 
 progress 0.5
 
