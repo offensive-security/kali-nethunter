@@ -305,45 +305,48 @@ def setupkernel():
 		'boot_block':readkey('block')
 	})
 
-	# Copy zImage/zImage-dtb from version/device to boot-patcher folder
-	kernel_path = os.path.join('kernels', OS, Device)
-	zimage_location = os.path.join(kernel_path, 'zImage')
-	if os.path.exists(zimage_location):
-		print('Found kernel zImage at: ' + zimage_location)
-		shutil.copy(zimage_location, os.path.join(out_path, 'zImage'))
-	elif os.path.exists(zimage_location + '-dtb'):
-		print('Found kernel zImage-dtb at: ' + zimage_location + '-dtb')
-		shutil.copy(zimage_location + '-dtb', os.path.join(out_path, 'zImage-dtb'))
-	else:
-		abort('Unable to find kernel zImage or zImage-dtb at: ' + kernel_path)
+	device_path = os.path.join('kernels', OS, Device)
+
+	# Copy kernel image from version/device to boot-patcher folder
+	kernel_images = [ 'zImage', 'zImage-dtb', 'Image', 'Image-dtb', 'Image.gz', 'Image.gz-dtb' ]
+	kernel_found = False
+	for kernel_image in kernel_images:
+		kernel_location = os.path.join(device_path, kernel_image)
+		if os.path.exists(kernel_location):
+			print('Found kernel image at: ' + kernel_location)
+			shutil.copy(kernel_location, os.path.join(out_path, kernel_image))
+			kernel_found = True
+			break
+	if not kernel_found:
+		abort('Unable to find kernel image at: ' + device_path)
 		exit(0)
 
 	# Copy dtb.img if it exists
-	dtb_location = os.path.join(kernel_path, 'dtb.img')
+	dtb_location = os.path.join(device_path, 'dtb.img')
 	if os.path.exists(dtb_location):
 		print('Found DTB image at: ' + dtb_location)
 		shutil.copy(dtb_location, os.path.join(out_path, 'dtb.img'))
 
 	# Copy any init.d scripts
-	initd_path = os.path.join(kernel_path, 'init.d')
+	initd_path = os.path.join(device_path, 'init.d')
 	if os.path.exists(initd_path):
 		print('Found additional init.d scripts at: ' + initd_path)
 		copytree(initd_path, os.path.join(out_path, 'system', 'etc', 'init.d'))
 
 	# Copy any modules
-	modules_path = os.path.join(kernel_path, 'modules')
+	modules_path = os.path.join(device_path, 'modules')
 	if os.path.exists(modules_path):
 		print('Found additional kernel modules at: ' + modules_path)
 		copytree(modules_path, os.path.join(out_path, LibDir, 'modules'))
 
 	# Copy any device specific firmware
-	firmware_path = os.path.join(kernel_path, 'firmware')
+	firmware_path = os.path.join(device_path, 'firmware')
 	if os.path.exists(firmware_path):
 		print('Found additional firmware binaries at: ' + firmware_path)
 		copytree(firmware_path, os.path.join(out_path, 'system', 'etc', 'firmware'))
 
 	# Copy any /data/local folder files
-	local_path = os.path.join(kernel_path, 'local')
+	local_path = os.path.join(device_path, 'local')
 	if os.path.exists(local_path):
 		print('Found additional /data/local files at: ' + local_path)
 		copytree(local_path, os.path.join(out_path, 'data', 'local'))

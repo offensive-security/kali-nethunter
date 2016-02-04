@@ -166,19 +166,18 @@ build_ramdisk() {
 # build the new boot image
 build_boot() {
 	cd $split_img
-	[ -s $tmp/zImage -o -s $tmp/zImage-dtb ] && {
-		[ -s $tmp/zImage ] && {
-			kernel="--kernel $tmp/zImage"
-			print "Found replacement kernel zImage!"
-		} || {
-			kernel="--kernel $tmp/zImage-dtb"
-			print "Found replacement kernel zImage-dtb!"
-		}
-	} || {
+	kernel=
+	for image in zImage zImage-dtb Image Image-dtb Image.gz Image.gz-dtb; do
+		[ -s $tmp/$image ] && {
+			kernel="--kernel $tmp/$image"
+			print "Found replacement kernel $image!"
+		} && break
+	done
+	[ "$kernel" ] || {
 		[ -s *-zImage ] && {
 			kernel="--kernel $(ls $split_img/*-zImage)"
 		} || {
-			abort "Unable to find kernel zImage!"
+			abort "Unable to find kernel image!"
 		}
 	}
 	[ -s $tmp/ramdisk-new ] && {
