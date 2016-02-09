@@ -1,9 +1,0 @@
-<b><#selectbg_g>Nethunter - v 2.0</#></b>
-
-<*>New installer</*>
-<*>Update chroot to Kali version 2.0</*>
-<*>Update powersploit payload</*>
-<*>All kernels updated to Android 5.1.1</*>
-<*>Application - Installation now contained inside chroot</*>
-<*>Application - Save/load ducky script files</*>
-<*>Application - Some devices support mac changer</*>

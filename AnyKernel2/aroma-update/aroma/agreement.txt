@@ -1,3 +1,0 @@
-<b>Security Notice:</b>
-
-<*> Nethunter installs and uses a standard Kali Linux distribution "under the hood".  To support this functionality, some standard Android security features such as Security Enhanced Linux (selinux) are disabled.  Moreover, Kali Linux processes may run with full root privileges and can therefore access system functionality well beyond the normal Android security model.  Consider therefore that this device, as a hybrid, may not be as secure as either standard Kali Linux OR standard Android, and you are advised not to install or use Nethunter on "daily driver" devices or devices which store or access sensitive/private data. </*>

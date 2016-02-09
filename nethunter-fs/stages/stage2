@@ -33,8 +33,8 @@ cat << EOF > kali-$architecture/etc/hosts
 ::1             localhost ip6-localhost ip6-loopback
 EOF
 
-# Create default capture folders along with /sdcard and /system
+# Create default capture folders along with /sdcard, /external_sd, and /system
 cap=kali-$architecture/captures
 mkdir -p kali-$architecture/root/.ssh/
-mkdir -p kali-$architecture/sdcard kali-$architecture/system
+mkdir -p kali-$architecture/sdcard kali-$architecture/external_sd kali-$architecture/system
 mkdir -p $cap/evilap $cap/ettercap $cap/kismet/db $cap/nmap $cap/sslstrip $cap/tshark $cap/wifite $cap/tcpdump $cap/urlsnarf $cap/dsniff $cap/honeyproxy $cap/mana/sslsplit

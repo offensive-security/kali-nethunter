@@ -1,0 +1,1 @@
+update/META-INF/com/google/android/update-binary

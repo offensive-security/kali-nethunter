@@ -1,4 +1,4 @@
-Locations of all kernels used in Kali Nethunter.  
+Locations of all kernels used in Kali NetHunter.  
 
 If you wish to add a kernel/new device, leave a link to source here and feel free to add your name if you wish:
 
@@ -13,11 +13,15 @@ If you wish to add a kernel/new device, leave a link to source here and feel fre
 # - Nexus 7 (2012)
 # git clone https://github.com/binkybear/kangaroo.git -b kangaroo
 # git clone https://github.com/binkybear/android_kernel_asus_grouper.git -b android-tegra3-grouper-3.1-lollipop-release_tegra-l4t-r16-16.5 nexus7_2012-5
+# CM
+# git clone https://github.com/jcadduono/nethunter_kernel_grouper_tilapia.git nexus7-cm
 
 # - Nexus 7 (2013)
 # git clone https://github.com/binkybear/flo.git -b ElementalX-5.00 nexus7_2013-6
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-flo-3.4-kitkat-mr2 flodeb
 # git clone https://github.com/binkybear/flo.git -b ElementalX-4.00 nexus7_2013-5
+# CM
+# git clone https://github.com/jcadduono/nethunter_kernel_mako_flo.git nexus7-cm
 
 # - Nexus 6P
 # git clone https://github.com/binkybear/AK-Angler.git -b ak-aosp-6.0.1-staging nexus6P-6
@@ -32,10 +36,14 @@ If you wish to add a kernel/new device, leave a link to source here and feel fre
 # - Nexus 5
 # git clone https://github.com/binkybear/furnace_kernel_lge_hammerhead.git -b android-4.4
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-hammerhead-3.4-lollipop-release nexus5-5
+# CM
+# git clone https://github.com/jcadduono/nethunter_kernel_hammerhead.git nexus5-cm
 
 # - Nexus 4
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-mako-3.4-kitkat-mr2 mako
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-mako-3.4-lollipop-release nexus4-5
+# CM
+# git clone https://github.com/jcadduono/nethunter_kernel_mako_flo.git nexus4-cm
 
 # - OnePlus Two
 # OXYGEN
@@ -48,6 +56,18 @@ If you wish to add a kernel/new device, leave a link to source here and feel fre
 # git clone https://github.com/binkybear/AK-OnePone.git -b cm-11.0 oneplus11
 # git clone https://github.com/binkybear/AK-OnePone.git -b cm-12.1 oneplus12
 # git clone https://github.com/binkybear/AK-OnePone.git -b cm-13.0 oneplus13
+
+# - Samsung Galaxy Note 3
+# TouchWiz
+# git clone https://github.com/jcadduono/idleKernel-note3.git -b ik-nethunter-touchwiz
+# AOSP/CM
+# git clone https://github.com/jcadduono/idleKernel-note3.git -b ik-nethunter-L
+# git clone https://github.com/jcadduono/idleKernel-note3.git -b ik-nethunter-M
+
+# - Samsung Galaxy S5
+# AOSP/CM
+# git clone https://github.com/jcadduono/nethunter_kernel_klte.git -b cm-12.1
+# git clone https://github.com/jcadduono/nethunter_kernel_klte.git -b cm-13.0
 
 # - Toolchain
 # git clone https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-eabi-4.7

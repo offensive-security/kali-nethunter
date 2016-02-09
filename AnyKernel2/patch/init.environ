@@ -1,2 +1,0 @@
-export TERMINFO /system/etc/terminfo
-export TERM linux
