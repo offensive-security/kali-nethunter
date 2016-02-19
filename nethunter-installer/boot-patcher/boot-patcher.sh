@@ -34,23 +34,6 @@ abort() {
 	exit 1
 }
 
-## start patch methods
-
-# replace_line <file> <line match pattern> <replacement line>
-replace_line() {
-	sed -i "s/\s*$2\s*$/$3/" "$1"
-}
-
-# insert_after_last <file> <line match pattern> <inserted line>
-insert_after_last() {
-	grep -q "^$3$" "$1" || {
-		line=$(($(grep -n "^\s*$2\s*$" "$1" | tail -1 | cut -d: -f1) + 1))
-		sed -i "${line}i$3" "$1"
-	}
-}
-
-## end patch methods
-
 ## start install methods
 
 # find the location of the boot block
@@ -129,31 +112,15 @@ dump_ramdisk() {
 	[ $? != 0 ] && abort "Dumping/unpacking ramdisk failed"
 }
 
-# patch the ramdisk
+# execute all scripts in patch.d
 patch_ramdisk() {
-	print "Patching the ramdisk..."
-	cd $ramdisk
-	# fix permissions of patch files
-	chmod -R 0755 $ramdisk_patch
-	chmod 0644 $ramdisk_patch/sbin/media_profiles.xml
-	# move the patch files into the ramdisk
-	cp -rd $ramdisk_patch/. ./
-	# make sure adb is not secure
-	replace_line default.prop "ro.adb.secure=1" "ro.adb.secure=0"
-	replace_line default.prop "ro.secure=1" "ro.secure=0"
-	# import nethunter and superuser init to init.rc
-	insert_after_last init.rc "import /init\\..*\\.rc" "import /init.nethunter.rc"
-	insert_after_last init.rc "import /init\\..*\\.rc" "import /init.superuser.rc"
-	# patch sepolicy for SuperSU
-	print "Patching the sepolicy for SuperSU..."
-	LD_LIBRARY_PATH=$LIBDIR /system/xbin/supolicy --file $ramdisk/sepolicy $ramdisk/sepolicy_new
-	[ -f $ramdisk/sepolicy_new ] && {
-		rm $ramdisk/sepolicy
-		mv $ramdisk/sepolicy_new $ramdisk/sepolicy
-		chmod 0644 $ramdisk/sepolicy
-	} || {
-		print "Unable to patch the sepolicy, continuing..."
-	}
+	print "Running ramdisk patching scripts..."
+	find "$tmp/patch.d/" -type f | sort | while read -r patchfile; do
+		print "Executing: $(basename $patchfile)"
+		env="$tmp/patch.d-env" sh "$patchfile" || {
+			abort "Script failed: $(basename $patchfile)"
+		}
+	done
 }
 
 # build the new ramdisk

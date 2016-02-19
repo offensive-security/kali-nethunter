@@ -1,0 +1,15 @@
+#!/sbin/sh
+
+. "$env"
+
+# fix permissions of patch files
+chmod -R 0755 $ramdisk_patch
+chmod 0644 $ramdisk_patch/sbin/media_profiles.xml
+# move the patch files into the ramdisk
+cp -rd $ramdisk_patch/. ./
+# make sure adb is not secure
+replace_line default.prop "ro.adb.secure=1" "ro.adb.secure=0"
+replace_line default.prop "ro.secure=1" "ro.secure=0"
+# import nethunter and superuser init to init.rc
+insert_after_last init.rc "import /init\\..*\\.rc" "import /init.nethunter.rc"
+insert_after_last init.rc "import /init\\..*\\.rc" "import /init.superuser.rc"

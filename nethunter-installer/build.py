@@ -333,6 +333,12 @@ def setupkernel():
 		print('Found additional init.d scripts at: ' + initd_path)
 		copytree(initd_path, os.path.join(out_path, 'system', 'etc', 'init.d'))
 
+	# Copy any patch.d scripts
+	patchd_path = os.path.join(device_path, 'patch.d')
+	if os.path.exists(patchd_path):
+		print('Found additional patch.d scripts at: ' + patchd_path)
+		copytree(patchd_path, os.path.join(out_path, 'patch.d'))
+
 	# Copy any modules
 	modules_path = os.path.join(device_path, 'modules')
 	if os.path.exists(modules_path):
