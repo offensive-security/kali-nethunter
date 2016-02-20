@@ -1,0 +1,36 @@
+#!/bin/sh
+
+tmp=/tmp/nethunter/boot-patcher
+bin=$tmp/tools
+ramdisk=$tmp/ramdisk
+ramdisk_patch=$ramdisk-patch
+
+console=$(cat /tmp/console)
+[ "$console" ] || console=/proc/$$/fd/1
+
+. $tmp/env.sh
+
+print() {
+	echo "ui_print -- $1" > $console
+	echo
+}
+
+abort() {
+	[ "$1" ] && print "Error: $1"
+	exit 1
+}
+
+# replace_line <file> <line match pattern> <replacement line>
+replace_line() {
+	sed -i "s/\s*$2\s*$/$3/" "$1"
+}
+
+# insert_after_last <file> <line match pattern> <inserted line>
+insert_after_last() {
+	grep -q "^$3$" "$1" || {
+		line=$(($(grep -n "^\s*$2\s*$" "$1" | tail -1 | cut -d: -f1) + 1))
+		sed -i "${line}i$3" "$1"
+	}
+}
+
+cd $ramdisk
