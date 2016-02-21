@@ -2,6 +2,8 @@
 
 . "$env"
 
+print "Patching the ramdisk for NetHunter & init.d..."
+
 # fix permissions of patch files
 chmod -R 0755 $ramdisk_patch
 chmod 0644 $ramdisk_patch/sbin/media_profiles.xml
