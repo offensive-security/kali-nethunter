@@ -14,11 +14,11 @@ f2fs_cache_opts="nosuid,nodev,noatime,nodiratime,discard,inline_xattr"
 f2fs_cache_flags="wait"
 
 fstab_get_block() {
-	echo "$(awk '$2 == "/'$1'" && $3 == "'$2'" { print $1; exit; }' "$fstab")"
+	awk '$2 == "/'$1'" && $3 == "'$2'" { print $1; exit; }' "$fstab"
 }
 
 fstab_get_line() {
-	echo "$(awk '$2 == "/'$1'" && $3 == "'$2'" { print NR; exit; }' "$fstab")"
+	awk '$2 == "/'$1'" && $3 == "'$2'" { print NR; exit; }' "$fstab"
 }
 
 fstab_has() {
@@ -32,16 +32,19 @@ fstab_check() {
 }
 
 fstab_add() {
+	fstab_check || return 0
 	block="$(fstab_get_block $1 ext4)"
 	line=$(fstab_get_line $1 ext4)
-	[ "$block" ] && [ "$line" ] && {
-		sed -i "${line}i$block /$1 f2fs $2 $3" "$fstab" && {
-			print "Added f2fs /$1 to fstab"
-		}
+	[ "$block" -a "$line" ] && {
+		sed -i "${line}i$block /$1 f2fs $2 $3" "$fstab"
+		print "Added f2fs /$1 to fstab"
 	}
 }
 
-fstab_check system && fstab_add system "$f2fs_system_opts" "$f2fs_system_flags"
-fstab_check data && fstab_add data "$f2fs_data_opts" "$f2fs_data_flags"
-fstab_check cache && fstab_add cache "$f2fs_cache_opts" "$f2fs_cache_flags"
+print "Patching the fstab for f2fs support..."
 
+fstab_add system "$f2fs_system_opts" "$f2fs_system_flags"
+fstab_add data "$f2fs_data_opts" "$f2fs_data_flags"
+fstab_add cache "$f2fs_cache_opts" "$f2fs_cache_flags"
+
+exit 0
