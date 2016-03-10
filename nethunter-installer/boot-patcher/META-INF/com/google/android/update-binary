@@ -67,14 +67,16 @@ mount() {
 	>> "$1/.rw" && return || abort "Unable to write to $1!"
 }
 
-print "######################################################"
-print "              NetHunter Kernel Installer"
+print "##################################################"
+print "            NetHunter Kernel Installer"
 [ "$generic" ] && {
-	print "    for $generic devices - ramdisk modifications only"
+	print "  for $generic devices - ramdisk modifications only"
 } || {
-	print " $kernel_string by $kernel_author (version: $kernel_version)"
+	print "   Kernel: $kernel_string"
+	print "  Version: $kernel_version"
+	print "   Author: $kernel_author"
 }
-print "######################################################"
+print "##################################################"
 
 command -v getprop || {
 	print "Warning: getprop not found! Skipping device check!"
