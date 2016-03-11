@@ -2,8 +2,6 @@
 
 . "$env"
 
-fstab=$ramdisk/fstab.qcom
-
 f2fs_system_opts="ro"
 f2fs_system_flags="wait"
 
@@ -32,7 +30,7 @@ fstab_check() {
 }
 
 fstab_add() {
-	fstab_check || return 0
+	fstab_check $1 || return 0
 	block="$(fstab_get_block $1 ext4)"
 	line=$(fstab_get_line $1 ext4)
 	[ "$block" -a "$line" ] && {
@@ -43,8 +41,18 @@ fstab_add() {
 
 print "Patching the fstab for f2fs support..."
 
-fstab_add system "$f2fs_system_opts" "$f2fs_system_flags"
-fstab_add data "$f2fs_data_opts" "$f2fs_data_flags"
-fstab_add cache "$f2fs_cache_opts" "$f2fs_cache_flags"
+found_fstab=false
+
+for fstab in fstab.*; do
+	print "Found fstab: $fstab"
+	found_fstab=true
+	fstab_add system "$f2fs_system_opts" "$f2fs_system_flags"
+	fstab_add data "$f2fs_data_opts" "$f2fs_data_flags"
+	fstab_add cache "$f2fs_cache_opts" "$f2fs_cache_flags"
+done
+
+$found_fstab || {
+	print "Unable to find the fstab!"
+}
 
 exit 0
