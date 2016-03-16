@@ -147,8 +147,8 @@ print "Installing VNC"
 install "/data/app/VNC-nh.apk"
 print "Installing RouterKeygen"
 install "/data/app/RouterKeygen.apk"
-print "Installing cSploit Nightly"
-install "/data/app/cSploit-nightly.apk"
+print "Installing cSploit"
+install "/data/app/cSploit.apk"
 
 # skip installing DriveDroid if it's already installed from the play store
 [ -d "/data/app/com.softwarebakery.drivedroid"* ] || {
