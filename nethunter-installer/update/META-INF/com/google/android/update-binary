@@ -133,10 +133,8 @@ sh tools/previnstall.sh
 
 progress 0.2
 
-print "@Installing Apps"
-
 cp -f "$tmp/supersu/vars" "/system/.supersu"
-print "Installing SuperSU in system mode"
+print "@Installing SuperSU in system mode"
 extract "$tmp/supersu/supersu.zip" "$sutmp"
 progress 0.3
 sh "$sutmp/META-INF/com/google/android/update-binary" dummy 1 "$sutmp/supersu.zip"
@@ -145,6 +143,8 @@ mount /data
 mount /system
 
 progress 0.4
+
+print "@Installing Apps"
 
 installapp "NetHunter App" "nethunter.apk" "com.offsec.nethunter"
 installapp "NetHunter Terminal" "Term-nh.apk" "com.offsec.nhterm"
