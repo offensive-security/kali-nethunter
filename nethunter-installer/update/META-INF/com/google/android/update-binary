@@ -133,14 +133,18 @@ sh tools/previnstall.sh
 
 progress 0.2
 
-cp -f "$tmp/supersu/vars" "/system/.supersu"
-print "@Installing SuperSU in system mode"
-extract "$tmp/supersu/supersu.zip" "$sutmp"
-progress 0.3
-sh "$sutmp/META-INF/com/google/android/update-binary" dummy 1 "$sutmp/supersu.zip"
+[ -d "$tmp/supersu" ] && {
+	print "@Installing SuperSU in system mode"
+	cp -f "$tmp/supersu/vars" "/system/.supersu"
+	extract "$tmp/supersu/supersu.zip" "$sutmp"
 
-mount /data
-mount /system
+	progress 0.3
+
+	sh "$sutmp/META-INF/com/google/android/update-binary" dummy 1 "$sutmp/supersu.zip"
+
+	mount /data
+	mount /system
+}
 
 progress 0.4
 
