@@ -48,6 +48,23 @@ install() {
 	cp -r "$tmp$1" "$(dirname "$1")"
 }
 
+# installapp "App Name" "appfile.apk" "play.store.package.name"
+# -> if the app package is found in the play store app database, then don't install it
+installapp() {
+	if [ "$3" -a -d "/data/app/$3"* ]; then
+		if [ ! -f /data/data/com.android.vending/databases/localappstate.db ]; then
+			echo "Could not find Play Store app database!"
+		elif [ "$(strings /data/data/com.android.vending/databases/localappstate.db | grep "^$3")" ]; then
+			rm -f "/data/app/$2"
+			print "Found Play Store installed $1"
+			return
+		fi
+		rm -rf "/data/app/$3"*
+	fi
+	print "Installing $1"
+	cp -f "$tmp/data/app/$2" /data/app/ || print "Failed to install $1!"
+}
+
 extract() {
 	rm -rf "$2"
 	mkdir -p "$2"
@@ -116,45 +133,34 @@ sh tools/previnstall.sh
 
 progress 0.2
 
-print "@Installing Apps"
+[ -d "$tmp/supersu" ] && {
+	print "@Installing SuperSU in system mode"
+	cp -f "$tmp/supersu/vars" "/system/.supersu"
+	extract "$tmp/supersu/supersu.zip" "$sutmp"
 
-cp -f "$tmp/supersu/vars" "/system/.supersu"
-print "Installing SuperSU in system mode"
-extract "$tmp/supersu/supersu.zip" "$sutmp"
-progress 0.3
-sh "$sutmp/META-INF/com/google/android/update-binary" dummy 1 "$sutmp/supersu.zip"
+	progress 0.3
 
-mount /data
-mount /system
+	sh "$sutmp/META-INF/com/google/android/update-binary" dummy 1 "$sutmp/supersu.zip"
+
+	mount /data
+	mount /system
+}
 
 progress 0.4
 
-print "Installing NetHunter App"
-install "/data/app/nethunter.apk"
-print "Installing NetHunter Terminal"
-install "/data/app/Term-nh.apk"
-print "Installing BlueNMEA"
-install "/data/app/BlueNMEA.apk"
-print "Installing Hacker's Keyboard"
-install "/data/app/Hackerskeyboard.apk"
-print "Installing RFAnalyzer"
-install "/data/app/RFAnalyzer.apk"
-print "Installing Shodan"
-install "/data/app/Shodan.apk"
-print "Installing USB Keyboard"
-install "/data/app/USBKeyboard.apk"
-print "Installing VNC"
-install "/data/app/VNC-nh.apk"
-print "Installing RouterKeygen"
-install "/data/app/RouterKeygen.apk"
-print "Installing cSploit"
-install "/data/app/cSploit.apk"
+print "@Installing Apps"
 
-# skip installing DriveDroid if it's already installed from the play store
-[ -d "/data/app/com.softwarebakery.drivedroid"* ] || {
-	print "Installing DriveDroid Free"
-	install "/data/app/Drivedroid.apk"
-}
+installapp "NetHunter App" "nethunter.apk" "com.offsec.nethunter"
+installapp "NetHunter Terminal" "Term-nh.apk" "com.offsec.nhterm"
+installapp "NetHunter VNC" "VNC-nh.apk" "com.offsec.nhvnc"
+installapp "cSploit" "cSploit.apk" "org.csploit.android"
+installapp "BlueNMEA" "BlueNMEA.apk" "name.kellermann.max.bluenmea"
+installapp "Hacker's Keyboard" "Hackerskeyboard.apk" "org.pocketworkstation.pckeyboard"
+installapp "RF Analyzer" "RFAnalyzer.apk" "com.mantz_it.rfanalyzer"
+installapp "Shodan" "Shodan.apk" "io.shodan.app"
+installapp "USB Keyboard" "USBKeyboard.apk" "remote.hid.keyboard.client"
+installapp "Router Keygen" "RouterKeygen.apk" "io.github.routerkeygen"
+installapp "DriveDroid" "Drivedroid.apk" "com.softwarebakery.drivedroid"
 
 progress 0.5
 

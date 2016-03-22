@@ -1,0 +1,19 @@
+#!/sbin/sh
+
+. "$env"
+
+print "Disabling dm-verity in the fstab..."
+
+found_fstab=false
+
+for fstab in fstab.*; do
+	print "Found fstab: $fstab"
+	sed -i "s/,verify\b//g;s/\bverify,//g;s/\bverify\b//g" "$fstab"
+	found_fstab=true
+done
+
+$found_fstab || {
+	print "Unable to find the fstab!"
+}
+
+exit 0
