@@ -39,7 +39,13 @@ abort() {
 find_boot() {
 	verify_block() {
 		boot_block=$(readlink -f $boot_block)
-		[ -b "$boot_block" ] || return 1
+		if [ -b "$boot_block" ]; then
+			use_dd=false
+		elif [ -f "$boot_block" ]; then
+			use_dd=true
+		else
+			return 1
+		fi
 		print "Found boot partition at: $boot_block"
 	}
 	# if we already have boot block set then verify and use it
@@ -84,9 +90,12 @@ find_boot() {
 # dump boot and unpack the android boot image
 dump_boot() {
 	print "Dumping & unpacking original boot image..."
-	dump_image "$boot_block" "$tmp/boot.img" || {
-		abort "Unable to read boot partition"
-	}
+	if $use_dd; then
+		dd if="$boot_block" of="$tmp/boot.img"
+	else
+		dump_image "$boot_block" "$tmp/boot.img"
+	fi
+	[ $? = 0 ] || abort "Unable to read boot partition"
 	$bin/unpackbootimg -i "$tmp/boot.img" -o "$split_img" || {
 		abort "Unpacking boot image failed"
 	}
@@ -185,9 +194,12 @@ backup_boot() {
 # write the new boot image to boot block
 write_boot() {
 	print "Writing new boot image to memory..."
-	flash_image "$boot_block" "$tmp/boot-new.img" || {
-		abort "Failed to write boot image! You may need to restore your boot partition"
-	}
+	if $use_dd; then
+		dd if="$tmp/boot-new.img" of="$boot_block"
+	else
+		flash_image "$boot_block" "$tmp/boot-new.img"
+	fi
+	[ $? = 0 ] || abort "Failed to write boot image! You may need to restore your boot partition"
 }
 
 ## end install methods
