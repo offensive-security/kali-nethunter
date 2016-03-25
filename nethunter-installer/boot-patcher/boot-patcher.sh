@@ -9,7 +9,6 @@ boot_block=
 # set up extracted files and directories
 tmp=/tmp/nethunter/boot-patcher
 ramdisk=$tmp/ramdisk
-ramdisk_patch=$ramdisk-patch
 split_img=$tmp/split-img
 bin=$tmp/tools
 boot_backup=/data/local/boot-backup.img
@@ -28,7 +27,7 @@ print() {
 
 abort() {
 	[ "$1" ] && {
-		print "Error: $1"
+		print "Error: $1!"
 		print "Aborting..."
 	}
 	exit 1
@@ -39,6 +38,7 @@ abort() {
 # find the location of the boot block
 find_boot() {
 	verify_block() {
+		boot_block=$(readlink -f $boot_block)
 		[ -b "$boot_block" ] || return 1
 		print "Found boot partition at: $boot_block"
 	}
@@ -78,15 +78,18 @@ find_boot() {
 		[ "$boot_block" ] && verify_block && return
 		return 1
 	} && return
-	abort "Unable to find boot block location!"
+	abort "Unable to find boot block location"
 }
 
-# dump boot and extract ramdisk
+# dump boot and unpack the android boot image
 dump_boot() {
 	print "Dumping & unpacking original boot image..."
-	dd if="$boot_block" of="$tmp/boot.img"
-	$bin/unpackbootimg -i "$tmp/boot.img" -o "$split_img"
-	[ $? != 0 ] && abort "Dumping/unpacking boot image failed"
+	dump_image "$boot_block" "$tmp/boot.img" || {
+		abort "Unable to read boot partition"
+	}
+	$bin/unpackbootimg -i "$tmp/boot.img" -o "$split_img" || {
+		abort "Unpacking boot image failed"
+	}
 }
 
 # determine the format the ramdisk was compressed in
@@ -109,16 +112,16 @@ determine_ramdisk_format() {
 dump_ramdisk() {
 	cd $ramdisk
 	$decompress -d < $split_img/boot.img-ramdisk | cpio -i
-	[ $? != 0 ] && abort "Dumping/unpacking ramdisk failed"
+	[ $? != 0 ] && abort "Unpacking ramdisk failed"
 }
 
 # execute all scripts in patch.d
 patch_ramdisk() {
 	print "Running ramdisk patching scripts..."
 	find "$tmp/patch.d/" -type f | sort | while read -r patchfile; do
-		print "Executing: $(basename $patchfile)"
+		print "Executing: $(basename "$patchfile")"
 		env="$tmp/patch.d-env" sh "$patchfile" || {
-			abort "Script failed: $(basename $patchfile)"
+			abort "Script failed: $(basename "$patchfile")"
 		}
 	done
 }
@@ -135,70 +138,46 @@ build_boot() {
 	cd $split_img
 	kernel=
 	for image in zImage zImage-dtb Image Image-dtb Image.gz Image.gz-dtb; do
-		[ -s $tmp/$image ] && {
-			kernel="--kernel $tmp/$image"
+		if [ -s $tmp/$image ]; then
+			kernel="$tmp/$image"
 			print "Found replacement kernel $image!"
-		} && break
+			break
+		fi
 	done
-	[ "$kernel" ] || {
-		[ -s *-zImage ] && {
-			kernel="--kernel $(ls $split_img/*-zImage)"
-		} || {
-			abort "Unable to find kernel image!"
-		}
-	}
-	[ -s $tmp/ramdisk-new ] && {
-		rd="--ramdisk $tmp/ramdisk-new"
+	[ "$kernel" ] || kernel="$(ls ./*-zImage)"
+	if [ -s $tmp/ramdisk-new ]; then
+		rd="$tmp/ramdisk-new"
 		print "Found replacement ramdisk image!"
-	} || {
-		[ -s *-ramdisk ] && {
-			rd="--ramdisk $(ls $split_img/*-ramdisk)"
-		} || {
-			abort "Unable to find ramdisk image!"
-		}
-	}
-	[ -s $tmp/dtb.img ] && {
-		dtb="--dt $tmp/dtb.img"
+	else
+		rd="$(ls ./*-ramdisk)"
+	fi
+	if [ -s $tmp/dtb.img ]; then
+		dtb="$tmp/dtb.img"
 		print "Found replacement device tree image!"
-	} || {
-		[ -s *-dt ] && dtb="--dt $(ls $split_img/*-dt)"
-	}
-	[ -s *-second ] && second="--second $(ls $split_img/*-second)"
-	[ -s *-cmdline ] && cmdline="$(cat ./*-cmdline)"
-	[ -s *-board ] && board="$(cat ./*-board)"
-	[ -s *-base ] && {
-		base="--base $(cat ./*-base)"
-	} || {
-		abort "Unable to find boot base address!"
-	}
-	[ -s *-pagesize ] && {
-		pagesize="--pagesize $(cat ./*-pagesize)"
-	} || {
-		abort "Unable to find boot pagesize!"
-	}
-	[ -s *-kernel_offset ] && {
-		kernel_offset="--kernel_offset $(cat ./*-kernel_offset)"
-	} || {
-		abort "Unable to find kernel offset address!"
-	}
-	[ -s *-ramdisk_offset ] && {
-		ramdisk_offset="--ramdisk_offset $(cat ./*-ramdisk_offset)"
-	} || {
-		abort "Unable to find ramdisk offset address!"
-	}
-	[ -s *-second_offset ] && second_offset="--second_offset $(cat ./*-second_offset)"
-	[ -s *-tags_offset ] && tags_offset="--tags_offset $(cat ./*-tags_offset)"
-	$bin/mkbootimg $kernel $rd $second --cmdline "$cmdline" --board "$board" \
-		$base $pagesize $kernel_offset $ramdisk_offset $second_offset $tags_offset $dtb \
-		-o $tmp/boot-new.img
-	[ $? != 0 -o ! -s $tmp/boot-new.img ] && {
-		abort "Repacking boot image failed!"
-	}
+	else
+		dtb="$(ls ./*-dt)"
+	fi
+	$bin/mkbootimg \
+		--kernel "$kernel" \
+		--ramdisk "$rd" \
+		--dt "$dtb" \
+		--second "$(ls ./*-second)" \
+		--cmdline "$(cat ./*-cmdline)" \
+		--board "$(cat ./*-board)" \
+		--base "$(cat ./*-base)" \
+		--pagesize "$(cat ./*-pagesize)" \
+		--kernel_offset "$(cat ./*-kernel_offset)" \
+		--ramdisk_offset "$(cat ./*-ramdisk_offset)" \
+		--second_offset "$(cat ./*-second_offset)" \
+		--tags_offset "$(cat ./*-tags_offset)" \
+		-o $tmp/boot-new.img || {
+			abort "Repacking boot image failed"
+		}
 }
 
 # backup old boot image
 backup_boot() {
-	print "Backing up old boot image to $boot_backup..."
+	print "Backing up original boot image to $boot_backup..."
 	mkdir -p "$(dirname $boot_backup)"
 	cp -f $tmp/boot.img $boot_backup
 }
@@ -206,7 +185,9 @@ backup_boot() {
 # write the new boot image to boot block
 write_boot() {
 	print "Writing new boot image to memory..."
-	dd if="$tmp/boot-new.img" of="$boot_block"
+	flash_image "$boot_block" "$tmp/boot-new.img" || {
+		abort "Failed to write boot image! You may need to restore your boot partition"
+	}
 }
 
 ## end install methods
