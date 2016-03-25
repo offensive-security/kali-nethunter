@@ -12,6 +12,5 @@ cp -rd $ramdisk_patch/. ./
 # make sure adb is not secure
 replace_line default.prop "ro.adb.secure=1" "ro.adb.secure=0"
 replace_line default.prop "ro.secure=1" "ro.secure=0"
-# import nethunter and superuser init to init.rc
+# import nethunter init to init.rc
 insert_after_last init.rc "import /init\\..*\\.rc" "import /init.nethunter.rc"
-insert_after_last init.rc "import /init\\..*\\.rc" "import /init.superuser.rc"
