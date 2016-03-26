@@ -32,9 +32,13 @@ KALIFS=$(ls $TMP/kalifs-*.tar.xz)
 	}
 
 	# Extract new chroot
-	print "Extracting Kali rootfs, this may take a while..."
-	tar -xJ -f "$KALIFS" -C "$NHSYS"
-	print "Kali chroot installed"
+	print "Extracting Kali rootfs, this may take up to 25 minutes..."
+	tar -xJf "$KALIFS" -C "$NHSYS" && {
+		print "Kali chroot installed successfully!"
+	} || {
+		print "Error: Kali chroot failed to install!"
+		print "Maybe you ran out of space on your data partition?"
+	}
 
 	# We should remove the rootfs archive to free up device memory or storage space
 	rm -f "$KALIFS"
