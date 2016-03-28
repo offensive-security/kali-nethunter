@@ -216,6 +216,11 @@ progress 0.7
 	print "Installing init.d scripts"
 	setperm 0755 0755 "$tmp/system/etc/init.d"
 	install "/system/etc/init.d"
+	# Create userinit.d and userinit.sh if they don't already exist
+	mkdir -p "/data/local/userinit.d"
+	setperm 0755 0755 "/data/local/userinit.d"
+	[ -f "/data/local/userinit.sh" ] || echo "#!/system/bin/sh" > "/data/local/userinit.sh"
+	chmod 0755 "/data/local/userinit.sh"
 }
 
 [ -d "$tmp/data/local" ] && {
