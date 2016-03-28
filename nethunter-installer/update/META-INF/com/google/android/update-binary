@@ -231,8 +231,10 @@ progress 0.7
 
 print "@Symlinking Kali boot scripts"
 symlink "/data/data/com.offsec.nethunter/files/scripts/bootkali" "/system/bin/bootkali"
+symlink "/data/data/com.offsec.nethunter/files/scripts/bootkali_init" "/system/bin/bootkali_init"
 symlink "/data/data/com.offsec.nethunter/files/scripts/bootkali_login" "/system/bin/bootkali_login"
 symlink "/data/data/com.offsec.nethunter/files/scripts/bootkali_bash" "/system/bin/bootkali_bash"
+symlink "/data/data/com.offsec.nethunter/files/scripts/killkali" "/system/bin/killkali"
 
 progress 0.8
 
