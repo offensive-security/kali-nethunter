@@ -39,10 +39,18 @@ abort() {
 find_boot() {
 	verify_block() {
 		boot_block=$(readlink -f $boot_block)
-		if [ -b "$boot_block" ]; then
-			use_dd=false
-		elif [ -f "$boot_block" ]; then
+		# if the boot block is a file, we must use dd
+		if [ -f "$boot_block" ]; then
 			use_dd=true
+		# if the boot block is a block device, we use flash_image when possible
+		elif [ -b "$boot_block" ]; then
+			case "$boot_block" in
+				/dev/block/bml*|/dev/block/mtd*|/dev/block/mmc*)
+					use_dd=false ;;
+				*)
+					use_dd=true ;;
+			esac
+		# otherwise we have to keep trying other locations
 		else
 			return 1
 		fi
