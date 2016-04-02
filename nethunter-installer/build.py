@@ -548,7 +548,11 @@ def main():
 	# Set up the update zip
 	setupupdate()
 
-	file_name = 'update-nethunter-' + file_tag + '.zip'
+	file_prefix = ''
+	if not args.rootfs:
+		file_prefix += 'update-'
+
+	file_name = file_prefix + 'nethunter-' + file_tag + '.zip'
 
 	zip('tmp_out', file_name)
 

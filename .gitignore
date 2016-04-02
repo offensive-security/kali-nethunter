@@ -10,9 +10,7 @@ nethunter-installer/update/supersu/supersu.zip
 nethunter-installer/boot-patcher/arch/*/system/lib*/libsupol.so
 nethunter-installer/boot-patcher/arch/*/system/xbin/supolicy
 nethunter-installer/tmp_out
-nethunter-installer/update-nethunter-*
-nethunter-installer/kernel-nethunter-*
-nethunter-installer/uninstaller-nethunter-*
+nethunter-installer/*.zip
 kalifs-*.tar.xz
 .DS_Store
 nethunter-installer/update/data/app/cSploit.apk
