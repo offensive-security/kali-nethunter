@@ -14,6 +14,7 @@ print() {
 }
 
 NHSYS=/data/local/nhsystem
+CHROOT=$NHSYS/kali-$ARCH
 
 # Check installer for kalifs archive
 KALIFS=$(ls $TMP/kalifs-*.tar.xz)
@@ -26,14 +27,15 @@ KALIFS=$(ls $TMP/kalifs-*.tar.xz)
 	mkdir -p "$NHSYS"
 
 	# Remove previous chroot
-	[ -d "$NHSYS/kali-$ARCH" ] && {
+	[ -d "$CHROOT" ] && {
 		print "Removing previous chroot..."
-		rm -rf "$NHSYS/kali-$ARCH"
+		rm -rf "$CHROOT"
 	}
 
 	# Extract new chroot
 	print "Extracting Kali rootfs, this may take up to 25 minutes..."
-	tar -xJf "$KALIFS" -C "$NHSYS" && {
+	busybox_nh tar -xJf "$KALIFS" -C "$NHSYS" --exclude "kali-$ARCH/dev" && {
+		mkdir -pm 0755 "$CHROOT/dev"
 		print "Kali chroot installed successfully!"
 	} || {
 		print "Error: Kali chroot failed to install!"
