@@ -253,7 +253,7 @@ sh tools/installchroot.sh
 cleanup
 print "************************************************"
 print "*       Kali NetHunter is now installed!       *"
-print "*  Please ignore any errors in TWRP regarding  *"
-print "*     /data/local/nhsystem/kali-$ARCH/dev/     *"
+print "*   Don't forget to start the NetHunter app    *"
+print "*       to finish setting everything up!       *"
 print "************************************************"
 progress 1.0
