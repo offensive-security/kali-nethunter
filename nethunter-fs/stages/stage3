@@ -90,28 +90,6 @@ dhcp-option=6,10.0.0.1
 log-queries
 EOF
 
-# Install modified hostapd-wpe (for WPA-enterprise attacks)
-cat << 'EOF' > kali-$architecture/tmp/install-hwe.sh
-cd /tmp
-git clone https://github.com/OpenSecurityResearch/hostapd-wpe
-wget http://w1.fi/releases/hostapd-2.2.tar.gz
-tar -zxf hostapd-2.2.tar.gz
-cd hostapd-2.2
-patch -p1 < ../hostapd-wpe/hostapd-wpe.patch 
-cd hostapd
-sed -i 's/#CONFIG_LIBNL32=y/CONFIG_LIBNL32=y/g' .config
-make
-chmod 755 hostapd-wpe
-cp hostapd-wpe /usr/bin/hostapd-wpe
-mkdir -p /usr/share/hostapd-wpe/certs
-cp hostapd-wpe.eap_user /usr/share/hostapd-wpe/hostapd-wpe.eap_user
-cd /tmp/hostapd-wpe/
-cp -rf certs /usr/share/hostapd-wpe
-chmod 755 /usr/share/hostapd-wpe/certs/bootstrap
-EOF
-chmod 755 kali-$architecture/tmp/install-hwe.sh
-LANG=C chroot kali-$architecture/tmp/install-hwe.sh
-
 # In order for metasploit to work daemon,nginx,postgres must all be added to inet
 # beef-xss creates user beef-xss. Openvpn server requires nobdy:nobody in order to work.
 echo "inet:x:3004:postgres,root,beef-xss,daemon,nginx,mysql" >> kali-$architecture/etc/group
