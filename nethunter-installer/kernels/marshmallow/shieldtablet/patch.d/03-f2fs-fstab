@@ -1,0 +1,58 @@
+#!/sbin/sh
+
+. "$env"
+
+f2fs_system_opts="ro"
+f2fs_system_flags="wait"
+
+f2fs_data_opts="nosuid,nodev,noatime,nodiratime,discard,inline_xattr"
+f2fs_data_flags="wait,encryptable=/dev/block/platform/sdhci-tegra.3/by-name/MDA"
+
+f2fs_cache_opts="nosuid,nodev,noatime,nodiratime,discard,inline_xattr"
+f2fs_cache_flags="wait"
+
+fstab_get_block() {
+	awk '$2 == "/'$1'" && $3 == "'$2'" { print $1; exit; }' "$fstab"
+}
+
+fstab_get_line() {
+	awk '$2 == "/'$1'" && $3 == "'$2'" { print NR; exit; }' "$fstab"
+}
+
+fstab_has() {
+	[ "$(fstab_get_block $2 $1)" ] || return 1
+}
+
+fstab_check() {
+	if fstab_has f2fs $1 || ! fstab_has ext4 $1; then
+		return 1
+	fi
+}
+
+fstab_add() {
+	fstab_check $1 || return 0
+	block="$(fstab_get_block $1 ext4)"
+	line=$(fstab_get_line $1 ext4)
+	[ "$block" -a "$line" ] && {
+		sed -i "${line}i$block /$1 f2fs $2 $3" "$fstab"
+		print "Added f2fs /$1 to fstab"
+	}
+}
+
+print "Patching the fstab for f2fs support..."
+
+found_fstab=false
+
+for fstab in fstab.*; do
+	print "Found fstab: $fstab"
+	found_fstab=true
+	fstab_add system "$f2fs_system_opts" "$f2fs_system_flags"
+	fstab_add data "$f2fs_data_opts" "$f2fs_data_flags"
+	fstab_add cache "$f2fs_cache_opts" "$f2fs_cache_flags"
+done
+
+$found_fstab || {
+	print "Unable to find the fstab!"
+}
+
+exit 0
