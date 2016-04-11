@@ -11,7 +11,11 @@ console=$(cat /tmp/console)
 . $tmp/env.sh
 
 print() {
-	echo "ui_print -- $1" > $console
+	[ "$1" ] && {
+		echo "ui_print -- $1" > $console
+	} || {
+		echo "ui_print  " > $console
+	}
 	echo
 }
 
