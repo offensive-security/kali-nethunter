@@ -2,19 +2,9 @@
 
 . "$env"
 
-prop=$ramdisk/default.prop
-
-[ -f "$prop" ] || {
+$found_prop || {
 	print "Unable to find default.prop!"
 	exit 0
-}
-
-setprop() {
-	grep -q "${1}=" "$prop" && {
-		sed -i "s/${1}=.*/${1}=${2}/g" "$prop"
-	} || {
-		echo "${1}=${2}" >> "$prop"
-	}
 }
 
 print "Disabling SELinux enforcing..."

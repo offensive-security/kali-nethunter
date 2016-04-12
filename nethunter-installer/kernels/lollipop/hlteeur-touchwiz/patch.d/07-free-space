@@ -3,8 +3,8 @@
 . "$env"
 
 print "Freeing up space..."
-rm -f *.ranchu
-rm -f *.goldfish
+rm -f ./*.ranchu
+rm -f ./*.goldfish
 rm -f init.container.rc
 
 exit 0
