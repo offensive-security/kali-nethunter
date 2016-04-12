@@ -4,11 +4,14 @@ tmp=/tmp/nethunter/boot-patcher
 bin=$tmp/tools
 ramdisk=$tmp/ramdisk
 ramdisk_patch=$ramdisk-patch
+default_prop=$ramdisk/default.prop
 
 console=$(cat /tmp/console)
 [ "$console" ] || console=/proc/$$/fd/1
 
 . $tmp/env.sh
+
+[ -f "$default_prop" ] && found_prop=true
 
 print() {
 	[ "$1" ] && {
@@ -35,6 +38,16 @@ insert_after_last() {
 		line=$(($(grep -n "^\s*$2\s*$" "$1" | tail -1 | cut -d: -f1) + 1))
 		sed -i "${line}i$3" "$1"
 	}
+}
+
+# setprop <prop> <value>
+setprop() {
+	$found_prop || return
+	if grep -q "${1}=" "$default_prop"; then
+		sed -i "s/${1}=.*/${1}=${2}/g" "$default_prop"
+	else
+		echo "${1}=${2}" >> "$default_prop"
+	fi
 }
 
 cd $ramdisk
