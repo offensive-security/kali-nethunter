@@ -24,7 +24,7 @@ python build.py -d hammerhead --marshmallow --rootfs full
 ```
 Create a release version:
 ```sh
-python build.py -d hammerhead --marshmallow -rootfs full --release v3.0
+python build.py -d hammerhead --marshmallow --rootfs full --release v3.0
 ```
 Force download all third party apps:
 ```sh
