@@ -19,7 +19,7 @@ If you wish to add a kernel/new device, leave a link to source here and feel fre
 # git clone https://github.com/binkybear/kernel_msm.git -b android-msm-flo-3.4-kitkat-mr2 flodeb
 # git clone https://github.com/binkybear/flo.git -b ElementalX-4.00 nexus7_2013-5
 # CM
-# git clone https://github.com/jcadduono/nethunter_kernel_mako_flo.git nexus7-cm
+# git clone https://github.com/jcadduono/nethunter_kernel_flo.git -b cm-13.0
 
 # - Nexus 6P
 # git clone https://github.com/binkybear/AK-Angler.git -b ak-aosp-6.0.1-staging nexus6P-6
