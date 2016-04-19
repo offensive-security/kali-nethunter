@@ -4,9 +4,16 @@ on init
     export TERMINFO /system/etc/terminfo
     export TERM linux
 
-# Execute files in /system/etc/init.d before booting
+# Execute files in /system/etc/init.d near the end of the boot sequence
+on boot
+    start run-parts
+
 service run-parts /sbin/busybox_nh run-parts /system/etc/init.d
-    class main
+    class late_start
+    seclabel u:r:init:s0
+    user root
+    group root
+    disabled
     oneshot
 
 # HID USB property
@@ -17,3 +24,12 @@ on property:sys.usb.config=hid
     write /sys/class/android_usb/android0/functions hid
     write /sys/class/android_usb/android0/enable 1
     setprop sys.usb.state hid
+
+on property:sys.usb.config=hid,adb
+    write /sys/class/android_usb/android0/enable 0
+    write /sys/class/android_usb/android0/idVendor 0461
+    write /sys/class/android_usb/android0/idProduct 0010
+    write /sys/class/android_usb/android0/functions hid,adb
+    write /sys/class/android_usb/android0/enable 1
+    start adbd
+    setprop sys.usb.state hid,adb
