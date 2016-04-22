@@ -103,7 +103,7 @@ arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils pciutils 
 minimalnh="openssh-server kali-defaults"
 
 # DEFAULT PACKAGES FULL INSTALL
-fullnh="kali-linux-nethunter mana-toolkit exploitdb lua-sql-sqlite3 msfpc exe2hexbat build-essential ruby-dev libpcap-dev fruitywifi"
+fullnh="kali-linux-nethunter mana-toolkit exploitdb lua-sql-sqlite3 msfpc exe2hexbat bettercap fruitywifi"
 
 # If minimal, set only minimal packages
 if [ "$1" == "--minimal" ] || [ "$1" == "-m" ]; then

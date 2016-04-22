@@ -102,9 +102,6 @@ sed -i 's/_apt:x:104:65534/_apt:x:104:3004/g' kali-$architecture/etc/passwd
 # Insert correct .bashrc file from kali-defaults
 LANG=C chroot kali-$architecture cp /etc/skel/.bashrc /root/.bashrc
 
-# Install bettercap
-LANG=C chroot kali-$architecture gem install bettercap
-
 # Copy necessary scripts and make executable (/dev/null to supress error msgs for following symlinks)
 LANG=C chroot kali-$architecture chmod 755 /usr/bin/* 2> /dev/null
 LANG=C chroot kali-$architecture chmod 755 /usr/share/mana-toolkit/run-mana/*.sh 2> /dev/null
