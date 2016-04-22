@@ -47,8 +47,8 @@ If you wish to add a kernel/new device, leave a link to source here and feel fre
 # git clone https://github.com/jcadduono/nethunter_kernel_shieldtablet.git -b android-6.0
 
 # - OnePlus X
+# CM
 # git clone https://github.com/jcadduono/nethunter_kernel_onyx.git -b cm-13.0
-# git clone https://github.com/jcadduono/nethunter_kernel_onyx.git -b cm-12.1
 
 # - OnePlus Two
 # OXYGEN
