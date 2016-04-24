@@ -6,7 +6,7 @@ f2fs_system_opts="ro"
 f2fs_system_flags="wait"
 
 f2fs_data_opts="nosuid,nodev,noatime,nodiratime,discard,inline_xattr"
-f2fs_data_flags="wait,encryptable=footer"
+f2fs_data_flags="wait,encryptable=/dev/block/platform/msm_sdcc.1/by-name/metadata"
 
 f2fs_cache_opts="nosuid,nodev,noatime,nodiratime,discard,inline_xattr"
 f2fs_cache_flags="wait"
