@@ -436,6 +436,7 @@ def main():
 	parser.add_argument('--kitkat', '-kk', action='store_true', help='Android 4.4.4')
 	parser.add_argument('--lollipop', '-l', action='store_true', help='Android 5')
 	parser.add_argument('--marshmallow', '-m', action='store_true', help='Android 6')
+	parser.add_argument('--nutella', '-n', action='store_true', help='Android 7')
 	parser.add_argument('--forcedown', '-f', action='store_true', help='Force redownloading')
 	parser.add_argument('--uninstaller', '-u', action='store_true', help='Create an uninstaller')
 	parser.add_argument('--kernel', '-k', action='store_true', help='Build kernel installer only')
@@ -481,10 +482,13 @@ def main():
 		if args.marshmallow:
 			OS = 'marshmallow'
 			i += 1
+		if args.nutella:
+			OS = 'nutella'
+			i += 1
 		if i == 0:
-			abort('Missing Android version. Available options: --kitkat, --lollipop, --marshmallow')
+			abort('Missing Android version. Available options: --kitkat, --lollipop, --marshmallow, --nutella')
 		elif i > 1:
-			abort('Select only one Android version: --kitkat, --lollipop, --marshmallow')
+			abort('Select only one Android version: --kitkat, --lollipop, --marshmallow, --nutella')
 
 		if args.rootfs and not (args.rootfs == 'full' or args.rootfs == 'minimal'):
 			abort('Invalid Kali rootfs size. Available options: --rootfs full, --rootfs minimal')
