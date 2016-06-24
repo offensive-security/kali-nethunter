@@ -50,6 +50,10 @@ If you wish to add a kernel/new device, leave a link to source here and feel fre
 # CM
 # git clone https://github.com/jcadduono/nethunter_kernel_onyx.git -b cm-13.0
 
+# - OnePlus 3
+# OXYGEN
+# git clone https://github.com/jcadduono/nethunter_kernel_oneplus3.git -b android-6.0
+
 # - OnePlus Two
 # OXYGEN
 # git clone https://github.com/binkybear/android_kernel_oneplus_msm8994.git -b OXYGEN
