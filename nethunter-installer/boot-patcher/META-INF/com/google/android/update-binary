@@ -47,7 +47,12 @@ cleanup() {
 }
 
 install() {
-	cp -r "$tmp$1" "$(dirname "$1")"
+	setperm "$2" "$3" "$tmp$1"
+	if [ "$4" ]; then
+		cp -r "$tmp$1" "$(dirname "$4")/"
+		return
+	fi
+	cp -r "$tmp$1" "$(dirname "$1")/"
 }
 
 extract() {
@@ -122,32 +127,37 @@ sh tools/cleansystem.sh
 
 [ -d "$tmp/system/etc/firmware" ] && {
 	print "Copying firmware to /system/etc/firmware"
-	setperm 0755 0644 "$tmp/system/etc/firmware"
-	install "/system/etc/firmware"
+	install "/system/etc/firmware" 0755 0644
 }
 
-[ -d "$tmp$LIBDIR" ] && {
-	print "Copying shared libraries and kernel modules to $LIBDIR"
-	setperm 0755 0755 "$tmp$LIBDIR"
-	install "$LIBDIR"
+[ -d "$tmp/modules" ] && {
+	print "Copying kernel modules to /system/lib/modules"
+	install "/modules" 0755 0644 "/system/lib/modules"
+}
+
+[ -d "$tmp/system/lib" ] && {
+	print "Copying 32-bit shared libraries to /system/lib"
+	install "/system/lib" 0755 0644
+}
+
+[ -d "$tmp/system/lib64" ] && {
+	print "Copying 64-bit shared libraries to /system/lib64"
+	install "/system/lib64" 0755 0644
 }
 
 [ -d "$tmp/system/bin" ] && {
 	print "Installing /system/bin binaries"
-	setperm 0755 0755 "$tmp/system/bin"
-	install "/system/bin"
+	install "/system/bin" 0755 0755
 }
 
 [ -d "$tmp/system/xbin" ] && {
 	print "Installing /system/xbin binaries"
-	setperm 0755 0755 "$tmp/system/xbin"
-	install "/system/xbin"
+	install "/system/xbin" 0755 0755
 }
 
 [ -d "$tmp/data/local" ] && {
 	print "Copying additional files to /data/local"
-	setperm 0755 0644 "$tmp/data/local"
-	install "/data/local"
+	install "/data/local" 0755 0644
 }
 
 print "Running boot image patcher..."
