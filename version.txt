@@ -1,7 +1,7 @@
 {
 	"version_code": 19
 	"chroot_version": 2,
-	"chroot_sha512_full": "45af3ed319e520b85693edb2058a82b942f875a0c7f4729dd3e3eae6f110c7d106a7423639a58c53247be3e95bf977b2107877fdb0a77b6f7b06286e73e75151",
+	"chroot_sha512_full": "c5c70374737b95cd952e549def60fb35938bae2666a5954d97ac9ebadb191b89cc79a913f48ccee1838a8d1596b5e82c3ed39041a5cca3f645f81470afaf3ce8",
 	"chroot_sha512_min": "2d087f12d40ff28e9c475492f87841a7be5c1657edbadab1e90d9f9691c0baca66d1b5be283c778bb18b4dd2ff3dbf66d44aa3376aed7493b68e6e4993e7dc17",
 	"content": "Version 3.1 <p>New Features</P><li>Wardriving - Kismet support</li><li>Bettercap added in mana</li><li>Hostapd-wpe support</li><p>Fixes</P><li>Add symlink to /dev/net/tun</li><li>Duckhunter regex fix</li><li>Prefer NH busybox</li><li>MITMf misc fix</li>"
 }

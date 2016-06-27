@@ -105,3 +105,6 @@ LANG=C chroot kali-$architecture cp /etc/skel/.bashrc /root/.bashrc
 # Copy necessary scripts and make executable (/dev/null to supress error msgs for following symlinks)
 LANG=C chroot kali-$architecture chmod 755 /usr/bin/* 2> /dev/null
 LANG=C chroot kali-$architecture chmod 755 /usr/share/mana-toolkit/run-mana/*.sh 2> /dev/null
+
+# Minor fix for mana-toolkit which made changes in update.  We need to mirror fixes.
+sed -i 's/dhcpd -cf \/etc\/mana-toolkit\/dhcpd\.conf \$phy/dnsmasq -z -C \/etc\/mana-toolkit\/dnsmasq-dhcpd\.conf -i \$phy -I lo/' kali-$architecture/usr/share/mana-toolkit/run-mana/*
