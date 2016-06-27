@@ -45,7 +45,12 @@ cleanup() {
 }
 
 install() {
-	cp -r "$tmp$1" "$(dirname "$1")"
+	setperm "$2" "$3" "$tmp$1"
+	if [ "$4" ]; then
+		cp -r "$tmp$1" "$(dirname "$4")/"
+		return
+	fi
+	cp -r "$tmp$1" "$(dirname "$1")/"
 }
 
 # installapp "App Name" "appfile.apk" "play.store.package.name"
@@ -54,7 +59,7 @@ installapp() {
 	if [ "$3" -a -d "/data/app/$3"* ]; then
 		if [ ! -f /data/data/com.android.vending/databases/localappstate.db ]; then
 			echo "Could not find Play Store app database!"
-		elif [ "$(strings /data/data/com.android.vending/databases/localappstate.db | grep "^$3")" ]; then
+		elif strings /data/data/com.android.vending/databases/localappstate.db | grep -q "^$3"; then
 			rm -f "/data/app/$2"
 			print "Found Play Store installed $1"
 			return
@@ -178,55 +183,53 @@ print "@Installing NetHunter wallpaper"
 sh wallpaper/setwallpaper.sh
 
 print "@Installing NetHunter boot animation"
-install "/system/media/bootanimation.zip"
+install "/system/media/bootanimation.zip" 0755 0644
 
 progress 0.7
 
 [ -d "$tmp/system/etc/nano" ] && {
 	print "Copying nano highlights to /system/etc/nano"
-	setperm 0755 0644 "$tmp/system/etc/nano"
-	install "/system/etc/nano"
+	install "/system/etc/nano" 0755 0644
 }
 
 [ -d "$tmp/system/etc/terminfo" ] && {
 	print "Copying terminfo files to /system/etc/terminfo"
-	setperm 0755 0644 "$tmp/system/etc/terminfo"
-	install "/system/etc/terminfo"
+	install "/system/etc/terminfo" 0755 0644
 }
 
-[ -d "$tmp$LIBDIR" ] && {
-	print "Copying shared libraries to $LIBDIR"
-	setperm 0755 0755 "$tmp$LIBDIR"
-	install "$LIBDIR"
+[ -d "$tmp/system/lib" ] && {
+	print "Copying 32-bit shared libraries to /system/lib"
+	install "/system/lib" 0755 0644
+}
+
+[ -d "$tmp/system/lib64" ] && {
+	print "Copying 64-bit shared libraries to /system/lib64"
+	install "/system/lib64" 0755 0644
 }
 
 [ -d "$tmp/system/bin" ] && {
 	print "Installing /system/bin binaries"
-	setperm 0755 0755 "$tmp/system/bin"
-	install "/system/bin"
+	install "/system/bin" 0755 0755
 }
 
 [ -d "$tmp/system/xbin" ] && {
 	print "Installing /system/xbin binaries"
-	setperm 0755 0755 "$tmp/system/xbin"
-	install "/system/xbin"
+	install "/system/xbin" 0755 0755
+}
+
+[ -d "$tmp/data/local" ] && {
+	print "Copying additional files to /data/local"
+	install "/data/local" 0755 0644
 }
 
 [ -d "$tmp/system/etc/init.d" ] && {
 	print "Installing init.d scripts"
-	setperm 0755 0755 "$tmp/system/etc/init.d"
-	install "/system/etc/init.d"
+	install "/system/etc/init.d" 0755 0755
 	# Create userinit.d and userinit.sh if they don't already exist
 	mkdir -p "/data/local/userinit.d"
 	setperm 0755 0755 "/data/local/userinit.d"
 	[ -f "/data/local/userinit.sh" ] || echo "#!/system/bin/sh" > "/data/local/userinit.sh"
 	chmod 0755 "/data/local/userinit.sh"
-}
-
-[ -d "$tmp/data/local" ] && {
-	print "Copying additional files to /data/local"
-	setperm 0755 0644 "$tmp/data/local"
-	install "/data/local"
 }
 
 print "@Symlinking Kali boot scripts"

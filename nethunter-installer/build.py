@@ -343,7 +343,7 @@ def setupkernel():
 	modules_path = os.path.join(device_path, 'modules')
 	if os.path.exists(modules_path):
 		print('Found additional kernel modules at: ' + modules_path)
-		copytree(modules_path, os.path.join(out_path, LibDir, 'modules'))
+		copytree(modules_path, os.path.join(out_path, 'modules'))
 
 	# Copy any device specific firmware
 	firmware_path = os.path.join(device_path, 'firmware')
