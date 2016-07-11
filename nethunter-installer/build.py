@@ -127,9 +127,9 @@ def supersu(forcedown, beta):
 
 	if not os.path.isfile(suzip):
 		if beta:
-			surl = getdlpage('https://download.chainfire.eu/964/SuperSU/BETA-SuperSU-v2.74-2-20160519174328.zip')
+			surl = getdlpage('https://download.chainfire.eu/supersu-beta')
 		else:
-			surl = getdlpage('https://download.chainfire.eu/supersu-stable')
+			surl = getdlpage('https://download.chainfire.eu/969/SuperSU/UPDATE-SuperSU-v2.76-20160630161323.zip')
 
 		if surl:
 			download(surl + '?retrieve_file=1', suzip)
@@ -410,7 +410,7 @@ def main():
 	global IgnoredFiles
 	global TimeStamp
 
-	supersu_beta = True
+	supersu_beta = False
 
 	IgnoredFiles = ['arch', 'placeholder', '.DS_Store', '.git*', '.idea']
 	t = datetime.datetime.now()
