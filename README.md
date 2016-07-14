@@ -25,7 +25,7 @@ We're relying on you, the community, to port your devices for the full Kali NetH
 <hr>
 **Q** - NetHunter is awesome! How do I install it?
 
-**A** - Follow these instructions on the wiki: https://github.com/offensive-security/kali-nethunter/wiki#40-installing-nethunter-on-top-of-android
+**A** - Follow the instructions on the wiki https://github.com/offensive-security/kali-nethunter/wiki#40-installing-nethunter-on-top-of-android
 <hr>
 **Q** - What is the best wireless card for NetHunter?
 
