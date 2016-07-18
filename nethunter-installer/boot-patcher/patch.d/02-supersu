@@ -2,13 +2,23 @@
 
 . "$env"
 
+if [ ! -d "$tmp/supersu" ]; then
+	print "SuperSU not found in installer, skipping..."
+	exit 0
+fi
+
+if [ ! -e "/system/xbin/supolicy" ]; then
+	print "Could not find supolicy binary, skipping..."
+	exit 0
+fi
+
 # patch sepolicy for SuperSU
 print "Patching the sepolicy for SuperSU..."
 LD_LIBRARY_PATH=$LIBDIR /system/xbin/supolicy --file "$ramdisk/sepolicy" "$ramdisk/sepolicy_new"
-[ -f "$ramdisk/sepolicy_new" ] && {
+if [ -f "$ramdisk/sepolicy_new" ]; then
 	rm "$ramdisk/sepolicy"
 	mv "$ramdisk/sepolicy_new" "$ramdisk/sepolicy"
 	chmod 0644 "$ramdisk/sepolicy"
-} || {
+else
 	print "Unable to patch the sepolicy, continuing..."
-}
+fi
