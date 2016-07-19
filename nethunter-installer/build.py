@@ -305,7 +305,7 @@ def setupkernel():
 		'boot_block':readkey('block')
 	})
 
-	device_path = os.path.join('kernels', OS, Device)
+	device_path = os.path.join('devices', OS, Device)
 
 	# Copy kernel image from version/device to boot-patcher folder
 	kernel_images = [ 'zImage', 'zImage-dtb', 'Image', 'Image-dtb', 'Image.gz', 'Image.gz-dtb' ]
@@ -412,6 +412,7 @@ def main():
 
 	supersu_beta = False
 
+	devices_cfg = os.path.join('devices', 'devices.cfg')
 	IgnoredFiles = ['arch', 'placeholder', '.DS_Store', '.git*', '.idea']
 	t = datetime.datetime.now()
 	TimeStamp = "%04d%02d%02d_%02d%02d%02d" % (t.year, t.month, t.day, t.hour, t.minute, t.second)
@@ -422,10 +423,10 @@ def main():
 	# Read devices.cfg, get device names
 	try:
 		Config = ConfigParser.ConfigParser()
-		Config.read('devices.cfg')
+		Config.read(devices_cfg)
 		devicenames = Config.sections()
 	except:
-		abort('Could not read devices.cfg')
+		abort('Could not read %s! Maybe you need to run ./bootstrap.sh?' % devices_cfg)
 
 	help_device = 'Allowed device names: \n'
 	for device in devicenames:
@@ -455,7 +456,7 @@ def main():
 		if args.device in devicenames:
 			Device = args.device
 		else:
-			abort('Device %s not found devices.cfg' % args.device)
+			abort('Device %s not found in %s' % (args.device, devices_cfg))
 	elif args.generic:
 		Arch = args.generic
 		Device = 'generic'
