@@ -3,7 +3,7 @@
 
 
 
-### Version (Kitkat/Lollipop/Marshmallow/Nuget):
+### Version (Kitkat/Lollipop/Marshmallow/Nougat):
 
 
 
