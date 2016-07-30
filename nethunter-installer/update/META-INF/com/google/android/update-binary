@@ -141,6 +141,10 @@ sh tools/previnstall.sh
 progress 0.2
 
 [ -d "$tmp/supersu" ] && {
+	if [ ! -d "$tmp/boot-patcher/patch.d" ]; then
+		print "Skipping SuperSU (unable to patch sepolicy)"
+		return
+	fi
 	print "@Installing SuperSU in system mode"
 	cp -f "$tmp/supersu/vars" "/system/.supersu"
 	extract "$tmp/supersu/supersu.zip" "$sutmp"

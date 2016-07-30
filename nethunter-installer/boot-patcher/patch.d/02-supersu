@@ -2,12 +2,7 @@
 
 . "$env"
 
-if [ ! -d "$tmp/supersu" ]; then
-	print "SuperSU not found in installer, skipping..."
-	exit 0
-fi
-
-if [ ! -e "/system/xbin/supolicy" ]; then
+if [ ! -x "/system/xbin/supolicy" ]; then
 	print "Could not find supolicy binary, skipping..."
 	exit 0
 fi
