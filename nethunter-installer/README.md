@@ -57,4 +57,9 @@ python build.py -h
 See the README.md located in the NetHunter Devices repository:  
 https://github.com/offensive-security/nethunter-devices
 
-Mon Jul 18 19:25:18 EST 2016
+## Device changelog
+
+You can view changes in the commit log of the NetHunter Devices repository:  
+https://github.com/offensive-security/nethunter-devices/commits
+
+Sat Jul 30 20:09:18 EST 2016
