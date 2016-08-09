@@ -136,6 +136,19 @@ dump_ramdisk() {
 	[ $? != 0 ] && abort "Unpacking ramdisk failed"
 }
 
+# if the actual boot ramdisk exists inside a parent one, use that instead
+dump_embedded_ramdisk() {
+	if [ -f "$ramdisk/sbin/ramdisk.cpio" ]; then
+		print "Found embedded boot ramdisk!"
+		mv $ramdisk $ramdisk-root
+		mkdir $ramdisk
+		cd $ramdisk
+		cpio -i < "$ramdisk-root/sbin/ramdisk.cpio" || {
+			abort "Failed to unpack embedded boot ramdisk"
+		}
+	fi
+}
+
 # execute all scripts in patch.d
 patch_ramdisk() {
 	print "Running ramdisk patching scripts..."
@@ -146,6 +159,17 @@ patch_ramdisk() {
 			abort "Script failed: $(basename "$patchfile")"
 		}
 	done < "$tmp/patchfiles"
+}
+
+# if we moved the parent ramdisk, we should rebuild the embedded one
+build_embedded_ramdisk() {
+	if  [ -d "$ramdisk-root" ]; then
+		print "Building new embedded boot ramdisk..."
+		cd $ramdisk
+		find | cpio -o -H newc > "$ramdisk-root/sbin/ramdisk.cpio"
+		rm -rf $ramdisk
+		mv $ramdisk-root $ramdisk
+	fi
 }
 
 # build the new ramdisk
@@ -236,7 +260,11 @@ determine_ramdisk_format
 
 dump_ramdisk
 
+dump_embedded_ramdisk
+
 patch_ramdisk
+
+build_embedded_ramdisk
 
 build_ramdisk
 
