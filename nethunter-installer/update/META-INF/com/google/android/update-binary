@@ -175,9 +175,6 @@ installapp "DriveDroid" "Drivedroid.apk" "com.softwarebakery.drivedroid"
 
 progress 0.5
 
-print "@Freeing up some space on /system"
-sh tools/cleansystem.sh
-
 print "@Running busybox installer..."
 sh tools/installbusybox.sh
 

@@ -120,11 +120,6 @@ cp ramdisk-patch/sbin/busybox_nh /sbin/
 chmod 755 /sbin/busybox_nh
 /sbin/busybox_nh --install /sbin
 
-# Free up space for kernel only install (otherwise nothing installs!)
-# It actually runs twice when part of the NetHunter updater zip
-print "Freeing some space on /system"
-sh tools/cleansystem.sh
-
 [ -d "$tmp/system/etc/firmware" ] && {
 	print "Copying firmware to /system/etc/firmware"
 	install "/system/etc/firmware" 0755 0644
