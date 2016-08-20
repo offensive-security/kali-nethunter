@@ -12,10 +12,21 @@ if [ ! "$(basename "$(pwd)")" = "nethunter-installer" ]; then
 fi
 
 if [ -d devices ]; then
-	printf "devices directory already exists, remove it? (Y/n): "
+	echo "The devices directory already exists, choose an option:"
+	echo "   U) Update devices to latest commit (default)"
+	echo "   D) Delete devices folder and start over"
+	echo "   C) Cancel"
+	printf "Your choice? (U/d/c): "
 	read choice
 	case $choice in
-		""|Y|y)
+		U*|u*|"")
+			echo "Updating devices (fetch & rebase)..."
+			cd devices
+			git fetch && git rebase || ABORT "Failed to update devices!"
+			exit 0
+			;;
+		D*|d)
+			echo "Deleting devices folder..."
 			rm -rf devices ;;
 		*)
 			ABORT ;;
@@ -27,7 +38,7 @@ clonecmd="git clone"
 printf "Would you like to use the experimental devices branch? (y/N): "
 read choice
 case $choice in
-	y|Y)
+	y*|Y*)
 		clonecmd="$clonecmd --branch experimental" ;;
 	*) ;;
 esac
@@ -35,7 +46,7 @@ esac
 printf "Would you like to grab the full history of devices? (y/N): "
 read choice
 case $choice in
-	y|Y) ;;
+	y*|Y*) ;;
 	*)
 		clonecmd="$clonecmd --depth 1" ;;
 esac
