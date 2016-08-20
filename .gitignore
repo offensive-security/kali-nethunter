@@ -15,3 +15,4 @@ nethunter-installer/devices
 nethunter-installer/*.zip
 kalifs-*.tar.xz
 .DS_Store
+/nethunter-installer/update/data/app/OpenVPN.apk

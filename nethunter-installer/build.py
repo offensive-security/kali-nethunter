@@ -141,9 +141,9 @@ def supersu(forcedown, beta):
 
 def allapps(forcedown):
 	apps = {
-		'BlueNMEA':'http://max.kellermann.name/download/blue-nmea/BlueNMEA-2.1.3.apk',
 		'Hackerskeyboard':'https://f-droid.org/repo/org.pocketworkstation.pckeyboard_1038002.apk',
-		'Drivedroid':'http://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.9.29.apk',
+		'Drivedroid':'http://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.10.17.apk',
+		'OpenVPN':'https://f-droid.org/repo/de.blinkt.openvpn_138.apk',
 		'USBKeyboard':'https://github.com/pelya/android-keyboard-gadget/raw/master/USB-Keyboard.apk',
 		'RFAnalyzer':'https://github.com/demantz/RFAnalyzer/raw/master/RFAnalyzer.apk',
 		'Shodan':'https://github.com/PaulSec/Shodan.io-mobile-app/raw/master/io.shodan.app.apk',
