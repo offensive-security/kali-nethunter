@@ -10,7 +10,7 @@ chmod 0644 "$ramdisk_patch/sbin/media_profiles.xml"
 # move the patch files into the ramdisk
 cp -rd $ramdisk_patch/. ./
 # make sure adb is not secure
-setprop ro.adb.secure 0
+setprop ro.adb.secure 1
 setprop ro.secure 0
 # import nethunter init to init.rc
 insert_after_last init.rc "import /init\\..*\\.rc" "import /init.nethunter.rc"
