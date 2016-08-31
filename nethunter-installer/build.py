@@ -451,6 +451,8 @@ def main():
 
 	if args.kernel and args.nokernel:
 		abort('You seem to be having trouble deciding whether you want the kernel installer or not')
+	if args.device and args.generic:
+		abort('The device and generic switches are mutually exclusive')
 
 	if args.device:
 		if args.device in devicenames:
