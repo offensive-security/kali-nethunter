@@ -116,7 +116,7 @@ def supersu(forcedown, beta):
 		except:
 			abort('Unable to extract sepolicy patch from SuperSU zip')
 
-	suzip = os.path.join('update', 'supersu', 'supersu.zip')
+	suzip = os.path.join('update', 'supersu.zip')
 
 	# Remove previous supersu.zip if force redownloading
 	if os.path.isfile(suzip):
@@ -375,6 +375,12 @@ def setupupdate():
 	print('NetHunter: Copying ' + Arch + ' arch specific update files...')
 	copytree(os.path.join('update', 'arch', Arch), out_path)
 
+	# Set up variables in update-binary script
+	print('NetHunter: Configuring installer script for ' + Device)
+	configfile(os.path.join(out_path, 'META-INF', 'com', 'google', 'android', 'update-binary'), {
+		'supersu':readkey('supersu')
+	})
+
 def cleanup(domsg):
 	if os.path.exists('tmp_out'):
 		if domsg:
@@ -451,6 +457,8 @@ def main():
 
 	if args.kernel and args.nokernel:
 		abort('You seem to be having trouble deciding whether you want the kernel installer or not')
+	if args.device and args.generic:
+		abort('The device and generic switches are mutually exclusive')
 
 	if args.device:
 		if args.device in devicenames:
@@ -548,7 +556,7 @@ def main():
 
 	# Don't include SuperSU if --nosu is specified
 	if args.nosu:
-		IgnoredFiles.append('supersu')
+		IgnoredFiles.append('supersu.zip')
 
 	# Set up the update zip
 	setupupdate()

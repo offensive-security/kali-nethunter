@@ -1,6 +1,10 @@
 #!/sbin/sh
 # Kali NetHunter installer
 
+## start build generated variables
+supersu=auto
+## end build generated variables
+
 [ "$3" ] && {
 	zip=$3
 	console=/proc/$$/fd/$2
@@ -140,18 +144,13 @@ sh tools/previnstall.sh
 
 progress 0.2
 
-[ -d "$tmp/supersu" ] && {
-	if [ ! -d "$tmp/boot-patcher/patch.d" ]; then
-		print "Skipping SuperSU (unable to patch sepolicy)"
-		return
-	fi
-	print "@Installing SuperSU in system mode"
-	cp -f "$tmp/supersu/vars" "/system/.supersu"
-	extract "$tmp/supersu/supersu.zip" "$sutmp"
+[ -f "$tmp/supersu.zip" ] && {
+	print "Extracting SuperSU zip..."
+	extract "$tmp/supersu.zip" "$sutmp"
 
 	progress 0.3
 
-	sh "$sutmp/META-INF/com/google/android/update-binary" dummy 1 "$sutmp/supersu.zip"
+	sh tools/installsu.sh "$sutmp" "$supersu"
 
 	mount /data
 	mount /system
