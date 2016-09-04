@@ -99,7 +99,7 @@ fi
 # MINIMAL PACKAGES
 # usbutils and pciutils is needed for wifite (unsure why) and apt-transport-https for updates
 
-arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils pciutils usbutils apt-transport-https nethunter-utils"
+arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils pciutils kali-archive-keyring usbutils apt-transport-https nethunter-utils"
 minimalnh="openssh-server kali-defaults"
 
 # DEFAULT PACKAGES FULL INSTALL
@@ -144,6 +144,7 @@ umount -l kali-$architecture/proc
 
 # Compress final file
 echo "[+] Tarring file"
+mkdir -p output
 tar cvf output/${filename}.tar kali-armhf/
 echo "[+] Compressing kalifs.  This can take a while...."
 xz -9 output/${filename}.tar
