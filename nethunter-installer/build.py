@@ -450,6 +450,8 @@ def main():
 	parser.add_argument('--kernel', '-k', action='store_true', help='Build kernel installer only')
 	parser.add_argument('--nokernel', '-nk', action='store_true', help='Build without the kernel installer')
 	parser.add_argument('--nosu', '-ns', action='store_true', help='Build without SuperSU installer')
+	parser.add_argument('--nobrand', '-nb', action='store_true', help='Build without wallpaper or boot animation')
+	parser.add_argument('--nofreespace', '-nf', action='store_true', help='Build without free space check')
 	parser.add_argument('--generic', '-g', action='store', metavar='ARCH', help='Build a generic installer (modify ramdisk only)')
 	parser.add_argument('--rootfs', '-fs', action='store', metavar='SIZE', help='Build with Kali chroot rootfs (full or minimal)')
 	parser.add_argument('--release', '-r', action='store', metavar='VERSION', help='Specify NetHunter release version')
@@ -535,12 +537,23 @@ def main():
 		file_tag += '-' + OS
 	else:
 		file_tag += '-' + Arch
+	if args.nobrand and not args.kernel:
+		file_tag += '-nobrand'
 	if args.rootfs:
 		file_tag += '-kalifs-' + args.rootfs
 	if args.release:
 		file_tag += '-' + args.release
 	else:
 		file_tag += '-' + TimeStamp
+
+	# Don't include wallpaper or boot animation if --nobrand is specified
+	if args.nobrand:
+		IgnoredFiles.append('wallpaper')
+		IgnoredFiles.append('bootanimation.zip')
+
+	# Don't include free space script if --nofreespace is specified
+	if args.nofreespace:
+		IgnoredFiles.append('freespace.sh')
 
 	# Don't set up the kernel installer if --nokernel is specified
 	if not args.nokernel:

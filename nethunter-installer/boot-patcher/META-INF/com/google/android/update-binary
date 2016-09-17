@@ -120,10 +120,12 @@ cp ramdisk-patch/sbin/busybox_nh /sbin/
 chmod 755 /sbin/busybox_nh
 /sbin/busybox_nh --install /sbin
 
-# This actually runs twice when part of the NetHunter updater zip
-print "Freeing up some space on /system"
-sh tools/freespace.sh ||
-abort "Not enough free space on /system to continue!"
+[ -f "$tmp/tools/freespace.sh" ] && {
+	# This actually runs twice when part of the NetHunter updater zip
+	print "Freeing up some space on /system"
+	sh tools/freespace.sh ||
+	abort "Not enough free space on /system to continue!"
+}
 
 [ -d "$tmp/system/etc/firmware" ] && {
 	print "Copying firmware to /system/etc/firmware"

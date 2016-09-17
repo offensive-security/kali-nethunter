@@ -175,21 +175,27 @@ installapp "Busybox" "busybox.apk" "ru.meefik.busybox"
 
 progress 0.5
 
-# This actually runs twice when the NetHunter kernel zip is included
-print "Freeing up some space on /system"
-sh tools/freespace.sh ||
-abort "Not enough free space on /system to continue!"
+[ -f "$tmp/tools/freespace.sh" ] && {
+	# This actually runs twice when the NetHunter kernel zip is included
+	print "Freeing up some space on /system"
+	sh tools/freespace.sh ||
+	abort "Not enough free space on /system to continue!"
+}
 
 print "@Running busybox installer..."
 sh tools/installbusybox.sh
 
 progress 0.6
 
-print "@Installing NetHunter wallpaper"
-sh wallpaper/setwallpaper.sh
+[ -d "$tmp/wallpaper" ] && {
+	print "Installing NetHunter wallpaper"
+	sh wallpaper/setwallpaper.sh
+}
 
-print "@Installing NetHunter boot animation"
-install "/system/media/bootanimation.zip" 0755 0644
+[ -f "$tmp/system/media/bootanimation.zip" ] && {
+	print "Installing NetHunter boot animation"
+	install "/system/media/bootanimation.zip" 0755 0644
+}
 
 progress 0.7
 
