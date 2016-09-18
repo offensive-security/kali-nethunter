@@ -18,7 +18,7 @@ def copytree(src, dst):
 		return True
 
 	for sdir, subdirs, files in os.walk(src):
-		for d in subdirs:
+		for d in subdirs[:]:
 			if not shouldcopy(d):
 				subdirs.remove(d)
 		ddir = sdir.replace(src, dst, 1)
