@@ -18,7 +18,7 @@ def copytree(src, dst):
 		return True
 
 	for sdir, subdirs, files in os.walk(src):
-		for d in subdirs:
+		for d in subdirs[:]:
 			if not shouldcopy(d):
 				subdirs.remove(d)
 		ddir = sdir.replace(src, dst, 1)
@@ -148,7 +148,7 @@ def allapps(forcedown):
 		'RFAnalyzer':'https://github.com/demantz/RFAnalyzer/raw/master/RFAnalyzer.apk',
 		'Shodan':'https://github.com/PaulSec/Shodan.io-mobile-app/raw/master/io.shodan.app.apk',
 		'RouterKeygen':'https://github.com/routerkeygen/routerkeygenAndroid/releases/download/v3.15.0/routerkeygen-3-15-0.apk',
-		'cSploit':'https://github.com/cSploit/android/releases/download/v1.6.5/cSploit-release.apk'
+		'cSploit':'https://github.com/cSploit/android/releases/download/v1.6.5/cSploit-release.apk',
 		'Busybox':'https://github.com/binkybear/busybox/releases/download/1.24.3/busybox.apk'
 	}
 
