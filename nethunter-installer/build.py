@@ -88,34 +88,6 @@ def supersu(forcedown, beta):
 		except urllib2.URLError, e:
 			print('URLError = ' + str(e.reason))
 
-	def extractsu(suzip):
-		arch = {
-			'armv7':os.path.join('boot-patcher', 'arch', 'armhf'),
-			'arm64':os.path.join('boot-patcher', 'arch', 'arm64'),
-			'x64':os.path.join('boot-patcher', 'arch', 'amd64'),
-			'x86':os.path.join('boot-patcher', 'arch', 'i386')
-		}
-		libdir = {
-			'armv7':'lib',
-			'arm64':'lib64',
-			'x64':'lib64',
-			'x86':'lib'
-		}
-
-		try:
-			with zipfile.ZipFile(suzip, 'r') as zf:
-				for key, value in arch.iteritems():
-					fin = key + '/supolicy'
-					fout = os.path.join(value, 'system', 'xbin', 'supolicy')
-					print('Extracting ' + fin + ' to ' + fout)
-					shutil.copyfileobj(zf.open(fin), open(fout, 'wb'))
-					fin = key + '/libsupol.so'
-					fout = os.path.join(value, 'system', libdir[key], 'libsupol.so')
-					print('Extracting ' + fin + ' to ' + fout)
-					shutil.copyfileobj(zf.open(fin), open(fout, 'wb'))
-		except:
-			abort('Unable to extract sepolicy patch from SuperSU zip')
-
 	suzip = os.path.join('update', 'supersu.zip')
 
 	# Remove previous supersu.zip if force redownloading
@@ -129,15 +101,12 @@ def supersu(forcedown, beta):
 		if beta:
 			surl = getdlpage('https://download.chainfire.eu/supersu-beta')
 		else:
-			surl = getdlpage('https://s3-us-west-2.amazonaws.com/supersu/download/zip/SuperSU-v2.78-201609011115.zip')
+			surl = getdlpage('https://download.chainfire.eu/1003/SuperSU/SR1-SuperSU-v2.78-SR1-20160915123031.zip')
 
 		if surl:
 			download(surl + '?retrieve_file=1', suzip)
 		else:
 			abort('Could not retrieve download URL for SuperSU')
-
-	# Extract supolicy and libsupol.so from SuperSU zip
-	extractsu(suzip)
 
 def allapps(forcedown):
 	apps = {
@@ -478,7 +447,8 @@ def main():
 		Device = 'generic'
 		setuparch()
 	elif args.forcedown:
-		supersu(True, supersu_beta)
+		if not args.nosu:
+			supersu(True, supersu_beta)
 		allapps(True)
 		done()
 	elif not args.uninstaller:
@@ -525,12 +495,12 @@ def main():
 	if not (args.device or args.generic):
 		done()
 
-	# Download SuperSU, we need it for both the kernel and update installer
-	supersu(args.forcedown, supersu_beta)
-
-	# We don't need the apps if we are only building the kernel installer
+	# We don't need the apps or SuperSU if we are only building the kernel installer
 	if not args.kernel:
 		allapps(args.forcedown)
+		# Download SuperSU unless we don't want it
+		if not args.nosu:
+			supersu(args.forcedown, supersu_beta)
 
 	# Download Kali rootfs if we are building a zip with the chroot environment included
 	if args.rootfs:

@@ -22,14 +22,9 @@ if [ "$supersu" = "systemless" ]; then
 SYSTEMLESS=true
 EOF
 elif [ "$supersu" = "system" ]; then
-	if [ ! -d "$tmp/boot-patcher/patch.d" ]; then
-		print "Skipping SuperSU (unable to patch sepolicy)"
-		exit 1
-	fi
 	print "Installing SuperSU in system mode"
 	cat <<EOF > "/system/.supersu"
 SYSTEMLESS=false
-PATCHBOOTIMAGE=false
 EOF
 else
 	print "Installing SuperSU in automatic mode"
