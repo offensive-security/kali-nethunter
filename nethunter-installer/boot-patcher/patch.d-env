@@ -5,6 +5,7 @@ bin=$tmp/tools
 ramdisk=$tmp/ramdisk
 ramdisk_patch=$ramdisk-patch
 default_prop=$ramdisk/default.prop
+build_prop=/system/build.prop
 
 console=$(cat /tmp/console)
 [ "$console" ] || console=/proc/$$/fd/1
@@ -12,6 +13,7 @@ console=$(cat /tmp/console)
 . $tmp/env.sh
 
 [ -f "$default_prop" ] && found_prop=true
+[ -f "$build_prop" ] && found_build_prop=true
 
 print() {
 	[ "$1" ] && {
@@ -27,15 +29,21 @@ abort() {
 	exit 1
 }
 
+# replace_file <old file> <new file> (preserving metadata)
+replace_file() {
+	cat "$2" > "$1" || return 1
+	rm -f "$2"
+}
+
 # replace_line <file> <line match pattern> <replacement line>
 replace_line() {
-	sed -i "s/\s*$2\s*$/$3/" "$1"
+	sed -i "s/[[:space:]]*$2[[:space:]]*$/$3/" "$1"
 }
 
 # insert_after_last <file> <line match pattern> <inserted line>
 insert_after_last() {
 	grep -q "^$3$" "$1" || {
-		line=$(($(grep -n "^\s*$2\s*$" "$1" | tail -1 | cut -d: -f1) + 1))
+		line=$(($(grep -n "^[[:space:]]*$2[[:space:]]*$" "$1" | tail -1 | cut -d: -f1) + 1))
 		sed -i "${line}i$3" "$1"
 	}
 }
@@ -43,11 +51,35 @@ insert_after_last() {
 # setprop <prop> <value>
 setprop() {
 	$found_prop || return
-	if grep -q "${1}=" "$default_prop"; then
-		sed -i "s/${1}=.*/${1}=${2}/g" "$default_prop"
+	if grep -q "^[[:space:]]*$1[[:space:]]*=" "$default_prop"; then
+		sed -i "s/^[[:space:]]*$1[[:space:]]*=.*$/$1=$2/g" "$default_prop"
 	else
-		echo "${1}=${2}" >> "$default_prop"
+		echo "$1=$2" >> "$default_prop"
 	fi
+}
+
+# delprop <prop>
+delprop() {
+	$found_prop && sed -i "/^[[:space:]]*$1[[:space:]]*=/d" "$default_prop"
+	$found_build_prop && sed -i "/^[[:space:]]*$1[[:space:]]*=/d" "$build_prop"
+}
+
+# disable_service <service name>
+disable_service() {
+	for rc in "$ramdisk"/*.rc; do
+		grep -q "^[[:space:]]*service[[:space:]]\+$1\b" "$rc" || continue
+		echo "Found service $1 in $rc"
+		awk -vsc_name="$1" '
+			$1 == "service" || $1 == "on" { in_sc = 0 }
+			in_sc && $1 == "disabled" { next }
+			{ print }
+			$1 == "service" && $2 == sc_name {
+				print "    disabled"
+				in_sc = 1
+			}
+		' "$rc" > "$rc-"
+		replace_file "$rc" "$rc-"
+	done
 }
 
 cd $ramdisk

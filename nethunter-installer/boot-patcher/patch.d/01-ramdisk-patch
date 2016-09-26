@@ -5,12 +5,15 @@
 print "Patching the ramdisk for NetHunter & init.d..."
 
 # fix permissions of patch files
-chmod -R 0755 $ramdisk_patch
-chmod 0644 "$ramdisk_patch/sbin/media_profiles.xml"
+chmod -R 0755 "$ramdisk_patch"
+find "$ramdisk_patch" \( -name "*.xml" -o -name "*.rc" \) -exec chmod 0644 {} +
+
 # move the patch files into the ramdisk
-cp -rd $ramdisk_patch/. ./
-# make sure adb is not secure
+cp -rd "$ramdisk_patch"/. ./
+
+# keep adb secure to stop outside attackers
 setprop ro.adb.secure 1
 setprop ro.secure 0
+
 # import nethunter init to init.rc
 insert_after_last init.rc "import /init\\..*\\.rc" "import /init.nethunter.rc"
