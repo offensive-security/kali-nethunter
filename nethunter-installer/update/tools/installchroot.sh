@@ -1,9 +1,9 @@
 #!/sbin/sh
 # Install Kali chroot
 
-TMP=/tmp/nethunter
-
-. $TMP/env.sh
+tmp=$(readlink -f "$0")
+tmp=${tmp%/*/*}
+. "$tmp/env.sh"
 
 console=$(cat /tmp/console)
 [ "$console" ] || console=/proc/$$/fd/1
@@ -17,7 +17,7 @@ NHSYS=/data/local/nhsystem
 CHROOT=$NHSYS/kali-$ARCH
 
 # Check installer for kalifs archive
-KALIFS=$(ls $TMP/kalifs-*.tar.xz)
+KALIFS=$(ls "$tmp"/kalifs-*.tar.xz)
 # If not found, check /data/local instead
 [ -f "$KALIFS" ] || KALIFS=$(ls /data/local/kalifs-*.tar.xz)
 

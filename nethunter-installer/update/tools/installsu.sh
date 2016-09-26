@@ -1,9 +1,9 @@
 #!/sbin/sh
 # Install SuperSU in the specified mode
 
-TMP=/tmp/nethunter
-
-. $TMP/env.sh
+tmp=$(readlink -f "$0")
+tmp=${tmp%/*/*}
+. "$tmp/env.sh"
 
 console=$(cat /tmp/console)
 [ "$console" ] || console=/proc/$$/fd/1
@@ -22,7 +22,7 @@ if [ "$supersu" = "systemless" ]; then
 SYSTEMLESS=true
 EOF
 elif [ "$supersu" = "system" ]; then
-	if [ ! -d "$TMP/boot-patcher/patch.d" ]; then
+	if [ ! -d "$tmp/boot-patcher/patch.d" ]; then
 		print "Skipping SuperSU (unable to patch sepolicy)"
 		exit 1
 	fi
@@ -38,4 +38,4 @@ SYSTEMLESS=detect
 EOF
 fi
 
-sh "$sutmp/META-INF/com/google/android/update-binary" dummy 1 "$TMP/supersu.zip"
+sh "$sutmp/META-INF/com/google/android/update-binary" dummy 1 "$tmp/supersu.zip"

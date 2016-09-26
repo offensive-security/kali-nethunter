@@ -1,9 +1,9 @@
 #!/sbin/sh
 # Check for previous install of Kali Chroot
 
-TMP=/tmp/nethunter
-
-. $TMP/env.sh
+tmp=$(readlink -f "$0")
+tmp=${tmp%/*/*}
+. "$tmp/env.sh"
 
 console=$(cat /tmp/console)
 [ "$console" ] || console=/proc/$$/fd/1

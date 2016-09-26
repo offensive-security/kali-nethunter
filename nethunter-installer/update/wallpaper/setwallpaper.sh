@@ -1,7 +1,10 @@
 #!/sbin/sh
 # Set the wallpaper based on device screen resolution
 
-tmp=/tmp/nethunter
+tmp=$(readlink -f "$0")
+tmp=${tmp%/*/*}
+. "$tmp/env.sh"
+
 wp=/data/system/users/0/wallpaper
 
 console=$(cat /tmp/console)
