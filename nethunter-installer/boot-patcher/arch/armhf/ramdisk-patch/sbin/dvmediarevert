@@ -2,7 +2,7 @@
 # chmod -R 755 /system/etc/init.d
 # osm0sis @ xda-developers
 
-bb=/sbin/busybox_nh
+bb=/system/xbin/busybox_nh
 
 # restore media_profiles.xml, power.tuna.so and hostapd if switching to another kernel from DirtyV
 $bb mount -o rw,remount /system

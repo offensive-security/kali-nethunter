@@ -8,7 +8,7 @@ on init
 on boot
     start run-parts
 
-service run-parts /sbin/busybox_nh run-parts /system/etc/init.d
+service run-parts /system/xbin/busybox_nh run-parts /system/etc/init.d
     class late_start
     seclabel u:r:init:s0
     user root

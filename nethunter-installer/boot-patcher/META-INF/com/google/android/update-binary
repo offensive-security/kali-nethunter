@@ -116,8 +116,7 @@ setperm 0755 0755 "$tmp/tools"
 
 # Install additional busybox applets to /sbin in case something is missing during installation
 print "Installing busybox applets to /sbin"
-cp ramdisk-patch/sbin/busybox_nh /sbin/
-chmod 755 /sbin/busybox_nh
+cp tools/busybox /sbin/busybox_nh
 /sbin/busybox_nh --install /sbin
 
 [ -f "$tmp/tools/freespace.sh" ] && {
@@ -161,6 +160,9 @@ chmod 755 /sbin/busybox_nh
 	print "Copying additional files to /data/local"
 	install "/data/local" 0755 0644
 }
+
+print "Running busybox installer..."
+sh tools/installbusybox.sh
 
 print "Running boot image patcher..."
 sh boot-patcher.sh || abort
