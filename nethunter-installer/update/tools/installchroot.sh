@@ -5,6 +5,9 @@ tmp=$(readlink -f "$0")
 tmp=${tmp%/*/*}
 . "$tmp/env.sh"
 
+# temporary, until arch other than armhf exists
+ARCH=armhf
+
 console=$(cat /tmp/console)
 [ "$console" ] || console=/proc/$$/fd/1
 
@@ -36,7 +39,7 @@ KALIFS=$(ls "$tmp"/kalifs-*.tar.xz)
 	print "Extracting Kali rootfs, this may take up to 25 minutes..."
 	busybox_nh tar -xJf "$KALIFS" -C "$NHSYS" --exclude "kali-$ARCH/dev" && {
 		mkdir -pm 0755 "$CHROOT/dev"
-		print "Kali chroot installed successfully!"
+		print "Kali $ARCH chroot installed successfully!"
 	} || {
 		print "Error: Kali chroot failed to install!"
 		print "Maybe you ran out of space on your data partition?"

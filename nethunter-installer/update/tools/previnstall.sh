@@ -5,6 +5,9 @@ tmp=$(readlink -f "$0")
 tmp=${tmp%/*/*}
 . "$tmp/env.sh"
 
+# temporary, until arch other than armhf exists
+ARCH=armhf
+
 console=$(cat /tmp/console)
 [ "$console" ] || console=/proc/$$/fd/1
 
@@ -23,14 +26,12 @@ rm -rf "$NHAPP/dev/*"
 rm -rf "$NH/dev/*"
 
 # We probably don't want two old chroots in the same folder, so pick newer location in /data/local first
-[ -d "$NH" ] && {
-	print "Detected previous install of Kali, moving chroot..."
+if [ -d "$NH" ]; then
+	print "Detected previous install of Kali $ARCH, moving chroot..."
 	mv "$NH" "$NHSYS"
-} || {
-	[ -d "$NHAPP" ] && {
-		print "Detected previous install of Kali, moving chroot..."
-		mv "$NHAPP" "$NHSYS"
-	}
+elif [ -d "$NHAPP" ]; then
+	print "Detected previous install of Kali $ARCH, moving chroot..."
+	mv "$NHAPP" "$NHSYS"
 }
 
 # Just to be safe lets remove old version of NetHunter app

@@ -146,23 +146,17 @@ def rootfs(forcedown, fs_size):
 	global Arch
 
 	fs_file = 'kalifs-' + fs_size + '.tar.xz'
-	fs_path = os.path.join('rootfs', Arch, fs_file)
+	fs_path = os.path.join('rootfs', 'armhf', fs_file)
+#	fs_path = os.path.join('rootfs', Arch, fs_file)
 	fs_host = 'https://images.offensive-security.com/'
 
-	if Arch == 'armhf':
-		fs_url = fs_host + fs_file
-	elif Arch == 'arm64':
-		fs_url = fs_host + 'arm64/' + fs_file
-	elif Arch == 'amd64':
-		fs_url = fs_host + 'arm64/' + fs_file
-	elif Arch == 'i386':
-		fs_url = fs_host + 'i386/' + fs_file
-	else:
-		abort('Unknown device architecture: ' + Arch)
+	fs_url = fs_host + fs_file
+#	fs_url = fs_host + Arch + '/' + fs_file
 
 	if forcedown:
 		# For force redownload, remove previous rootfs
-		print('Force redownloading Kali %s %s rootfs' % (fs_size, Arch))
+		print('Force redownloading Kali %s %s rootfs' % (fs_size, 'armhf'))
+#		print('Force redownloading Kali %s %s rootfs' % (fs_size, Arch))
 		if os.path.isfile(fs_path):
 			os.remove(fs_path)
 
@@ -174,7 +168,9 @@ def addrootfs(fs_size, dst):
 	global Arch
 
 	fs_file = 'kalifs-' + fs_size + '.tar.xz'
-	fs_path = os.path.join('rootfs', Arch, fs_file)
+
+	fs_path = os.path.join('rootfs', 'armhf', fs_file)
+#	fs_path = os.path.join('rootfs', Arch, fs_file)
 
 	try:
 		zf = zipfile.ZipFile(dst, 'a', zipfile.ZIP_DEFLATED)
