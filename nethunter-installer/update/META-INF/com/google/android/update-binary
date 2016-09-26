@@ -60,18 +60,33 @@ install() {
 # installapp "App Name" "appfile.apk" "play.store.package.name"
 # -> if the app package is found in the play store app database, then don't install it
 installapp() {
-	if [ "$3" -a -d "/data/app/$3"* ]; then
-		if [ ! -f /data/data/com.android.vending/databases/localappstate.db ]; then
-			echo "Could not find Play Store app database!"
-		elif strings /data/data/com.android.vending/databases/localappstate.db | grep -q "^$3"; then
-			rm -f "/data/app/$2"
-			print "Found Play Store installed $1"
-			return
-		fi
-		rm -rf "/data/app/$3"*
+	installto=/data/app/
+	if [ "$3" ]; then
+		for appdir in "/data/app/$3"*; do
+			if [ -d "$appdir" ]; then
+				echo "Found app directory: $appdir"
+				if [ ! -f /data/data/com.android.vending/databases/localappstate.db ]; then
+					echo "Could not find Play Store app database!"
+				# this should also catch paid/alternative versions if they are suffixed
+				elif strings /data/data/com.android.vending/databases/localappstate.db | grep -q "^$3"; then
+					rm -f "/data/app/$2"
+					print "Found Play Store installed $1"
+					return 0
+				fi
+				rm -f "/data/app/$2"
+				installto=$appdir/base.apk
+				break
+			fi
+		done
 	fi
+	echo "Installing $1 to $installto"
 	print "Installing $1"
-	cp -f "$tmp/data/app/$2" /data/app/ || print "Failed to install $1!"
+	if cp -f "$tmp/data/app/$2" "$installto"; then
+		return 0
+	else
+		print "Failed to install $1!"
+		return 1
+	fi
 }
 
 extract() {
