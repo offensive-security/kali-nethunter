@@ -339,6 +339,12 @@ def setupkernel():
 		print('Found additional patch.d scripts at: ' + patchd_path)
 		copytree(patchd_path, os.path.join(out_path, 'patch.d'))
 
+	# Copy any ramdisk files
+	ramdisk_path = os.path.join(device_path, 'ramdisk')
+	if os.path.exists(patchd_path):
+		print('Found additional ramdisk files at: ' + ramdisk_path)
+		copytree(ramdisk_path, os.path.join(out_path, 'ramdisk-patch'))
+
 	# Copy any modules
 	modules_path = os.path.join(device_path, 'modules')
 	if os.path.exists(modules_path):
