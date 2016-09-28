@@ -4,12 +4,25 @@
 
 print "Patching the ramdisk for NetHunter & init.d..."
 
+cd "$ramdisk_patch"
+
 # fix permissions of patch files
-chmod -R 0755 "$ramdisk_patch"
-find "$ramdisk_patch" \( -name "*.xml" -o -name "*.rc" \) -exec chmod 0644 {} +
+chmod -R 0755 .
+
+find -type f \( \
+	-name "*.rc" ! -name "ueventd.*" \
+	\) -exec chmod 0750 {} \;
+
+find -type f \( \
+	-name "*.xml" -o -name "*.do" -o -name "*.pem" -o -name "*.vtab" -o \
+	-name "fstab.*" -o -name "*.prop" -o -name "*_contexts" -o \
+	-name "ueventd.*" -o -name "sepolicy" -o -name "sepolicy_version" \
+	\) -exec chmod 0644 {} \;
 
 # move the patch files into the ramdisk
-cp -rd "$ramdisk_patch"/. ./
+cp -rd ./. "$ramdisk/"
+
+cd "$ramdisk"
 
 # keep adb secure to stop outside attackers
 setprop ro.adb.secure 1
