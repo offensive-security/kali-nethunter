@@ -31,7 +31,6 @@ cleanup() {
 	rm /data/.rw
 
 	umount /system
-	umount /data
 
 	[ "$zip" ] && rm /tmp/console
 }
