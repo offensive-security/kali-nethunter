@@ -13,9 +13,9 @@ split_img=$tmp/split-img
 bin=$tmp/tools
 boot_backup=/data/local/boot-backup.img
 
-chmod -R 755 $bin
-rm -rf $ramdisk $split_img
-mkdir $ramdisk $split_img
+chmod -R 755 "$bin"
+rm -rf "$ramdisk" "$split_img"
+mkdir "$ramdisk" "$split_img"
 
 console=$(cat /tmp/console)
 [ "$console" ] || console=/proc/$$/fd/1
@@ -108,14 +108,14 @@ dump_boot() {
 		dump_image "$boot_block" "$tmp/boot.img"
 	fi
 	[ $? = 0 ] || abort "Unable to read boot partition"
-	$bin/unpackbootimg -i "$tmp/boot.img" -o "$split_img" || {
+	"$bin/unpackbootimg" -i "$tmp/boot.img" -o "$split_img" || {
 		abort "Unpacking boot image failed"
 	}
 }
 
 # determine the format the ramdisk was compressed in
 determine_ramdisk_format() {
-	magicbytes=$(hexdump -vn2 -e '2/1 "%x"' $split_img/boot.img-ramdisk)
+	magicbytes=$(hexdump -vn2 -e '2/1 "%x"' "$split_img/boot.img-ramdisk")
 	case "$magicbytes" in
 		425a) rdformat=bzip2; decompress=bzip2 ;; #compress="bzip2 -9c" ;;
 		1f8b|1f9e) rdformat=gzip; decompress=gzip ;; #compress="gzip -9c" ;;
@@ -131,8 +131,8 @@ determine_ramdisk_format() {
 
 # extract the old ramdisk contents
 dump_ramdisk() {
-	cd $ramdisk
-	$decompress -d < $split_img/boot.img-ramdisk | cpio -i
+	cd "$ramdisk"
+	$decompress -d < "$split_img/boot.img-ramdisk" | cpio -i
 	[ $? != 0 ] && abort "Unpacking ramdisk failed"
 }
 
@@ -140,9 +140,9 @@ dump_ramdisk() {
 dump_embedded_ramdisk() {
 	if [ -f "$ramdisk/sbin/ramdisk.cpio" ]; then
 		print "Found embedded boot ramdisk!"
-		mv $ramdisk $ramdisk-root
-		mkdir $ramdisk
-		cd $ramdisk
+		mv "$ramdisk" "$ramdisk-root"
+		mkdir "$ramdisk"
+		cd "$ramdisk"
 		cpio -i < "$ramdisk-root/sbin/ramdisk.cpio" || {
 			abort "Failed to unpack embedded boot ramdisk"
 		}
@@ -152,58 +152,59 @@ dump_embedded_ramdisk() {
 # execute all scripts in patch.d
 patch_ramdisk() {
 	print "Running ramdisk patching scripts..."
-	find "$tmp/patch.d/" -type f | sort > "$tmp/patchfiles"
+	cd "$tmp"
+	find patch.d/ -type f | sort > patchfiles
 	while read -r patchfile; do
 		print "Executing: $(basename "$patchfile")"
 		env="$tmp/patch.d-env" sh "$patchfile" || {
 			abort "Script failed: $(basename "$patchfile")"
 		}
-	done < "$tmp/patchfiles"
+	done < patchfiles
 }
 
 # if we moved the parent ramdisk, we should rebuild the embedded one
 build_embedded_ramdisk() {
 	if  [ -d "$ramdisk-root" ]; then
 		print "Building new embedded boot ramdisk..."
-		cd $ramdisk
+		cd "$ramdisk"
 		find | cpio -o -H newc > "$ramdisk-root/sbin/ramdisk.cpio"
-		rm -rf $ramdisk
-		mv $ramdisk-root $ramdisk
+		rm -rf "$ramdisk"
+		mv "$ramdisk-root" "$ramdisk"
 	fi
 }
 
 # build the new ramdisk
 build_ramdisk() {
 	print "Building new ramdisk..."
-	cd $ramdisk
-	find | cpio -o -H newc | gzip -9c > $tmp/ramdisk-new
+	cd "$ramdisk"
+	find | cpio -o -H newc | gzip -9c > "$tmp/ramdisk-new"
 }
 
 # build the new boot image
 build_boot() {
-	cd $split_img
+	cd "$split_img"
 	kernel=
 	for image in zImage zImage-dtb Image Image-dtb Image.gz Image.gz-dtb; do
-		if [ -s $tmp/$image ]; then
+		if [ -s "$tmp/$image" ]; then
 			kernel="$tmp/$image"
 			print "Found replacement kernel $image!"
 			break
 		fi
 	done
 	[ "$kernel" ] || kernel="$(ls ./*-zImage)"
-	if [ -s $tmp/ramdisk-new ]; then
+	if [ -s "$tmp/ramdisk-new" ]; then
 		rd="$tmp/ramdisk-new"
 		print "Found replacement ramdisk image!"
 	else
 		rd="$(ls ./*-ramdisk)"
 	fi
-	if [ -s $tmp/dtb.img ]; then
+	if [ -s "$tmp/dtb.img" ]; then
 		dtb="$tmp/dtb.img"
 		print "Found replacement device tree image!"
 	else
 		dtb="$(ls ./*-dt)"
 	fi
-	$bin/mkbootimg \
+	"$bin/mkbootimg" \
 		--kernel "$kernel" \
 		--ramdisk "$rd" \
 		--dt "$dtb" \
@@ -216,7 +217,7 @@ build_boot() {
 		--ramdisk_offset "$(cat ./*-ramdisk_offset)" \
 		--second_offset "$(cat ./*-second_offset)" \
 		--tags_offset "$(cat ./*-tags_offset)" \
-		-o $tmp/boot-new.img || {
+		-o "$tmp/boot-new.img" || {
 			abort "Repacking boot image failed"
 		}
 }
@@ -231,8 +232,24 @@ samsung_tag() {
 # backup old boot image
 backup_boot() {
 	print "Backing up original boot image to $boot_backup..."
-	mkdir -p "$(dirname $boot_backup)"
-	cp -f $tmp/boot.img $boot_backup
+	cd "$tmp"
+	mkdir -p "$(dirname "$boot_backup")"
+	cp -f boot.img "$boot_backup"
+}
+
+# verify that the boot image exists and can fit the partition
+verify_size() {
+	print "Verifying boot image size..."
+	cd "$tmp"
+	[ -s boot-new.img ] || abort "New boot image not found!"
+	old_sz=$(wc -c < boot.img)
+	new_sz=$(wc -c < boot-new.img)
+	if [ "$new_sz" -gt "$old_sz" ]; then
+		size_diff=$((new_sz - old_sz))
+		print " Partition size: $old_sz bytes"
+		print "Boot image size: $new_sz bytes"
+		abort "Boot image is $size_diff bytes too large for partition"
+	fi
 }
 
 # write the new boot image to boot block
@@ -248,7 +265,9 @@ write_boot() {
 
 ## end install methods
 
-. $tmp/env.sh
+cd "$tmp" || abort "Failed to enter boot-patcher directory!"
+
+. env.sh
 
 ## start boot image patching
 
@@ -271,6 +290,8 @@ build_ramdisk
 build_boot
 
 samsung_tag
+
+verify_size
 
 backup_boot
 
