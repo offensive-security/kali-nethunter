@@ -1,4 +1,4 @@
-LANG=C chroot kali-$architecture /debootstrap/debootstrap --second-stage
+#LANG=C chroot kali-$architecture /debootstrap/debootstrap --second-stage
 
 # Add our sources
 cat << EOF > kali-$architecture/etc/apt/sources.list

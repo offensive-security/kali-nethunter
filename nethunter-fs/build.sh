@@ -138,9 +138,9 @@ echo "[+] Starting stage 4 (cleanup)"
 source stages/stage4-cleanup 
 
 # Unmount
-umount -l kali-$architecture/dev/pts
-umount -l kali-$architecture/dev/
-umount -l kali-$architecture/proc
+sudo umount -l kali-$architecture/dev/pts
+sudo umount -l kali-$architecture/dev/
+sudo umount -l kali-$architecture/proc
 
 # Compress final file
 echo "[+] Tarring file"
@@ -149,11 +149,10 @@ tar cvf output/${filename}.tar kali-armhf/
 echo "[+] Compressing kalifs.  This can take a while...."
 xz -9 output/${filename}.tar
 #tar -cf - kali-armhf/ | xz -9 -c - > output/${filename}.tar.xz
-sha1sum output/${filename}.tar.xz > output/${filename}.sha1sum
+sha512sum output/${filename}.tar.xz > output/${filename}.sha512sum
 
 # Remove read only from nano
 chattr -i /bin/nano
-
 
 echo "[+] Finished!  Check output folder for chroot"
 

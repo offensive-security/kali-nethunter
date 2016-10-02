@@ -2,6 +2,13 @@
 
 Build a basic NetHunter chroot
 
+## Docker support
+```bash
+docker build -t nethunter .
+docker run --privileged --name nethunter_build -i -t nethunter 2>&1 | tee output.log
+docker cp nethunter_build:/root/nethunter-fs/output .
+```
+
 ## Dependencies
 
 This could be built on any debian based system but I recommend building on Kali.
