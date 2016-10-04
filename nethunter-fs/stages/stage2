@@ -1,5 +1,3 @@
-#LANG=C chroot kali-$architecture /debootstrap/debootstrap --second-stage
-
 # Add our sources
 cat << EOF > kali-$architecture/etc/apt/sources.list
 deb http://http.kali.org/kali kali-rolling main contrib non-free

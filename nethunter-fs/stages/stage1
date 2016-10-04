@@ -9,16 +9,22 @@ if [ ! -f "/usr/share/debootstrap/scripts/kali-rolling" ]; then
 	ln -s /usr/share/debootstrap/scripts/kali /usr/share/debootstrap/scripts/kali-rolling
 fi
 
-#
-# Docker needs binfmt to run arm.  Without below commands second-stage and chroot will fail
-# http://neophob.com/2014/10/run-arm-binaries-in-your-docker-container-using-boot2docker/
-#
-mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
-update-binfmts --enable qemu-arm   
 
-#
-# qemu-debootstrap includes foreign and second stage but requires binfmt-support package
-# Also copies qemu-user-static
-#
-qemu-debootstrap --verbose --arch=$architecture kali-rolling kali-$architecture http://repo.kali.org/kali
-cp /usr/bin/qemu-arm-static kali-$architecture/usr/bin/
+if [ -f /.dockerenv ]; then
+	#
+	# Docker needs binfmt to run arm.  Without below commands second-stage and chroot will fail
+	# http://neophob.com/2014/10/run-arm-binaries-in-your-docker-container-using-boot2docker/
+	#
+    mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc
+	update-binfmts --enable qemu-arm
+	#
+	# qemu-debootstrap includes foreign and second stage but requires binfmt-support package
+	# Also copies qemu-user-static
+	#
+	qemu-debootstrap --verbose --arch=$architecture kali-rolling kali-$architecture http://repo.kali.org/kali
+	cp /usr/bin/qemu-arm-static kali-$architecture/usr/bin/
+else
+    debootstrap --foreign --arch $architecture kali-rolling kali-$architecture http://repo.kali.org/kali
+    cp /usr/bin/qemu-arm-static kali-$architecture/usr/bin/
+    LANG=C chroot kali-$architecture /debootstrap/debootstrap --second-stage
+fi
