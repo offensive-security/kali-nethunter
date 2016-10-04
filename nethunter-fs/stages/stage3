@@ -1,17 +1,19 @@
+#!/bin/bash
+
 export MALLOC_CHECK_=0 # workaround for LP: #520465
 export LC_ALL=C
 export DEBIAN_FRONTEND=noninteractive
 
-mount -t proc proc kali-$architecture/proc
-mount -o bind /dev/ kali-$architecture/dev/
-mount -o bind /dev/pts kali-$architecture/dev/pts
+mount -t proc proc "$rootfs/proc"
+mount -o bind /dev "$rootfs/dev"
+mount -o bind /dev/pts "$rootfs/dev/pts"
 
-cat << EOF > kali-$architecture/debconf.set
+cat << EOF > "$rootfs/debconf.set"
 console-common console-data/keymap/policy select Select keymap from full list
 console-common console-data/keymap/full select en-latin1-nodeadkeys
 EOF
 
-cat << EOF > kali-$architecture/third-stage
+cat << EOF > "$rootfs/third-stage"
 #!/bin/bash
 dpkg-divert --add --local --divert /usr/sbin/invoke-rc.d.chroot --rename /usr/sbin/invoke-rc.d
 cp /bin/true /usr/sbin/invoke-rc.d
@@ -50,47 +52,51 @@ make
 rm -f /third-stage
 EOF
 
-chmod +x kali-$architecture/third-stage
-LANG=C chroot kali-$architecture /third-stage
+chmod +x "$rootfs/third-stage"
+chroot_do /third-stage
 
 # Add /system/xbin to PATH
 echo "[+] Adding /system/xbin to path"
-echo ""  >> kali-$architecture/root/.profile
-echo "# Add /system/xbin to PATH" >> kali-$architecture/root/.profile
-echo "PATH=$PATH:/system/xbin" >> kali-$architecture/root/.profile
+cat << EOF >> "$rootfs/root/.profile"
+
+# Add /system/xbin to PATH
+PATH="$PATH:/system/xbin"
+EOF
 
 # Source .bashrc and .profile at login
 echo "[+] Adding bashrc/profile sourcing to bash_profile"
-echo "" >> kali-$architecture/root/.bash_profile
-echo "source /root/.bashrc" >> kali-$architecture/root/.bash_profile
-echo "source /root/.profile" >> kali-$architecture/root/.bash_profile
-echo "cd ~/" >> kali-$architecture/root/.bash_profile
+cat << EOF >> "$rootfs/root/.bash_profile"
+
+. /root/.bashrc
+. /root/.profile
+cd ~
+EOF
 
 # Modify Kismet log saving folder
-sed -i 's|.*\blogprefix=.*|logprefix=/captures/kismet/|g' kali-$architecture/etc/kismet/kismet.conf
-sed -i 's|.*\bncsource=wlan0|ncsource=wlan1|g' kali-$architecture/etc/kismet/kismet.conf
-sed -i 's|.*\bgpshost=.*|gpshost=127.0.0.1:2947|g' kali-$architecture/etc/kismet/kismet.conf
+sed -i 's|.*\blogprefix=.*|logprefix=/captures/kismet/|g' "$rootfs/etc/kismet/kismet.conf"
+sed -i 's|.*\bncsource=wlan0|ncsource=wlan1|g' "$rootfs/etc/kismet/kismet.conf"
+sed -i 's|.*\bgpshost=.*|gpshost=127.0.0.1:2947|g' "$rootfs/etc/kismet/kismet.conf"
 
 # Modify SSHD to allow password logins which is a security risk 
 # if the user doesn't change their password
 # or change their configuration for key based ssh
 echo "[+] Modifying SSH to allow root user"
 
-sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g' kali-$architecture/etc/ssh/sshd_config
-sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/g' kali-$architecture/etc/ssh/sshd_config
+sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/g' "$rootfs/etc/ssh/sshd_config"
+sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/g' "$rootfs/etc/ssh/sshd_config"
 
 # Install dictionary
-mkdir -p kali-$architecture/opt/dic
-tar xvf dictionary/89.tar.gz -C kali-$architecture/opt/dic
-cp dictionary/wordlist.txt kali-$architecture/opt/dic/wordlist.txt
-cp dictionary/pinlist.txt kali-$architecture/opt/dic/pinlist.txt
+mkdir -p "$rootfs/opt/dic"
+tar xvf dictionary/89.tar.gz -C "$rootfs/opt/dic"
+cp dictionary/wordlist.txt "$rootfs/opt/dic/wordlist.txt"
+cp dictionary/pinlist.txt "$rootfs/opt/dic/pinlist.txt"
 
 # Sets the default for hostapd.conf to the mana karma version
-sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/etc/mana-toolkit/hostapd-karma.conf#' kali-$architecture/etc/init.d/hostapd
-sed -i 's/wlan0/wlan1/g' kali-$architecture/etc/mana-toolkit/hostapd-karma.conf
+sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/etc/mana-toolkit/hostapd-karma.conf#' "$rootfs/etc/init.d/hostapd"
+sed -i 's/wlan0/wlan1/g' "$rootfs/etc/mana-toolkit/hostapd-karma.conf"
 
 # DNSMASQ Configuration options for optional access point
-cat <<EOF > kali-$architecture/etc/dnsmasq.conf
+cat << EOF > "$rootfs/etc/dnsmasq.conf"
 log-facility=/var/log/dnsmasq.log
 #address=/#/10.0.0.1
 #address=/google.com/10.0.0.1
@@ -104,19 +110,23 @@ EOF
 
 # In order for metasploit to work daemon,nginx,postgres must all be added to inet
 # beef-xss creates user beef-xss. Openvpn server requires nobdy:nobody in order to work.
-echo "inet:x:3004:postgres,root,beef-xss,daemon,nginx,mysql" >> kali-$architecture/etc/group
-echo "nobody:x:3004:nobody" >> kali-$architecture/etc/group
+cat << EOF >> "$rootfs/etc/group"
+inet:x:3004:postgres,root,beef-xss,daemon,nginx,mysql
+nobody:x:3004:nobody
+EOF
 
 # Apt now adds a new user to "nobody" but the _apt user can't access updates
 # because of inet.  Modify passwd to put them in inet group for android
-sed -i 's/_apt:x:104:65534/_apt:x:104:3004/g' kali-$architecture/etc/passwd
+sed -i 's/_apt:x:104:65534/_apt:x:104:3004/g' "$rootfs/etc/passwd"
 
 # Insert correct .bashrc file from kali-defaults
-LANG=C chroot kali-$architecture cp /etc/skel/.bashrc /root/.bashrc
+chroot_do cp /etc/skel/.bashrc /root/.bashrc
 
 # Copy necessary scripts and make executable (/dev/null to supress error msgs for following symlinks)
-LANG=C chroot kali-$architecture chmod 755 /usr/bin/* 2> /dev/null
-LANG=C chroot kali-$architecture chmod 755 /usr/share/mana-toolkit/run-mana/*.sh 2> /dev/null
+chroot_do chmod 755 /usr/bin/* 2> /dev/null
+chroot_do chmod 755 /usr/share/mana-toolkit/run-mana/*.sh 2> /dev/null
 
 # Minor fix for mana-toolkit which made changes in update.  We need to mirror fixes.
-sed -i 's/dhcpd -cf \/etc\/mana-toolkit\/dhcpd\.conf \$phy/dnsmasq -z -C \/etc\/mana-toolkit\/dnsmasq-dhcpd\.conf -i \$phy -I lo/' kali-$architecture/usr/share/mana-toolkit/run-mana/*
+sed -i 's|dhcpd -cf /etc/mana-toolkit/dhcpd\.conf.*|dnsmasq -z -C /etc/mana-toolkit/dnsmasq-dhcpd.conf -i $phy -I lo|' "$rootfs/usr/share/mana-toolkit/run-mana/"*
+
+echo "[+] Completed stage 3!"
