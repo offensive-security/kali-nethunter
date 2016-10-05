@@ -5,9 +5,10 @@ mkdir -p "$rootfs"
 if [ ! -f /usr/share/debootstrap/scripts/kali-rolling ]; then
 	#
 	# For those not building on Kali
+	#
 	echo "Missing kali from debootstrap, downloading it"
 
-	curl "http://git.kali.org/gitweb/?p=packages/debootstrap.git;a=blob_plain;f=scripts/kali;h=50d7ef5b4e9e905cc6da8655416cdf3ef559911e;hb=refs/heads/kali/master" > /usr/share/debootstrap/scripts/kali
+	curl "http://git.kali.org/gitweb/?p=packages/debootstrap.git;a=blob_plain;f=scripts/kali;hb=refs/heads/kali/master" > /usr/share/debootstrap/scripts/kali
 	ln -s /usr/share/debootstrap/scripts/kali /usr/share/debootstrap/scripts/kali-rolling
 fi
 

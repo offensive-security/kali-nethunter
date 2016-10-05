@@ -12,14 +12,14 @@ display_help() {
 	echo "  -f, --full      build a rootfs with all the recommended packages"
 	echo "  -m, --minimal   build a rootfs with only the most basic packages"
 	echo "  -a, --arch      select a different architecture (default: armhf)"
-	echo "                  possible options: armhf, arm64"
+	echo "                  possible options: armhf, arm64, i386, amd64"
 	echo "  -h, --help      display this help message"
 	echo
 }
 
 exit_help() {
-	echo "Error: $1"
 	display_help
+	echo "Error: $1"
 	exit 1
 }
 
@@ -44,7 +44,7 @@ while [[ $# -gt 0 ]]; do
 			;;
 		-a|--arch)
 			case $2 in
-				armhf|arm64)
+				armhf|arm64|i386|amd64)
 					build_arch=$2
 					;;
 				*)
@@ -66,7 +66,7 @@ done
 [ "$build_arch" ] || build_arch=armhf
 
 rootfs="kali-$build_arch"
-build_output="output/kalifs-$build_size"
+build_output="output/kalifs-$build_arch-$build_size"
 
 mkdir -p output
 
@@ -143,15 +143,17 @@ fi
 # Add packages you want installed here:
 
 # MINIMAL PACKAGES
-pkg_minimal="openssh-server kali-defaults kali-archive-keyring apt-transport-https ntpdate"
+# usbutils and pciutils is needed for wifite (unsure why) and apt-transport-https for updates
+pkg_minimal="openssh-server kali-defaults kali-archive-keyring apt-transport-https ntpdate usbutils pciutils"
 
 # DEFAULT PACKAGES FULL INSTALL
 pkg_full="kali-linux-nethunter mana-toolkit exploitdb lua-sql-sqlite3 msfpc exe2hexbat bettercap fruitywifi libapache2-mod-php7.0 libreadline6-dev libncurses5-dev"
 
 # ARCH SPECIFIC PACKAGES
-# usbutils and pciutils is needed for wifite (unsure why) and apt-transport-https for updates
-pkg_arm="abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils pciutils usbutils nethunter-utils"
+pkg_arm="abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils nethunter-utils"
 pkg_arm64="$pkg_arm"
+pkg_i386="$pkg_arm"
+pkg_amd64="$pkg_arm"
 
 # Start off with minimal install packages
 packages="$pkg_minimal"
@@ -170,6 +172,14 @@ case $build_arch in
 	arm64)
 		packages="$packages $pkg_arm64"
 		qemu_arch=aarch64
+		;;
+	i386)
+		packages="$packages $pkg_i386"
+		qemu_arch=i386
+		;;
+	amd64)
+		packages="$packages $pkg_amd64"
+		qemu_arch=x86_64
 		;;
 esac
 
