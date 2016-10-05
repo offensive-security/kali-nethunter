@@ -36,6 +36,10 @@ apt-get --yes --force-yes install $packages
 rm -f /usr/sbin/policy-rc.d
 rm -f /usr/sbin/invoke-rc.d
 dpkg-divert --remove --rename /usr/sbin/invoke-rc.d
+EOF
+
+if [ "$build_size" = full ]; then
+	cat << EOF >> "$rootfs/third-stage"
 
 # Enable PHP in Apache
 a2enmod php7.0
@@ -48,9 +52,8 @@ cd /opt
 git clone https://github.com/Proxmark/proxmark3.git
 cd proxmark3
 make
-
-rm -f /third-stage
 EOF
+fi
 
 chmod +x "$rootfs/third-stage"
 chroot_do /third-stage

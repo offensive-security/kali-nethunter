@@ -68,8 +68,10 @@ done
 rootfs="kali-$build_arch"
 build_output="output/kalifs-$build_size"
 
-# Capture all output from here on in build.log
-exec &> >(tee -a build.log)
+mkdir -p output
+
+# Capture all output from here on in kalifs-*.log
+exec &> >(tee -a "${build_output}.log")
 
 echo "[+] Selected build size: $build_size"
 echo "[+] Selected architecture: $build_arch"
@@ -77,11 +79,11 @@ sleep 1
 
 # Dependency checks
 dep_check() {
-	build_deps="git-core gnupg flex bison gperf libesd0-dev build-essential
+	build_deps="git-core gnupg flex bison gperf libesd0-dev build-essential binfmt-support
 		zip curl libncurses5-dev zlib1g-dev libncurses5-dev gcc-multilib g++-multilib
-		parted kpartx debootstrap pixz qemu-user-static abootimg cgpt vboot-kernel-utils
+		parted kpartx pixz qemu-user qemu-user-static abootimg cgpt vboot-kernel-utils
 		vboot-utils bc lzma lzop xz-utils automake autoconf m4 dosfstools rsync u-boot-tools
-		schedtool git e2fsprogs device-tree-compiler ccache dos2unix debootstrap"
+		schedtool e2fsprogs device-tree-compiler ccache dos2unix debootstrap"
 
 	for dep in $build_deps; do
 		echo "[+] Checking for installed dependency: $dep"
@@ -141,14 +143,14 @@ fi
 # Add packages you want installed here:
 
 # MINIMAL PACKAGES
-pkg_minimal="openssh-server kali-defaults"
+pkg_minimal="openssh-server kali-defaults kali-archive-keyring apt-transport-https ntpdate"
 
 # DEFAULT PACKAGES FULL INSTALL
 pkg_full="kali-linux-nethunter mana-toolkit exploitdb lua-sql-sqlite3 msfpc exe2hexbat bettercap fruitywifi libapache2-mod-php7.0 libreadline6-dev libncurses5-dev"
 
 # ARCH SPECIFIC PACKAGES
 # usbutils and pciutils is needed for wifite (unsure why) and apt-transport-https for updates
-pkg_arm="abootimg cgpt fake-hwclock ntpdate vboot-utils vboot-kernel-utils pciutils kali-archive-keyring usbutils apt-transport-https nethunter-utils"
+pkg_arm="abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils pciutils usbutils nethunter-utils"
 pkg_arm64="$pkg_arm"
 
 # Start off with minimal install packages
@@ -163,9 +165,11 @@ fi
 case $build_arch in
 	armhf)
 		packages="$packages $pkg_arm"
+		qemu_arch=arm
 		;;
 	arm64)
 		packages="$packages $pkg_arm64"
+		qemu_arch=aarch64
 		;;
 esac
 
@@ -173,13 +177,16 @@ cleanup_host() {
 	umount -l "$rootfs/dev/pts" &>/dev/null
 	umount -l "$rootfs/dev" &>/dev/null
 	umount -l "$rootfs/proc" &>/dev/null
+	umount -l "$rootfs/sys" &>/dev/null
 
 	# Remove read only from nano
 	chattr -i /bin/nano
 }
 
 chroot_do() {
-	LANG=C chroot "$rootfs" "$@"
+	DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
+	LC_ALL=C LANGUAGE=C LANG=C \
+	chroot "$rootfs" "$@"
 }
 
 # It's dangerous to leave these mounted if user cleans git after using Ctrl+C
@@ -189,7 +196,7 @@ trap cleanup_host EXIT
 # only during build and reset after installation is completed
 chattr +i /bin/nano
 
-export build_arch build_size rootfs packages
+export build_arch build_size qemu_arch rootfs packages
 export -f chroot_do
 
 # Stage 1 - Debootstrap creates basic chroot
@@ -212,8 +219,6 @@ echo "[+] Starting stage 4 (cleanup)"
 cleanup_host
 
 # Compress final file
-echo "[+] file"
-mkdir -p output
 echo "[+] Tarring and compressing kalifs.  This can take a while...."
 XZ_OPTS=-9 tar cJvf "${build_output}.tar.xz" "$rootfs/"
 echo "[+] Generating sha512sum of kalifs."

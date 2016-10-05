@@ -13,7 +13,6 @@
 /nethunter-installer/devices
 /nethunter-installer/*.zip
 /nethunter-fs/.dep_check
-/nethunter-fs/build.log
 /nethunter-fs/output.log
 /nethunter-fs/output
 /nethunter-fs/kali-*
