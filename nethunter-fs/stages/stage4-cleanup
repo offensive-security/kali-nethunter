@@ -1,4 +1,6 @@
-cat << EOF > kali-$architecture/cleanup
+#!/bin/bash
+
+cat << EOF > "$rootfs/cleanup"
 #!/bin/bash
 rm -rf /root/.bash_history
 apt-get clean
@@ -8,5 +10,7 @@ rm -f cleanup
 rm -f /usr/bin/qemu*
 EOF
 
-chmod +x kali-$architecture/cleanup
-LANG=C chroot kali-$architecture /cleanup
+chmod +x "$rootfs/cleanup"
+chroot_do /cleanup
+
+echo "[+] Completed stage 4!"
