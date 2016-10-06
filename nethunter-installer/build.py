@@ -143,34 +143,37 @@ def allapps(forcedown):
 	print('Finished downloading all apps')
 
 def rootfs(forcedown, fs_size):
-	global Arch
+	# global Arch
+	Arch = 'armhf'
 
-	fs_file = 'kalifs-' + fs_size + '.tar.xz'
-	fs_path = os.path.join('rootfs', 'armhf', fs_file)
-#	fs_path = os.path.join('rootfs', Arch, fs_file)
+	fs_file = 'kalifs-' + Arch + '-' + fs_size + '.tar.xz'
+	fs_path = os.path.join('rootfs', fs_file)
+
 	fs_host = 'https://images.offensive-security.com/'
+	fs_url = fs_host + 'kalifs-' + fs_size + '.tar.xz'
 
-	fs_url = fs_host + fs_file
-#	fs_url = fs_host + Arch + '/' + fs_file
+	# Uncomment to use build.nethunter.com kalifs builds (experimental)
+	# fs_host = 'https://build.nethunter.com/'
+	# fs_url = fs_host + 'kalifs/kalifs-latest/' + fs_file
 
 	if forcedown:
 		# For force redownload, remove previous rootfs
-		print('Force redownloading Kali %s %s rootfs' % (fs_size, 'armhf'))
-#		print('Force redownloading Kali %s %s rootfs' % (fs_size, Arch))
+		print('Force redownloading Kali %s %s rootfs' % (Arch, fs_size))
 		if os.path.isfile(fs_path):
 			os.remove(fs_path)
 
 	# Only download Kali rootfs if we don't have it already
-	if not os.path.isfile(fs_path):
+	if os.path.isfile(fs_path):
+		print('Found Kali %s %s rootfs at: %s' % (Arch, fs_size, fs_path))
+	else:
 		download(fs_url, fs_path)
 
 def addrootfs(fs_size, dst):
-	global Arch
+	# global Arch
+	Arch = 'armhf'
 
-	fs_file = 'kalifs-' + fs_size + '.tar.xz'
-
-	fs_path = os.path.join('rootfs', 'armhf', fs_file)
-#	fs_path = os.path.join('rootfs', Arch, fs_file)
+	fs_file = 'kalifs-' + Arch + '-' + fs_size + '.tar.xz'
+	fs_path = os.path.join('rootfs', fs_file)
 
 	try:
 		zf = zipfile.ZipFile(dst, 'a', zipfile.ZIP_DEFLATED)
