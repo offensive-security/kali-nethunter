@@ -111,7 +111,7 @@ def supersu(forcedown, beta):
 def allapps(forcedown):
 	apps = {
 		'Hackerskeyboard':'https://f-droid.org/repo/org.pocketworkstation.pckeyboard_1038002.apk',
-		'Drivedroid':'http://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.10.17.apk',
+		'Drivedroid':'https://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.10.27.apk',
 		'OpenVPN':'https://f-droid.org/repo/de.blinkt.openvpn_138.apk',
 		'USBKeyboard':'https://github.com/pelya/android-keyboard-gadget/raw/master/USB-Keyboard.apk',
 		'RFAnalyzer':'https://github.com/demantz/RFAnalyzer/raw/master/RFAnalyzer.apk',
