@@ -177,6 +177,8 @@ build_embedded_ramdisk() {
 build_ramdisk() {
 	print "Building new ramdisk..."
 	cd "$ramdisk"
+	echo "Listing ramdisk contents by size:"
+	find * -type f -exec du -a "{}" + | sort -n | awk '{ total += $1; print } END { print "Total size: "total }'
 	find | cpio -o -H newc | gzip -9c > "$tmp/ramdisk-new"
 }
 

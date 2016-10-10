@@ -65,6 +65,7 @@ delprop() {
 }
 
 # disable_service <service name>
+# this only sets a service to disabled, it won't prevent it from being started manually
 disable_service() {
 	for rc in "$ramdisk"/*.rc; do
 		grep -q "^[[:space:]]*service[[:space:]]\+$1\b" "$rc" || continue
@@ -77,6 +78,23 @@ disable_service() {
 				print "    disabled"
 				in_sc = 1
 			}
+		' "$rc" > "$rc-"
+		replace_file "$rc" "$rc-"
+	done
+}
+
+# remove_service <service name>
+# this comments out a service entry entirely, as well as commands referencing it
+remove_service() {
+	for rc in "$ramdisk"/*.rc; do
+		grep -q "^[[:space:]]*\(service\|start\|stop\|restart\)[[:space:]]\+$1\b" "$rc" || continue
+		echo "Found service $1 in $rc"
+		awk -vsc_name="$1" '
+			!NF || $1 ~ /^#/ { print; next }
+			$1 == "service" || $1 == "on" { in_sc = 0 }
+			$1 == "service" && $2 == sc_name { in_sc = 1 }
+			in_sc || ($2 == sc_name && ($1 == "start" || $1 == "stop" || $1 == "restart")) { printf "#" }
+			{ print }
 		' "$rc" > "$rc-"
 		replace_file "$rc" "$rc-"
 	done
