@@ -51,7 +51,16 @@ a2ensite 000-default.conf
 cd /opt
 git clone https://github.com/Proxmark/proxmark3.git
 cd proxmark3
+wget http://repo.kali.org/kali/pool/main/g/gcc-arm-none-eabi/gcc-arm-none-eabi_4.9.3+svn231177-1_armhf.deb -O temp.deb
+dpkg -i temp.deb
 make
+rm -f temp.deb
+
+cd /opt
+git clone https://github.com/adaptivethreat/Empire.git
+cd Empire/setup
+chmod +x install.sh
+printf "\n" | ./install.sh
 EOF
 fi
 
