@@ -309,7 +309,7 @@ def setupkernel():
 
 	# Copy any ramdisk files
 	ramdisk_path = os.path.join(device_path, 'ramdisk')
-	if os.path.exists(patchd_path):
+	if os.path.exists(ramdisk_path):
 		print('Found additional ramdisk files at: ' + ramdisk_path)
 		copytree(ramdisk_path, os.path.join(out_path, 'ramdisk-patch'))
 
