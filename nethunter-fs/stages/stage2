@@ -41,4 +41,7 @@ mkdir -p "$cap/evilap" "$cap/ettercap" "$cap/kismet/db" "$cap/nmap" \
 	"$cap/sslstrip" "$cap/tshark" "$cap/wifite" "$cap/tcpdump" \
 	"$cap/urlsnarf" "$cap/dsniff" "$cap/honeyproxy" "$cap/mana/sslsplit"
 
+# Link /lib/modules to /system/lib/modules for modprobe
+ln -s /system/lib/modules "$rootfs/lib/modules"
+
 echo "[+] Completed stage 2!"
