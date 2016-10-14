@@ -147,39 +147,44 @@ fi
 pkg_minimal="openssh-server kali-defaults kali-archive-keyring apt-transport-https ntpdate usbutils pciutils"
 
 # DEFAULT PACKAGES FULL INSTALL
-pkg_full="kali-linux-nethunter mana-toolkit exploitdb lua-sql-sqlite3 msfpc exe2hexbat bettercap libapache2-mod-php7.0 libreadline6-dev libncurses5-dev libnewlib-arm-none-eabi binutils-arm-none-eabi "
+pkg_full="kali-linux-nethunter mana-toolkit exploitdb lua-sql-sqlite3 msfpc exe2hexbat bettercap libapache2-mod-php7.0 libreadline6-dev libncurses5-dev"
 
 # ARCH SPECIFIC PACKAGES
-pkg_arm="abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils nethunter-utils"
-pkg_arm64="$pkg_arm"
-pkg_i386="$pkg_arm"
-pkg_amd64="$pkg_arm"
+pkg_minimal_armhf="abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils nethunter-utils"
+pkg_minimal_arm64="$pkg_minimal_armhf"
+pkg_minimal_i386="$pkg_minimal_armhf"
+pkg_minimal_amd64="$pkg_minimal_armhf"
 
-# Start off with minimal install packages
-packages="$pkg_minimal"
+pkg_full_armhf="libnewlib-arm-none-eabi binutils-arm-none-eabi"
+pkg_full_arm64="$pkg_full_armhf"
+pkg_full_i386=""
+pkg_full_amd64=""
 
-# Add full packages if build size is full
-if [ "$build_size" = full ]; then
-	packages="$packages $pkg_full"
-fi
-
-# Add arch specific packages
+# Set packages to install by arch and size
 case $build_arch in
 	armhf)
-		packages="$packages $pkg_arm"
 		qemu_arch=arm
+		packages="$pkg_minimal $pkg_arm"
+		[ "$build_size" = full ] &&
+			packages="$packages $pkg_full $pkg_full_armhf"
 		;;
 	arm64)
-		packages="$packages $pkg_arm64"
 		qemu_arch=aarch64
+		packages="$packages $pkg_arm64"
+		[ "$build_size" = full ] &&
+			packages="$packages $pkg_full $pkg_full_arm64"
 		;;
 	i386)
-		packages="$packages $pkg_i386"
 		qemu_arch=i386
+		packages="$packages $pkg_i386"
+		[ "$build_size" = full ] &&
+			packages="$packages $pkg_full $pkg_full_i386"
 		;;
 	amd64)
-		packages="$packages $pkg_amd64"
 		qemu_arch=x86_64
+		packages="$packages $pkg_amd64"
+		[ "$build_size" = full ] &&
+			packages="$packages $pkg_full $pkg_full_amd64"
 		;;
 esac
 
