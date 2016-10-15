@@ -150,7 +150,8 @@ pkg_minimal="openssh-server kali-defaults kali-archive-keyring
 # DEFAULT PACKAGES FULL INSTALL
 pkg_full="kali-linux-nethunter mana-toolkit exploitdb lua-sql-sqlite3 msfpc
 	exe2hexbat bettercap libapache2-mod-php7.0 libreadline6-dev
-	libncurses5-dev libnewlib-arm-none-eabi binutils-arm-none-eabi"
+	libncurses5-dev libnewlib-arm-none-eabi binutils-arm-none-eabi
+	autoconf libtool make gcc-5"
 
 # ARCH SPECIFIC PACKAGES
 pkg_minimal_armhf="abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils nethunter-utils"
@@ -190,6 +191,9 @@ case $build_arch in
 			packages="$packages $pkg_full $pkg_full_amd64"
 		;;
 esac
+
+# Fix packages to be a single space delimited line using awk magic
+packages=$(echo $packages | awk '{$1=$1}1')
 
 cleanup_host() {
 	umount -l "$rootfs/dev/pts" &>/dev/null
