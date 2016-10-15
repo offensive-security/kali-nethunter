@@ -144,10 +144,13 @@ fi
 
 # MINIMAL PACKAGES
 # usbutils and pciutils is needed for wifite (unsure why) and apt-transport-https for updates
-pkg_minimal="openssh-server kali-defaults kali-archive-keyring apt-transport-https ntpdate usbutils pciutils"
+pkg_minimal="openssh-server kali-defaults kali-archive-keyring
+	apt-transport-https ntpdate usbutils pciutils"
 
 # DEFAULT PACKAGES FULL INSTALL
-pkg_full="kali-linux-nethunter mana-toolkit exploitdb lua-sql-sqlite3 msfpc exe2hexbat bettercap libapache2-mod-php7.0 libreadline6-dev libncurses5-dev"
+pkg_full="kali-linux-nethunter mana-toolkit exploitdb lua-sql-sqlite3 msfpc
+	exe2hexbat bettercap libapache2-mod-php7.0 libreadline6-dev
+	libncurses5-dev libnewlib-arm-none-eabi binutils-arm-none-eabi"
 
 # ARCH SPECIFIC PACKAGES
 pkg_minimal_armhf="abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils nethunter-utils"
@@ -155,8 +158,8 @@ pkg_minimal_arm64="$pkg_minimal_armhf"
 pkg_minimal_i386="$pkg_minimal_armhf"
 pkg_minimal_amd64="$pkg_minimal_armhf"
 
-pkg_full_armhf="libnewlib-arm-none-eabi binutils-arm-none-eabi"
-pkg_full_arm64="$pkg_full_armhf"
+pkg_full_armhf=""
+pkg_full_arm64=""
 pkg_full_i386=""
 pkg_full_amd64=""
 
@@ -164,25 +167,25 @@ pkg_full_amd64=""
 case $build_arch in
 	armhf)
 		qemu_arch=arm
-		packages="$pkg_minimal $pkg_arm"
+		packages="$pkg_minimal $pkg_minimal_armhf"
 		[ "$build_size" = full ] &&
 			packages="$packages $pkg_full $pkg_full_armhf"
 		;;
 	arm64)
 		qemu_arch=aarch64
-		packages="$packages $pkg_arm64"
+		packages="$pkg_minimal $pkg_minimal_arm64"
 		[ "$build_size" = full ] &&
 			packages="$packages $pkg_full $pkg_full_arm64"
 		;;
 	i386)
 		qemu_arch=i386
-		packages="$packages $pkg_i386"
+		packages="$pkg_minimal $pkg_minimal_i386"
 		[ "$build_size" = full ] &&
 			packages="$packages $pkg_full $pkg_full_i386"
 		;;
 	amd64)
 		qemu_arch=x86_64
-		packages="$packages $pkg_amd64"
+		packages="$pkg_minimal $pkg_minimal_amd64"
 		[ "$build_size" = full ] &&
 			packages="$packages $pkg_full $pkg_full_amd64"
 		;;
