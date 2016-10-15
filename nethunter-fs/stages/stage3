@@ -135,6 +135,10 @@ EOF
 # because of inet.  Modify passwd to put them in inet group for android
 sed -i 's/_apt:x:104:65534/_apt:x:104:3004/g' "$rootfs/etc/passwd"
 
+# Fix armitage to run on NH
+# https://github.com/offensive-security/kali-nethunter/issues/600
+sed -i s/-XX\:\+AggressiveHeap//g "$rootfs/usr/share/armitage/armitage"
+
 # Insert correct .bashrc file from kali-defaults
 chroot_do cp /etc/skel/.bashrc /root/.bashrc
 
