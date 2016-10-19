@@ -117,7 +117,7 @@ dump_boot() {
 determine_ramdisk_format() {
 	magicbytes=$(hexdump -vn2 -e '2/1 "%x"' "$split_img/boot.img-ramdisk")
 	case "$magicbytes" in
-		425a) rdformat=bzip2; decompress=bzip2 ;; #compress="bzip2 -9c" ;;
+		425a) rdformat=bzip2; decompress=$bin/bzip2 ;; #compress="bzip2 -9c" ;;
 		1f8b|1f9e) rdformat=gzip; decompress=gzip ;; #compress="gzip -9c" ;;
 		0221) rdformat=lz4; decompress=$bin/lz4 ;; #compress="$bin/lz4 -9" ;;
 		5d00) rdformat=lzma; decompress=lzma ;; #compress="lzma -c" ;;
