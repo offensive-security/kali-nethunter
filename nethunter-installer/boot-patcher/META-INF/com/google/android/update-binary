@@ -130,11 +130,6 @@ cp tools/busybox /sbin/busybox_nh
 	install "/system/etc/firmware" 0755 0644
 }
 
-[ -d "$tmp/modules" ] && {
-	print "Copying kernel modules to /system/lib/modules"
-	install "/modules" 0755 0644 "/system/lib/modules"
-}
-
 [ -d "$tmp/system/lib" ] && {
 	print "Copying 32-bit shared libraries to /system/lib"
 	install "/system/lib" 0755 0644

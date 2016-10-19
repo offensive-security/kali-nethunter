@@ -29,6 +29,12 @@ abort() {
 	exit 1
 }
 
+# setperm <directory permissions> <file permissions> <directory>
+setperm() {
+	find "$3" -type d -exec chmod "$1" {} \;
+	find "$3" -type f -exec chmod "$2" {} \;
+}
+
 # replace_file <old file> <new file> (preserving metadata)
 replace_file() {
 	cat "$2" > "$1" || return 1
