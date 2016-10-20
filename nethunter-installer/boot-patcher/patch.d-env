@@ -4,6 +4,7 @@ tmp=/tmp/nethunter/boot-patcher
 bin=$tmp/tools
 ramdisk=$tmp/ramdisk
 ramdisk_patch=$ramdisk-patch
+cmdline=$tmp/split-img/boot.img-cmdline
 default_prop=$ramdisk/default.prop
 build_prop=/system/build.prop
 
@@ -52,6 +53,12 @@ insert_after_last() {
 		line=$(($(grep -n "^[[:space:]]*$2[[:space:]]*$" "$1" | tail -1 | cut -d: -f1) + 1))
 		sed -i "${line}i$3" "$1"
 	}
+}
+
+# setcmdline <key> <value>
+setcmdline() {
+	grep -q "\b$1=" "$cmdline" && sed -i "s|\b$1=.*\b|$1=$2|g" "$cmdline" && return
+	sed -i "1 s/$/ $1=$2/" "$cmdline"
 }
 
 # setprop <prop> <value>
