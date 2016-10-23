@@ -270,7 +270,8 @@ def setupkernel():
 	# Set up variables in boot-patcher.sh
 	print('Kernel: Configuring boot-patcher script for ' + Device)
 	configfile(os.path.join(out_path, 'boot-patcher.sh'), {
-		'boot_block':readkey('block')
+		'boot_block':readkey('block'),
+		'ramdisk_compression':readkey('ramdisk', 'gzip')
 	})
 
 	device_path = os.path.join('devices', OS, Device)
