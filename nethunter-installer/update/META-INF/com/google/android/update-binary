@@ -5,26 +5,26 @@
 supersu=auto
 ## end build generated variables
 
-[ "$3" ] && {
+if [ "$3" ]; then
 	zip=$3
 	console=/proc/$$/fd/$2
 	# write the location of the console buffer to /tmp/console for other scripts to use
 	echo "$console" > /tmp/console
-} || {
+else
 	console=$(cat /tmp/console)
 	[ "$console" ] || console=/proc/$$/fd/1
-}
+fi
 
 tmp=/tmp/nethunter
 patchtmp=$tmp/boot-patcher
 sutmp=/tmp/supersu
 
 progress() {
-	echo "set_progress $1" > $console
+	echo "set_progress $1" > "$console"
 }
 
 print() {
-	echo "ui_print $1" > $console
+	echo "ui_print ${1:- }" > "$console"
 	echo
 }
 
@@ -62,38 +62,32 @@ installapp() {
 	installto=/data/app/
 	if [ "$3" ]; then
 		for appdir in "/data/app/$3"*; do
-			if [ -d "$appdir" ]; then
-				echo "Found app directory: $appdir"
-				if [ ! -f /data/data/com.android.vending/databases/localappstate.db ]; then
-					echo "Could not find Play Store app database!"
-				# this should also catch paid/alternative versions if they are suffixed
-				elif strings /data/data/com.android.vending/databases/localappstate.db | grep -q "^$3"; then
-					rm -f "/data/app/$2"
-					print "Found Play Store installed $1"
-					return 0
-				fi
+			[ -d "$appdir" ] || continue
+			echo "Found app directory: $appdir"
+			if [ ! -f /data/data/com.android.vending/databases/localappstate.db ]; then
+				echo "Could not find Play Store app database!"
+			# this should also catch paid/alternative versions if they are suffixed
+			elif strings /data/data/com.android.vending/databases/localappstate.db | grep -q "^$3"; then
 				rm -f "/data/app/$2"
-				installto=$appdir/base.apk
-				break
+				print "- Found Play Store installed $1"
+				return 0
 			fi
+			rm -f "/data/app/$2"
+			installto=$appdir/base.apk
+			break
 		done
 	fi
 	echo "Installing $1 to $installto"
-	print "Installing $1"
-	if cp -f "$tmp/data/app/$2" "$installto"; then
-		return 0
-	else
-		print "Failed to install $1!"
-		return 1
-	fi
+	print "- Installing $1"
+	cp -f "$tmp/data/app/$2" "$installto" && return 0
+	print "- Failed to install $1!" && return 1
 }
 
 extract() {
 	rm -rf "$2"
 	mkdir -p "$2"
-	unzip -o "$1" -d "$2" || {
+	unzip -o "$1" -d "$2" ||
 		abort "Unable to extract! The zip may be corrupt or your device may not have enough RAM to proceed. Consider using a smaller installer if it is available."
-	}
 }
 
 setperm() {
@@ -127,7 +121,7 @@ print "####  ############# NetHunter ####################"
 
 # Unpack the installer
 [ "$zip" ] && {
-	print "@Unpacking the installer, this may take a while..."
+	print "Unpacking the installer, this may take a while..."
 	extract "$zip" "$tmp"
 }
 cd "$tmp"
@@ -135,7 +129,7 @@ cd "$tmp"
 . env.sh
 
 progress 0.0
-print "@Starting the install process"
+print "Starting the install process"
 
 mount /data
 mount /system
@@ -146,21 +140,21 @@ progress 0.1
 	abort "Your data partition appears to be empty. Please complete the Android setup wizard before installing Kali NetHunter!"
 }
 
-setperm 0755 0755 "$tmp/tools"
+setperm 0755 0755 tools
 
 # Install additional busybox applets to /sbin in case something is missing during installation
-print "@Installing busybox applets to /sbin"
+print "Installing busybox applets to /sbin"
 cp tools/busybox /sbin/busybox_nh
 /sbin/busybox_nh --install /sbin
 
-print "@Checking for previous versions of NetHunter"
+print "Checking for previous versions of NetHunter"
 sh tools/previnstall.sh
 
 progress 0.2
 
-[ -f "$tmp/supersu.zip" ] && {
+[ -f supersu.zip ] && {
 	print "Extracting SuperSU zip..."
-	extract "$tmp/supersu.zip" "$sutmp"
+	extract supersu.zip "$sutmp"
 
 	progress 0.3
 
@@ -172,7 +166,7 @@ progress 0.2
 
 progress 0.4
 
-print "@Installing Apps"
+print "Installing apps:"
 
 installapp "NetHunter App" "nethunter.apk" "com.offsec.nethunter"
 installapp "NetHunter Terminal" "Term-nh.apk" "com.offsec.nhterm"
@@ -186,68 +180,70 @@ installapp "USB Keyboard" "USBKeyboard.apk" "remote.hid.keyboard.client"
 installapp "Router Keygen" "RouterKeygen.apk" "io.github.routerkeygen"
 installapp "DriveDroid" "Drivedroid.apk" "com.softwarebakery.drivedroid"
 
+print "Done installing apps"
+
 progress 0.5
 
-[ -f "$tmp/tools/freespace.sh" ] && {
+[ -f tools/freespace.sh ] && {
 	# This actually runs twice when the NetHunter kernel zip is included
 	print "Freeing up some space on /system"
 	sh tools/freespace.sh ||
-	abort "Not enough free space on /system to continue!"
+		abort "Not enough free space on /system to continue!"
 }
 
-print "@Running busybox installer..."
+print "Running busybox installer..."
 sh tools/installbusybox.sh
 
 progress 0.6
 
-[ -d "$tmp/wallpaper" ] && {
+[ -d wallpaper ] && {
 	print "Installing NetHunter wallpaper"
 	sh wallpaper/setwallpaper.sh
 }
 
-[ -f "$tmp/system/media/bootanimation.zip" ] && {
+[ -f system/media/bootanimation.zip ] && {
 	print "Installing NetHunter boot animation"
 	install "/system/media/bootanimation.zip" 0755 0644
 }
 
 progress 0.7
 
-[ -d "$tmp/system/etc/nano" ] && {
+[ -d system/etc/nano ] && {
 	print "Copying nano highlights to /system/etc/nano"
 	install "/system/etc/nano" 0755 0644
 }
 
-[ -d "$tmp/system/etc/terminfo" ] && {
+[ -d system/etc/terminfo ] && {
 	print "Copying terminfo files to /system/etc/terminfo"
 	install "/system/etc/terminfo" 0755 0644
 }
 
-[ -d "$tmp/system/lib" ] && {
+[ -d system/lib ] && {
 	print "Copying 32-bit shared libraries to /system/lib"
 	install "/system/lib" 0755 0644
 }
 
-[ -d "$tmp/system/lib64" ] && {
+[ -d system/lib64 ] && {
 	print "Copying 64-bit shared libraries to /system/lib64"
 	install "/system/lib64" 0755 0644
 }
 
-[ -d "$tmp/system/bin" ] && {
+[ -d system/bin ] && {
 	print "Installing /system/bin binaries"
 	install "/system/bin" 0755 0755
 }
 
-[ -d "$tmp/system/xbin" ] && {
+[ -d system/xbin ] && {
 	print "Installing /system/xbin binaries"
 	install "/system/xbin" 0755 0755
 }
 
-[ -d "$tmp/data/local" ] && {
+[ -d data/local ] && {
 	print "Copying additional files to /data/local"
 	install "/data/local" 0755 0644
 }
 
-[ -d "$tmp/system/etc/init.d" ] && {
+[ -d system/etc/init.d ] && {
 	print "Installing init.d scripts"
 	install "/system/etc/init.d" 0755 0755
 	# Create userinit.d and userinit.sh if they don't already exist
@@ -257,7 +253,7 @@ progress 0.7
 	chmod 0755 "/data/local/userinit.sh"
 }
 
-print "@Symlinking Kali boot scripts"
+print "Symlinking Kali boot scripts"
 symlink "/data/data/com.offsec.nethunter/files/scripts/bootkali" "/system/bin/bootkali"
 symlink "/data/data/com.offsec.nethunter/files/scripts/bootkali_init" "/system/bin/bootkali_init"
 symlink "/data/data/com.offsec.nethunter/files/scripts/bootkali_login" "/system/bin/bootkali_login"
@@ -267,7 +263,7 @@ symlink "/data/data/com.offsec.nethunter/files/scripts/killkali" "/system/bin/ki
 progress 0.8
 
 [ -e "$patchtmp" ] && {
-	print "@Running kernel installer..."
+	print "Running kernel installer..."
 	sh "$patchtmp/META-INF/com/google/android/update-binary"
 	mount /system
 	mount /data
@@ -275,7 +271,7 @@ progress 0.8
 
 progress 0.9
 
-print "@Running Kali chroot installer..."
+print "Running Kali chroot installer..."
 sh tools/installchroot.sh
 
 cleanup

@@ -2,26 +2,29 @@
 
 tmp=/tmp/nethunter/boot-patcher
 bin=$tmp/tools
+split_img=$tmp/split-img
 ramdisk=$tmp/ramdisk
 ramdisk_patch=$ramdisk-patch
-cmdline=$tmp/split-img/boot.img-cmdline
-default_prop=$ramdisk/default.prop
-build_prop=/system/build.prop
 
 console=$(cat /tmp/console)
 [ "$console" ] || console=/proc/$$/fd/1
 
-. $tmp/env.sh
+cd "$tmp"
+. env.sh
+
+default_prop=$ramdisk/default.prop
+build_prop=/system/build.prop
+cmdline=$split_img/boot.img-cmdline
 
 [ -f "$default_prop" ] && found_prop=true
 [ -f "$build_prop" ] && found_build_prop=true
 
 print() {
-	[ "$1" ] && {
-		echo "ui_print -- $1" > $console
-	} || {
-		echo "ui_print  " > $console
-	}
+	if [ "$1" ]; then
+		echo "ui_print -- $1" > "$console"
+	else
+		echo "ui_print  " > "$console"
+	fi
 	echo
 }
 
@@ -113,4 +116,4 @@ remove_service() {
 	done
 }
 
-cd $ramdisk
+cd "$ramdisk"
