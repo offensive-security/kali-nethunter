@@ -13,6 +13,9 @@ for fstab in fstab.*; do
 		s/,verify\b//g
 		s/\bverify,//g
 		s/\bverify\b//g
+		s/,support_scfs\b//g
+		s/\bsupport_scfs,//g
+		s/\bsupport_scfs\b//g
 		s/\b\(forceencrypt\|forcefdeorfbe\)=/encryptable=/g
 	" "$fstab"
 	found_fstab=true
