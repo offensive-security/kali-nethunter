@@ -101,7 +101,7 @@ def supersu(forcedown, beta):
 		if beta:
 			surl = getdlpage('https://download.chainfire.eu/supersu-beta')
 		else:
-			surl = getdlpage('https://download.chainfire.eu/1003/SuperSU/SR1-SuperSU-v2.78-SR1-20160915123031.zip')
+			surl = getdlpage('https://download.chainfire.eu/1012/SuperSU/SR3-SuperSU-v2.78-SR3-20161103171345.zip')
 
 		if surl:
 			download(surl + '?retrieve_file=1', suzip)
