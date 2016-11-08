@@ -73,7 +73,8 @@ def download(url, file_name):
 		# We should delete partially downloaded file so the next try doesn't skip it!
 		if os.path.isfile(file_name):
 			os.remove(file_name)
-		abort('There was a problem downloading the file')
+		# Better debug what file cannot be downloaded.
+		abort('There was a problem downloading the file "' + file_name  + '"')
 
 def supersu(forcedown, beta):
 	def getdlpage(url):
