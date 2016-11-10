@@ -112,13 +112,13 @@ def supersu(forcedown, beta):
 def allapps(forcedown):
 	apps = {
 		'Hackerskeyboard':'https://f-droid.org/repo/org.pocketworkstation.pckeyboard_1038002.apk',
-		'Drivedroid':'https://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.10.27.apk',
+		'Drivedroid':'https://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.10.28.apk',
 		'OpenVPN':'https://f-droid.org/repo/de.blinkt.openvpn_138.apk',
 		'USBKeyboard':'https://github.com/pelya/android-keyboard-gadget/raw/master/USB-Keyboard.apk',
 		'RFAnalyzer':'https://github.com/demantz/RFAnalyzer/raw/master/RFAnalyzer.apk',
 		'Shodan':'https://github.com/PaulSec/Shodan.io-mobile-app/raw/master/io.shodan.app.apk',
 		'RouterKeygen':'https://github.com/routerkeygen/routerkeygenAndroid/releases/download/v3.15.0/routerkeygen-3-15-0.apk',
-		'cSploit':'https://github.com/cSploit/android/releases/download/v1.6.5/cSploit-release.apk'
+		'cSploit':'https://github.com/cSploit/android/releases/download/v1.6.6-rc.2/cSploit-release.apk'
 	}
 
 	app_path = os.path.join('update', 'data', 'app')
