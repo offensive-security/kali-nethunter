@@ -22,11 +22,20 @@ if ! mountpoint -q /proc/sys/fs/binfmt_misc; then
 fi
 update-binfmts --enable "qemu-$qemu_arch"
 
-#
-# qemu-debootstrap includes foreign and second stage but requires binfmt-support package
-# Also copies qemu-user-static
-#
-echo "[+] Starting debootstrap..."
+echo "[+] Starting debootstrap (download)..."
+tries=0
+max_tries=5
+while ! debootstrap --foreign --download-only --verbose --arch $build_arch kali-rolling "$rootfs" http://repo.kali.org/kali; do
+	((tries++))
+	if [ $tries -ge $max_tries ]; then
+		echo "[!] Error, maximum retries ($max_tries) reached, could not download packages!"
+		exit 1
+	fi
+	echo "[!] Failed to download packages (attempt $tries/$max_tries), trying again in 5 minutes!"
+	sleep 300
+done
+
+echo "[+] Starting debootstrap (install)..."
 debootstrap --foreign --verbose --arch $build_arch kali-rolling "$rootfs" http://repo.kali.org/kali
 
 echo "[+] Installing qemu-$qemu_arch-static interpreter to rootfs"
