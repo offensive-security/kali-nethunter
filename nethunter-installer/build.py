@@ -113,7 +113,7 @@ def allapps(forcedown):
 	apps = {
 		'Hackerskeyboard':'https://f-droid.org/repo/org.pocketworkstation.pckeyboard_1038002.apk',
 		'Drivedroid':'https://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.10.28.apk',
-		'OpenVPN':'https://f-droid.org/repo/de.blinkt.openvpn_138.apk',
+		'OpenVPN':'https://f-droid.org/repo/de.blinkt.openvpn_141.apk',
 		'USBKeyboard':'https://github.com/pelya/android-keyboard-gadget/raw/master/USB-Keyboard.apk',
 		'RFAnalyzer':'https://github.com/demantz/RFAnalyzer/raw/master/RFAnalyzer.apk',
 		'Shodan':'https://github.com/PaulSec/Shodan.io-mobile-app/raw/master/io.shodan.app.apk',
