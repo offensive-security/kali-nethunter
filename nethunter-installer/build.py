@@ -278,7 +278,12 @@ def setupkernel():
 	device_path = os.path.join('devices', OS, Device)
 
 	# Copy kernel image from version/device to boot-patcher folder
-	kernel_images = [ 'zImage', 'zImage-dtb', 'Image', 'Image-dtb', 'Image.gz', 'Image.gz-dtb' ]
+	kernel_images = [
+		'zImage', 'zImage-dtb',
+		'Image', 'Image-dtb',
+		'Image.gz', 'Image.gz-dtb',
+		'Image.lz4', 'Image.lz4-dtb'
+	]
 	kernel_found = False
 	for kernel_image in kernel_images:
 		kernel_location = os.path.join(device_path, kernel_image)
