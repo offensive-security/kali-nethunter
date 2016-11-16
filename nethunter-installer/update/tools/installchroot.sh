@@ -5,6 +5,8 @@ tmp=$(readlink -f "$0")
 tmp=${tmp%/*/*}
 . "$tmp/env.sh"
 
+zip=$1
+
 console=$(cat /tmp/console)
 [ "$console" ] || console=/proc/$$/fd/1
 
@@ -26,12 +28,10 @@ verify_fs() {
 		full|minimal) ;;
 		*) return 1 ;;
 	esac
-	# actually exists as non-zero-size file?
-	[ -s "$KALIFS" ] || return 1
-
 	return 0
 }
 
+# do_install [optional zip containing kalifs]
 do_install() {
 	print "Found Kali chroot to be installed: $KALIFS"
 
@@ -47,26 +47,36 @@ do_install() {
 
 	# Extract new chroot
 	print "Extracting Kali rootfs, this may take up to 25 minutes..."
-	if busybox_nh tar -xJf "$KALIFS" -C "$NHSYS" --exclude "kali-$FS_ARCH/dev"; then
-		mkdir -p "$CHROOT/dev"
-		chmod 0755 "$CHROOT/dev"
-		print "Kali $FS_ARCH $FS_SIZE chroot installed successfully!"
-
-		# We should remove the rootfs archive to free up device memory or storage space
-		rm -f "$KALIFS"
-
-		exit 0
+	if [ "$1" ]; then
+		unzip -p "$1" "$KALIFS" | busybox_nh tar -xJf - -C "$NHSYS" --exclude "kali-$FS_ARCH/dev"
+	else
+		busybox_nh tar -xJf "$KALIFS" -C "$NHSYS" --exclude "kali-$FS_ARCH/dev"
 	fi
 
-	print "Error: Kali $FS_ARCH $FS_SIZE chroot failed to install!"
-	print "Maybe you ran out of space on your data partition?"
+	[ $? = 0 ] || {
+		print "Error: Kali $FS_ARCH $FS_SIZE chroot failed to install!"
+		print "Maybe you ran out of space on your data partition?"
+		exit 1
+	}
 
-	# Only remove the rootfs if it's using up tmpfs space (included in the installer zip)
-	case $KALIFS in
-		/tmp/*) rm -f "$KALIFS" ;;
-	esac
+	mkdir -m 0755 "$CHROOT/dev"
+	print "Kali $FS_ARCH $FS_SIZE chroot installed successfully!"
 
-	exit 1
+	# We should remove the rootfs archive to free up device memory or storage space (if not zip install)
+	[ "$1" ] || rm -f "$KALIFS"
+
+	exit 0
+}
+
+# Check zip for kalifs-* first
+[ -f "$zip" ] && {
+	KALIFS=$(unzip -lqq "$zip" | awk '$4 ~ /^kalifs-/ { print $4; exit }')
+	# Check other locations if zip didn't contain a kalifs-*
+	[ "$KALIFS" ] || return
+
+	FS_ARCH=$(echo "$KALIFS" | awk -F[-.] '{print $2}')
+	FS_SIZE=$(echo "$KALIFS" | awk -F[-.] '{print $3}')
+	verify_fs && do_install "$zip"
 }
 
 # Check these locations in priority order
@@ -74,7 +84,7 @@ for fsdir in "$tmp" "/data/local" "/sdcard" "/external_sd"; do
 
 	# Check location for kalifs-[arch]-[size].tar.xz name format
 	for KALIFS in "$fsdir"/kalifs-*-*.tar.xz; do
-		[ -f "$KALIFS" ] || continue
+		[ -s "$KALIFS" ] || continue
 		FS_ARCH=$(basename "$KALIFS" | awk -F[-.] '{print $2}')
 		FS_SIZE=$(basename "$KALIFS" | awk -F[-.] '{print $3}')
 		verify_fs && do_install

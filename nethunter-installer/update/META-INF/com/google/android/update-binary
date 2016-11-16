@@ -86,7 +86,7 @@ installapp() {
 extract() {
 	rm -rf "$2"
 	mkdir -p "$2"
-	unzip -o "$1" -d "$2" ||
+	unzip -o "$1" -d "$2" -x "$3" ||
 		abort "Unable to extract! The zip may be corrupt or your device may not have enough RAM to proceed. Consider using a smaller installer if it is available."
 }
 
@@ -121,8 +121,8 @@ print "####  ############# NetHunter ####################"
 
 # Unpack the installer
 [ "$zip" ] && {
-	print "Unpacking the installer, this may take a while..."
-	extract "$zip" "$tmp"
+	print "Unpacking the installer..."
+	extract "$zip" "$tmp" "kalifs-*"
 }
 cd "$tmp"
 
@@ -136,7 +136,7 @@ mount /system
 
 progress 0.1
 
-[ -e /data/data ] || {
+[ -d /data/data ] || {
 	abort "Your data partition appears to be empty. Please complete the Android setup wizard before installing Kali NetHunter!"
 }
 
@@ -262,7 +262,7 @@ symlink "/data/data/com.offsec.nethunter/files/scripts/killkali" "/system/bin/ki
 
 progress 0.8
 
-[ -e "$patchtmp" ] && {
+[ -d "$patchtmp" ] && {
 	print "Running kernel installer..."
 	sh "$patchtmp/META-INF/com/google/android/update-binary"
 	mount /system
@@ -272,7 +272,7 @@ progress 0.8
 progress 0.9
 
 print "Running Kali chroot installer..."
-sh tools/installchroot.sh
+sh tools/installchroot.sh "$zip"
 
 cleanup
 print "************************************************"
