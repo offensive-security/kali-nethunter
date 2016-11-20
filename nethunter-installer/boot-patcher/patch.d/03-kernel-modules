@@ -32,20 +32,28 @@ print "Creating module symlinks..."
 
 # Create /system/lib/modules/*.ko symlinks for each module installed
 find /system/lib/modules -type f -name "*.ko" > modules.installed
-while read -r kmod; do
-	kmod_name=$(basename "$kmod")
-	ln -s "$kmod" "/system/lib/modules/$kmod_name"
+while read -r kmod_installed; do
+	kmod_name=$(basename "$kmod_installed")
+	kmod_link="/system/lib/modules/$kmod_name"
+	ln -s "$kmod_installed" "$kmod_link"
+	echo "Symlinked module (install): $kmod_link -> $kmod_installed"
 done < modules.installed
 
 # Create module symlinks at original module link locations
 while read -r kmod; do
-	kmod_link=$(echo "$kmod" | cut -f1 -d:)
 	kmod_name=$(echo "$kmod" | cut -f2 -d:)
-	[ "$kmod_link" ] && [ "$kmod_name" ] && [ ! -e "$kmod_link" ] || continue
+	kmod_link=$(echo "$kmod" | cut -f1 -d:)
+	if [ ! "$kmod_link" ] || [ ! "$kmod_name" ] || [ -e "$kmod_link" ]; then
+		continue
+	fi
 	kmod_installed=$(grep -m1 "/$kmod_name$" modules.installed)
-	[ "$kmod_installed" ] || continue
+	if [ ! -f "$kmod_installed" ]; then
+		echo "Warning: Module not installed: $kmod_link -> $kmod_installed"
+		continue
+	fi
 	mkdir -p "$(dirname "$kmod_link")"
 	ln -s "$kmod_installed" "$kmod_link"
+	echo "Symlinked module (layout): $kmod_link -> $kmod_installed"
 done < modules.layout
 
 setperm 0755 0644 /system/lib/modules

@@ -5,6 +5,7 @@ bin=$tmp/tools
 split_img=$tmp/split-img
 ramdisk=$tmp/ramdisk
 ramdisk_patch=$ramdisk-patch
+cmdline=$split_img/boot.img-cmdline
 
 console=$(cat /tmp/console)
 [ "$console" ] || console=/proc/$$/fd/1
@@ -14,10 +15,14 @@ cd "$tmp"
 
 default_prop=$ramdisk/default.prop
 build_prop=/system/build.prop
-cmdline=$split_img/boot.img-cmdline
+ueventd=$ramdisk/ueventd.rc
 
+found_prop=false
+found_build_prop=false
+found_ueventd=false
 [ -f "$default_prop" ] && found_prop=true
 [ -f "$build_prop" ] && found_build_prop=true
+[ -f "$ueventd" ] && found_ueventd=true
 
 print() {
 	if [ "$1" ]; then
@@ -41,7 +46,7 @@ setperm() {
 
 # replace_file <old file> <new file> (preserving metadata)
 replace_file() {
-	cat "$2" > "$1" || return 1
+	cat "$2" > "$1" || return
 	rm -f "$2"
 }
 
@@ -76,6 +81,7 @@ setprop() {
 
 # delprop <prop>
 delprop() {
+	$found_prop || $found_build_prop || return
 	$found_prop && sed -i "/^[[:space:]]*$1[[:space:]]*=/d" "$default_prop"
 	$found_build_prop && sed -i "/^[[:space:]]*$1[[:space:]]*=/d" "$build_prop"
 }
@@ -114,6 +120,23 @@ remove_service() {
 		' "$rc" > "$rc-"
 		replace_file "$rc" "$rc-"
 	done
+}
+
+# ueventd_set <device node> <permissions> <chown> <chgrp>
+# use this to set permissions of /dev nodes
+ueventd_set() {
+	$found_ueventd || return
+	awk -vdev="$1" -vperm="$2" -vuser="$3" -vgroup="$4" '
+		function pdev() {
+			printf "%-25s %-6s %-10s %s\n", dev, perm, user, group
+			set = 1
+		}
+		$1 == dev && !set { pdev() }
+		$1 == dev { next }
+		{ print }
+		END { if (!set) pdev() }
+	' "$ueventd" > "$ueventd-"
+	replace_file "$ueventd" "$ueventd-"
 }
 
 cd "$ramdisk"

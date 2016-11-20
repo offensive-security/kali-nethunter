@@ -73,7 +73,8 @@ def download(url, file_name):
 		# We should delete partially downloaded file so the next try doesn't skip it!
 		if os.path.isfile(file_name):
 			os.remove(file_name)
-		abort('There was a problem downloading the file')
+		# Better debug what file cannot be downloaded.
+		abort('There was a problem downloading the file "' + file_name  + '"')
 
 def supersu(forcedown, beta):
 	def getdlpage(url):
@@ -101,7 +102,7 @@ def supersu(forcedown, beta):
 		if beta:
 			surl = getdlpage('https://download.chainfire.eu/supersu-beta')
 		else:
-			surl = getdlpage('https://download.chainfire.eu/1003/SuperSU/SR1-SuperSU-v2.78-SR1-20160915123031.zip')
+			surl = getdlpage('https://download.chainfire.eu/1012/SuperSU/SR3-SuperSU-v2.78-SR3-20161103171345.zip')
 
 		if surl:
 			download(surl + '?retrieve_file=1', suzip)
@@ -111,13 +112,13 @@ def supersu(forcedown, beta):
 def allapps(forcedown):
 	apps = {
 		'Hackerskeyboard':'https://f-droid.org/repo/org.pocketworkstation.pckeyboard_1038002.apk',
-		'Drivedroid':'https://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.10.27.apk',
-		'OpenVPN':'https://f-droid.org/repo/de.blinkt.openvpn_138.apk',
+		'Drivedroid':'https://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.10.28.apk',
+		'OpenVPN':'https://f-droid.org/repo/de.blinkt.openvpn_141.apk',
 		'USBKeyboard':'https://github.com/pelya/android-keyboard-gadget/raw/master/USB-Keyboard.apk',
 		'RFAnalyzer':'https://github.com/demantz/RFAnalyzer/raw/master/RFAnalyzer.apk',
 		'Shodan':'https://github.com/PaulSec/Shodan.io-mobile-app/raw/master/io.shodan.app.apk',
 		'RouterKeygen':'https://github.com/routerkeygen/routerkeygenAndroid/releases/download/v3.15.0/routerkeygen-3-15-0.apk',
-		'cSploit':'https://github.com/cSploit/android/releases/download/v1.6.5/cSploit-release.apk'
+		'cSploit':'https://github.com/cSploit/android/releases/download/v1.6.6-rc.2/cSploit-release.apk'
 	}
 
 	app_path = os.path.join('update', 'data', 'app')
@@ -277,7 +278,12 @@ def setupkernel():
 	device_path = os.path.join('devices', OS, Device)
 
 	# Copy kernel image from version/device to boot-patcher folder
-	kernel_images = [ 'zImage', 'zImage-dtb', 'Image', 'Image-dtb', 'Image.gz', 'Image.gz-dtb' ]
+	kernel_images = [
+		'zImage', 'zImage-dtb',
+		'Image', 'Image-dtb',
+		'Image.gz', 'Image.gz-dtb',
+		'Image.lz4', 'Image.lz4-dtb'
+	]
 	kernel_found = False
 	for kernel_image in kernel_images:
 		kernel_location = os.path.join(device_path, kernel_image)
