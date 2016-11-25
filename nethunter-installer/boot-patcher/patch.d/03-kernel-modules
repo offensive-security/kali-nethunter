@@ -57,5 +57,6 @@ while read -r kmod; do
 done < modules.layout
 
 setperm 0755 0644 /system/lib/modules
+chcon -R -h "u:object_r:system_file:s0" /system/lib/modules
 
 exit 0
