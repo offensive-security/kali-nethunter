@@ -29,7 +29,7 @@ setprop ro.adb.secure 1
 setprop ro.secure 0
 
 # import nethunter init to init.rc
-insert_after_last init.rc "import /init\\..*\\.rc" "import /init.nethunter.rc"
+import_rc init.nethunter.rc
 
 # ensure /dev/hidg0 and /dev/hidg1 have the correct access rights
 ueventd_set "/dev/hidg*" 0660 root system

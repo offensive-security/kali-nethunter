@@ -39,23 +39,27 @@ abort() {
 }
 
 # setperm <directory permissions> <file permissions> <directory>
+# recursively sets permissions of files & directories
 setperm() {
 	find "$3" -type d -exec chmod "$1" {} \;
 	find "$3" -type f -exec chmod "$2" {} \;
 }
 
 # replace_file <old file> <new file> (preserving metadata)
+# replace a file, preserving metadata (using cat)
 replace_file() {
 	cat "$2" > "$1" || return
 	rm -f "$2"
 }
 
 # replace_line <file> <line match pattern> <replacement line>
+# replace a matching line in a file with another line
 replace_line() {
 	sed -i "s/[[:space:]]*$2[[:space:]]*$/$3/" "$1"
 }
 
 # insert_after_last <file> <line match pattern> <inserted line>
+# insert a specified line after the last matching line
 insert_after_last() {
 	grep -q "^$3$" "$1" || {
 		line=$(($(grep -n "^[[:space:]]*$2[[:space:]]*$" "$1" | tail -1 | cut -d: -f1) + 1))
@@ -64,12 +68,14 @@ insert_after_last() {
 }
 
 # setcmdline <key> <value>
+# set a key's value on the boot image's initial command line
 setcmdline() {
 	grep -q "\b$1=" "$cmdline" && sed -i "s|\b$1=.*\b|$1=$2|g" "$cmdline" && return
 	sed -i "1 s/$/ $1=$2/" "$cmdline"
 }
 
 # setprop <prop> <value>
+# set a prop value in default.prop
 setprop() {
 	$found_prop || return
 	if grep -q "^[[:space:]]*$1[[:space:]]*=" "$default_prop"; then
@@ -80,6 +86,7 @@ setprop() {
 }
 
 # delprop <prop>
+# delete a prop from both default.prop and build.prop
 delprop() {
 	$found_prop || $found_build_prop || return
 	$found_prop && sed -i "/^[[:space:]]*$1[[:space:]]*=/d" "$default_prop"
@@ -137,6 +144,12 @@ ueventd_set() {
 		END { if (!set) pdev() }
 	' "$ueventd" > "$ueventd-"
 	replace_file "$ueventd" "$ueventd-"
+}
+
+# import_rc <rc file>
+# adds an init rc file as an import to init.rc, it will be imported last
+import_rc() {
+	insert_after_last "$ramdisk/init.rc" "import .*\.rc" "import /$1"
 }
 
 cd "$ramdisk"
