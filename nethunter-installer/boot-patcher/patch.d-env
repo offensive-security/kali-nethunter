@@ -16,13 +16,16 @@ cd "$tmp"
 default_prop=$ramdisk/default.prop
 build_prop=/system/build.prop
 ueventd=$ramdisk/ueventd.rc
+file_contexts=$ramdisk/file_contexts
 
 found_prop=false
 found_build_prop=false
 found_ueventd=false
+found_file_contexts=false
 [ -f "$default_prop" ] && found_prop=true
 [ -f "$build_prop" ] && found_build_prop=true
 [ -f "$ueventd" ] && found_ueventd=true
+[ -f "$file_contexts" ] && found_file_contexts=true
 
 print() {
 	if [ "$1" ]; then
@@ -144,6 +147,23 @@ ueventd_set() {
 		END { if (!set) pdev() }
 	' "$ueventd" > "$ueventd-"
 	replace_file "$ueventd" "$ueventd-"
+}
+
+# context_set <file path regex> <context>
+# use this to set selinux contexts of file paths
+context_set() {
+	$found_file_contexts || return
+	awk -vfile="$1" -vcontext="$2" '
+		function pfcon() {
+			printf "%-48s %s\n", file, context
+			set = 1
+		}
+		$1 == file && !set { pfcon() }
+		$1 == file { next }
+		{ print }
+		END { if (!set) pfcon() }
+	' "$file_contexts" > "$file_contexts-"
+	replace_file "$file_contexts" "$file_contexts-"
 }
 
 # import_rc <rc file>
