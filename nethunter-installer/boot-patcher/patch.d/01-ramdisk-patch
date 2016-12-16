@@ -34,3 +34,5 @@ import_rc init.nethunter.rc
 # ensure /dev/hidg0 and /dev/hidg1 have the correct access rights
 ueventd_set "/dev/hidg*" 0666 root root
 context_set "/dev/hidg[0-9]*" "u:object_r:input_device:s0"
+
+exit 0
