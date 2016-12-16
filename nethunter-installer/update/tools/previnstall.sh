@@ -32,7 +32,7 @@ if [ -d "$NH" ]; then
 elif [ -d "$NHAPP" ]; then
 	print "Detected previous install of Kali $ARCH, moving chroot..."
 	mv "$NHAPP" "$NHSYS"
-}
+fi
 
 # Just to be safe lets remove old version of NetHunter app
 rm -rf /data/data/com.offsec.nethunter

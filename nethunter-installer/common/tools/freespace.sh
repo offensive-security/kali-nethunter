@@ -40,7 +40,7 @@ SA=/system/app
 DA=/data/app
 
 UpdateFreeSpace() {
-	FreeSpace=$(df -m /system | awk '!/Used/ {print $4}')
+	FreeSpace=$(busybox df -m /system | awk '!/Used/ {print $4}')
 }
 
 UpdateFreeSpace
