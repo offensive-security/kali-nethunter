@@ -16,16 +16,44 @@ cd "$tmp"
 default_prop=$ramdisk/default.prop
 build_prop=/system/build.prop
 ueventd=$ramdisk/ueventd.rc
+sepolicy=$ramdisk/sepolicy
 file_contexts=$ramdisk/file_contexts
+seinject=$bin/sepolicy-inject
+# default Android API to KitKat, use policy check to determine actual version
+android_api=19
 
 found_prop=false
-found_build_prop=false
-found_ueventd=false
-found_file_contexts=false
 [ -f "$default_prop" ] && found_prop=true
+
+found_build_prop=false
 [ -f "$build_prop" ] && found_build_prop=true
+
+found_ueventd=false
 [ -f "$ueventd" ] && found_ueventd=true
+
+found_sepolicy=false
+[ -f "$sepolicy" ] && found_sepolicy=true
+
+found_file_contexts=false
 [ -f "$file_contexts" ] && found_file_contexts=true
+
+if $found_sepolicy; then
+	if   "$seinject" -e -c filesystem -P "$sepolicy" &&
+	   ! "$seinject-N" -e -c filesystem -P "$sepolicy"
+	then
+		# Android 7.0+ (Nougat)
+		android_api=24
+		seinject="$seinject-N"
+	elif "$seinject" -e -s gatekeeper_service -P "$sepolicy"
+	then
+		# Android 6.0 (Marshmallow)
+		android_api=23
+	elif "$seinject" -e -c service_manager -P "$sepolicy"
+	then
+		# Android 5.1 (Lollipop MR1)
+		android_api=21
+	fi
+fi
 
 print() {
 	if [ "$1" ]; then
@@ -170,6 +198,20 @@ context_set() {
 # adds an init rc file as an import to init.rc, it will be imported last
 import_rc() {
 	insert_after_last "$ramdisk/init.rc" "import .*\.rc" "import /$1"
+}
+
+# secheck [-s <source type>] [-t <target type>] [-c <class>] [-z <domain>] [-p <perm,list>] [-a <type attr>]
+# check if a given policy rule exists in the sepolicy
+secheck() {
+	$found_sepolicy || return
+	"$seinject" -e -P "$sepolicy" "$@"
+}
+
+# seadd [-Z / -z <domain> | -s <source type>] [-t <target type>] [-c <class>] [-z <domain>] [-p <perm,list>] [-a <type attr>]
+# add a new policy rule/domain to the sepolicy
+seadd() {
+	$found_sepolicy || return
+	"$seinject" -P "$sepolicy" "$@"
 }
 
 cd "$ramdisk"
