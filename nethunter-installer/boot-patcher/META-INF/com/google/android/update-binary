@@ -133,6 +133,11 @@ cp tools/busybox /sbin/busybox_nh
 	install "/system/etc/firmware" 0755 0644
 }
 
+[ -d system/etc/init.d ] && {
+	print "Copying init.d scripts to /system/etc/init.d"
+	install "/system/etc/init.d" 0755 0755
+}
+
 [ -d system/lib ] && {
 	print "Copying 32-bit shared libraries to /system/lib"
 	install "/system/lib" 0755 0644

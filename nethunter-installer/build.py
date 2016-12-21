@@ -302,12 +302,6 @@ def setupkernel():
 		print('Found DTB image at: ' + dtb_location)
 		shutil.copy(dtb_location, os.path.join(out_path, 'dtb.img'))
 
-	# Copy any init.d scripts
-	initd_path = os.path.join(device_path, 'init.d')
-	if os.path.exists(initd_path):
-		print('Found additional init.d scripts at: ' + initd_path)
-		copytree(initd_path, os.path.join(out_path, 'system', 'etc', 'init.d'))
-
 	# Copy any patch.d scripts
 	patchd_path = os.path.join(device_path, 'patch.d')
 	if os.path.exists(patchd_path):
@@ -326,11 +320,11 @@ def setupkernel():
 		print('Found additional kernel modules at: ' + modules_path)
 		copytree(modules_path, os.path.join(out_path, 'modules'))
 
-	# Copy any device specific firmware
-	firmware_path = os.path.join(device_path, 'firmware')
-	if os.path.exists(firmware_path):
-		print('Found additional firmware binaries at: ' + firmware_path)
-		copytree(firmware_path, os.path.join(out_path, 'system', 'etc', 'firmware'))
+	# Copy any device specific system binaries, libs, or init.d scripts
+	system_path = os.path.join(device_path, 'system')
+	if os.path.exists(system_path):
+		print('Found additional /system files at: ' + system_path)
+		copytree(system_path, os.path.join(out_path, 'system'))
 
 	# Copy any /data/local folder files
 	local_path = os.path.join(device_path, 'local')

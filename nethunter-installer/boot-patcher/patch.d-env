@@ -101,6 +101,7 @@ insert_after_last() {
 # setcmdline <key> <value>
 # set a key's value on the boot image's initial command line
 setcmdline() {
+	[ -f "$cmdline" ] || touch "$cmdline"
 	grep -q "\b$1=" "$cmdline" && sed -i "s|\b$1=.*\b|$1=$2|g" "$cmdline" && return
 	sed -i "1 s/$/ $1=$2/" "$cmdline"
 }
@@ -119,7 +120,6 @@ setprop() {
 # delprop <prop>
 # delete a prop from both default.prop and build.prop
 delprop() {
-	$found_prop || $found_build_prop || return
 	$found_prop && sed -i "/^[[:space:]]*$1[[:space:]]*=/d" "$default_prop"
 	$found_build_prop && sed -i "/^[[:space:]]*$1[[:space:]]*=/d" "$build_prop"
 }
@@ -200,8 +200,8 @@ import_rc() {
 	insert_after_last "$ramdisk/init.rc" "import .*\.rc" "import /$1"
 }
 
-# secheck [-s <source type>] [-t <target type>] [-c <class>] [-z <domain>] [-p <perm,list>] [-a <type attr>]
-# check if a given policy rule exists in the sepolicy
+# secheck [-s <source type>] [-c <class>]
+# check if a given context label or class exists in the sepolicy
 secheck() {
 	$found_sepolicy || return
 	"$seinject" -e -P "$sepolicy" "$@"
