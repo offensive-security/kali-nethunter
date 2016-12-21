@@ -1,6 +1,18 @@
 #!/sbin/sh
 # Move safe apps from system to data partition to free up space for installation
 
+tmp=$(readlink -f "$0")
+tmp=${tmp%/*/*}
+. "$tmp/env.sh"
+
+console=$(cat /tmp/console)
+[ "$console" ] || console=/proc/$$/fd/1
+
+print() {
+	echo "ui_print - $1" > $console
+	echo
+}
+
 # Free space we require on /system (in Megabytes)
 SpaceRequired=50
 
@@ -43,11 +55,17 @@ UpdateFreeSpace() {
 	FreeSpace=$(busybox df -m /system | awk '!/Used/ {print $4}')
 }
 
+PrintFreeSpace() {
+	print "Free space: $FreeSpace MB"
+}
+
 UpdateFreeSpace
 
 if [ "$FreeSpace" -gt "$SpaceRequired" ]; then
 	exit 0
 fi
+
+PrintFreeSpace
 
 for app in $MoveableApps; do
 	UpdateFreeSpace
@@ -55,7 +73,7 @@ for app in $MoveableApps; do
 		break
 	fi
 	if [ -d "$SA/$app/" ]; then
-		if [ -d "$DA/$app/" ]; then
+		if [ -d "$DA/$app/" ] || [ -f "$DA/$app.apk" ]; then
 			print "Removing $SA/$app/ (extra)"
 			rm -rf "$SA/$app/"
 		else
@@ -64,7 +82,7 @@ for app in $MoveableApps; do
 		fi
 	fi
 	if [ -f "$SA/$app.apk" ]; then
-		if [ -d "$DA/$app.apk" ]; then
+		if [ -d "$DA/$app/" ] || [ -f "$DA/$app.apk" ]; then
 			print "Removing $SA/$app.apk (extra)"
 			rm -f "$SA/$app.apk"
 		else
@@ -74,7 +92,10 @@ for app in $MoveableApps; do
 	fi
 done
 
+PrintFreeSpace
+
 if [ ! "$FreeSpace" -gt "$SpaceRequired" ]; then
+	print "Unable to free up $SpaceRequired MB of space!"
 	exit 1
 fi
 
