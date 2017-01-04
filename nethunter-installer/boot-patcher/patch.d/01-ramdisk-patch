@@ -26,7 +26,7 @@ cd "$ramdisk"
 
 # keep adb secure to stop outside attackers
 setprop ro.adb.secure 1
-setprop ro.secure 0
+setprop ro.secure 1
 
 # import nethunter init to init.rc
 import_rc init.nethunter.rc
