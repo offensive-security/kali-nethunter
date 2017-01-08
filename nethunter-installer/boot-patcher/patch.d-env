@@ -204,7 +204,7 @@ import_rc() {
 # check if a given context label or class exists in the sepolicy
 secheck() {
 	$found_sepolicy || return
-	"$seinject" -e -P "$sepolicy" "$@"
+	"$seinject" -e -P "$sepolicy" "$@" 2> /dev/null
 }
 
 # seadd [-Z / -z <domain> | -s <source type>] [-t <target type>] [-c <class>] [-z <domain>] [-p <perm,list>] [-a <type attr>]
