@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import os
-import urllib2
+import requests
 import zipfile
 import fnmatch
 import shutil
@@ -8,6 +8,11 @@ import ConfigParser
 import re
 import argparse
 import datetime
+
+dl_headers = {
+	"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.51 Safari/537.36",
+	"Accept-Encoding":"identity"
+}
 
 def copytree(src, dst):
 	def shouldcopy(f):
@@ -34,42 +39,52 @@ def copytree(src, dst):
 				shutil.copy2(sfile, ddir)
 
 def download(url, file_name):
-	# Progress bar http://stackoverflow.com/a/22776
-	f = open(file_name, 'wb')
-	failed = False
 	try:
-		u = urllib2.urlopen(url)
-		meta = u.info()
-		file_size = int(meta.getheaders('Content-Length')[0])
-		print 'Downloading: %s (%s bytes)' % (os.path.basename(file_name), file_size)
-		file_size_dl = 0
-		block_sz = 8192
-		while True:
-			file_buf = u.read(block_sz)
-			if not file_buf:
-				break
-			file_size_dl += len(file_buf)
-			f.write(file_buf)
-			status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
+		u = requests.get(url, stream=True, headers=dl_headers)
+		u.raise_for_status()
+	except requests.exceptions.RequestException as e:
+		abort(str(e))
+
+	download_ok = False
+
+	if u.headers['Content-Length']:
+		file_size = int(u.headers['Content-Length'])
+		print('Downloading: %s (%s bytes)' % (os.path.basename(file_name), file_size))
+	else:
+		file_size = 0
+		print('Downloading: %s (unknown size)' % os.path.basename(file_name))
+
+	f = open(file_name, 'wb')
+	try:
+		dl_bytes = 0
+		for chunk in u.iter_content(chunk_size=8192):
+			if not chunk:
+				continue # Ignore empty chunks
+			f.write(chunk)
+			dl_bytes += len(chunk)
+			if file_size:
+				status = r"%10d  [%3.2f%%]" % (dl_bytes, dl_bytes * 100. / file_size)
+			else:
+				status = r"%10d" % dl_bytes
+
 			status = status + chr(8) * (len(status) + 1)
 			print status,
-	except urllib2.HTTPError, e:
-		print('HTTPError = ' + str(e.code))
-		failed = True
-	except urllib2.URLError, e:
-		print('')
-		print('URLError = ' + str(e.reason))
-		failed = True
-	except:
-		print('')
-		failed = True
+	except requests.exceptions.RequestException as e:
+		print
+		print('Error: ' + str(e))
+	except KeyboardInterrupt:
+		print
+		print('Download cancelled')
 	else:
-		print('')
+		download_ok = True
+		print
 		print('Download OK: ' + file_name)
 
+	f.flush()
+	os.fsync(f.fileno())
 	f.close()
 
-	if failed:
+	if not download_ok:
 		# We should delete partially downloaded file so the next try doesn't skip it!
 		if os.path.isfile(file_name):
 			os.remove(file_name)
@@ -79,15 +94,12 @@ def download(url, file_name):
 def supersu(forcedown, beta):
 	def getdlpage(url):
 		try:
-			bOpener = urllib2.build_opener()
-			bOpener.addheaders = [("User-agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.146 Safari/537.36")]
-			pResponse = bOpener.open(url)
-			return pResponse.geturl()
-
-		except urllib2.HTTPError, e:
-			print('HTTPError = ' + str(e.code))
-		except urllib2.URLError, e:
-			print('URLError = ' + str(e.reason))
+			u = requests.head(url, headers=dl_headers)
+			return u.url;
+		except requests.exceptions.ConnectionError as e:
+			print('Connection error: ' + str(e))
+		except requests.exceptions.RequestException as e:
+			print('Error: ' + str(e))
 
 	suzip = os.path.join('update', 'supersu.zip')
 
@@ -143,37 +155,48 @@ def allapps(forcedown):
 
 	print('Finished downloading all apps')
 
-def rootfs(forcedown, fs_size):
-	# global Arch
-	Arch = 'armhf'
+def rootfs(forcedown, fs_size, nightly):
+	global Arch
 
-	fs_file = 'kalifs-' + Arch + '-' + fs_size + '.tar.xz'
+	# temporary hack until arm64 support is completed
+	if Arch == 'arm64':
+		fs_arch = 'armhf'
+	else:
+		fs_arch = Arch
+
+	fs_file = 'kalifs-' + fs_arch + '-' + fs_size + '.tar.xz'
 	fs_path = os.path.join('rootfs', fs_file)
 
-	fs_host = 'https://images.offensive-security.com/'
-	fs_url = fs_host + 'kalifs-' + fs_size + '.tar.xz'
+	if nightly:
+		fs_host = 'https://build.nethunter.com/kalifs/kalifs-latest/'
+	else:
+		fs_host = 'https://images.offensive-security.com/'
 
-	# Uncomment to use build.nethunter.com kalifs builds (experimental)
-	# fs_host = 'https://build.nethunter.com/'
-	# fs_url = fs_host + 'kalifs/kalifs-latest/' + fs_file
+	fs_url = fs_host + fs_file
 
 	if forcedown:
 		# For force redownload, remove previous rootfs
-		print('Force redownloading Kali %s %s rootfs' % (Arch, fs_size))
+		print('Force redownloading Kali %s %s rootfs' % (fs_arch, fs_size))
 		if os.path.isfile(fs_path):
 			os.remove(fs_path)
 
 	# Only download Kali rootfs if we don't have it already
 	if os.path.isfile(fs_path):
-		print('Found Kali %s %s rootfs at: %s' % (Arch, fs_size, fs_path))
+		print('Found Kali %s %s rootfs at: %s' % (fs_arch, fs_size, fs_path))
 	else:
+		print("Downloading from host: %s" % fs_host)
 		download(fs_url, fs_path)
 
 def addrootfs(fs_size, dst):
-	# global Arch
-	Arch = 'armhf'
+	global Arch
 
-	fs_file = 'kalifs-' + Arch + '-' + fs_size + '.tar.xz'
+	# temporary hack until arm64 support is completed
+	if Arch == 'arm64':
+		fs_arch = 'armhf'
+	else:
+		fs_arch = Arch
+
+	fs_file = 'kalifs-' + fs_arch + '-' + fs_size + '.tar.xz'
 	fs_path = os.path.join('rootfs', fs_file)
 
 	try:
@@ -182,7 +205,7 @@ def addrootfs(fs_size, dst):
 		zf.write(os.path.abspath(fs_path), fs_file)
 		print('  Added: ' + fs_file)
 		zf.close()
-	except IOError, e:
+	except IOError as e:
 		print('IOError = ' + e.reason)
 		abort('Unable to add to the zip file')
 
@@ -198,7 +221,7 @@ def zip(src, dst):
 				zf.write(absname, arcname)
 				print('  Added: ' + arcname)
 		zf.close()
-	except IOError, e:
+	except IOError as e:
 		print('IOError = ' + e.reason)
 		abort('Unable to create the ZIP file')
 
@@ -426,6 +449,7 @@ def main():
 	parser.add_argument('--nosu', '-ns', action='store_true', help='Build without SuperSU installer')
 	parser.add_argument('--nobrand', '-nb', action='store_true', help='Build without wallpaper or boot animation')
 	parser.add_argument('--nofreespace', '-nf', action='store_true', help='Build without free space check')
+	parser.add_argument('--nightly', '-ni', action='store_true', help='Use nightly mirror for Kali rootfs download (experimental)')
 	parser.add_argument('--generic', '-g', action='store', metavar='ARCH', help='Build a generic installer (modify ramdisk only)')
 	parser.add_argument('--rootfs', '-fs', action='store', metavar='SIZE', help='Build with Kali chroot rootfs (full or minimal)')
 	parser.add_argument('--release', '-r', action='store', metavar='VERSION', help='Specify NetHunter release version')
@@ -504,7 +528,7 @@ def main():
 
 	# Download Kali rootfs if we are building a zip with the chroot environment included
 	if args.rootfs:
-		rootfs(args.forcedown, args.rootfs)
+		rootfs(args.forcedown, args.rootfs, args.nightly)
 
 	# Set file name tag depending on the options chosen	
 	file_tag = Device
