@@ -37,7 +37,9 @@ do_install() {
 
 	mkdir -p "$NHSYS"
 
-	CHROOT="$NHSYS/kali-$FS_ARCH"
+	# HACK 1/2: Rename to kali-armhf until NetHunter App supports searching for best available arch
+	CHROOT="$NHSYS/kali-armhf"
+	#CHROOT="$NHSYS/kali-$FS_ARCH"
 
 	# Remove previous chroot
 	[ -d "$CHROOT" ] && {
@@ -58,6 +60,9 @@ do_install() {
 		print "Maybe you ran out of space on your data partition?"
 		exit 1
 	}
+
+	# HACK 2/2: Rename to kali-armhf until NetHunter App supports searching for best available arch
+	mv "$NHSYS/kali-$FS_ARCH" "$CHROOT"
 
 	mkdir -m 0755 "$CHROOT/dev"
 	print "Kali $FS_ARCH $FS_SIZE chroot installed successfully!"

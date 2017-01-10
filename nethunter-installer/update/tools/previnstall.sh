@@ -5,7 +5,7 @@ tmp=$(readlink -f "$0")
 tmp=${tmp%/*/*}
 . "$tmp/env.sh"
 
-# temporary, until arch other than armhf exists
+# HACK: Old installations only exist as armhf anyways
 ARCH=armhf
 
 console=$(cat /tmp/console)
@@ -21,9 +21,7 @@ NHAPP=/data/data/com.offsec.nethunter/files/chroot/kali-$ARCH
 NHSYS=/data/local/nhsystem/kali-$ARCH
 
 # Fix for TWRP chasing symbolic links (mentioned by triryland)
-rm -rf "$NHSYS/dev/*"
-rm -rf "$NHAPP/dev/*"
-rm -rf "$NH/dev/*"
+rm -rf "$NHSYS/dev/"* "$NHAPP/dev/"* "$NH/dev/"*
 
 # We probably don't want two old chroots in the same folder, so pick newer location in /data/local first
 if [ -d "$NH" ]; then
