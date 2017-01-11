@@ -8,6 +8,7 @@ import ConfigParser
 import re
 import argparse
 import datetime
+import hashlib
 
 dl_headers = {
 	"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.51 Safari/537.36",
@@ -38,7 +39,7 @@ def copytree(src, dst):
 					os.remove(dfile)
 				shutil.copy2(sfile, ddir)
 
-def download(url, file_name):
+def download(url, file_name, verify_sha):
 	try:
 		u = requests.get(url, stream=True, headers=dl_headers)
 		u.raise_for_status()
@@ -54,6 +55,7 @@ def download(url, file_name):
 		file_size = 0
 		print('Downloading: %s (unknown size)' % os.path.basename(file_name))
 
+	sha = hashlib.sha512()
 	f = open(file_name, 'wb')
 	try:
 		dl_bytes = 0
@@ -61,6 +63,7 @@ def download(url, file_name):
 			if not chunk:
 				continue # Ignore empty chunks
 			f.write(chunk)
+			sha.update(chunk)
 			dl_bytes += len(chunk)
 			if file_size:
 				status = r"%10d  [%3.2f%%]" % (dl_bytes, dl_bytes * 100. / file_size)
@@ -69,22 +72,33 @@ def download(url, file_name):
 
 			status = status + chr(8) * (len(status) + 1)
 			print status,
+		print
+		download_ok = True
 	except requests.exceptions.RequestException as e:
 		print
 		print('Error: ' + str(e))
 	except KeyboardInterrupt:
 		print
 		print('Download cancelled')
-	else:
-		download_ok = True
-		print
-		print('Download OK: ' + file_name)
 
 	f.flush()
 	os.fsync(f.fileno())
 	f.close()
 
-	if not download_ok:
+	if download_ok:
+		sha = sha.hexdigest()
+		print('SHA512: ' + sha)
+		if verify_sha:
+			print('Expect: ' + verify_sha)
+			if sha == verify_sha:
+				print('Hash matches: OK')
+			else:
+				download_ok = False
+				print('Hash mismatch!')
+
+	if download_ok:
+		print('Download OK: ' + file_name)
+	else:
 		# We should delete partially downloaded file so the next try doesn't skip it!
 		if os.path.isfile(file_name):
 			os.remove(file_name)
@@ -117,7 +131,7 @@ def supersu(forcedown, beta):
 			surl = getdlpage('https://download.chainfire.eu/1016/SuperSU/UPDATE-SuperSU-v2.79-20161211114519.zip')
 
 		if surl:
-			download(surl + '?retrieve_file=1', suzip)
+			download(surl + '?retrieve_file=1', suzip, False)
 		else:
 			abort('Could not retrieve download URL for SuperSU')
 
@@ -151,7 +165,7 @@ def allapps(forcedown):
 
 		# Only download apk if we don't have it already
 		if not os.path.isfile(apk_path):
-			download(value, apk_path)
+			download(value, apk_path, False)
 
 	print('Finished downloading all apps')
 
@@ -185,7 +199,7 @@ def rootfs(forcedown, fs_size, nightly):
 		print('Found Kali %s %s rootfs at: %s' % (fs_arch, fs_size, fs_path))
 	else:
 		print("Downloading from host: %s" % fs_host)
-		download(fs_url, fs_path)
+		download(fs_url, fs_path, False) # We should add SHA512 retrieval function...
 
 def addrootfs(fs_size, dst):
 	global Arch
