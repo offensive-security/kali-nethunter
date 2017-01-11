@@ -199,7 +199,11 @@ build_boot() {
 	kernel=
 	rd=
 	dtb=
-	for image in zImage zImage-dtb Image Image-dtb Image.gz Image.gz-dtb Image.lz4 Image.lz4-dtb; do
+	for image in \
+		zImage zImage-dtb Image Image-dtb \
+		Image.gz Image.gz-dtb Image.lz4 Image.lz4-dtb \
+		Image.fit
+	do
 		if [ -s $image ]; then
 			kernel=$image
 			print "Found replacement kernel $image!"

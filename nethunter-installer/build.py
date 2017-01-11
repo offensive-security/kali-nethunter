@@ -319,7 +319,8 @@ def setupkernel():
 		'zImage', 'zImage-dtb',
 		'Image', 'Image-dtb',
 		'Image.gz', 'Image.gz-dtb',
-		'Image.lz4', 'Image.lz4-dtb'
+		'Image.lz4', 'Image.lz4-dtb',
+		'Image.fit'
 	]
 	kernel_found = False
 	for kernel_image in kernel_images:
