@@ -145,7 +145,7 @@ def allapps(forcedown):
 		'Hackerskeyboard':
 			['https://f-droid.org/repo/org.pocketworkstation.pckeyboard_1039003.apk', '8c861c7540e6eeb006070d0f2d80134e75637066591d705b987e164c3fe87521ed694ac844c945eb74449aff8723ff039f793b2e3743aac73865f74bb248edf5'],
 		'Drivedroid':
-			['https://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.10.42.apk', 'f9db206642e783c478b9ba7a0fbee8a32b78cc6f919eb7a4fdf5e20dcc473e138917d043d3d17b15bd4e6b1fd202f422524085305b3658bd95903a346e8d1abc'],
+			['https://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.10.43.apk', 'f9db206642e783c478b9ba7a0fbee8a32b78cc6f919eb7a4fdf5e20dcc473e138917d043d3d17b15bd4e6b1fd202f422524085305b3658bd95903a346e8d1abc'],
 		'OpenVPN':
 			['https://f-droid.org/repo/de.blinkt.openvpn_145.apk', 'd7aba2038ce561c03e7763a71467d1423d0aea2747461651707e621312ae02538787b14eef669bf0100b2a7cb34361fbb2172f221db435126b13a5913dfc3907'],
 		'USBKeyboard': # Feb 3, 2015
