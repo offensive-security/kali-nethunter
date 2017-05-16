@@ -147,7 +147,7 @@ def allapps(forcedown):
 		'Drivedroid':
 			['https://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.10.46.apk', 'c7be2ab8b600401d6df493be28f990aa4e03fb8ee13529c8323eb26ac6c416a5236a749d3b65896efec66a258570c439cd1baa5a933c118fde9f10c6961aba95'],
 		'OpenVPN':
-			['https://f-droid.org/repo/de.blinkt.openvpn_145.apk', 'd7aba2038ce561c03e7763a71467d1423d0aea2747461651707e621312ae02538787b14eef669bf0100b2a7cb34361fbb2172f221db435126b13a5913dfc3907'],
+			['https://f-droid.org/repo/de.blinkt.openvpn_147.apk', '762d81b41a1d57e02d6dbec68fc3944b74c104a50ff5d6503f9ec01d3447ebcd519b30d69734e8edbaa1bb579352472185a5f4377042923305f3739c535c20a4'],
 		'USBKeyboard': # Feb 3, 2015
 			['https://github.com/pelya/android-keyboard-gadget/raw/7ea69c684aa1/USB-Keyboard.apk', '18bced7b339a67c48fe31698cb54063bce8f3dd9f7d7f23d9e5c619697e8da5ab08312cf9a2fa0e3f445a584485db23d1e4c27e3ffc1448551bbaf486ccb11e9'],
 		'RFAnalyzer':
