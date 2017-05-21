@@ -145,9 +145,9 @@ def allapps(forcedown):
 		'Hackerskeyboard':
 			['https://f-droid.org/repo/org.pocketworkstation.pckeyboard_1039003.apk', '8c861c7540e6eeb006070d0f2d80134e75637066591d705b987e164c3fe87521ed694ac844c945eb74449aff8723ff039f793b2e3743aac73865f74bb248edf5'],
 		'Drivedroid':
-			['https://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.10.39.apk', 'f9db206642e783c478b9ba7a0fbee8a32b78cc6f919eb7a4fdf5e20dcc473e138917d043d3d17b15bd4e6b1fd202f422524085305b3658bd95903a346e8d1abc'],
+			['https://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.10.46.apk', 'c7be2ab8b600401d6df493be28f990aa4e03fb8ee13529c8323eb26ac6c416a5236a749d3b65896efec66a258570c439cd1baa5a933c118fde9f10c6961aba95'],
 		'OpenVPN':
-			['https://f-droid.org/repo/de.blinkt.openvpn_145.apk', 'd7aba2038ce561c03e7763a71467d1423d0aea2747461651707e621312ae02538787b14eef669bf0100b2a7cb34361fbb2172f221db435126b13a5913dfc3907'],
+			['https://f-droid.org/repo/de.blinkt.openvpn_147.apk', '45ea19605926a7bd901fab435a432c37e8e23649420a40388f2513ef95e4f4fa0183c24431ed13de8c9a15ae5ef49b84a02910d10f2d77ccaf6da01f577b77d0'],
 		'USBKeyboard': # Feb 3, 2015
 			['https://github.com/pelya/android-keyboard-gadget/raw/7ea69c684aa1/USB-Keyboard.apk', '18bced7b339a67c48fe31698cb54063bce8f3dd9f7d7f23d9e5c619697e8da5ab08312cf9a2fa0e3f445a584485db23d1e4c27e3ffc1448551bbaf486ccb11e9'],
 		'RFAnalyzer':
