@@ -15,6 +15,30 @@ dl_headers = {
 	"Accept-Encoding":"identity"
 }
 
+dl_supersu = {
+	'beta': ['https://download.chainfire.eu/supersu-beta', False],
+	'stable': ['https://download.chainfire.eu/1021/SuperSU/SR3-SuperSU-v2.79-SR3-20170114223742.zip', '8d6b74477e66c548a0492dd6aa75b14e3eb682e26d3b14992bb163fc5c748b9348e8489aaa8da40821bd5849d1de186bdb563b8f9d43cb1fd5fed7e30c09d78b'],
+}
+
+dl_apps = {
+	'Hackerskeyboard':
+		['https://f-droid.org/repo/org.pocketworkstation.pckeyboard_1039003.apk', '8c861c7540e6eeb006070d0f2d80134e75637066591d705b987e164c3fe87521ed694ac844c945eb74449aff8723ff039f793b2e3743aac73865f74bb248edf5'],
+	'Drivedroid':
+		['https://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.10.46.apk', 'c7be2ab8b600401d6df493be28f990aa4e03fb8ee13529c8323eb26ac6c416a5236a749d3b65896efec66a258570c439cd1baa5a933c118fde9f10c6961aba95'],
+	'OpenVPN':
+		['https://f-droid.org/repo/de.blinkt.openvpn_147.apk', '45ea19605926a7bd901fab435a432c37e8e23649420a40388f2513ef95e4f4fa0183c24431ed13de8c9a15ae5ef49b84a02910d10f2d77ccaf6da01f577b77d0'],
+	'USBKeyboard': # Feb 3, 2015
+		['https://github.com/pelya/android-keyboard-gadget/raw/7ea69c684aa1/USB-Keyboard.apk', '18bced7b339a67c48fe31698cb54063bce8f3dd9f7d7f23d9e5c619697e8da5ab08312cf9a2fa0e3f445a584485db23d1e4c27e3ffc1448551bbaf486ccb11e9'],
+	'RFAnalyzer':
+		['https://github.com/demantz/RFAnalyzer/raw/version_1_13/RFAnalyzer.apk', '7793438b6fbe7288a0ca86de900f5f4e607168de8c97229d08d901c2424b0192bf9dc894f66439f59510c10fa26a26319a1b0d8ea276f6af927cebf677138230'],
+	'Shodan':
+		['https://github.com/PaulSec/Shodan.io-mobile-app/raw/v0.0.3-new/io.shodan.app.apk', 'a2ff39d8e7a86d8e0a14368fd278fb03212999b309bc102d39f76ff69ca2a373d3d62a95cea6dbee761ae81ff3daaf83846e49e8ccbf0760276d825493d08652'],
+	'RouterKeygen':
+		['https://github.com/routerkeygen/routerkeygenAndroid/releases/download/v3.15.0/routerkeygen-3-15-0.apk', '95fba11539597eced9f3347f627bf3b24c9abc3c7e039ae1552a9c42c8c70ce362720dc401b85b9faac080d64e67bf594625f80472a492baf676dbe93822fc9e'],
+	'cSploit':
+		['https://github.com/cSploit/android/releases/download/v1.6.6-rc.2/cSploit-release.apk', 'b841c4376836bcc9d23fbc18b40eed70e08018e8eebc6d2d0abad59da63e4b325ffe4d8a4bd36107af63ed20a59c6648d6c4bd1264044267c86693744b15fa75'],
+}
+
 def copytree(src, dst):
 	def shouldcopy(f):
 		global IgnoredFiles
@@ -108,6 +132,8 @@ def download(url, file_name, verify_sha):
 		abort('There was a problem downloading the file "' + file_name  + '"')
 
 def supersu(forcedown, beta):
+	global dl_supersu
+
 	def getdlpage(url):
 		try:
 			u = requests.head(url, headers=dl_headers)
@@ -128,44 +154,27 @@ def supersu(forcedown, beta):
 
 	if not os.path.isfile(suzip):
 		if beta:
-			surl = getdlpage('https://download.chainfire.eu/supersu-beta')
+			surl = getdlpage(dl_supersu['beta'][0])
 		else:
-			surl = getdlpage('https://download.chainfire.eu/1021/SuperSU/SR3-SuperSU-v2.79-SR3-20170114223742.zip')
+			surl = getdlpage(dl_supersu['stable'][0])
 
 		if surl:
 			if beta:
-				download(surl + '?retrieve_file=1', suzip, False)
+				download(surl + '?retrieve_file=1', suzip, dl_supersu['beta'][1])
 			else:
-				download(surl + '?retrieve_file=1', suzip, '8d6b74477e66c548a0492dd6aa75b14e3eb682e26d3b14992bb163fc5c748b9348e8489aaa8da40821bd5849d1de186bdb563b8f9d43cb1fd5fed7e30c09d78b')
+				download(surl + '?retrieve_file=1', suzip, dl_supersu['stable'][1])
 		else:
 			abort('Could not retrieve download URL for SuperSU')
 
 def allapps(forcedown):
-	apps = {
-		'Hackerskeyboard':
-			['https://f-droid.org/repo/org.pocketworkstation.pckeyboard_1039003.apk', '8c861c7540e6eeb006070d0f2d80134e75637066591d705b987e164c3fe87521ed694ac844c945eb74449aff8723ff039f793b2e3743aac73865f74bb248edf5'],
-		'Drivedroid':
-			['https://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.10.46.apk', 'c7be2ab8b600401d6df493be28f990aa4e03fb8ee13529c8323eb26ac6c416a5236a749d3b65896efec66a258570c439cd1baa5a933c118fde9f10c6961aba95'],
-		'OpenVPN':
-			['https://f-droid.org/repo/de.blinkt.openvpn_147.apk', '45ea19605926a7bd901fab435a432c37e8e23649420a40388f2513ef95e4f4fa0183c24431ed13de8c9a15ae5ef49b84a02910d10f2d77ccaf6da01f577b77d0'],
-		'USBKeyboard': # Feb 3, 2015
-			['https://github.com/pelya/android-keyboard-gadget/raw/7ea69c684aa1/USB-Keyboard.apk', '18bced7b339a67c48fe31698cb54063bce8f3dd9f7d7f23d9e5c619697e8da5ab08312cf9a2fa0e3f445a584485db23d1e4c27e3ffc1448551bbaf486ccb11e9'],
-		'RFAnalyzer':
-			['https://github.com/demantz/RFAnalyzer/raw/version_1_13/RFAnalyzer.apk', '7793438b6fbe7288a0ca86de900f5f4e607168de8c97229d08d901c2424b0192bf9dc894f66439f59510c10fa26a26319a1b0d8ea276f6af927cebf677138230'],
-		'Shodan':
-			['https://github.com/PaulSec/Shodan.io-mobile-app/raw/v0.0.3-new/io.shodan.app.apk', 'a2ff39d8e7a86d8e0a14368fd278fb03212999b309bc102d39f76ff69ca2a373d3d62a95cea6dbee761ae81ff3daaf83846e49e8ccbf0760276d825493d08652'],
-		'RouterKeygen':
-			['https://github.com/routerkeygen/routerkeygenAndroid/releases/download/v3.15.0/routerkeygen-3-15-0.apk', '95fba11539597eced9f3347f627bf3b24c9abc3c7e039ae1552a9c42c8c70ce362720dc401b85b9faac080d64e67bf594625f80472a492baf676dbe93822fc9e'],
-		'cSploit':
-			['https://github.com/cSploit/android/releases/download/v1.6.6-rc.2/cSploit-release.apk', 'b841c4376836bcc9d23fbc18b40eed70e08018e8eebc6d2d0abad59da63e4b325ffe4d8a4bd36107af63ed20a59c6648d6c4bd1264044267c86693744b15fa75'],
-	}
+	global dl_apps
 
 	app_path = os.path.join('update', 'data', 'app')
 
 	if forcedown:
 		print('Force redownloading all apps')
 
-	for key, value in apps.iteritems():
+	for key, value in dl_apps.iteritems():
 		apk_name = key + '.apk'
 		apk_path = os.path.join(app_path, apk_name)
 		apk_url = value[0]
