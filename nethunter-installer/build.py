@@ -17,7 +17,7 @@ dl_headers = {
 
 dl_supersu = {
 	'beta': ['https://download.chainfire.eu/supersu-beta', False],
-	'stable': ['https://download.chainfire.eu/1021/SuperSU/SR3-SuperSU-v2.79-SR3-20170114223742.zip', '8d6b74477e66c548a0492dd6aa75b14e3eb682e26d3b14992bb163fc5c748b9348e8489aaa8da40821bd5849d1de186bdb563b8f9d43cb1fd5fed7e30c09d78b'],
+	'stable': ['https://download.chainfire.eu/1113/SuperSU/UPDATE-SuperSU-v2.82-20170528234214.zip', '79884eda71ef17c5e9521881fd0ef043f3a683ce3c087daa099aef13b7d0f63f505ab6c987ee4b00fcb623bc0d9ea6b817c4f96edd2c039782c85bb32995ac5e'],
 }
 
 dl_apps = {
