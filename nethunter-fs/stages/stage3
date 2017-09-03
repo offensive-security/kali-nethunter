@@ -45,7 +45,7 @@ EOF
 if [ "$build_size" = full ]; then
 	# We should run git clone outside chroot because it has issues with machine-code translation
 	git clone https://github.com/Proxmark/proxmark3.git "$rootfs/opt/proxmark3"
-	wget "http://repo.kali.org/kali/pool/main/g/gcc-arm-none-eabi/gcc-arm-none-eabi_4.9.3+svn231177-1_${build_arch}.deb" -O "$rootfs/opt/proxmark3/gcc-arm-none-eabi.deb"
+	wget "http://repo.kali.org/kali/pool/main/g/gcc-arm-none-eabi/gcc-arm-none-eabi_5.4.1+svn241155-1_${build_arch}.deb" -O "$rootfs/opt/proxmark3/gcc-arm-none-eabi.deb"
 	git clone https://github.com/adaptivethreat/Empire.git "$rootfs/opt/Empire"
 
 	cat << EOF >> "$rootfs/third-stage"
