@@ -30,8 +30,6 @@ debconf-set-selections /debconf.set
 rm -f /debconf.set
 apt-get -y install locales-all git-core binutils ca-certificates initramfs-tools locales console-common less nano git
 echo "root:toor" | chpasswd
-sed -i -e 's/KERNEL\!=\"eth\*|/KERNEL\!=\"/' /lib/udev/rules.d/75-persistent-net-generator.rules
-rm -f /etc/udev/rules.d/70-persistent-net.rules
 
 echo "I: Installing packages with apt-get: $packages"
 apt-get --yes --force-yes install $packages
@@ -45,7 +43,6 @@ EOF
 if [ "$build_size" = full ]; then
 	# We should run git clone outside chroot because it has issues with machine-code translation
 	git clone https://github.com/Proxmark/proxmark3.git "$rootfs/opt/proxmark3"
-	wget "http://repo.kali.org/kali/pool/main/g/gcc-arm-none-eabi/gcc-arm-none-eabi_5.4.1+svn241155-1_${build_arch}.deb" -O "$rootfs/opt/proxmark3/gcc-arm-none-eabi.deb"
 	git clone https://github.com/adaptivethreat/Empire.git "$rootfs/opt/Empire"
 
 	cat << EOF >> "$rootfs/third-stage"
@@ -57,15 +54,14 @@ a2enmod php7.0
 a2dissite 000-mana-toolkit.conf
 a2ensite 000-default.conf
 
-cd /opt/proxmark3
-# Proxmark3 depends on gcc-arm-none-eabi, so we install it before building
-dpkg -i gcc-arm-none-eabi.deb
-rm -f gcc-arm-none-eabi.deb
-make
+if cd /opt/proxmark3; then
+	make
+fi
 
-cd /opt/Empire/setup
-chmod +x install.sh
-printf "\n" | ./install.sh
+if cd /opt/Empire/setup; then
+	chmod +x install.sh
+	printf "\n" | ./install.sh
+fi
 EOF
 	# End of third-stage script append
 fi
@@ -110,8 +106,8 @@ cp dictionary/wordlist.txt "$rootfs/opt/dic/wordlist.txt"
 cp dictionary/pinlist.txt "$rootfs/opt/dic/pinlist.txt"
 
 # Sets the default for hostapd.conf to the mana karma version
-sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/etc/mana-toolkit/hostapd-karma.conf#' "$rootfs/etc/init.d/hostapd"
-sed -i 's/wlan0/wlan1/g' "$rootfs/etc/mana-toolkit/hostapd-karma.conf"
+sed -i 's#^DAEMON_CONF=.*#DAEMON_CONF=/sdcard/nh_files/configs/hostapd-karma.conf#' "$rootfs/etc/init.d/hostapd"
+sed -i 's/wlan0/wlan1/g' "$rootfs/etc/mana-toolkit/hostapd-mana-"*
 
 # DNSMASQ Configuration options for optional access point
 cat << EOF > "$rootfs/etc/dnsmasq.conf"
