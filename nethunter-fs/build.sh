@@ -151,7 +151,8 @@ pkg_minimal="openssh-server kali-defaults kali-archive-keyring
 pkg_full="kali-linux-nethunter mana-toolkit exploitdb lua-sql-sqlite3 msfpc
 	exe2hexbat bettercap libapache2-mod-php7.0 libreadline6-dev
 	libncurses5-dev libnewlib-arm-none-eabi binutils-arm-none-eabi
-	gcc-arm-none-eabi autoconf libtool make gcc-6 g++-6 zlib1g-dev"
+	gcc-arm-none-eabi autoconf libtool make gcc-6 g++-6
+	libxml2-dev zlib1g-dev libncurses5-dev"
 
 # ARCH SPECIFIC PACKAGES
 pkg_minimal_armhf="abootimg cgpt fake-hwclock vboot-utils vboot-kernel-utils nethunter-utils"

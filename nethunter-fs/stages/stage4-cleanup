@@ -4,6 +4,7 @@ cat << EOF > "$rootfs/cleanup"
 #!/bin/bash
 rm -f /root/.bash_history
 apt-get clean
+rm -f /var/lib/apt/lists/*
 rm -f /0
 rm -f /hs_err*
 rm -f /third-stage
