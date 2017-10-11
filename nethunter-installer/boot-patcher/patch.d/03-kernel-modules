@@ -8,9 +8,16 @@
 }
 
 print "Installing /lib/modules symlink"
-rm -rf lib
-mkdir -m 0755 lib
+mkdir -p lib
+chmod 0755 lib
+rm -rf lib/modules
 ln -s /system/lib/modules lib/modules
+
+print "Installing /sbin/modprobe symlink"
+mkdir -p sbin
+chmod 0755 sbin
+rm -rf sbin/modprobe
+ln -s /system/xbin/busybox sbin/modprobe
 
 cd "$tmp"
 
