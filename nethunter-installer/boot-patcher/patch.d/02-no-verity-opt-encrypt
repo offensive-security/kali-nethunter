@@ -9,15 +9,28 @@ found_fstab=false
 for fstab in fstab.*; do
 	[ -f "$fstab" ] || continue
 	print "Found fstab: $fstab"
-	sed -i "
-		s/,verify\b//g
-		s/\bverify,//g
-		s/\bverify\b//g
-		s/,support_scfs\b//g
-		s/\bsupport_scfs,//g
-		s/\bsupport_scfs\b//g
+	sed "
 		s/\b\(forceencrypt\|forcefdeorfbe\)=/encryptable=/g
-	" "$fstab"
+	" "$fstab" | awk '
+		$1 ~ /^\// {
+			n = split($5, flags, ",")
+			newflags=""
+			for (i = 1; i <= n; i++) {
+				if (flags[i] == "")
+					continue
+				if (flags[i] ~ /^verify/)
+					continue
+				if (flags[i] ~ /^support_scfs/)
+					continue
+				if (i > 1) newflags = newflags ","
+				newflags = newflags flags[i]
+			}
+			if ($5 != newflags) $5 = newflags
+			if ($5 == "") $5 = "defaults"
+		}
+		{ print }
+	' > "$fstab-"
+	replace_file "$fstab" "$fstab-"
 	found_fstab=true
 done
 
