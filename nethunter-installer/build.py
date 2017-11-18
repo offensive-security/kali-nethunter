@@ -431,7 +431,7 @@ def done():
 def abort(err):
 	print('Error: ' + err)
 	cleanup(True)
-	exit(0)
+	exit(1)
 
 def setuparch():
 	global Arch
