@@ -486,9 +486,9 @@ def main():
 	parser.add_argument('--uninstaller', '-u', action='store_true', help='Create an uninstaller')
 	parser.add_argument('--kernel', '-k', action='store_true', help='Build kernel installer only')
 	parser.add_argument('--nokernel', '-nk', action='store_true', help='Build without the kernel installer')
-	parser.add_argument('--nosu', '-ns', action='store_true', help='Build without SuperSU installer')
 	parser.add_argument('--nobrand', '-nb', action='store_true', help='Build without wallpaper or boot animation')
 	parser.add_argument('--nofreespace', '-nf', action='store_true', help='Build without free space check')
+	parser.add_argument('--supersu', '-su', action='store_true', help='Build with SuperSU installer included')
 	parser.add_argument('--nightly', '-ni', action='store_true', help='Use nightly mirror for Kali rootfs download (experimental)')
 	parser.add_argument('--generic', '-g', action='store', metavar='ARCH', help='Build a generic installer (modify ramdisk only)')
 	parser.add_argument('--rootfs', '-fs', action='store', metavar='SIZE', help='Build with Kali chroot rootfs (full or minimal)')
@@ -511,7 +511,7 @@ def main():
 		Device = 'generic'
 		setuparch()
 	elif args.forcedown:
-		if not args.nosu:
+		if args.supersu:
 			supersu(True, supersu_beta)
 		allapps(True)
 		done()
@@ -565,8 +565,8 @@ def main():
 	# We don't need the apps or SuperSU if we are only building the kernel installer
 	if not args.kernel:
 		allapps(args.forcedown)
-		# Download SuperSU unless we don't want it
-		if not args.nosu:
+		# Download SuperSU if we want it
+		if args.supersu:
 			supersu(args.forcedown, supersu_beta)
 
 	# Download Kali rootfs if we are building a zip with the chroot environment included
@@ -581,6 +581,8 @@ def main():
 		file_tag += '-' + Arch
 	if args.nobrand and not args.kernel:
 		file_tag += '-nobrand'
+	if args.supersu:
+		file_tag += '-rooted'
 	if args.rootfs:
 		file_tag += '-kalifs-' + args.rootfs
 	if args.release:
@@ -610,8 +612,8 @@ def main():
 			print('Created kernel installer: ' + file_name)
 			done()
 
-	# Don't include SuperSU if --nosu is specified
-	if args.nosu:
+	# Don't include SuperSU unless --supersu is specified
+	if not args.supersu:
 		IgnoredFiles.append('supersu.zip')
 
 	# Set up the update zip
