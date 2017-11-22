@@ -115,11 +115,12 @@ dump_boot() {
 
 # determine the format the ramdisk was compressed in
 determine_ramdisk_format() {
-	magicbytes=$(hexdump -vn2 -e '2/1 "%x"' "$split_img/boot.img-ramdisk")
+	magicbytes=$(hexdump -vn2 -e '2/1 "%.2x"' "$split_img/boot.img-ramdisk")
 	case "$magicbytes" in
 		425a) rdformat=bzip2; decompress="$bin/bzip2 -dc" ;;
 		1f8b|1f9e) rdformat=gzip; decompress="gzip -dc" ;;
-		0221) rdformat=lz4; decompress="$bin/lz4 -d" ;;
+		0422) rdformat=lz4; decompress="$bin/lz4 -d" ;;
+		0221) rdformat=lz4l; decompress="$bin/lz4 -d" ;;
 		894c) rdformat=lzo; decompress="lzop -dc" ;;
 		5d00) rdformat=lzma; decompress="lzma -dc" ;;
 		fd37) rdformat=xz; decompress="xz -dc" ;;
@@ -133,6 +134,7 @@ determine_ramdisk_format() {
 		bzip2) compress="$bin/bzip2 -9c" ;;
 		gzip) compress="gzip -9c" ;;
 		lz4) compress="$bin/lz4 -9" ;;
+		lz4l) compress="$bin/lz4 -9l" ;;
 		lzo) compress="lzop -9c" ;;
 		lzma) compress="$bin/xz --format=lzma --lzma1=dict=16MiB -9";
 			abort "LZMA ramdisk compression is currently unsupported" ;;

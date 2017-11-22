@@ -37,24 +37,6 @@ found_sepolicy=false
 found_file_contexts=false
 [ -f "$file_contexts" ] && found_file_contexts=true
 
-if $found_sepolicy; then
-	if   "$seinject" -e -c filesystem -P "$sepolicy" &&
-	   ! "$seinject-N" -e -c filesystem -P "$sepolicy"
-	then
-		# Android 7.0+ (Nougat)
-		android_api=24
-		seinject="$seinject-N"
-	elif "$seinject" -e -s gatekeeper_service -P "$sepolicy"
-	then
-		# Android 6.0 (Marshmallow)
-		android_api=23
-	elif "$seinject" -e -c service_manager -P "$sepolicy"
-	then
-		# Android 5.1 (Lollipop MR1)
-		android_api=21
-	fi
-fi
-
 print() {
 	if [ "$1" ]; then
 		echo "ui_print -- $1" > "$console"
@@ -67,6 +49,31 @@ print() {
 abort() {
 	[ "$1" ] && print "Error: $1"
 	exit 1
+}
+
+# sinject_test
+# tests for Android API and sets seinject binary accordingly
+seinject_test() {
+	$found_sepolicy || return 1
+	[ -x "$seinject" ] || return 1
+	if   "$seinject" -e -c filesystem -P "$sepolicy" &&
+	   ! "$seinject-M" -e -c filesystem -P "$sepolicy"; then
+		# Android 7.0+ (Nougat)
+		android_api=24
+		return
+	fi
+	seinject="$seinject-M"
+	[ -x "$seinject" ] || return 1
+	if "$seinject" -e -s gatekeeper_service -P "$sepolicy"; then
+		# Android 6.0 (Marshmallow)
+		android_api=23
+		return
+	fi
+	if "$seinject" -e -c service_manager -P "$sepolicy"; then
+		# Android 5.1 (Lollipop MR1)
+		android_api=21
+		return
+	fi
 }
 
 # setperm <directory permissions> <file permissions> <directory>
@@ -213,5 +220,7 @@ seadd() {
 	$found_sepolicy || return
 	"$seinject" -P "$sepolicy" "$@"
 }
+
+seinject_test
 
 cd "$ramdisk"
