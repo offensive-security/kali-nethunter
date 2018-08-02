@@ -24,9 +24,9 @@ dl_apps = {
 	'Hackerskeyboard':
 		['https://f-droid.org/repo/org.pocketworkstation.pckeyboard_1039003.apk', '8c861c7540e6eeb006070d0f2d80134e75637066591d705b987e164c3fe87521ed694ac844c945eb74449aff8723ff039f793b2e3743aac73865f74bb248edf5'],
 	'Drivedroid':
-		['https://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.10.47.apk', '5e3f4781f2b94ddfc068a49038734b97ea4a939e8fec46a243bfd2f07d714911d750e208b3e98d995aa267891a0e152d02e5c20e1f928fa9548726d96809f4c8'],
+		['https://softwarebakery.com/apps/drivedroid/files/drivedroid-free-0.10.48.apk', 'db12634d68d4220ef236625cccebf4a0f148def953e68cda46f325e3c7a8356e3dc91bbe9c75d230aa62fba7145d3f124410424a18e64c3a8558e3e8c539ca77'],
 	'OpenVPN':
-		['https://f-droid.org/repo/de.blinkt.openvpn_153.apk', '9003617216ce36f2ad7709b2f9d42a5f4902e2e528909b9925e5e4636d87d26ce12b0227c3de93743ef351339413d12e9cec314cf1f6008232ab311c5c8d98d2'],
+		['https://f-droid.org/repo/de.blinkt.openvpn_158.apk', '61a52eb1a8e802cc252cffd54a505822b8fdf03dc87032935856405a5b868d7b3242df333c4f940c920393d52583cb378bd9f06bd44ad50b0e22f13b8cc3e177'],
 	'USBKeyboard': # Feb 3, 2015
 		['https://github.com/pelya/android-keyboard-gadget/raw/7ea69c684aa1/USB-Keyboard.apk', '18bced7b339a67c48fe31698cb54063bce8f3dd9f7d7f23d9e5c619697e8da5ab08312cf9a2fa0e3f445a584485db23d1e4c27e3ffc1448551bbaf486ccb11e9'],
 	'RFAnalyzer':
@@ -34,7 +34,7 @@ dl_apps = {
 	'Shodan':
 		['https://github.com/PaulSec/Shodan.io-mobile-app/raw/v0.0.3-new/io.shodan.app.apk', 'a2ff39d8e7a86d8e0a14368fd278fb03212999b309bc102d39f76ff69ca2a373d3d62a95cea6dbee761ae81ff3daaf83846e49e8ccbf0760276d825493d08652'],
 	'RouterKeygen':
-		['https://github.com/routerkeygen/routerkeygenAndroid/releases/download/v3.15.0/routerkeygen-3-15-0.apk', '95fba11539597eced9f3347f627bf3b24c9abc3c7e039ae1552a9c42c8c70ce362720dc401b85b9faac080d64e67bf594625f80472a492baf676dbe93822fc9e'],
+		['https://github.com/routerkeygen/routerkeygenAndroid/releases/download/v4.0.2/routerkeygen-4-0-2.apk', '0135bbeb371f616c3577e6932e67b6c22c5aff335c7d7570bf5d26f106eadb0cbf4eea12503726cb806d18794e1adc6f3cc934ea41ca5ef62a8c77a4702947da'],
 	'cSploit':
 		['https://github.com/cSploit/android/releases/download/v1.6.6-rc.2/cSploit-release.apk', 'b841c4376836bcc9d23fbc18b40eed70e08018e8eebc6d2d0abad59da63e4b325ffe4d8a4bd36107af63ed20a59c6648d6c4bd1264044267c86693744b15fa75'],
 }
