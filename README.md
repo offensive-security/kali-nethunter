@@ -19,14 +19,17 @@ We're relying on you, the community, to port your devices for the full Kali NetH
 
 **A** - Yes, check our wiki for more information on supported devices and ROMs https://github.com/offensive-security/kali-nethunter/wiki#10-supported-devices-and-roms
 <hr>
+
 **Q** - What kind of attacks does NetHunter support?
 
 **A** - Our wiki has a list of included attack tools https://github.com/offensive-security/kali-nethunter/wiki#60-kali-nethunter-attacks-and-features
 <hr>
+
 **Q** - NetHunter is awesome! How do I install it?
 
 **A** - Follow the instructions on the wiki https://github.com/offensive-security/kali-nethunter/wiki#40-installing-nethunter-on-top-of-android
 <hr>
+
 **Q** - What is the best wireless card for NetHunter?
 
 **A** - A list of supported devices and chipsets is on the wiki https://github.com/offensive-security/kali-nethunter/wiki/Wireless-Cards
