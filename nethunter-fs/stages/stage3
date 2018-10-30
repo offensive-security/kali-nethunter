@@ -48,7 +48,7 @@ if [ "$build_size" = full ]; then
 	cat << EOF >> "$rootfs/third-stage"
 
 # Enable PHP in Apache
-a2enmod php7.0
+a2enmod php7.2
 
 # Enable /var/www/html as default, disable mana unless we need it
 a2dissite 000-mana-toolkit.conf

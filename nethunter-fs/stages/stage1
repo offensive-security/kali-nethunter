@@ -25,7 +25,7 @@ update-binfmts --enable "qemu-$qemu_arch"
 echo "[+] Starting debootstrap (download)..."
 tries=0
 max_tries=5
-while ! debootstrap --foreign --download-only --verbose --arch $build_arch kali-rolling "$rootfs" http://http.kali.org/kali; do
+while ! debootstrap --download-only --verbose --arch $build_arch kali-rolling "$rootfs" http://http.kali.org/kali; do
 	((tries++))
 	if [ $tries -ge $max_tries ]; then
 		echo "[!] Error, maximum retries ($max_tries) reached, could not download packages!"
