@@ -131,7 +131,7 @@ EOF
 
 # Apt now adds a new user to "nobody" but the _apt user can't access updates
 # because of inet.  Modify passwd to put them in inet group for android
-sed -i 's/_apt:x:104:65534/_apt:x:104:3004/g' "$rootfs/etc/passwd"
+sed -i -e 's/^\(_apt:\)\([^:]\)\(:[0-9]*\)\(:[0-9]*\):/\1\2\3:3004:/' "$rootfs/etc/passwd"
 
 # Fix armitage to run on NH
 # https://github.com/offensive-security/kali-nethunter/issues/600
