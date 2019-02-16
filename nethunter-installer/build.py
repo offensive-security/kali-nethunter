@@ -582,7 +582,7 @@ def main():
 	if args.rootfs:
 		rootfs(args.forcedown, args.rootfs, args.nightly)
 
-	# Set file name tag depending on the options chosen	
+	# Set file name tag depending on the options chosen
 	file_tag = Device
 	if args.device:
 		file_tag += '-' + OS
