@@ -32,7 +32,7 @@ apt-get -y install locales-all git-core binutils ca-certificates initramfs-tools
 echo "root:toor" | chpasswd
 
 echo "I: Installing packages with apt-get: $packages"
-apt-get --yes --force-yes install $packages
+apt-get --yes install $packages
 
 rm -f /usr/sbin/policy-rc.d
 rm -f /usr/sbin/invoke-rc.d
