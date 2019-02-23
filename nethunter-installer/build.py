@@ -17,7 +17,7 @@ dl_headers = {
 
 dl_supersu = {
 	'beta': ['https://download.chainfire.eu/supersu-beta', False],
-	'stable': ['https://download.chainfire.eu/1113/SuperSU/UPDATE-SuperSU-v2.82-20170528234214.zip', '79884eda71ef17c5e9521881fd0ef043f3a683ce3c087daa099aef13b7d0f63f505ab6c987ee4b00fcb623bc0d9ea6b817c4f96edd2c039782c85bb32995ac5e'],
+	'stable': ['https://download.chainfire.eu/1220/SuperSU/SR5-SuperSU-v2.82-SR5-20171001224502.zip', '22caaa20ad98ce799d6e5e72f55f182c98cf2013ae28b6db24f4cd6f860e5aaf770d3342a626d335dbb391c2dc0c85afc5db6ddef03d0df8ffdb27a547d4aab8'],
 }
 
 dl_apps = {
@@ -37,6 +37,8 @@ dl_apps = {
 		['https://github.com/routerkeygen/routerkeygenAndroid/releases/download/v4.0.2/routerkeygen-4-0-2.apk', '0135bbeb371f616c3577e6932e67b6c22c5aff335c7d7570bf5d26f106eadb0cbf4eea12503726cb806d18794e1adc6f3cc934ea41ca5ef62a8c77a4702947da'],
 	'cSploit':
 		['https://github.com/cSploit/android/releases/download/v1.6.6-rc.2/cSploit-release.apk', 'b841c4376836bcc9d23fbc18b40eed70e08018e8eebc6d2d0abad59da63e4b325ffe4d8a4bd36107af63ed20a59c6648d6c4bd1264044267c86693744b15fa75'],
+	'Walrus':
+		['https://github.com/kimocoder/Walrus/raw/master/apk/walrus.apk', '3de9182ab63be9f81fcccc4a416df521efff58eb54b887f5218b457600aab7669b3d4058e448a68a039f15b28b5a3b12bde7b0deb3af817627de5e51b484108e'],
 }
 
 def copytree(src, dst):
@@ -582,7 +584,7 @@ def main():
 	if args.rootfs:
 		rootfs(args.forcedown, args.rootfs, args.nightly)
 
-	# Set file name tag depending on the options chosen	
+	# Set file name tag depending on the options chosen
 	file_tag = Device
 	if args.device:
 		file_tag += '-' + OS
