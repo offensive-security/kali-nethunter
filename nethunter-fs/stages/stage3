@@ -31,8 +31,11 @@ rm -f /debconf.set
 apt-get -y install locales-all git-core binutils ca-certificates initramfs-tools locales console-common less nano git
 echo "root:toor" | chpasswd
 
+# This looks weird, but we do it twice because every so often, there's a failure to download from the mirror
+# So to workaround it, we attempt to install them twice.
 echo "I: Installing packages with apt-get: $packages"
-apt-get --yes install $packages
+apt-get --yes install $packages || apt-get --yes --fix-broken install
+apt-get --yes install $packages || apt-get --yes --fix-broken install
 
 rm -f /usr/sbin/policy-rc.d
 rm -f /usr/sbin/invoke-rc.d
@@ -48,13 +51,15 @@ if [ "$build_size" = full ]; then
 	cat << EOF >> "$rootfs/third-stage"
 
 # Enable PHP in Apache
-a2enmod php7.2
+a2enmod php7.3
 
 # Enable /var/www/html as default, disable mana unless we need it
 a2dissite 000-mana-toolkit.conf
 a2ensite 000-default.conf
 
 if cd /opt/proxmark3; then
+        ## Install some dependencies first
+        apt install -y libpcsclite-dev pcscd pkg-config
 	make
 fi
 
