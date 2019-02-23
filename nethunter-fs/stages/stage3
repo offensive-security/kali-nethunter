@@ -64,6 +64,12 @@ if cd /opt/proxmark3; then
 fi
 
 if cd /opt/Empire/setup; then
+        # Lets patch install.sh to build xar for our target architecture
+        if [ $build_arch == "arm64" ]; then
+            sed "install.sh" -i -e "s/(cd xar-1.5.2 \&\& \./configure)/(cd xar-1.5.2 \&\& \./configure --build=armv8l-unkown-linux-gnu)/"
+        elif [ $build_arch == "armhf" ]; then
+            sed "install.sh" -i -e "s/(cd xar-1.5.2 \&\& \./configure)/(cd xar-1.5.2 \&\& \./configure --build=armv7l-unkown-linux-gnu)/"
+        fi
 	chmod +x install.sh
 	printf "\n" | ./install.sh
 fi
