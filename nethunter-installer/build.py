@@ -40,7 +40,7 @@ dl_apps = {
 	'Walrus':
 		['https://github.com/kimocoder/Walrus/raw/master/apk/walrus.apk', '3de9182ab63be9f81fcccc4a416df521efff58eb54b887f5218b457600aab7669b3d4058e448a68a039f15b28b5a3b12bde7b0deb3af817627de5e51b484108e'],
 	'Hijacker':
-		['https://github.com/chrisk44/Hijacker/releases/download/v1.5-beta.8/Hijacker-release-v1.5-beta.8.apk', '3f9aad94faa8a78833dcc1da2702455fe106383a95cc46a25559ff398e3adb828828c5545d8754d982511a2718ea842c56c7ee8566c5973c65d88858e5b1288c1'],
+		['https://github.com/chrisk44/Hijacker/releases/download/v1.5-beta.8/Hijacker-release-v1.5-beta.8.apk', 'f9aad94faa8a78833dcc1da2702455fe106383a95cc46a25559ff398e3adb828828c5545d8754d982511a2718ea842c56c7ee8566c5973c65d88858e5b1288c1'],
 }
 
 def copytree(src, dst):
