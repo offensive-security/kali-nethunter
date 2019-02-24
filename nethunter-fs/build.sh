@@ -148,10 +148,10 @@ pkg_minimal="openssh-server kali-defaults kali-archive-keyring
 	apt-transport-https ntpdate usbutils pciutils"
 
 # DEFAULT PACKAGES FULL INSTALL
-pkg_full="kali-linux-nethunter mana-toolkit exploitdb lua-sql-sqlite3 msfpc
+pkg_full="kali-linux-nethunter mana-toolkit exploitdb msfpc
 	exe2hexbat bettercap libapache2-mod-php7.3 libreadline6-dev
 	libncurses5-dev libnewlib-arm-none-eabi binutils-arm-none-eabi
-	gcc-arm-none-eabi autoconf libtool make gcc-6 g++-6
+	gcc-arm-none-eabi autoconf libtool make gcc-7 g++-7
 	libxml2-dev zlib1g-dev libncurses5-dev"
 
 # ARCH SPECIFIC PACKAGES
