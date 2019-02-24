@@ -91,7 +91,7 @@ sed -i 's|.*\blogprefix=.*|logprefix=/captures/kismet/|g' "$rootfs/etc/kismet/ki
 sed -i 's|.*\bncsource=wlan0|ncsource=wlan1|g' "$rootfs/etc/kismet/kismet.conf"
 sed -i 's|.*\bgpshost=.*|gpshost=127.0.0.1:2947|g' "$rootfs/etc/kismet/kismet.conf"
 
-# Modify SSHD to allow password logins which is a security risk 
+# Modify SSHD to allow password logins which is a security risk
 # if the user doesn't change their password
 # or change their configuration for key based ssh
 echo "[+] Modifying SSH to allow root user"
