@@ -211,9 +211,7 @@ def rootfs(forcedown, fs_size, nightly):
 	fs_path = os.path.join('rootfs', fs_file)
 
 	if nightly:
-                ## Let's not use the nighlty mirror until we build nightlies again
-		#fs_host = 'https://build.nethunter.com/kalifs/kalifs-latest/'
-		fs_host = 'https://images.offensive-security.com/'
+		fs_host = 'https://build.nethunter.com/kalifs/kalifs-latest/'
 	else:
 		fs_host = 'https://images.offensive-security.com/'
 
