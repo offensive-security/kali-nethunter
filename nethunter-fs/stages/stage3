@@ -7,6 +7,7 @@ export DEBIAN_FRONTEND=noninteractive
 mount -t proc proc "$rootfs/proc"
 mount -o bind /dev "$rootfs/dev"
 mount -o bind /dev/pts "$rootfs/dev/pts"
+mount -t sysfs sys "$rootfs/sys"
 
 cat << EOF > "$rootfs/debconf.set"
 console-common console-data/keymap/policy select Select keymap from full list
