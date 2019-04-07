@@ -115,7 +115,7 @@ dump_boot() {
 
 # determine the format the ramdisk was compressed in
 determine_ramdisk_format() {
-	magicbytes=$(hexdump -vn2 -e '2/1 "%.2x"' "$split_img/boot.img-ramdisk")
+	magicbytes=$(hexdump -vn2 -e '2/1 "%.2x"' "$split_img/ramdisk")
 	case "$magicbytes" in
 		425a) rdformat=bzip2; decompress="$bin/bzip2 -dc" ;;
 		1f8b|1f9e) rdformat=gzip; decompress="gzip -dc" ;;
@@ -148,7 +148,7 @@ determine_ramdisk_format() {
 # extract the old ramdisk contents
 dump_ramdisk() {
 	cd "$ramdisk"
-	$decompress < "$split_img/boot.img-ramdisk" | cpio -i
+	$decompress < "$split_img/ramdisk" | cpio -i
 	[ $? != 0 ] && abort "Unpacking ramdisk failed"
 }
 
@@ -237,7 +237,7 @@ samsung_tag() {
 
 # sign the boot image with futility if it was a ChromeOS boot image
 sign_chromeos() {
-	[ -f "$split_img/boot.img-chromeos" ] || return
+	[ -f "$split_img/chromeos" ] || return
 	print "Signing ChromeOS boot image..."
 	cd "$tmp"
 	mv boot-new.img boot-new-unsigned.img
