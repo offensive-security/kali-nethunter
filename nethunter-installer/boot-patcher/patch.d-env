@@ -5,7 +5,7 @@ bin=$tmp/tools
 split_img=$tmp/split-img
 ramdisk=$tmp/ramdisk
 ramdisk_patch=$ramdisk-patch
-cmdline=$split_img/boot.img-cmdline
+cmdline=$split_img/cmdline
 
 console=$(cat /tmp/console)
 [ "$console" ] || console=/proc/$$/fd/1
