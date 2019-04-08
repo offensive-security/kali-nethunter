@@ -166,22 +166,33 @@ progress 0.2
 
 progress 0.4
 
+SDK="$(grep 'ro.build.version.sdk' /system/build.prop | cut -d'=' -f2)"
+print "SDK Version: $SDK"
 print "Installing apps:"
 
-installapp "NetHunter App" "nethunter.apk" "com.offsec.nethunter"
-installapp "NetHunter Terminal" "Term-nh.apk" "com.offsec.nhterm"
-installapp "NetHunter VNC" "VNC-nh.apk" "com.offsec.nhvnc"
-installapp "cSploit" "cSploit.apk" "org.csploit.android"
-installapp "OpenVPN" "OpenVPN.apk" "de.blinkt.openvpn"
-installapp "Hacker's Keyboard" "Hackerskeyboard.apk" "org.pocketworkstation.pckeyboard"
-installapp "RF Analyzer" "RFAnalyzer.apk" "com.mantz_it.rfanalyzer"
-installapp "Shodan" "Shodan.apk" "io.shodan.app"
-installapp "USB Keyboard" "USBKeyboard.apk" "remote.hid.keyboard.client"
-installapp "Router Keygen" "RouterKeygen.apk" "io.github.routerkeygen"
-installapp "DriveDroid" "Drivedroid.apk" "com.softwarebakery.drivedroid"
-#installapp "Walrus" "Walrus.apk" "com.bugfuzz.android.projectwalrus"
-installapp "Hijacker" "Hijacker.apk" "com.hijacker"
-
+if [ $SDK -ge 26 ]; then
+    #Starting with Oreo we can no longer install user apps so we install nethunter.apk as system app
+    mkdir -p /system/app/NetHunter
+    cp $tmp/data/app/nethunter.apk /system/app/NetHunter/
+    # And we copy the other apps to /sdcard/nh_files/cache/apk to be installed during nethunter init
+    mkdir -p /sdcard/nh_files/cache/apk
+    cp $tmp/data/app/*.apk /sdcard/nh_files/cache/apk/
+    rm /sdcard/nh_files/cache/apk/nethunter.apk
+else
+    installapp "NetHunter App" "nethunter.apk" "com.offsec.nethunter"
+    installapp "NetHunter Terminal" "Term-nh.apk" "com.offsec.nhterm"
+    installapp "NetHunter VNC" "VNC-nh.apk" "com.offsec.nhvnc"
+    installapp "cSploit" "cSploit.apk" "org.csploit.android"
+    installapp "OpenVPN" "OpenVPN.apk" "de.blinkt.openvpn"
+    installapp "Hacker's Keyboard" "Hackerskeyboard.apk" "org.pocketworkstation.pckeyboard"
+    installapp "RF Analyzer" "RFAnalyzer.apk" "com.mantz_it.rfanalyzer"
+    installapp "Shodan" "Shodan.apk" "io.shodan.app"
+    installapp "USB Keyboard" "USBKeyboard.apk" "remote.hid.keyboard.client"
+    installapp "Router Keygen" "RouterKeygen.apk" "io.github.routerkeygen"
+    installapp "DriveDroid" "Drivedroid.apk" "com.softwarebakery.drivedroid"
+    #installapp "Walrus" "Walrus.apk" "com.bugfuzz.android.projectwalrus"
+    installapp "Hijacker" "Hijacker.apk" "com.hijacker"
+fi
 print "Done installing apps"
 
 progress 0.5
