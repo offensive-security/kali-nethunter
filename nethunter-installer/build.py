@@ -44,6 +44,8 @@ dl_apps = {
 		['https://github.com/chrisk44/Hijacker/releases/download/v1.5-beta.8/Hijacker-release-v1.5-beta.8.apk', 'f9aad94faa8a78833dcc1da2702455fe106383a95cc46a25559ff398e3adb828828c5545d8754d982511a2718ea842c56c7ee8566c5973c65d88858e5b1288c1'],
 	'Interceptor-NG':
 		['https://github.com/intercepter-ng/intercepter-ng.github.io/raw/master/Intercepter-NG.2.1.apk', '66a12b8ff1022635071283acbbd4f41bceae092cfdc88cbc0f0c77a175c8f5ba5d7fc1703474e7ea6c24b5630b6c2c970ae62641f7924ec47b72956f47afd979'],
+	'AndProx':
+		['https://github.com/AndProx/AndProx/releases/download/v2.0.4/andprox-2.0.4.apk', 'acb121fd5440a324b6c0fb2bfea67838d5aaa01be8a5b7742a56dfff2026ee91afbae71d4a633fa4d374fe26b72b914d77644b41517e8d2dbf7d64fb1aa95a51'],
 }
 
 def copytree(src, dst):
