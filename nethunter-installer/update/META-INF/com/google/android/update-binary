@@ -179,7 +179,7 @@ installapp "Shodan" "Shodan.apk" "io.shodan.app"
 installapp "USB Keyboard" "USBKeyboard.apk" "remote.hid.keyboard.client"
 installapp "Router Keygen" "RouterKeygen.apk" "io.github.routerkeygen"
 installapp "DriveDroid" "Drivedroid.apk" "com.softwarebakery.drivedroid"
-installapp "Walrus" "Walrus.apk" "com.bugfuzz.android.projectwalrus"
+#installapp "Walrus" "Walrus.apk" "com.bugfuzz.android.projectwalrus"
 installapp "Hijacker" "Hijacker.apk" "com.hijacker"
 
 print "Done installing apps"
