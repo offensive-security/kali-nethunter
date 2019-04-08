@@ -37,8 +37,9 @@ dl_apps = {
 		['https://github.com/routerkeygen/routerkeygenAndroid/releases/download/v4.0.2/routerkeygen-4-0-2.apk', '0135bbeb371f616c3577e6932e67b6c22c5aff335c7d7570bf5d26f106eadb0cbf4eea12503726cb806d18794e1adc6f3cc934ea41ca5ef62a8c77a4702947da'],
 	'cSploit':
 		['https://github.com/cSploit/android/releases/download/v1.6.6-rc.2/cSploit-release.apk', 'b841c4376836bcc9d23fbc18b40eed70e08018e8eebc6d2d0abad59da63e4b325ffe4d8a4bd36107af63ed20a59c6648d6c4bd1264044267c86693744b15fa75'],
-	'Walrus':
-		['https://github.com/kimocoder/Walrus/raw/master/apk/walrus.apk', '3de9182ab63be9f81fcccc4a416df521efff58eb54b887f5218b457600aab7669b3d4058e448a68a039f15b28b5a3b12bde7b0deb3af817627de5e51b484108e'],
+	# There is currently no stable walrus.apk download link available so we skip this for now
+	#'Walrus':
+	#	['https://github.com/kimocoder/Walrus/raw/master/apk/walrus.apk', '3de9182ab63be9f81fcccc4a416df521efff58eb54b887f5218b457600aab7669b3d4058e448a68a039f15b28b5a3b12bde7b0deb3af817627de5e51b484108e'],
 	'Hijacker':
 		['https://github.com/chrisk44/Hijacker/releases/download/v1.5-beta.8/Hijacker-release-v1.5-beta.8.apk', 'f9aad94faa8a78833dcc1da2702455fe106383a95cc46a25559ff398e3adb828828c5545d8754d982511a2718ea842c56c7ee8566c5973c65d88858e5b1288c1'],
 	'Interceptor-NG':
