@@ -172,8 +172,8 @@ print "Installing apps:"
 
 if [ $SDK -ge 26 ]; then
     #Starting with Oreo we can no longer install user apps so we install nethunter.apk as system app
-    mkdir -p /system/app/NetHunter
-    cp $tmp/data/app/nethunter.apk /system/app/NetHunter/
+    mkdir -p /system/priv-app/NetHunter
+    cp $tmp/data/app/nethunter.apk /system/priv-app/NetHunter/
     # And we copy the other apps to /sdcard/nh_files/cache/apk to be installed during nethunter init
     mkdir -p /sdcard/nh_files/cache/apk
     cp $tmp/data/app/*.apk /sdcard/nh_files/cache/apk/
