@@ -182,16 +182,20 @@ else
     installapp "NetHunter App" "nethunter.apk" "com.offsec.nethunter"
     installapp "NetHunter Terminal" "Term-nh.apk" "com.offsec.nhterm"
     installapp "NetHunter VNC" "VNC-nh.apk" "com.offsec.nhvnc"
+    installapp "AndProx" "AndProx.apk" "au.id.micolous.andprox"
     installapp "cSploit" "cSploit.apk" "org.csploit.android"
-    installapp "OpenVPN" "OpenVPN.apk" "de.blinkt.openvpn"
+    installapp "DriveDroid" "Drivedroid.apk" "com.softwarebakery.drivedroid"
     installapp "Hacker's Keyboard" "Hackerskeyboard.apk" "org.pocketworkstation.pckeyboard"
+    installapp "Hijacker" "Hijacker.apk" "com.hijacker"
+    installapp "Intercepter-NG" "Intercepter-NG.apk" "su.sniff.cepter"
+    installapp "OpenVPN" "OpenVPN.apk" "de.blinkt.openvpn"
     installapp "RF Analyzer" "RFAnalyzer.apk" "com.mantz_it.rfanalyzer"
+    installapp "Router Keygen" "RouterKeygen.apk" "io.github.routerkeygen"
     installapp "Shodan" "Shodan.apk" "io.shodan.app"
     installapp "USB Keyboard" "USBKeyboard.apk" "remote.hid.keyboard.client"
-    installapp "Router Keygen" "RouterKeygen.apk" "io.github.routerkeygen"
-    installapp "DriveDroid" "Drivedroid.apk" "com.softwarebakery.drivedroid"
-    #installapp "Walrus" "Walrus.apk" "com.bugfuzz.android.projectwalrus"
-    installapp "Hijacker" "Hijacker.apk" "com.hijacker"
+    ## The following apps are going to be installed from the play store:
+    #  - Walrus
+    #  - WHID-Injector
 fi
 print "Done installing apps"
 
