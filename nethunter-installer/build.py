@@ -21,31 +21,28 @@ dl_supersu = {
 }
 
 dl_apps = {
-	'Hackerskeyboard':
-		['https://f-droid.org/repo/org.pocketworkstation.pckeyboard_1039003.apk', '8c861c7540e6eeb006070d0f2d80134e75637066591d705b987e164c3fe87521ed694ac844c945eb74449aff8723ff039f793b2e3743aac73865f74bb248edf5'],
-	'Drivedroid':
-		['https://drivedroid-versions.s3-eu-west-1.amazonaws.com/files/drivedroid-free-0.10.50.apk', '455354369d34dd59cdf71e50c02fd1dc969925f803fbc1c498467ac1b3b50b7a3b23dd22a3e60a5dbe61d7106c99106f92ef6a86c56775f01e42dfcd1837c198'],
-	'OpenVPN':
-		['https://f-droid.org/repo/de.blinkt.openvpn_159.apk', 'a47200c972a6e98649f6a8f87e02c5b924b1c7915ef86698f1339a1ec82af3eab82e7ecf442a3b2f5ab5ded91b59b0943315133413b50a2c473d5f9ba8050695'],
-	'USBKeyboard': # Feb 3, 2015
-		['https://github.com/pelya/android-keyboard-gadget/raw/7ea69c684aa1/USB-Keyboard.apk', '18bced7b339a67c48fe31698cb54063bce8f3dd9f7d7f23d9e5c619697e8da5ab08312cf9a2fa0e3f445a584485db23d1e4c27e3ffc1448551bbaf486ccb11e9'],
-	'RFAnalyzer':
-		['https://github.com/demantz/RFAnalyzer/raw/version_1_13/RFAnalyzer.apk', '7793438b6fbe7288a0ca86de900f5f4e607168de8c97229d08d901c2424b0192bf9dc894f66439f59510c10fa26a26319a1b0d8ea276f6af927cebf677138230'],
-	'Shodan':
-		['https://github.com/PaulSec/Shodan.io-mobile-app/raw/v0.0.3-new/io.shodan.app.apk', 'a2ff39d8e7a86d8e0a14368fd278fb03212999b309bc102d39f76ff69ca2a373d3d62a95cea6dbee761ae81ff3daaf83846e49e8ccbf0760276d825493d08652'],
-	'RouterKeygen':
-		['https://github.com/routerkeygen/routerkeygenAndroid/releases/download/v4.0.2/routerkeygen-4-0-2.apk', '0135bbeb371f616c3577e6932e67b6c22c5aff335c7d7570bf5d26f106eadb0cbf4eea12503726cb806d18794e1adc6f3cc934ea41ca5ef62a8c77a4702947da'],
-	'cSploit':
-		['https://github.com/cSploit/android/releases/download/v1.6.6-rc.2/cSploit-release.apk', 'b841c4376836bcc9d23fbc18b40eed70e08018e8eebc6d2d0abad59da63e4b325ffe4d8a4bd36107af63ed20a59c6648d6c4bd1264044267c86693744b15fa75'],
-	# There is currently no stable walrus.apk download link available so we skip this for now
-	#'Walrus':
-	#	['https://github.com/kimocoder/Walrus/raw/master/apk/walrus.apk', '3de9182ab63be9f81fcccc4a416df521efff58eb54b887f5218b457600aab7669b3d4058e448a68a039f15b28b5a3b12bde7b0deb3af817627de5e51b484108e'],
-	'Hijacker':
-		['https://github.com/chrisk44/Hijacker/releases/download/v1.5-beta.8/Hijacker-release-v1.5-beta.8.apk', 'f9aad94faa8a78833dcc1da2702455fe106383a95cc46a25559ff398e3adb828828c5545d8754d982511a2718ea842c56c7ee8566c5973c65d88858e5b1288c1'],
-	'Interceptor-NG':
-		['https://github.com/intercepter-ng/intercepter-ng.github.io/raw/master/Intercepter-NG.2.1.apk', '66a12b8ff1022635071283acbbd4f41bceae092cfdc88cbc0f0c77a175c8f5ba5d7fc1703474e7ea6c24b5630b6c2c970ae62641f7924ec47b72956f47afd979'],
 	'AndProx':
 		['https://github.com/AndProx/AndProx/releases/download/v2.0.4/andprox-2.0.4.apk', 'acb121fd5440a324b6c0fb2bfea67838d5aaa01be8a5b7742a56dfff2026ee91afbae71d4a633fa4d374fe26b72b914d77644b41517e8d2dbf7d64fb1aa95a51'],
+	'cSploit':
+		['https://github.com/cSploit/android/releases/download/v1.6.6-rc.2/cSploit-release.apk', 'b841c4376836bcc9d23fbc18b40eed70e08018e8eebc6d2d0abad59da63e4b325ffe4d8a4bd36107af63ed20a59c6648d6c4bd1264044267c86693744b15fa75'],
+	'Drivedroid':
+		['https://drivedroid-versions.s3-eu-west-1.amazonaws.com/files/drivedroid-free-0.10.50.apk', '455354369d34dd59cdf71e50c02fd1dc969925f803fbc1c498467ac1b3b50b7a3b23dd22a3e60a5dbe61d7106c99106f92ef6a86c56775f01e42dfcd1837c198'],
+	'Hackerskeyboard':
+		['https://f-droid.org/repo/org.pocketworkstation.pckeyboard_1039003.apk', '8c861c7540e6eeb006070d0f2d80134e75637066591d705b987e164c3fe87521ed694ac844c945eb74449aff8723ff039f793b2e3743aac73865f74bb248edf5'],
+	'Hijacker':
+		['https://github.com/chrisk44/Hijacker/releases/download/v1.5-beta.8/Hijacker-release-v1.5-beta.8.apk', 'f9aad94faa8a78833dcc1da2702455fe106383a95cc46a25559ff398e3adb828828c5545d8754d982511a2718ea842c56c7ee8566c5973c65d88858e5b1288c1'],
+	'Intercepter-NG':
+		['https://github.com/intercepter-ng/intercepter-ng.github.io/raw/master/Intercepter-NG.2.1.apk', '66a12b8ff1022635071283acbbd4f41bceae092cfdc88cbc0f0c77a175c8f5ba5d7fc1703474e7ea6c24b5630b6c2c970ae62641f7924ec47b72956f47afd979'],
+	'OpenVPN':
+		['https://f-droid.org/repo/de.blinkt.openvpn_159.apk', 'a47200c972a6e98649f6a8f87e02c5b924b1c7915ef86698f1339a1ec82af3eab82e7ecf442a3b2f5ab5ded91b59b0943315133413b50a2c473d5f9ba8050695'],
+	'RFAnalyzer':
+		['https://github.com/demantz/RFAnalyzer/raw/version_1_13/RFAnalyzer.apk', '7793438b6fbe7288a0ca86de900f5f4e607168de8c97229d08d901c2424b0192bf9dc894f66439f59510c10fa26a26319a1b0d8ea276f6af927cebf677138230'],
+	'RouterKeygen':
+		['https://github.com/routerkeygen/routerkeygenAndroid/releases/download/v4.0.2/routerkeygen-4-0-2.apk', '0135bbeb371f616c3577e6932e67b6c22c5aff335c7d7570bf5d26f106eadb0cbf4eea12503726cb806d18794e1adc6f3cc934ea41ca5ef62a8c77a4702947da'],
+	'Shodan':
+		['https://github.com/PaulSec/Shodan.io-mobile-app/raw/v0.0.3-new/io.shodan.app.apk', 'a2ff39d8e7a86d8e0a14368fd278fb03212999b309bc102d39f76ff69ca2a373d3d62a95cea6dbee761ae81ff3daaf83846e49e8ccbf0760276d825493d08652'],
+	'USBKeyboard': # Feb 3, 2015
+		['https://github.com/pelya/android-keyboard-gadget/raw/7ea69c684aa1/USB-Keyboard.apk', '18bced7b339a67c48fe31698cb54063bce8f3dd9f7d7f23d9e5c619697e8da5ab08312cf9a2fa0e3f445a584485db23d1e4c27e3ffc1448551bbaf486ccb11e9'],
 }
 
 def copytree(src, dst):
