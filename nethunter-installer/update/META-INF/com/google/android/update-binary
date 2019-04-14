@@ -182,7 +182,6 @@ else
     installapp "NetHunter App" "nethunter.apk" "com.offsec.nethunter"
     installapp "NetHunter Terminal" "Term-nh.apk" "com.offsec.nhterm"
     installapp "NetHunter VNC" "VNC-nh.apk" "com.offsec.nhvnc"
-    installapp "AndProx" "AndProx.apk" "au.id.micolous.andprox"
     installapp "cSploit" "cSploit.apk" "org.csploit.android"
     installapp "DriveDroid" "Drivedroid.apk" "com.softwarebakery.drivedroid"
     installapp "Hacker's Keyboard" "Hackerskeyboard.apk" "org.pocketworkstation.pckeyboard"
@@ -194,6 +193,7 @@ else
     installapp "Shodan" "Shodan.apk" "io.shodan.app"
     installapp "USB Keyboard" "USBKeyboard.apk" "remote.hid.keyboard.client"
     ## The following apps are going to be installed from the play store:
+    #  - AndProx (once it supports Iceman firmware)
     #  - Walrus
     #  - WHID-Injector
 fi

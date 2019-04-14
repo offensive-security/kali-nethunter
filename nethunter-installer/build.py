@@ -21,8 +21,6 @@ dl_supersu = {
 }
 
 dl_apps = {
-	'AndProx':
-		['https://github.com/AndProx/AndProx/releases/download/v2.0.4/andprox-2.0.4.apk', 'acb121fd5440a324b6c0fb2bfea67838d5aaa01be8a5b7742a56dfff2026ee91afbae71d4a633fa4d374fe26b72b914d77644b41517e8d2dbf7d64fb1aa95a51'],
 	'cSploit':
 		['https://github.com/cSploit/android/releases/download/v1.6.6-rc.2/cSploit-release.apk', 'b841c4376836bcc9d23fbc18b40eed70e08018e8eebc6d2d0abad59da63e4b325ffe4d8a4bd36107af63ed20a59c6648d6c4bd1264044267c86693744b15fa75'],
 	'Drivedroid':
