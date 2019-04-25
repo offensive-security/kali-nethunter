@@ -1,7 +1,0 @@
-{
-	"version_code": 21,
-	"chroot_version": 3,
-	"chroot_sha512_full": "68a3c557e14ec301fd37831793485c2280b9f706975cff3f9f9cf4000c9703b27dd21b5e076bded0ceff6e5652efc225b0dc76aa391ac5a7e90d683e3b43b647",
-	"chroot_sha512_min": "86752fba98b54daf5f66d04b1306ebebb25ea434bd5f17aa53b53c75aef6e9309084e0e6c01b94461dcb5615e4dd9eb97ac1d8973ebadcd1f6962b99312ae7e5",
-	"content": "Version 3.15.4 <p>Wardriving fix added by @ilakattack (needs nethunter-utils update)</p>"
-}

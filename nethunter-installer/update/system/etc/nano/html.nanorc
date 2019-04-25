@@ -1,5 +1,0 @@
-## Here is a short example for HTML.
-##
-syntax "html" "\.html$"
-color blue start="<" end=">"
-color red "&[^;[[:space:]]]*;"
